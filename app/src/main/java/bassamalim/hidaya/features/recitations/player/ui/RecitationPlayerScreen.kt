@@ -194,8 +194,7 @@ private fun ProgressSpace(
                 iconId = R.drawable.ic_previous_track,
                 description = stringResource(R.string.previous_track_btn_description),
                 isEnabled = areControlsEnabled,
-                size = 40.dp,
-                innerPadding = 20.dp,
+                iconSize = 40.dp,
                 tint = MaterialTheme.colorScheme.primary,
                 onClick = onPreviousTrackClick
             )
@@ -214,8 +213,7 @@ private fun ProgressSpace(
                 iconId = R.drawable.ic_next_track,
                 description = stringResource(R.string.next_track_btn_description),
                 isEnabled = areControlsEnabled,
-                size = 40.dp,
-                innerPadding = 20.dp,
+                iconSize = 40.dp,
                 tint = MaterialTheme.colorScheme.primary,
                 onClick = onNextTrackClick
             )
@@ -242,7 +240,6 @@ private fun BottomBar(
             MyIconButton(
                 iconId = R.drawable.ic_repeat,
                 description = stringResource(R.string.repeat_description),
-                innerPadding = 10.dp,
                 tint =
                     if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) MaterialTheme.colorScheme.secondary
                     else MaterialTheme.colorScheme.onPrimary,
@@ -257,7 +254,6 @@ private fun BottomBar(
             MyIconButton(
                 iconId = R.drawable.ic_shuffle,
                 description = stringResource(R.string.shuffle_description),
-                innerPadding = 10.dp,
                 tint =
                     if (shuffleMode == SHUFFLE_MODE_ALL) MaterialTheme.colorScheme.secondary
                     else MaterialTheme.colorScheme.onPrimary,

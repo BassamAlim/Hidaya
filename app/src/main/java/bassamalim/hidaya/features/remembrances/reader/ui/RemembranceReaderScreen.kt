@@ -26,10 +26,10 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.InfoDialog
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
-import bassamalim.hidaya.core.ui.components.MyReadingBottomBar
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.ReaderBottomBar
 
 @Composable
 fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
@@ -38,7 +38,7 @@ fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
     MyScaffold(
         title = state.title,
         bottomBar = {
-            MyReadingBottomBar(
+            ReaderBottomBar(
                 textSize = state.textSize,
                 onSeek = viewModel::onTextSizeSliderChange
             )
@@ -135,9 +135,8 @@ private fun RemembrancePassageCard(
                         iconId = R.drawable.ic_help,
                         description = stringResource(R.string.source_btn_description),
                         modifier = Modifier.padding(2.dp),
-                        innerPadding = 6.dp,
                         tint = MaterialTheme.colorScheme.onSurface,
-                        size = 26.dp,
+                        iconSize = 26.dp,
                         onClick = { onInfoClick(passage.reference!!) }
                     )
                 }

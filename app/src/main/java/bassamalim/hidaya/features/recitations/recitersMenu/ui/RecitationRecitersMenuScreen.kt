@@ -96,7 +96,7 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                             iconId = R.drawable.ic_filter,
                             modifier = Modifier.padding(end = 10.dp),
                             description = stringResource(R.string.filter_search_description),
-                            size = 32.dp,
+                            iconSize = 32.dp,
                             tint =
                                 if (state.isFiltered) MaterialTheme.colorScheme.secondary
                                 else MaterialTheme.colorScheme.outline,

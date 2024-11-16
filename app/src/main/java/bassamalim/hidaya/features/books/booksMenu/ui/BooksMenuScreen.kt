@@ -113,8 +113,7 @@ private fun DownloadBtn(
                     if (downloadState == DownloadState.DOWNLOADED) R.drawable.ic_downloaded
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
-                size = 32.dp,
-                innerPadding = 6.dp,
+                iconSize = 32.dp,
                 tint = MaterialTheme.colorScheme.primary,
                 onClick = onClick
             )

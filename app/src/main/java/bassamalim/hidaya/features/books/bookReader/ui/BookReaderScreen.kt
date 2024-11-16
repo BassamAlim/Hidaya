@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.core.models.BookContent
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
-import bassamalim.hidaya.core.ui.components.MyReadingBottomBar
+import bassamalim.hidaya.core.ui.components.ReaderBottomBar
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
@@ -28,7 +28,7 @@ fun BookReaderScreen(viewModel: BookReaderViewModel) {
     MyScaffold(
         title = state.bookTitle,
         bottomBar = {
-            MyReadingBottomBar(
+            ReaderBottomBar(
                 textSize = state.textSize,
                 onSeek = viewModel::onTextSizeChange
             )

@@ -34,10 +34,10 @@ import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyIconButton
-import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.nsp
 import java.util.SortedMap
@@ -113,7 +113,7 @@ private fun LocationCard(
                 description = stringResource(R.string.locate),
                 modifier = Modifier.padding(end = 8.dp),
                 tint = MaterialTheme.colorScheme.onSurface,
-                size = 32.dp,
+                iconSize = 32.dp,
                 onClick = onLocatorClick
             )
         }
@@ -281,7 +281,6 @@ private fun DayCard(
                 iconId = R.drawable.ic_left_arrow,
                 description = stringResource(R.string.previous_day_button_description),
                 modifier = Modifier.padding(2.dp),
-                innerPadding = 10.dp,
                 tint = MaterialTheme.colorScheme.onSurface,
                 onClick = onPreviousDayClick
             )
@@ -300,7 +299,6 @@ private fun DayCard(
                 iconId = R.drawable.ic_right_arrow,
                 description = stringResource(R.string.next_day_button_description),
                 modifier = Modifier.padding(2.dp),
-                innerPadding = 10.dp,
                 tint = MaterialTheme.colorScheme.onSurface,
                 onClick = onNextDayClick
             )

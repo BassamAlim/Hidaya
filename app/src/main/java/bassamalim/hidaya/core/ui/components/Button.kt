@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,11 +14,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -220,29 +217,25 @@ fun MyHorizontalButton(
 fun MyIconButton(
     iconId: Int,
     modifier: Modifier = Modifier,
-    size: Dp = 24.dp,
-    innerPadding: Dp = 6.dp,
+    iconSize: Dp = 24.dp,
     description: String = "",
     tint: Color = LocalContentColor.current,
     isEnabled: Boolean = true,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     onClick: () -> Unit
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
+    IconButton(
+        onClick = { if (isEnabled) onClick() },
         modifier = modifier
-            .clip(CircleShape)
-            .clickable { if (isEnabled) onClick() }
     ) {
-        Box(
-            Modifier.padding(innerPadding)
-        ) {
-            Icon(
-                painter = painterResource(id = iconId),
-                contentDescription = description,
-                modifier = Modifier.size(size),
-                tint = tint,
-            )
-        }
+        Icon(
+            painter = painterResource(iconId),
+            contentDescription = description,
+            modifier = Modifier
+                .size(iconSize)
+                .padding(innerPadding),
+            tint = tint
+        )
     }
 }
 
@@ -251,28 +244,21 @@ fun MyIconButton(
     imageVector: ImageVector,
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
-    padding: Dp = 6.dp,
     description: String = "",
     tint: Color = LocalContentColor.current,
     isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
+    IconButton(
+        onClick = { if (isEnabled) onClick() },
         modifier = modifier
-            .clip(CircleShape)
-            .clickable { if (isEnabled) onClick() }
     ) {
-        Box(
-            Modifier.padding(padding)
-        ) {
-            Icon(
-                imageVector = imageVector,
-                contentDescription = description,
-                modifier = Modifier.size(size),
-                tint = tint,
-            )
-        }
+        Icon(
+            imageVector = imageVector,
+            contentDescription = description,
+            modifier = Modifier.size(size),
+            tint = tint
+        )
     }
 }
 
@@ -280,23 +266,9 @@ fun MyIconButton(
 fun MyBackButton(onClick: (() -> Unit)? = null) {
     val context = LocalContext.current
 
-    Row(
-        Modifier
-            .fillMaxHeight()
-            .width(72.dp - 4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(
-            onClick = onClick ?: {
-                (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
-            },
-            enabled = true
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back),
-                contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.onSurface
-            )
+    MyIconButton(iconId = R.drawable.ic_back) {
+        onClick ?: {
+            (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
         }
     }
 }
@@ -337,7 +309,7 @@ fun MyFavoriteButton(isFavorite: Boolean, onClick: () -> Unit) {
         description = "Favorite",
         onClick = onClick,
         tint = MaterialTheme.colorScheme.primary,
-        size = 28.dp
+        iconSize = 28.dp
     )
 }
 
@@ -360,36 +332,13 @@ fun MyDownloadButton(
                     if (state == DownloadState.DOWNLOADED) R.drawable.ic_downloaded
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
-                size = size,
-                innerPadding = 8.dp,
+                iconSize = size,
                 tint =
                     if (state == DownloadState.DOWNLOADED) MaterialTheme.colorScheme.secondary
                     else MaterialTheme.colorScheme.onPrimary,
                 onClick = onClick
             )
         }
-    }
-}
-
-@Composable
-fun MyImageButton(
-    imageResId: Int,
-    description: String = "",
-    isEnabled: Boolean = true,
-    padding: Dp = 14.dp,
-    onClick: () -> Unit
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .clip(CircleShape)
-            .clickable { if (isEnabled) onClick() }
-    ) {
-        Image(
-            painter = painterResource(imageResId),
-            contentDescription = description,
-            modifier = Modifier.padding(padding)
-        )
     }
 }
 
@@ -448,7 +397,6 @@ fun MyCloseBtn(
         iconId = R.drawable.ic_close,
         modifier = modifier,
         description = stringResource(R.string.close),
-        innerPadding = 10.dp,
         tint = MaterialTheme.colorScheme.onPrimary,
         onClick = onClose
     )

@@ -206,9 +206,7 @@ private fun BottomBar(
     onSettingsClick: () -> Unit
 ) {
     BottomAppBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
+        Modifier.height(56.dp)
     ) {
         Row(
             Modifier
@@ -224,7 +222,7 @@ private fun BottomBar(
                     else R.drawable.ic_bookmark,
                 description = stringResource(R.string.bookmark_page_button_description),
                 tint = MaterialTheme.colorScheme.onPrimary,
-                size = 40.dp,
+                iconSize = 40.dp,
                 onClick = { onBookmarkClick(isBookmarked) }
             )
 
@@ -233,7 +231,7 @@ private fun BottomBar(
                 MyIconButton(
                     iconId = R.drawable.ic_skip_previous,
                     description = stringResource(R.string.rewind_btn_description),
-                    size = 40.dp,
+                    iconSize = 40.dp,
                     tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = onPreviousVerseClick
                 )
@@ -241,8 +239,7 @@ private fun BottomBar(
                 // Play/Pause btn
                 MyIconPlayerBtn(
                     state = playerState,
-                    size = 50.dp,
-                    padding = 5.dp,
+                    size = 40.dp,
                     modifier = Modifier.padding(horizontal = 4.dp),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = { onPlayPauseClick(activity) }
@@ -252,7 +249,7 @@ private fun BottomBar(
                 MyIconButton(
                     iconId = R.drawable.ic_skip_next,
                     description = stringResource(R.string.fast_forward_btn_description),
-                    size = 40.dp,
+                    iconSize = 40.dp,
                     tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = onNextVerseClick
                 )
@@ -263,7 +260,8 @@ private fun BottomBar(
                 iconId = R.drawable.ic_display_settings,
                 description = stringResource(R.string.settings),
                 tint = MaterialTheme.colorScheme.onPrimary,
-                size = 40.dp,
+                iconSize = 40.dp,
+                innerPadding = PaddingValues(2.dp),
                 onClick = onSettingsClick
             )
         }
