@@ -9,7 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,9 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
@@ -43,7 +42,7 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(AppTheme.colors.background),
+            .background(MaterialTheme.colorScheme.surface),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -62,8 +61,8 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
             MyRectangleButton(
                 text = stringResource(R.string.locate),
                 fontSize = 22.sp,
-                colors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.accent),
-                textColor = AppTheme.colors.background,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                textColor = MaterialTheme.colorScheme.surface,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 30.dp),

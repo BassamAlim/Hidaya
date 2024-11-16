@@ -27,7 +27,7 @@ import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
+import androidx.compose.material3.MaterialTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import bassamalim.hidaya.features.settings.ui.CategoryTitle
@@ -82,7 +82,7 @@ fun QuranSettingsDialog(
 
                 MyText(
                     stringResource(R.string.fill_page),
-                    textColor = AppTheme.colors.accent
+                    textColor = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -104,7 +104,7 @@ fun QuranSettingsDialog(
                 entries = viewModel.reciterNames.toTypedArray(),
                 title = stringResource(R.string.reciter),
                 iconResId = -1,
-                bgColor = AppTheme.colors.background,
+                bgColor = MaterialTheme.colorScheme.surface,
                 onSelection = viewModel::onReciterChange
             )
 
@@ -124,7 +124,7 @@ fun QuranSettingsDialog(
                 value = state.shouldStopOnSuraEnd,
                 title = stringResource(R.string.stop_on_sura_end),
                 padding = PaddingValues(horizontal = 16.dp),
-                bgColor = AppTheme.colors.background,
+                bgColor = MaterialTheme.colorScheme.surface,
                 summary = "",
                 onSwitch = viewModel::onShouldStopOnSuraEndChange
             )
@@ -133,7 +133,7 @@ fun QuranSettingsDialog(
                 value = state.shouldStopOnPageEnd,
                 title = stringResource(R.string.stop_on_page_end),
                 padding = PaddingValues(horizontal = 16.dp),
-                bgColor = AppTheme.colors.background,
+                bgColor = MaterialTheme.colorScheme.surface,
                 summary = "",
                 onSwitch = viewModel::onShouldStopOnPageEndChange
             )
@@ -165,14 +165,14 @@ private fun RepeatRadioGroup(
                     text = entries[i],
                     fontSize = 16.nsp,
                     textColor =
-                        if (items[i] == selection) AppTheme.colors.accent
-                        else AppTheme.colors.text,
+                        if (items[i] == selection) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface,
                     modifier =
                         if (items[i] == selection) Modifier
                             .weight(1F)
                             .border(
                                 width = 3.dp,
-                                color = AppTheme.colors.accent,
+                                color = MaterialTheme.colorScheme.primary,
                                 shape = RoundedCornerShape(10.dp)
                             )
                         else Modifier.weight(1F),
@@ -194,14 +194,14 @@ private fun RepeatRadioGroup(
                 text = entries[0],
                 fontSize = 16.nsp,
                 textColor =
-                if (items[0] == selection) AppTheme.colors.accent
-                else AppTheme.colors.text,
+                if (items[0] == selection) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onSurface,
                 modifier =
                 if (items[0] == selection) Modifier
                     .weight(1F)
                     .border(
                         width = 3.dp,
-                        color = AppTheme.colors.accent,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(10.dp)
                     )
                 else Modifier.weight(1F),
@@ -214,14 +214,14 @@ private fun RepeatRadioGroup(
                 text = entries.last(),
                 fontSize = 16.nsp,
                 textColor =
-                if (items.last() == selection) AppTheme.colors.accent
-                else AppTheme.colors.text,
+                if (items.last() == selection) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onSurface,
                 modifier =
                 if (items.last() == selection) Modifier
                     .weight(1F)
                     .border(
                         width = 3.dp,
-                        color = AppTheme.colors.accent,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(10.dp)
                     )
                 else Modifier.weight(1F),

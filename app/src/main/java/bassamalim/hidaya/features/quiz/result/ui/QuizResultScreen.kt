@@ -27,7 +27,7 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun QuizResultScreen(viewModel: QuizResultViewModel) {
@@ -46,7 +46,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .background(AppTheme.colors.primary),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
                 MyText(
@@ -54,7 +54,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
                     Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    textColor = AppTheme.colors.onPrimary
+                    textColor = MaterialTheme.colorScheme.onPrimary
                 )
             }
 

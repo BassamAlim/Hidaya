@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,7 +27,9 @@ fun VerseInfoDialog(
 
     MyDialog(shown = true, onDismiss = viewModel::onDismiss) {
         Column(
-            Modifier.padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
+            Modifier
+                .padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Header(viewModel::onDismiss)
 

@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,9 +24,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun BooksMenuFilterDialog(
@@ -73,14 +72,14 @@ fun BooksMenuFilterDialog(
             ) {
                 MyText(
                     stringResource(R.string.select_all),
-                    textColor = AppTheme.colors.accent,
+                    textColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable(onClick = viewModel::onSelectAll)
                 )
 
                 MyText(
                     stringResource(R.string.unselect_all),
                     modifier = Modifier.clickable(onClick = viewModel::onUnselectAll),
-                    textColor = AppTheme.colors.accent
+                    textColor = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -108,8 +107,8 @@ private fun CheckboxListItem(
             checked = isChecked,
             onCheckedChange = onCheckedChange,
             colors = CheckboxDefaults.colors(
-                checkedColor = AppTheme.colors.accent,
-                uncheckedColor = AppTheme.colors.text
+                checkedColor = MaterialTheme.colorScheme.primary,
+                uncheckedColor = MaterialTheme.colorScheme.onSurface
             )
         )
 

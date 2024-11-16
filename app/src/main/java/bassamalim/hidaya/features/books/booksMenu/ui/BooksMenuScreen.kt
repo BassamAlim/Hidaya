@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,7 +26,6 @@ import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.TutorialDialog
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
@@ -113,7 +113,7 @@ private fun DownloadBtn(
                 description = stringResource(R.string.download_description),
                 size = 32.dp,
                 innerPadding = 6.dp,
-                tint = AppTheme.colors.accent,
+                tint = MaterialTheme.colorScheme.primary,
                 onClick = onClick
             )
         }

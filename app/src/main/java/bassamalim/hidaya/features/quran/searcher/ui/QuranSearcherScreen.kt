@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,7 +27,6 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuranSearcherScreen(viewModel: QuranSearcherViewModel) {
@@ -39,7 +39,7 @@ fun QuranSearcherScreen(viewModel: QuranSearcherViewModel) {
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val highlightColor = AppTheme.colors.accent
+            val highlightColor = MaterialTheme.colorScheme.primary
 
             Column(
                 Modifier.fillMaxWidth(),
@@ -135,7 +135,7 @@ fun MatchItem(
             MyRectangleButton(
                 text = stringResource(R.string.go_to_page),
                 modifier = Modifier.padding(bottom = 6.dp),
-                textColor = AppTheme.colors.accent,
+                textColor = MaterialTheme.colorScheme.primary,
                 elevation = 0,
                 innerPadding = PaddingValues(0.dp),
                 onClick = { onGoToPageClick(item) }

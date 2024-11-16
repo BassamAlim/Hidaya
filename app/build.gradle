@@ -101,14 +101,13 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.foundation.layout)
-    implementation(libs.androidx.material)
     implementation(libs.androidx.material.icons.extended)
     implementation libs.androidx.material3.android
+    implementation libs.androidx.material3
     // Google
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.play.services.location)
-    implementation(libs.material)
     implementation(libs.gson)
     // Firebase
     implementation platform(libs.firebase.bom)

@@ -14,13 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +42,6 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyValuedSlider
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun <V> MenuSetting(
@@ -50,7 +50,7 @@ fun <V> MenuSetting(
     entries: Array<String>,
     title: String,
     iconResId: Int = -1,
-    bgColor: Color = AppTheme.colors.surface,
+    bgColor: Color = MaterialTheme.colorScheme.surface,
     onSelection: (V) -> Unit = {}
 ) {
     var isShown by remember { mutableStateOf(false) }
@@ -74,7 +74,7 @@ fun <V> MenuSetting(
                     painter = painterResource(iconResId),
                     contentDescription = title,
                     modifier = Modifier.padding(end = 20.dp),
-                    tint = AppTheme.colors.text
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -95,7 +95,7 @@ fun <V> MenuSetting(
                     Box(
                         Modifier.background(
                             shape = RoundedCornerShape(16.dp),
-                            color = AppTheme.colors.background
+                            color = MaterialTheme.colorScheme.surface
                         )
                     ) {
                         Column(
@@ -130,8 +130,8 @@ fun <V> MenuSetting(
                                                 isShown = false
                                             },
                                             colors = RadioButtonDefaults.colors(
-                                                selectedColor = AppTheme.colors.accent,
-                                                unselectedColor = AppTheme.colors.text
+                                                selectedColor = MaterialTheme.colorScheme.primary,
+                                                unselectedColor = MaterialTheme.colorScheme.onSurface
                                             )
                                         )
 
@@ -143,7 +143,7 @@ fun <V> MenuSetting(
                             MyRectangleButton(
                                 text = stringResource(R.string.cancel),
                                 colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = AppTheme.colors.background
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
                                 ),
                                 elevation = 0,
                                 innerPadding = PaddingValues(0.dp),
@@ -163,7 +163,7 @@ fun SwitchSetting(
     title: String,
     summary: String,
     padding: PaddingValues = PaddingValues(vertical = 6.dp, horizontal = 16.dp),
-    bgColor: Color = AppTheme.colors.surface,
+    bgColor: Color = MaterialTheme.colorScheme.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
     Box(
@@ -190,8 +190,8 @@ fun SwitchSetting(
                     onCheckedChange = { onSwitch(!value) },
                     modifier = Modifier.height(10.dp),
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = AppTheme.colors.accent,
-                        checkedTrackColor = AppTheme.colors.altAccent
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 )
             }
@@ -242,7 +242,7 @@ fun CategoryTitle(title: String) {
             .padding(vertical = 15.dp, horizontal = 15.dp),
         fontSize = 16.sp,
         textAlign = TextAlign.Start,
-        textColor = AppTheme.colors.accent
+        textColor = MaterialTheme.colorScheme.primary
     )
 }
 

@@ -119,12 +119,11 @@ class Activity : ComponentActivity() {
         else Log.d(Global.TAG, "Database is up to date")
     }
 
-    private suspend fun bootstrapApp() {
+    private fun bootstrapApp() {
         ActivityUtils.configure(
             context = this@Activity,
             applicationContext = applicationContext,
-            language = language,
-            theme = theme.first()
+            language = language
         )
     }
 
@@ -222,7 +221,7 @@ class Activity : ComponentActivity() {
     private fun launchApp() {
         setContent {
             val themeState by theme.collectAsState(
-                initial = Theme.DARK,
+                initial = Theme.ORIGINAL,
                 context = lifecycleScope.coroutineContext
             )
 

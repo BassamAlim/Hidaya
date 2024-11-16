@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun MySurface(
@@ -46,8 +45,8 @@ fun MySurface(
             .fillMaxWidth()
             .padding(padding),
         shape = RoundedCornerShape(cornerRadius),
-        color = AppTheme.colors.surface,
-        elevation = 8.dp
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        shadowElevation = 8.dp
     ) {
         content()
     }
@@ -65,8 +64,8 @@ fun MyClickableSurface(
     Surface(
         modifier = modifier.padding(padding),
         shape = RoundedCornerShape(cornerRadius),
-        color = AppTheme.colors.surface,
-        elevation = elevation,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        shadowElevation = elevation,
     ) {
         Box(
             Modifier.clickable { onClick() },
@@ -77,7 +76,6 @@ fun MyClickableSurface(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MyButtonSurface(
     text: String,
@@ -92,8 +90,8 @@ fun MyButtonSurface(
             .fillMaxWidth()
             .padding(vertical = 5.dp, horizontal = 8.dp),
         shape = RoundedCornerShape(10.dp),
-        color = AppTheme.colors.surface,
-        elevation = 6.dp,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        shadowElevation = 6.dp,
         onClick = onClick
     ) {
         Row(
@@ -147,7 +145,7 @@ fun ExpandableCard(
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = stringResource(R.string.select),
-                    tint = AppTheme.colors.text,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .weight(1f)
                         .rotate(rotationState)
@@ -157,55 +155,4 @@ fun ExpandableCard(
             if (expandedState) expandedContent()
         }
     }
-
-    /*Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = TweenSpec(
-                    durationMillis = 300,
-                    easing = LinearOutSlowInEasing
-                )
-            ),
-        shape = shape,
-        onClick = {
-            expandedState = !expandedState
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(padding)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier.weight(6f),
-                    text = title,
-                    fontSize = titleFontSize,
-                    fontWeight = titleFontWeight,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                IconButton(
-                    modifier = Modifier
-                        .alpha(ContentAlpha.medium)
-                        .weight(1f)
-                        .rotate(rotationState),
-                    onClick = {
-                        expandedState = !expandedState
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Drop Down Arrow"
-                    )
-                }
-            }
-
-            if (expandedState) expandedContent()
-        }
-    }*/
 }

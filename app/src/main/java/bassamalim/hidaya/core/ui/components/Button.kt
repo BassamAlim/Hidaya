@@ -22,16 +22,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
@@ -55,8 +52,8 @@ fun PrimaryPillBtn(
     text: String,
     modifier: Modifier = Modifier,
     widthPercent: Float = 0.75f,
-    tint: Color = AppTheme.colors.accent,
-    textColor: Color = AppTheme.colors.strongText,
+    tint: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.onPrimary,
     fontSize: TextUnit = 22.sp,
     enabled: Boolean = true,
     padding: PaddingValues = PaddingValues(vertical = 16.dp),
@@ -70,9 +67,9 @@ fun PrimaryPillBtn(
             .padding(padding),
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = tint
+            containerColor = tint
         ),
-        elevation =  ButtonDefaults.elevation(
+        elevation =  ButtonDefaults.buttonElevation(
             defaultElevation = 10.dp,
             pressedElevation = 15.dp,
             disabledElevation = 0.dp
@@ -94,8 +91,8 @@ fun SecondaryPillBtn(
     text: String,
     modifier: Modifier = Modifier,
     widthPercent: Float = 0.65f,
-    tint: Color = AppTheme.colors.surface,
-    textColor: Color = AppTheme.colors.text,
+    tint: Color = MaterialTheme.colorScheme.secondary,
+    textColor: Color = MaterialTheme.colorScheme.onSecondary,
     fontSize: TextUnit = 20.sp,
     enabled: Boolean = true,
     padding: PaddingValues = PaddingValues(vertical = 10.dp),
@@ -109,9 +106,9 @@ fun SecondaryPillBtn(
             .padding(padding),
         shape = RoundedCornerShape(30.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = tint
+            containerColor = tint
         ),
-        elevation =  ButtonDefaults.elevation(
+        elevation =  ButtonDefaults.buttonElevation(
             defaultElevation = 10.dp,
             pressedElevation = 15.dp,
             disabledElevation = 0.dp
@@ -133,10 +130,10 @@ fun MyRectangleButton(
     text: String,
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(3.dp),
-    colors: ButtonColors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.surface),
+    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
-    textColor: Color = AppTheme.colors.text,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
     elevation: Int = 10,
     enabled: Boolean = true,
     innerPadding: PaddingValues = PaddingValues(6.dp),
@@ -148,7 +145,7 @@ fun MyRectangleButton(
         modifier = modifier.padding(padding),
         colors = colors,
         shape = RoundedCornerShape(10.dp),
-        elevation =  ButtonDefaults.elevation(
+        elevation =  ButtonDefaults.buttonElevation(
             defaultElevation = elevation.dp,
             pressedElevation = (elevation + 5).dp,
             disabledElevation = 0.dp
@@ -176,10 +173,10 @@ fun MyRectangleButton(
 fun MyHorizontalButton(
     text: String,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.surface),
+    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
-    textColor: Color = AppTheme.colors.text,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
     elevation: Int = 10,
     enabled: Boolean = true,
     middlePadding: PaddingValues = PaddingValues(6.dp),
@@ -193,7 +190,7 @@ fun MyHorizontalButton(
         modifier = modifier.padding(3.dp),
         colors = colors,
         shape = RoundedCornerShape(10.dp),
-        elevation =  ButtonDefaults.elevation(
+        elevation =  ButtonDefaults.buttonElevation(
             defaultElevation = elevation.dp,
             pressedElevation = (elevation + 5).dp,
             disabledElevation = 0.dp
@@ -226,7 +223,7 @@ fun MyIconButton(
     size: Dp = 24.dp,
     innerPadding: Dp = 6.dp,
     description: String = "",
-    tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
+    tint: Color = LocalContentColor.current,
     isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -256,7 +253,7 @@ fun MyIconButton(
     size: Dp = 24.dp,
     padding: Dp = 6.dp,
     description: String = "",
-    tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
+    tint: Color = LocalContentColor.current,
     isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -289,21 +286,17 @@ fun MyBackButton(onClick: (() -> Unit)? = null) {
             .width(72.dp - 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CompositionLocalProvider(
-            LocalContentAlpha provides ContentAlpha.high,
+        IconButton(
+            onClick = onClick ?: {
+                (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+            },
+            enabled = true
         ) {
-            IconButton(
-                onClick = onClick ?: {
-                    (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
-                },
-                enabled = true
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "Back",
-                    tint = AppTheme.colors.onPrimary
-                )
-            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = "Back",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
@@ -343,7 +336,7 @@ fun MyFavoriteButton(isFavorite: Boolean, onClick: () -> Unit) {
             else R.drawable.ic_star_outline,
         description = "Favorite",
         onClick = onClick,
-        tint = AppTheme.colors.accent,
+        tint = MaterialTheme.colorScheme.primary,
         size = 28.dp
     )
 }
@@ -370,8 +363,8 @@ fun MyDownloadButton(
                 size = size,
                 innerPadding = 8.dp,
                 tint =
-                    if (state == DownloadState.DOWNLOADED) AppTheme.colors.secondary
-                    else AppTheme.colors.onPrimary,
+                    if (state == DownloadState.DOWNLOADED) MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.onPrimary,
                 onClick = onClick
             )
         }
@@ -409,7 +402,7 @@ fun MyIconPlayerBtn(
     enabled: Boolean = true,
     playIcon: Int = R.drawable.ic_play,
     pauseIcon: Int = R.drawable.ic_pause,
-    tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
+    tint: Color = LocalContentColor.current,
     onClick: () -> Unit
 ) {
     Box(
@@ -456,7 +449,7 @@ fun MyCloseBtn(
         modifier = modifier,
         description = stringResource(R.string.close),
         innerPadding = 10.dp,
-        tint = AppTheme.colors.text,
+        tint = MaterialTheme.colorScheme.onPrimary,
         onClick = onClose
     )
 }

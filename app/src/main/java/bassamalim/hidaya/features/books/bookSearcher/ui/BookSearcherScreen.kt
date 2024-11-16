@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,7 +27,6 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun BookSearcherScreen(viewModel: BookSearcherViewModel) {
@@ -72,7 +72,7 @@ private fun SearchArea(
     onFilterClick: () -> Unit,
     onMaxMatchesIndexChange: (Int) -> Unit,
 ) {
-    val highlightColor = AppTheme.colors.accent
+    val highlightColor = MaterialTheme.colorScheme.primary
 
     Column(
         Modifier.fillMaxWidth(),
@@ -132,8 +132,8 @@ private fun BooksFilter(isFiltered: Boolean, onFilterClick: () -> Unit) {
             description = stringResource(R.string.filter_search_description),
             size = 30.dp,
             tint =
-                if (isFiltered) AppTheme.colors.secondary
-                else AppTheme.colors.weakText,
+                if (isFiltered) MaterialTheme.colorScheme.secondary
+                else MaterialTheme.colorScheme.outline,
             onClick = onFilterClick
         )
     }

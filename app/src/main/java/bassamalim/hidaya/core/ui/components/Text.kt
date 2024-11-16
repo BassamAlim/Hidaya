@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.tajwal
 
 @Composable
@@ -31,7 +31,7 @@ fun MyText(
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Center,
-    textColor: Color = AppTheme.colors.text,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
     fontFamily: FontFamily = tajwal,
     softWrap: Boolean = true
 ) {
@@ -58,7 +58,7 @@ fun MyText(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    textColor: Color = AppTheme.colors.text,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Center,
     fontFamily: FontFamily = tajwal
@@ -86,7 +86,7 @@ fun MyClickableText(
     text: String,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    textColor: Color = AppTheme.colors.accent,
+    textColor: Color = MaterialTheme.colorScheme.primary,
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Center,
     fontFamily: FontFamily = tajwal,

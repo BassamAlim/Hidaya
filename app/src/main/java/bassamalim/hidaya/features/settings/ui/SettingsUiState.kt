@@ -11,7 +11,7 @@ data class SettingsUiState(
     val language: Language = Language.ARABIC,
     val numeralsLanguage: Language = Language.ARABIC,
     val timeFormat: TimeFormat = TimeFormat.TWELVE,
-    val theme: Theme = Theme.DARK,
+    val theme: Theme = Theme.ORIGINAL,
     val devotionalReminderEnabledStatuses: Map<Reminder.Devotional, Boolean> = emptyMap(),
     val devotionalReminderTimes: Map<Reminder.Devotional, TimeOfDay> = emptyMap(),
     val devotionalReminderSummaries: Map<Reminder.Devotional, String> = emptyMap(),

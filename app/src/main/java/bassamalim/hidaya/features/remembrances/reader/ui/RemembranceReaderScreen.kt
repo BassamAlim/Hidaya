@@ -11,7 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,7 +30,6 @@ import bassamalim.hidaya.core.ui.components.MyReadingBottomBar
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
@@ -103,7 +103,7 @@ private fun RemembrancePassageCard(
                     text = passage.text,
                     modifier = Modifier.padding(10.dp),
                     fontSize = (textSize + textSizeMargin).sp,
-                    textColor = AppTheme.colors.strongText
+                    textColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 // translation
@@ -117,26 +117,26 @@ private fun RemembrancePassageCard(
 
                 // virtue
                 if (passage.isVirtueAvailable) {
-                    Divider()
+                    HorizontalDivider()
 
                     MyText(
                         text = passage.virtue!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin - 8).sp,
-                        textColor = AppTheme.colors.accent
+                        textColor = MaterialTheme.colorScheme.primary
                     )
                 }
 
                 // reference
                 if (passage.isReferenceAvailable) {
-                    Divider()
+                    HorizontalDivider()
 
                     MyIconButton(
                         iconId = R.drawable.ic_help,
                         description = stringResource(R.string.source_btn_description),
                         modifier = Modifier.padding(2.dp),
                         innerPadding = 6.dp,
-                        tint = AppTheme.colors.text,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         size = 26.dp,
                         onClick = { onInfoClick(passage.reference!!) }
                     )
@@ -145,7 +145,7 @@ private fun RemembrancePassageCard(
 
             // repetition
             if (passage.isRepetitionAvailable) {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(1.dp)
@@ -158,7 +158,7 @@ private fun RemembrancePassageCard(
                         .widthIn(10.dp, 100.dp)
                         .align(Alignment.CenterVertically),
                     fontSize = (textSize + textSizeMargin).sp,
-                    textColor = AppTheme.colors.accent
+                    textColor = MaterialTheme.colorScheme.primary
                 )
             }
         }

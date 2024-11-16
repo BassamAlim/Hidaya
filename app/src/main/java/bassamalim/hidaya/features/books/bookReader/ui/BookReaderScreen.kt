@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.books.bookReader.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,7 +18,6 @@ import bassamalim.hidaya.core.ui.components.MyReadingBottomBar
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun BookReaderScreen(viewModel: BookReaderViewModel) {
@@ -69,7 +69,7 @@ private fun DoorCard(
                 text = door.text,
                 modifier = Modifier.padding(10.dp),
                 fontSize = (textSize + textSizeMargin).sp,
-                textColor = AppTheme.colors.strongText
+                textColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -15,8 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.google.accompanist.pager.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,40 +44,29 @@ fun TabLayout(
 
 @Composable
 fun Tabs(pagerState: PagerState, pageNames: List<String>) {
-    // creating a variable for the scope.
     val scope = rememberCoroutineScope()
-    // creating a row for our tab layout.
     TabRow(
-        // specifying the selected index.
         selectedTabIndex = pagerState.currentPage,
-        // on below line we are specifying background color.
-        backgroundColor = AppTheme.colors.primary,
-        // specifying content color.
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = Color.White,
-        // specifying the indicator for the tab
         indicator = { tabPositions ->
-            // specifying the styling for tab indicator by specifying height and color for the tab indicator.
-            TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(
-                    pagerState = pagerState,
-                    tabPositions = tabPositions
-                ),
+
+            SecondaryIndicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
                 height = 2.dp,
-                color = AppTheme.colors.secondary
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     ) {
-        // specifying icon and text for the individual tab item
         pageNames.forEachIndexed { index, _ ->
-            // creating a tab.
             Tab(
                 text = {
                     MyText(
                         text = pageNames[index],
                         fontSize = 18.sp,
                         textColor =
-                            if (pagerState.currentPage == index) AppTheme.colors.secondary
-                            else AppTheme.colors.onPrimary
+                            if (pagerState.currentPage == index) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onPrimary
                     )
                 },
                 selected = pagerState.currentPage == index,

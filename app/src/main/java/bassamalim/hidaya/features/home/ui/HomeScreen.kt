@@ -12,14 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,7 +38,6 @@ import bassamalim.hidaya.core.ui.components.MyParentColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
@@ -143,10 +142,7 @@ private fun PrayerCard(
                     )
                 }
 
-                VerticalDivider(
-                    Modifier.padding(vertical = 20.dp),
-                    color = AppTheme.colors.shadow
-                )
+                VerticalDivider(Modifier.padding(vertical = 20.dp))
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -223,7 +219,7 @@ private fun TodayWerdCard(
             ) {
                 MyClickableText(
                     text = stringResource(R.string.go_to_page),
-                    textColor = AppTheme.colors.accent,
+                    textColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(top = 10.dp, bottom = 5.dp),
                     onClick = onGoToWerdClick
                 )
@@ -290,14 +286,14 @@ private fun RecordsCard(
 
             MyHorizontalButton(
                 text = stringResource(R.string.leaderboard),
-                textColor = AppTheme.colors.accent,
+                textColor = MaterialTheme.colorScheme.primary,
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.ic_leaderboard),
                         contentDescription = stringResource(R.string.leaderboard),
                         tint =
-                            if (isLeaderboardEnabled) AppTheme.colors.accent
-                            else Color.Gray
+                            if (isLeaderboardEnabled) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.outline
                     )
                 },
                 middlePadding = PaddingValues(vertical = 6.dp, horizontal = 8.dp),

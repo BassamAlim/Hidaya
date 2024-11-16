@@ -4,13 +4,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -29,7 +30,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun SearchComponent(
@@ -39,7 +39,7 @@ fun SearchComponent(
     onSubmit: () -> Unit = {},
     onValueChange: (String) -> Unit = {}
 ) {
-    val lineColor = AppTheme.colors.weakText
+    val lineColor = MaterialTheme.colorScheme.outline
     val layoutDirection = LocalLayoutDirection.current
 
     TextField(
@@ -76,7 +76,7 @@ fun SearchComponent(
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .size(24.dp),
-                tint = AppTheme.colors.weakText
+                tint = MaterialTheme.colorScheme.outline
             )
         },
         trailingIcon = {
@@ -98,22 +98,16 @@ fun SearchComponent(
             MyText(
                 text = hint,
                 fontSize = 18.sp,
-                textColor = AppTheme.colors.weakText
+                textColor = MaterialTheme.colorScheme.outline
             )
         },
         singleLine = true,
         shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSubmit() }),
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = Color.White,
-            cursorColor = Color.White,
-            leadingIconColor = Color.White,
-            trailingIconColor = Color.White,
-            backgroundColor = AppTheme.colors.background,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent
         )
     )
 }

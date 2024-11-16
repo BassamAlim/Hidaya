@@ -15,7 +15,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomAppBar
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -37,7 +38,6 @@ import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySlider
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -104,7 +104,7 @@ private fun InfoSpace(suraName: String, narrationName: String, reciterName: Stri
             .border(
                 width = 2.dp,
                 shape = RoundedCornerShape(10),
-                color = AppTheme.colors.accent
+                color = MaterialTheme.colorScheme.primary
             )
     ) {
         Column(
@@ -154,7 +154,7 @@ private fun ProgressSpace(
         Modifier
             .fillMaxWidth(0.95f)
             .clip(RoundedCornerShape(10))
-            .background(AppTheme.colors.weakPrimary),
+            .background(MaterialTheme.colorScheme.onPrimaryContainer),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -196,7 +196,7 @@ private fun ProgressSpace(
                 isEnabled = areControlsEnabled,
                 size = 40.dp,
                 innerPadding = 20.dp,
-                tint = AppTheme.colors.accent,
+                tint = MaterialTheme.colorScheme.primary,
                 onClick = onPreviousTrackClick
             )
 
@@ -206,7 +206,7 @@ private fun ProgressSpace(
                 enabled = areControlsEnabled,
                 playIcon = R.drawable.ic_circle_play,
                 pauseIcon = R.drawable.ic_circle_pause,
-                tint = AppTheme.colors.accent,
+                tint = MaterialTheme.colorScheme.primary,
                 onClick = onPlayPauseClick
             )
 
@@ -216,7 +216,7 @@ private fun ProgressSpace(
                 isEnabled = areControlsEnabled,
                 size = 40.dp,
                 innerPadding = 20.dp,
-                tint = AppTheme.colors.accent,
+                tint = MaterialTheme.colorScheme.primary,
                 onClick = onNextTrackClick
             )
         }
@@ -233,9 +233,7 @@ private fun BottomBar(
     onShuffleClick: (Int) -> Unit,
     onDownloadClick: () -> Unit,
 ) {
-    BottomAppBar(
-        backgroundColor = AppTheme.colors.primary
-    ) {
+    BottomAppBar {
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -246,8 +244,8 @@ private fun BottomBar(
                 description = stringResource(R.string.repeat_description),
                 innerPadding = 10.dp,
                 tint =
-                    if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) AppTheme.colors.secondary
-                    else AppTheme.colors.onPrimary,
+                    if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.onPrimary,
                 onClick = { onRepeatClick(repeatMode) }
             )
 
@@ -261,8 +259,8 @@ private fun BottomBar(
                 description = stringResource(R.string.shuffle_description),
                 innerPadding = 10.dp,
                 tint =
-                    if (shuffleMode == SHUFFLE_MODE_ALL) AppTheme.colors.secondary
-                    else AppTheme.colors.onPrimary,
+                    if (shuffleMode == SHUFFLE_MODE_ALL) MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.onPrimary,
                 onClick = { onShuffleClick(shuffleMode) }
             )
         }

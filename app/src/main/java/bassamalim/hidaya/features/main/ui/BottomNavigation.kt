@@ -1,9 +1,10 @@
 package bassamalim.hidaya.features.main.ui
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -14,7 +15,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 
 sealed class BottomNavItem(var route: String, var titleRId: Int, var icon: Int) {
@@ -35,36 +35,31 @@ fun MyBottomNavigation(navController: NavController) {
         BottomNavItem.More
     )
 
-    BottomNavigation(
-        backgroundColor = AppTheme.colors.primary,
-        contentColor = AppTheme.colors.secondary,
-        elevation = 12.dp
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
-        
+
         items.forEach { item ->
             val title = stringResource(item.titleRId)
 
-            BottomNavigationItem(
+            NavigationBarItem(
                 label = {
                     MyText(
-                        title,
+                        text = title,
                         fontSize = 9.nsp,
-                        textColor = AppTheme.colors.secondary,
                         softWrap = false
                     )
                 },
-                alwaysShowLabel = false,
+                alwaysShowLabel = true,
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = title,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
                     )
                 },
-                selectedContentColor = AppTheme.colors.secondary,
-                unselectedContentColor = AppTheme.colors.onPrimary,
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {

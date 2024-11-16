@@ -20,10 +20,11 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -69,7 +70,6 @@ import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.hafs_smart
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
@@ -96,7 +96,6 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     EnforcePortrait(activity)
 
     Scaffold(
-        backgroundColor = AppTheme.colors.quranBG,
         topBar = {
             TopBar(
                 suraName = state.suraName,
@@ -151,12 +150,12 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
 
 @Composable
 private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
-    TopAppBar(
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
             .height(36.dp),
-        backgroundColor = AppTheme.colors.quranBG,
-        elevation = 4.dp
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shadowElevation = 8.dp
     ) {
         Row(
             Modifier
@@ -171,7 +170,7 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
                 fontSize = 18.nsp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Start,
-                textColor = AppTheme.colors.onPrimary
+                textColor = MaterialTheme.colorScheme.onPrimary
             )
 
             // Page number
@@ -179,7 +178,7 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
                 text = "${stringResource(R.string.page)} $pageNumText",
                 fontSize = 18.nsp,
                 fontWeight = FontWeight.Medium,
-                textColor = AppTheme.colors.onPrimary
+                textColor = MaterialTheme.colorScheme.onPrimary
             )
 
             // Juz number
@@ -188,7 +187,7 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
                 fontSize = 18.nsp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.End,
-                textColor = AppTheme.colors.onPrimary
+                textColor = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
@@ -208,8 +207,7 @@ private fun BottomBar(
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp),
-        backgroundColor = AppTheme.colors.primary
+            .height(56.dp)
     ) {
         Row(
             Modifier
@@ -224,7 +222,7 @@ private fun BottomBar(
                     if (isBookmarked) R.drawable.ic_bookmarked
                     else R.drawable.ic_bookmark,
                 description = stringResource(R.string.bookmark_page_button_description),
-                tint = AppTheme.colors.onPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 size = 40.dp,
                 onClick = { onBookmarkClick(isBookmarked) }
             )
@@ -235,7 +233,7 @@ private fun BottomBar(
                     iconId = R.drawable.ic_skip_previous,
                     description = stringResource(R.string.rewind_btn_description),
                     size = 40.dp,
-                    tint = AppTheme.colors.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = onPreviousVerseClick
                 )
 
@@ -245,7 +243,7 @@ private fun BottomBar(
                     size = 50.dp,
                     padding = 5.dp,
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    tint = AppTheme.colors.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = { onPlayPauseClick(activity) }
                 )
 
@@ -254,7 +252,7 @@ private fun BottomBar(
                     iconId = R.drawable.ic_skip_next,
                     description = stringResource(R.string.fast_forward_btn_description),
                     size = 40.dp,
-                    tint = AppTheme.colors.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = onNextVerseClick
                 )
             }
@@ -263,7 +261,7 @@ private fun BottomBar(
             MyIconButton(
                 iconId = R.drawable.ic_display_settings,
                 description = stringResource(R.string.settings),
-                tint = AppTheme.colors.onPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 size = 40.dp,
                 onClick = onSettingsClick
             )
@@ -318,9 +316,9 @@ private fun PageContent(
                 QuranViewType.PAGE -> {
                     val pageContent = buildPage(
                         pageIdx + 1,
-                        AppTheme.colors.strongText,
-                        AppTheme.colors.highlight,
-                        AppTheme.colors.track
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.tertiary
                     )
 
                     PageItems(
@@ -336,9 +334,9 @@ private fun PageContent(
                 QuranViewType.LIST -> {
                     val pageContent = buildListPage(
                         pageIdx + 1,
-                        AppTheme.colors.strongText,
-                        AppTheme.colors.highlight,
-                        AppTheme.colors.track
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.tertiary
                     )
 
                     ListItems(
@@ -393,7 +391,9 @@ private fun PageItems(
                 is VersesSection -> {
                     FilledPageViewScreen(
                         annotatedString = section.annotatedString,
-                        numOfLines = section.numOfLines,
+                        numOfLines =
+                            if (section.suraNum == 1) section.numOfLines-1
+                            else section.numOfLines,
                         lineHeight = lineHeight,
                         onVersePointerInput = onVersePointerInput
                     )
@@ -484,7 +484,7 @@ private fun PageViewScreen(annotatedString: AnnotatedString, textSize: Int) {
         style = TextStyle(
             fontFamily = hafs_smart,
             fontSize = textSize.sp,
-            color = AppTheme.colors.strongText,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
     )
@@ -520,7 +520,7 @@ private fun FilledPageViewScreen(
         fontSize = fontSize,
         style = TextStyle(
             fontFamily = hafs_smart,
-            color = AppTheme.colors.strongText,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             lineHeight = (lineHeight.value * 0.96).sp,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
@@ -567,9 +567,9 @@ private fun ListViewScreen(
             fontFamily = hafs_smart,
             fontSize = textSize.sp,
             color =
-                if (selectedVerse?.id == verseId) AppTheme.colors.highlight
-                else if (trackedVerseId == verseId) AppTheme.colors.track
-                else AppTheme.colors.strongText,
+                if (selectedVerse?.id == verseId) MaterialTheme.colorScheme.primary
+                else if (trackedVerseId == verseId) MaterialTheme.colorScheme.tertiary
+                else MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
     )
@@ -600,13 +600,13 @@ private fun SuraHeader(
                 .fillMaxSize()
                 .padding(vertical = 5.dp, horizontal = 5.dp),
             contentScale = ContentScale.FillBounds,
-            colorFilter = ColorFilter.tint(AppTheme.colors.text)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
         )
 
         MyText(
             text = "${stringResource(R.string.sura)} $suraName",
             fontSize = (textSize * 0.9).sp,
-            textColor = AppTheme.colors.strongText,
+            textColor = MaterialTheme.colorScheme.onSurfaceVariant,
             fontFamily = uthmanic_hafs
         )
     }
@@ -621,7 +621,7 @@ private fun Basmalah(textSize: Int, height: Dp? = null) {
             .fillMaxWidth(0.75f)
             .height(height ?: (textSize * 1.6).dp),
         contentScale = ContentScale.FillBounds,
-        colorFilter = ColorFilter.tint(AppTheme.colors.strongText)
+        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
     )
 }
 

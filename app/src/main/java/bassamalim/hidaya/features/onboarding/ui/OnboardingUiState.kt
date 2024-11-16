@@ -8,5 +8,5 @@ data class OnboardingUiState(
     val language: Language = Language.ARABIC,
     val numeralsLanguage: Language = Language.ARABIC,
     val timeFormat: TimeFormat = TimeFormat.TWELVE,
-    val theme: Theme = Theme.DARK
+    val theme: Theme = Theme.ORIGINAL
 )

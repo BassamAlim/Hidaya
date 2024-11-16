@@ -28,7 +28,7 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.RadioGroup
-import bassamalim.hidaya.core.ui.theme.AppTheme
+import androidx.compose.material3.MaterialTheme
 import bassamalim.hidaya.core.ui.theme.Grey
 
 @Composable
@@ -76,13 +76,13 @@ fun QuestionArea(
             .fillMaxWidth()
             .heightIn(1.dp, 200.dp)
             .verticalScroll(rememberScrollState())
-            .background(AppTheme.colors.primary),
+            .background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center
     ) {
         MyText(
             text = question,
             fontSize = 28.sp,
-            textColor = AppTheme.colors.onPrimary,
+            textColor = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
         )
     }
@@ -108,7 +108,7 @@ fun ColumnScope.BottomBar(
         MyRectangleButton(
             text = stringResource(R.string.previous_question),
             textColor =
-                if (isPreviousButtonEnabled) AppTheme.colors.text
+                if (isPreviousButtonEnabled) MaterialTheme.colorScheme.onSurface
                 else Grey,
             innerPadding = PaddingValues(10.dp),
             onClick = onPreviousQuestionClick
@@ -124,7 +124,7 @@ fun ColumnScope.BottomBar(
             ),
             modifier = Modifier.sizeIn(maxWidth = 175.dp),
             textColor =
-                if (isNextButtonEnabled) AppTheme.colors.text
+                if (isNextButtonEnabled) MaterialTheme.colorScheme.onSurface
                 else Grey,
             innerPadding = PaddingValues(10.dp),
             onClick = onNextQuestionClick

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.theme.AppTheme
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun QuizLobbyScreen(viewModel: QuizLobbyViewModel) {
@@ -29,7 +29,7 @@ fun QuizLobbyScreen(viewModel: QuizLobbyViewModel) {
                 innerPadding = PaddingValues(vertical = 10.dp, horizontal = 25.dp),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                textColor = AppTheme.colors.accent,
+                textColor = MaterialTheme.colorScheme.primary,
                 onClick = viewModel::onStartQuizClick
             )
         }

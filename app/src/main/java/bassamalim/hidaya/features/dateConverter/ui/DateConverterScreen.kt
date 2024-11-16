@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,9 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun DateConverterScreen(viewModel: DateConverterViewModel) {
@@ -84,7 +83,7 @@ private fun ResultSpace(
             .padding(horizontal = 20.dp)
             .border(
                 width = 3.dp,
-                color = AppTheme.colors.accent,
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(size = 14.dp)
             ),
         verticalArrangement = Arrangement.SpaceEvenly,

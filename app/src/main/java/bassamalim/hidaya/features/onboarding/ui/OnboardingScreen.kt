@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,9 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.features.settings.ui.AppearanceSettings
 
 @Composable
@@ -30,7 +29,7 @@ fun OnboardingScreen(viewModel: OnboardingViewModel) {
     val activity = LocalContext.current as Activity
 
     Box(
-        Modifier.background(AppTheme.colors.background)
+        Modifier.background(MaterialTheme.colorScheme.surface)
     ) {
         Column(
             Modifier

@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,7 +33,6 @@ import bassamalim.hidaya.core.ui.TabPopEnter
 import bassamalim.hidaya.core.ui.TabPopExit
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.home.ui.HomeScreen
 import bassamalim.hidaya.features.more.ui.MoreScreen
@@ -65,10 +66,12 @@ private fun TopBar(
     gregorianDate: String,
     onDateClick: () -> Unit
 ) {
-    TopAppBar(
-        backgroundColor = AppTheme.colors.primary,
-        elevation = 8.dp,
-        modifier = Modifier.fillMaxWidth()
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shadowElevation = 8.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
     ) {
         Box(
             Modifier.fillMaxSize()
@@ -83,7 +86,7 @@ private fun TopBar(
                 // App name
                 MyText(
                     stringResource(R.string.app_name),
-                    textColor = AppTheme.colors.onPrimary
+                    textColor = MaterialTheme.colorScheme.onPrimary
                 )
 
                 Column(
@@ -103,14 +106,14 @@ private fun TopBar(
                             text = hijriDate,
                             fontSize = 16.nsp,
                             fontWeight = FontWeight.Bold,
-                            textColor = AppTheme.colors.onPrimary
+                            textColor = MaterialTheme.colorScheme.onPrimary
                         )
 
                         // Gregorian date
                         MyText(
                             text = gregorianDate,
                             fontSize = 16.nsp,
-                            textColor = AppTheme.colors.onPrimary
+                            textColor = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }

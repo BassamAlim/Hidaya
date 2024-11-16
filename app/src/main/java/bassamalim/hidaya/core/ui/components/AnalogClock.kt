@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.TimeOfDay
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import java.util.Calendar
 import kotlin.math.cos
 import kotlin.math.sin
@@ -72,21 +72,21 @@ private fun Draw(
     val context = LocalContext.current
     val textMeasurer = rememberTextMeasurer()
 
-    val teethColor = AppTheme.colors.text
-    val numbersColor = AppTheme.colors.text
-    val hoursHandColor = AppTheme.colors.text
-    val minutesHandColor = AppTheme.colors.text
-    val secondsHandColor = AppTheme.colors.accent
-    val pastArcColor = AppTheme.colors.accent
-    val remainingArcColor = AppTheme.colors.altAccent
+    val teethColor = MaterialTheme.colorScheme.onSurface
+    val numbersColor = MaterialTheme.colorScheme.onSurface
+    val hoursHandColor = MaterialTheme.colorScheme.onSurface
+    val minutesHandColor = MaterialTheme.colorScheme.onSurface
+    val secondsHandColor = MaterialTheme.colorScheme.onSurface
+    val pastArcColor = MaterialTheme.colorScheme.primary
+    val remainingArcColor = MaterialTheme.colorScheme.onPrimaryContainer
 
     Surface(
         modifier = modifier
             .fillMaxSize()
             .padding(10.dp),
         shape = CircleShape,
-        color = AppTheme.colors.surface,
-        elevation = 10.dp
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        shadowElevation = 10.dp
     ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxWidth()

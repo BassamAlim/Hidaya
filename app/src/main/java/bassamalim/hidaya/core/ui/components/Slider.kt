@@ -4,8 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import kotlin.math.floor
 
@@ -33,9 +33,9 @@ fun MySlider(
         modifier = modifier,
         enabled = enabled,
         colors = SliderDefaults.colors(
-            activeTrackColor = AppTheme.colors.accent,
-            inactiveTrackColor = AppTheme.colors.altAccent,
-            thumbColor = AppTheme.colors.accent
+            activeTrackColor = MaterialTheme.colorScheme.primary,
+            inactiveTrackColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            thumbColor = MaterialTheme.colorScheme.primary
         ),
         onValueChangeFinished = onValueChangeFinished
     )
@@ -95,7 +95,7 @@ fun MyValuedSlider(
 
         MyText(
             text = sliderText,
-            textColor = AppTheme.colors.accent
+            textColor = MaterialTheme.colorScheme.primary
         )
     }
 }

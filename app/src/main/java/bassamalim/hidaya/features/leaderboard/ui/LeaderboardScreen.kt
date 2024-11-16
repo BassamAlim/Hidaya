@@ -28,7 +28,7 @@ import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.PaginatedLazyColumn
 import bassamalim.hidaya.core.ui.components.TabLayout
-import bassamalim.hidaya.core.ui.theme.AppTheme
+import androidx.compose.material3.MaterialTheme
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import kotlinx.collections.immutable.toPersistentList
 
@@ -102,7 +102,7 @@ private fun UserRankCard(userId: String, userRank: String) {
                     "1" -> bassamalim.hidaya.core.ui.theme.Gold
                     "2" -> bassamalim.hidaya.core.ui.theme.Silver
                     "3" -> bassamalim.hidaya.core.ui.theme.Bronze
-                    else -> AppTheme.colors.text
+                    else -> MaterialTheme.colorScheme.onSurface
                 },
                 modifier = Modifier.fillMaxWidth(0.4f)
             )
@@ -117,7 +117,7 @@ private fun UserRankCard(userId: String, userRank: String) {
                         "1" -> bassamalim.hidaya.core.ui.theme.Gold
                         "2" -> bassamalim.hidaya.core.ui.theme.Silver
                         "3" -> bassamalim.hidaya.core.ui.theme.Bronze
-                        else -> AppTheme.colors.text
+                        else -> MaterialTheme.colorScheme.onSurface
                     }
                 )
 
@@ -131,7 +131,7 @@ private fun UserRankCard(userId: String, userRank: String) {
                         "1" -> bassamalim.hidaya.core.ui.theme.Gold
                         "2" -> bassamalim.hidaya.core.ui.theme.Silver
                         "3" -> bassamalim.hidaya.core.ui.theme.Bronze
-                        else -> AppTheme.colors.text
+                        else -> MaterialTheme.colorScheme.onSurface
                     }
                 )
             }
@@ -176,7 +176,7 @@ private fun ItemCard(
                     1 -> bassamalim.hidaya.core.ui.theme.Gold
                     2 -> bassamalim.hidaya.core.ui.theme.Silver
                     3 -> bassamalim.hidaya.core.ui.theme.Bronze
-                    else -> AppTheme.colors.text
+                    else -> MaterialTheme.colorScheme.onSurface
                 },
                 modifier = Modifier.fillMaxWidth(0.2f)
             )
@@ -191,7 +191,7 @@ private fun ItemCard(
                     1 -> bassamalim.hidaya.core.ui.theme.Gold
                     2 -> bassamalim.hidaya.core.ui.theme.Silver
                     3 -> bassamalim.hidaya.core.ui.theme.Bronze
-                    else -> AppTheme.colors.text
+                    else -> MaterialTheme.colorScheme.onSurface
                 },
                 modifier = Modifier.fillMaxWidth(0.4f)
             )
@@ -207,7 +207,7 @@ private fun ItemCard(
                     1 -> bassamalim.hidaya.core.ui.theme.Gold
                     2 -> bassamalim.hidaya.core.ui.theme.Silver
                     3 -> bassamalim.hidaya.core.ui.theme.Bronze
-                    else -> AppTheme.colors.text
+                    else -> MaterialTheme.colorScheme.onSurface
                 },
                 modifier = Modifier.fillMaxWidth(0.4f)
             )

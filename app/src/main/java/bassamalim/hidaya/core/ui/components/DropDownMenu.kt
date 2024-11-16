@@ -5,12 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun <V> MyDropDownMenu(
@@ -48,7 +47,7 @@ fun <V> MyDropDownMenu(
                     if (expanded) Icons.Default.KeyboardArrowUp
                     else Icons.Default.KeyboardArrowDown,
                 description = "Show Dropdown",
-                tint = AppTheme.colors.text,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { expanded = !expanded }
             )
         }
@@ -56,18 +55,17 @@ fun <V> MyDropDownMenu(
         MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(0.dp))) {
             DropdownMenu(
                 expanded = expanded,
-                modifier = Modifier.background(AppTheme.colors.surface),
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface),
                 onDismissRequest = { expanded = false }
             ) {
                 entries.forEachIndexed { index, value ->
                     DropdownMenuItem(
+                        text = { MyText(value) },
                         onClick = {
                             expanded = false
                             onChoice(items[index])
                         }
-                    ) {
-                        MyText(text = value)
-                    }
+                    )
                 }
             }
         }
@@ -160,7 +158,7 @@ fun MyDDM2(
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.background(AppTheme.colors.primary)
+                modifier = Modifier.background(MaterialTheme.colorScheme.primary)
             ) {
                 items.forEachIndexed { _, name ->
                     DropdownMenuItem(
@@ -210,7 +208,7 @@ fun MySearchableDropDownMenu(
 /*MyIconBtn(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     description = "",
-                    tint = AppTheme.colors.text,
+                    tint = MaterialTheme.colorScheme.onSurface,
 
                 ) {
                     expanded = !expanded
@@ -232,8 +230,8 @@ fun MySearchableDropDownMenu(
                 }
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = AppTheme.colors.weakText,
-                focusedBorderColor = AppTheme.colors.accent
+                unfocusedBorderColor = MaterialTheme.colorScheme.weakText,
+                focusedBorderColor = MaterialTheme.colorScheme.primary
             )
         )
 
@@ -242,7 +240,7 @@ fun MySearchableDropDownMenu(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.background(AppTheme.colors.primary)
+            modifier = Modifier.background(MaterialTheme.colorScheme.primary)
             */
 /*,
             modifier = Modifier

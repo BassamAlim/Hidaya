@@ -2,15 +2,14 @@ package bassamalim.hidaya.features.quran.surasMenu.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,13 +28,13 @@ import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyParentColumn
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.components.TutorialDialog
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -57,9 +56,7 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
                 )
             }
         ) {
-            Column(
-                Modifier.fillMaxSize()
-            ) {
+            MyParentColumn(scroll = false) {
                 MyRectangleButton(
                     text =
                         if (state.bookmarkPageText == null) {
@@ -142,7 +139,7 @@ private fun Tab(
                             ),
                             contentDescription = stringResource(R.string.revelation_view_description),
                             modifier = Modifier.size(30.dp),
-                            tint = AppTheme.colors.shadow
+                            tint = MaterialTheme.colorScheme.outlineVariant
                         )
 
                         MyText(

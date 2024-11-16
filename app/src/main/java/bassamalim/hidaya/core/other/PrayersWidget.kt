@@ -68,8 +68,7 @@ class PrayersWidget : AppWidgetProvider() {
         ActivityUtils.configure(
             context = context,
             applicationContext = context.applicationContext,
-            language = appSettingsRepository.getLanguage().first(),
-            theme = appSettingsRepository.getTheme().first(),
+            language = appSettingsRepository.getLanguage().first()
         )
     }
 

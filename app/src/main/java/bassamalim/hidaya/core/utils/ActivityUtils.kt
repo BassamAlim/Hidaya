@@ -4,10 +4,8 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.StartAction
-import bassamalim.hidaya.core.enums.Theme
 import java.util.Locale
 
 object ActivityUtils {
@@ -15,23 +13,10 @@ object ActivityUtils {
     fun configure(
         context: Context,
         applicationContext: Context = context.applicationContext,
-        language: Language,
-        theme: Theme? = null
+        language: Language
     ) {
         onActivityCreateSetLocale(context = context, language = language)
         onActivityCreateSetLocale(context = applicationContext, language = language)
-        if (theme != null) {
-            onActivityCreateSetTheme(context = context, theme = theme)
-            onActivityCreateSetTheme(context = applicationContext, theme = theme)
-        }
-    }
-
-    private fun onActivityCreateSetTheme(context: Context, theme: Theme) {
-        when (theme) {
-            Theme.LIGHT -> context.setTheme(R.style.Theme_HidayaL)
-            Theme.DARK -> context.setTheme(R.style.Theme_HidayaM)
-            Theme.NIGHT -> context.setTheme(R.style.Theme_HidayaN)
-        }
     }
 
     fun onActivityCreateSetLocale(context: Context, language: Language) {

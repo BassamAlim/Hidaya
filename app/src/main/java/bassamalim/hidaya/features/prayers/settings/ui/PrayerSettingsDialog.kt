@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,7 +31,6 @@ import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun PrayerSettingsDialog(
@@ -135,7 +135,7 @@ private fun NotificationTypeOption(
                 if (isSelected)
                     Modifier.border(
                         width = 3.dp,
-                        color = AppTheme.colors.accent,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(10.dp)
                     )
                 else Modifier,
@@ -156,8 +156,8 @@ private fun NotificationTypeOption(
                     name,
                     Modifier.padding(start = 20.dp),
                     textColor =
-                        if (isSelected) AppTheme.colors.accent
-                        else AppTheme.colors.text
+                        if (isSelected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface
                 )
             }
         }

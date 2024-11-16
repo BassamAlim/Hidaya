@@ -10,7 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -30,11 +31,9 @@ import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import kotlinx.coroutines.flow.Flow
 
@@ -95,8 +94,8 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                             description = stringResource(R.string.filter_search_description),
                             size = 32.dp,
                             tint =
-                                if (state.isFiltered) AppTheme.colors.secondary
-                                else AppTheme.colors.weakText,
+                                if (state.isFiltered) MaterialTheme.colorScheme.secondary
+                                else MaterialTheme.colorScheme.outline,
                             onClick = viewModel::onFilterClick
                         )
                     }
@@ -144,12 +143,12 @@ private fun ReciterCard(
     onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
 ) {
     Surface(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp, horizontal = 8.dp),
-        elevation = 10.dp,
+        shadowElevation = 10.dp,
         shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
-        color = AppTheme.colors.surface
+        color = MaterialTheme.colorScheme.surface
     ) {
         Column(
             Modifier

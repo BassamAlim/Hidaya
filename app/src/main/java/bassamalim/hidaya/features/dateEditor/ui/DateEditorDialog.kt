@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,9 +19,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun DateEditorDialog(
@@ -79,7 +78,7 @@ private fun DateOffsetEditor(
     ) {
         MyIconButton(
             iconId = R.drawable.ic_left_arrow,
-            tint = AppTheme.colors.text,
+            tint = MaterialTheme.colorScheme.onSurface,
             onClick = onPreviousDayClick
         )
 
@@ -90,7 +89,7 @@ private fun DateOffsetEditor(
 
         MyIconButton(
             iconId = R.drawable.ic_right_arrow,
-            tint = AppTheme.colors.text,
+            tint = MaterialTheme.colorScheme.onSurface,
             onClick = onNextDayClick
         )
     }

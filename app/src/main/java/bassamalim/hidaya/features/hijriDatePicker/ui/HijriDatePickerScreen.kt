@@ -40,7 +40,7 @@ import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
+import androidx.compose.material3.MaterialTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
@@ -112,7 +112,7 @@ private fun TopArea(
     onYearSelectorToggled: () -> Unit
 ) {
     Box(
-        Modifier.background(AppTheme.colors.primary)
+        Modifier.background(MaterialTheme.colorScheme.primary)
     ) {
         Column(
             Modifier
@@ -129,7 +129,7 @@ private fun TopArea(
                     text = displayedYear,
                     modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
                     fontSize = 19.sp,
-                    textColor = AppTheme.colors.onPrimary,
+                    textColor = MaterialTheme.colorScheme.onPrimary,
                 )
             }
 
@@ -138,7 +138,7 @@ private fun TopArea(
                 text = mainText,
                 fontSize = 22.nsp,
                 fontWeight = FontWeight.Bold,
-                textColor = AppTheme.colors.onPrimary
+                textColor = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
@@ -190,7 +190,7 @@ private fun MonthSelector(
         MyIconButton(
             iconId = R.drawable.ic_left_arrow,
             size = 16.dp,
-            tint = AppTheme.colors.onPrimary,
+            tint = MaterialTheme.colorScheme.onPrimary,
             onClick = onPreviousMonthClick
         )
 
@@ -202,7 +202,7 @@ private fun MonthSelector(
         MyIconButton(
             iconId = R.drawable.ic_right_arrow,
             size = 16.dp,
-            tint = AppTheme.colors.onPrimary,
+            tint = MaterialTheme.colorScheme.onPrimary,
             onClick = onNextMonthClick
         )
     }
@@ -309,14 +309,14 @@ private fun DaysGrid(
                                     .size(40.dp)
                                     .clip(CircleShape)
                                     .background(
-                                        if (isSelected) AppTheme.colors.accent
-                                        else AppTheme.colors.background
+                                        if (isSelected) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.surface
                                     )
                                     .clickable { onDaySelected(x, y) },
                                 textColor =
-                                    if (isSelected) AppTheme.colors.onPrimary
-                                    else if (cell.isToday) AppTheme.colors.accent
-                                    else AppTheme.colors.text
+                                    if (isSelected) MaterialTheme.colorScheme.onPrimary
+                                    else if (cell.isToday) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -346,8 +346,8 @@ private fun YearSelector(
                         .padding(10.dp)
                         .clickable { onYearSelected(item) },
                     textColor =
-                        if (item == selectedYear) AppTheme.colors.accent
-                        else AppTheme.colors.text
+                        if (item == selectedYear) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface
                 )
             }
         },

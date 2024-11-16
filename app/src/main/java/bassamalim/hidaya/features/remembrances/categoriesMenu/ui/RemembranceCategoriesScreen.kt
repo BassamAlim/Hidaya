@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MySquareButton
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
@@ -49,7 +49,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             MySquareButton(
                 text = stringResource(R.string.day_and_night_remembrances),
                 drawableId = R.drawable.ic_day_and_night,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 0) }
             )
 
@@ -57,7 +57,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             MySquareButton(
                 text = stringResource(R.string.prayers_remembrances),
                 drawableId = R.drawable.ic_praying,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 1) }
             )
         }
@@ -70,14 +70,14 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             MySquareButton(
                 text = stringResource(R.string.quran_remembrances),
                 drawableId = R.drawable.ic_quran,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 2) }
             )
             // actions recitations button
             MySquareButton(
                 text = stringResource(R.string.actions_remembrances),
                 drawableId = R.drawable.ic_moving,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 3) }
             )
         }
@@ -90,14 +90,14 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             MySquareButton(
                 text = stringResource(R.string.events_remembrances),
                 drawableId = R.drawable.ic_events,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 4) }
             )
             // emotion recitations button
             MySquareButton(
                 text = stringResource(R.string.emotion_remembrances),
                 drawableId = R.drawable.ic_emotions,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 5) }
             )
         }
@@ -110,14 +110,14 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             MySquareButton(
                 text = stringResource(R.string.places_remembrances),
                 drawableId = R.drawable.ic_going_out,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 6) }
             )
             // more recitations button
             MySquareButton(
                 text = stringResource(R.string.title_more),
                 drawableId = R.drawable.ic_duaa_light_hands,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 7) }
             )
         }

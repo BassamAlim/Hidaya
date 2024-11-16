@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun MyDialog(
@@ -45,7 +45,7 @@ fun MyDialog(
                 Box(
                     Modifier.background(
                         shape = RoundedCornerShape(16.dp),
-                        color = AppTheme.colors.background
+                        color = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     content()
@@ -99,7 +99,7 @@ fun TutorialDialog(
                 Box(
                     Modifier.background(
                         shape = RoundedCornerShape(16.dp),
-                        color = AppTheme.colors.background
+                        color = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Column(
@@ -122,7 +122,7 @@ fun TutorialDialog(
 
                             MyText(
                                 stringResource(R.string.do_not_show_again),
-                                textColor = AppTheme.colors.accent
+                                textColor = MaterialTheme.colorScheme.primary
                             )
                         }
                     }

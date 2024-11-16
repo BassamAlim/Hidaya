@@ -414,6 +414,7 @@ class QuranReaderViewModel @Inject constructor(
                 if (tempVerses.isNotEmpty()) {
                     sections.add(
                         VersesSection(
+                            suraNum = verse.suraNum,
                             annotatedString = versesToAnnotatedString(
                                 verses = tempVerses.toList(),
                                 defaultVerseColor = defaultVerseColor,
@@ -459,6 +460,7 @@ class QuranReaderViewModel @Inject constructor(
         if (tempVerses.isNotEmpty()) {
             sections.add(
                 VersesSection(
+                    suraNum = tempVerses.last().suraNum,
                     annotatedString = versesToAnnotatedString(
                         verses = tempVerses.toList(),
                         defaultVerseColor = defaultVerseColor,
@@ -468,7 +470,6 @@ class QuranReaderViewModel @Inject constructor(
                     numOfLines = tempVerses.last().endLineNum - tempVerses.first().startLineNum + 1
                 )
             )
-            tempVerses.clear()
         }
 
         return sections

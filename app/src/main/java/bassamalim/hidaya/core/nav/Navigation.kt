@@ -2,8 +2,11 @@ package bassamalim.hidaya.core.nav
 
 import android.os.Build
 import android.os.Bundle
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -85,7 +88,8 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDest
+        startDestination = startDest,
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
     ) {
         composable(
             route = Screen.About.route,

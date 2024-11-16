@@ -13,7 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,11 +34,11 @@ import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyIconButton
+import bassamalim.hidaya.core.ui.components.MyParentColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import java.util.SortedMap
 
@@ -47,9 +48,7 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
 
     if (state.isLoading) LoadingScreen()
     else {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        MyParentColumn {
             LocationCard(
                 isLocationAvailable = state.isLocationAvailable,
                 locationName = state.locationName,
@@ -113,7 +112,7 @@ private fun LocationCard(
                 iconId = R.drawable.ic_location,
                 description = stringResource(R.string.locate),
                 modifier = Modifier.padding(end = 8.dp),
-                tint = AppTheme.colors.text,
+                tint = MaterialTheme.colorScheme.onSurface,
                 size = 32.dp,
                 onClick = onLocatorClick
             )
@@ -211,7 +210,7 @@ private fun RowScope.PrayerCard(
                             }
                         ),
                         contentDescription = stringResource(R.string.notification_image_description),
-                        tint = AppTheme.colors.accent,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -243,7 +242,7 @@ private fun ExtraReminderCard(
                     MyText(
                         reminderOffsetText,
                         Modifier.padding(end = 3.dp),
-                        textColor = AppTheme.colors.accent
+                        textColor = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -252,8 +251,8 @@ private fun ExtraReminderCard(
                     contentDescription = stringResource(R.string.extra_notifications),
                     modifier = Modifier.size(32.dp),
                     tint =
-                        if (isReminderOffsetSpecified) AppTheme.colors.accent
-                        else AppTheme.colors.text
+                        if (isReminderOffsetSpecified) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -283,7 +282,7 @@ private fun DayCard(
                 description = stringResource(R.string.previous_day_button_description),
                 modifier = Modifier.padding(2.dp),
                 innerPadding = 10.dp,
-                tint = AppTheme.colors.text,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = onPreviousDayClick
             )
 
@@ -292,7 +291,7 @@ private fun DayCard(
                     if (isNoDateOffset) stringResource(R.string.day)
                     else dateText,
                 fontSize = 24.sp,
-                textColor = AppTheme.colors.text,
+                textColor = MaterialTheme.colorScheme.onSurface,
                 innerPadding = PaddingValues(vertical = 3.dp, horizontal = 15.dp),
                 onClick = onDateClick
             )
@@ -302,7 +301,7 @@ private fun DayCard(
                 description = stringResource(R.string.next_day_button_description),
                 modifier = Modifier.padding(2.dp),
                 innerPadding = 10.dp,
-                tint = AppTheme.colors.text,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = onNextDayClick
             )
         }

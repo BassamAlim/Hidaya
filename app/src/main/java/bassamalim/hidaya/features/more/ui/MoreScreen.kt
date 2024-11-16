@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.more.ui
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,7 +16,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySquareButton
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun MoreScreen(viewModel: MoreViewModel) {
@@ -30,14 +30,14 @@ fun MoreScreen(viewModel: MoreViewModel) {
             MySquareButton(
                 text = stringResource(R.string.recitations),
                 drawableId = R.drawable.ic_headphone,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onRecitationsClick
             )
 
             MySquareButton(
                 text = stringResource(R.string.qibla),
                 drawableId = R.drawable.ic_qibla_compass,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onQiblaClick
             )
         }
@@ -46,14 +46,14 @@ fun MoreScreen(viewModel: MoreViewModel) {
             MySquareButton(
                 text = stringResource(R.string.quiz_title),
                 drawableId = R.drawable.ic_exam,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onQuizClick
             )
 
             MySquareButton(
                 text = stringResource(R.string.hadeeth_books),
                 drawableId = R.drawable.ic_books,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onBooksClick
             )
         }
@@ -62,14 +62,14 @@ fun MoreScreen(viewModel: MoreViewModel) {
             MySquareButton(
                 text = stringResource(R.string.tv_channels),
                 drawableId = R.drawable.ic_television,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onTvClick
             )
 
             MySquareButton(
                 text = stringResource(R.string.quran_radio),
                 drawableId = R.drawable.ic_radio,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onRadioClick
             )
         }
@@ -78,14 +78,14 @@ fun MoreScreen(viewModel: MoreViewModel) {
             MySquareButton(
                 text = stringResource(R.string.date_converter),
                 drawableId = R.drawable.ic_calendar,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onDateConverterClick
             )
 
             MySquareButton(
                 text = stringResource(R.string.settings),
                 drawableId = R.drawable.ic_settings,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onSettingsClick
             )
         }
@@ -94,14 +94,14 @@ fun MoreScreen(viewModel: MoreViewModel) {
             MySquareButton(
                 text = stringResource(R.string.contact),
                 drawableId = R.drawable.ic_mail,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onContactClick(context) }
             )
 
             MySquareButton(
                 text = stringResource(R.string.share_app),
                 drawableId = R.drawable.ic_share,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onShareClick(context) }
             )
         }
@@ -110,7 +110,7 @@ fun MoreScreen(viewModel: MoreViewModel) {
             MySquareButton(
                 text = stringResource(R.string.about),
                 drawableId = R.drawable.ic_info,
-                tint = AppTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = viewModel::onAboutClick
             )
         }
