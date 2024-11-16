@@ -21,6 +21,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -40,7 +41,6 @@ import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
-import androidx.compose.material3.MaterialTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
@@ -112,7 +112,7 @@ private fun TopArea(
     onYearSelectorToggled: () -> Unit
 ) {
     Box(
-        Modifier.background(MaterialTheme.colorScheme.primary)
+        Modifier.background(MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
         Column(
             Modifier

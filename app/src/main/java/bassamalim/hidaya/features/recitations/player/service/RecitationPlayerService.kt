@@ -151,7 +151,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     )
 
     override fun onCreate() {
-        println("onCreate")
         super.onCreate()
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -163,7 +162,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
             getSuraNames(language)
 
-            println("Initializing player service...")
             initSession()
             initPlayer()
             setupActions()
@@ -172,8 +170,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        println("onStartCommand")
-
         MediaButtonReceiver.handleIntent(mediaSession, intent)
         return super.onStartCommand(intent, flags, startId)
     }

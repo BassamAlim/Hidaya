@@ -154,7 +154,7 @@ private fun ProgressSpace(
         Modifier
             .fillMaxWidth(0.95f)
             .clip(RoundedCornerShape(10))
-            .background(MaterialTheme.colorScheme.onPrimaryContainer),
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
