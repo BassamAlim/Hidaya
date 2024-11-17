@@ -267,9 +267,10 @@ fun MyBackButton(onClick: (() -> Unit)? = null) {
     val context = LocalContext.current
 
     MyIconButton(iconId = R.drawable.ic_back) {
-        onClick ?: {
-            (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
-        }
+        if (onClick == null)
+                (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+        else
+            onClick()
     }
 }
 
