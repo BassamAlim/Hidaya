@@ -8,6 +8,7 @@ import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.quiz.test.domain.QuizTestDomain
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -87,11 +88,15 @@ class QuizTestViewModel @Inject constructor(
 
     private fun endQuiz() {
         val score = domain.calculateScore(questions, chosenAs)
+        val questionsJson = Gson().toJson(
+            questions.toTypedArray(),
+            Array<QuizFullQuestion>::class.java
+        )
 
         navigator.navigate(
             Screen.QuizResult(
                 score = score.toString(),
-                questions = questions.map { q -> q.id }.toIntArray().contentToString(),
+                questions = questionsJson,
                 chosenAnswers = chosenAs.toTypedArray().toIntArray().contentToString()
             )
         ) {

@@ -307,7 +307,7 @@ fun NavGraph(
             ).route,
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
-                navArgument("questions") { type = IntArrType },
+                navArgument("questions") { type = NavType.StringType },
                 navArgument("chosen_answers") { type = IntArrType }
             ),
             enterTransition = inFromLeft,

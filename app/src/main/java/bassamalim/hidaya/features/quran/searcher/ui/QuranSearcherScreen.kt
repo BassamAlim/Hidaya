@@ -1,6 +1,8 @@
 package bassamalim.hidaya.features.quran.searcher.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,7 +40,7 @@ fun QuranSearcherScreen(viewModel: QuranSearcherViewModel) {
 
     MyScaffold(title = stringResource(R.string.quran_searcher)) { padding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -42,7 +48,7 @@ fun QuranSearcherScreen(viewModel: QuranSearcherViewModel) {
             val highlightColor = MaterialTheme.colorScheme.primary
 
             Column(
-                Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -58,7 +64,7 @@ fun QuranSearcherScreen(viewModel: QuranSearcherViewModel) {
                 )
 
                 Row(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 5.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -99,17 +105,17 @@ fun QuranSearcherScreen(viewModel: QuranSearcherViewModel) {
 }
 
 @Composable
-fun MatchItem(
+private fun MatchItem(
     item: QuranSearcherMatch,
     onGoToPageClick: (QuranSearcherMatch) -> Unit
 ) {
     MySurface {
         Column(
-            Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(6.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -123,12 +129,29 @@ fun MatchItem(
                 text = "${stringResource(R.string.verse_number)} ${item.verseNum}",
                 modifier = Modifier.padding(6.dp)
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+                contentAlignment = Alignment.Center
+            ) {
+                MyText(
+                    text = item.text,
+                    modifier = Modifier.padding(6.dp)
+                )
+            }
+
+            val interpretationTitle = stringResource(R.string.interpretation)
             MyText(
-                text = item.text,
-                modifier = Modifier.padding(6.dp)
-            )
-            MyText(
-                text = "${stringResource(R.string.interpretation)}: ${item.interpretation}",
+                text = buildAnnotatedString {
+                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("$interpretationTitle: ")
+                    }
+
+                    append(item.interpretation)
+                },
                 modifier = Modifier.padding(6.dp)
             )
 

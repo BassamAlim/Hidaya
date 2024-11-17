@@ -33,9 +33,11 @@ class QuizTestDomain @Inject constructor(
         return allIds.subList(0, 10)
     }
 
-    private suspend fun getFullQuestions(ids: List<Int>) =
-        quizRepository.getFullQuestions(ids.toIntArray())
-
-    suspend fun getAnswers(questionId: Int) = quizRepository.getAnswers(questionId)
+    private suspend fun getFullQuestions(ids: List<Int>): List<QuizFullQuestion> {
+        val questions = quizRepository.getFullQuestions(ids.toIntArray())
+        return questions.map { question ->
+            question.copy(answers = question.answers.shuffled())
+        }
+    }
 
 }

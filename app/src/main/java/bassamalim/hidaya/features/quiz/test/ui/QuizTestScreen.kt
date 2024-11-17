@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,10 +26,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.RadioGroup
-import androidx.compose.material3.MaterialTheme
 import bassamalim.hidaya.core.ui.theme.Grey
 
 @Composable
@@ -80,13 +79,13 @@ fun QuestionArea(
             .fillMaxWidth()
             .heightIn(1.dp, 200.dp)
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.primary),
+            .background(MaterialTheme.colorScheme.surfaceContainerLow),
         contentAlignment = Alignment.Center
     ) {
         MyText(
             text = question,
             fontSize = 28.sp,
-            textColor = MaterialTheme.colorScheme.onPrimary,
+            textColor = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
         )
     }

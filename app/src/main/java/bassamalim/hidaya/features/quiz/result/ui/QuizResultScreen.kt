@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,7 +29,6 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
-import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun QuizResultScreen(viewModel: QuizResultViewModel) {
@@ -47,7 +48,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary),
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
                 contentAlignment = Alignment.Center
             ) {
                 MyText(
@@ -55,7 +56,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
                     Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    textColor = MaterialTheme.colorScheme.onPrimary
+                    textColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 
@@ -114,7 +115,12 @@ private fun Answer(answerNum: Int, answerText: String, isCorrectAnswer: Boolean,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MyText(text = answerText, fontSize = 18.sp)
+        MyText(
+            text = answerText,
+            modifier = Modifier.fillMaxWidth(0.85f),
+            fontSize = 18.sp,
+            textAlign = TextAlign.Start
+        )
 
         if (answerNum == chosenAnswer || isCorrectAnswer) {
             Image(

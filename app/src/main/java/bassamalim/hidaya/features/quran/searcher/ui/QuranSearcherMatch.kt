@@ -8,5 +8,5 @@ data class QuranSearcherMatch(
     val suraName: String,
     var pageNum: String,
     var text: AnnotatedString,
-    val interpretation: String
+    val interpretation: AnnotatedString
 )

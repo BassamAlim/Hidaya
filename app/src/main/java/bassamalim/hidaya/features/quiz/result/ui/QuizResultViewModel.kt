@@ -7,6 +7,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuizFullQuestion
 import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.quiz.result.domain.QuizResultDomain
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,7 +24,10 @@ class QuizResultViewModel @Inject constructor(
 ): ViewModel() {
 
     private val score = savedStateHandle.get<Int>("score") ?: 0
-    private val questionIds = savedStateHandle.get<IntArray>("questions") ?: intArrayOf()
+    private val questions = Gson().fromJson(
+        savedStateHandle.get<String>("questions"),
+        Array<QuizFullQuestion>::class.java
+    )
     private val chosenAnswers = savedStateHandle.get<IntArray>("chosen_answers") ?: intArrayOf()
 
     private lateinit var numeralsLanguage: Language
@@ -43,7 +47,14 @@ class QuizResultViewModel @Inject constructor(
 
             _uiState.update { it.copy(
                 isLoading = false,
-                questions = getQuestionItems(domain.getFullQuestions(questionIds)),
+                questions = questions.mapIndexed { i, q ->
+                    QuizResultQuestion(
+                        questionNum = i + 1,
+                        questionText = q.question,
+                        answers = q.answers,
+                        chosenAnswerId = chosenAnswers[i]
+                    )
+                },
                 score = LangUtils.translateNums(
                     numeralsLanguage = numeralsLanguage,
                     string = (score * 10).toString()
@@ -51,15 +62,5 @@ class QuizResultViewModel @Inject constructor(
             )}
         }
     }
-
-    private fun getQuestionItems(fullQuestions: List<QuizFullQuestion>) =
-        fullQuestions.mapIndexed { i, q ->
-            QuizResultQuestion(
-                questionNum = i + 1,
-                questionText = q.question,
-                answers = q.answers,
-                chosenAnswerId = chosenAnswers[i]
-            )
-        }
 
 }

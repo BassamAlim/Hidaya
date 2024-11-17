@@ -12,10 +12,4 @@ class QuizResultDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    suspend fun getFullQuestions(ids: IntArray) = quizRepository.getFullQuestions(ids)
-
-    suspend fun getQuestions(ids: IntArray) = ids.map { id -> quizRepository.getQuestion(id) }
-
-    suspend fun getAnswers(questionId: Int) = quizRepository.getAnswers(questionId)
-
 }
