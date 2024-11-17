@@ -139,7 +139,7 @@ private fun RepeatRadioGroup(
     onSelect: (VerseRepeatMode) -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(bottom = 15.dp)
+        modifier = Modifier.padding(bottom = 10.dp)
     ) {
         Row(
             modifier = Modifier
@@ -180,10 +180,10 @@ private fun RepeatRadioGroup(
             // No repeat
             MyRectangleButton(
                 text = entries[0],
-                fontSize = 16.nsp,
+                fontSize = 18.nsp,
                 textColor =
-                if (items[0] == selection) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.onSurface,
+                    if (items[0] == selection) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurface,
                 modifier =
                 if (items[0] == selection) Modifier
                     .weight(1F)

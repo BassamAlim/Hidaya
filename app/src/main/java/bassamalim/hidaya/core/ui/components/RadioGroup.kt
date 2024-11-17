@@ -83,7 +83,7 @@ fun <V> HorizontalRadioGroup(
 
             MyRectangleButton(
                 text = text,
-                fontSize = 20.nsp,
+                fontSize = 18.nsp,
                 textColor =
                     if (item == selection) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface,
