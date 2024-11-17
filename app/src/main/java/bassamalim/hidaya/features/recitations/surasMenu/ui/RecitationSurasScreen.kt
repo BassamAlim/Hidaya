@@ -26,7 +26,7 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun RecitationSurasMenuScreen(viewModel: RecitationsSurasViewModel) {
+fun RecitationSurasMenuScreen(viewModel: RecitationSurasViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) return

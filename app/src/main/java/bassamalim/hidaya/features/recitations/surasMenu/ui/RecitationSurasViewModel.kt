@@ -27,7 +27,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class RecitationsSurasViewModel @Inject constructor(
+class RecitationSurasViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val domain: RecitationSurasMenuDomain,
     private val navigator: Navigator
@@ -41,13 +41,13 @@ class RecitationsSurasViewModel @Inject constructor(
     private lateinit var decoratedSuraNames: List<String>
     private lateinit var plainSuraNames: List<String>
 
-    private val _uiState = MutableStateFlow(RecitationsSurasUiState())
+    private val _uiState = MutableStateFlow(RecitationSurasUiState())
     val uiState = _uiState.onStart {
         initializeData()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-        initialValue = RecitationsSurasUiState()
+        initialValue = RecitationSurasUiState()
     )
 
     private fun initializeData() {
@@ -124,7 +124,7 @@ class RecitationsSurasViewModel @Inject constructor(
                     else -> true
                 }
                 val isSearched = _uiState.value.searchText.isEmpty()
-                        || sura.suraName.contains(_uiState.value.searchText, true)
+                        || sura.searchName.contains(_uiState.value.searchText, true)
 
                 suraExists && isWanted && isSearched
             }
