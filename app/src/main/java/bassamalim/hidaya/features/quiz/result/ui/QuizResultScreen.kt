@@ -38,7 +38,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
 
     MyScaffold(title = stringResource(R.string.quiz_result)) { padding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(bottom = 5.dp),
@@ -46,7 +46,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceContainer),
                 contentAlignment = Alignment.Center
@@ -75,7 +75,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
 fun Question(question: QuizResultQuestion) {
     MySurface {
         Column(
-            Modifier.padding(top = 5.dp, bottom = 8.dp, start = 5.dp, end = 5.dp),
+            modifier = Modifier.padding(top = 5.dp, bottom = 8.dp, start = 5.dp, end = 5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Question number
@@ -86,7 +86,10 @@ fun Question(question: QuizResultQuestion) {
             )
 
             // Question text
-            MyText(text = question.questionText, modifier = Modifier.padding(vertical = 3.dp))
+            MyText(
+                text = question.questionText,
+                modifier = Modifier.padding(vertical = 3.dp)
+            )
 
             MyHorizontalDivider(thickness = 2.dp)
 
@@ -109,7 +112,7 @@ private fun Answer(answerNum: Int, answerText: String, isCorrectAnswer: Boolean,
         MyHorizontalDivider(Modifier.padding(horizontal = 5.dp))
 
     Row(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,

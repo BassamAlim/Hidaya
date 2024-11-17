@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -101,7 +100,7 @@ fun ColumnScope.BottomBar(
     onNextQuestionClick: () -> Unit
 ) {
     Row(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .weight(1F, false)
             .padding(bottom = 20.dp),
@@ -110,10 +109,13 @@ fun ColumnScope.BottomBar(
     ) {
         MyRectangleButton(
             text = stringResource(R.string.previous_question),
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 6.dp),
             textColor =
                 if (isPreviousButtonEnabled) MaterialTheme.colorScheme.onSurface
                 else Grey,
-            innerPadding = PaddingValues(10.dp),
+            innerPadding = PaddingValues(vertical = 10.dp, horizontal = 5.dp),
             onClick = onPreviousQuestionClick
         )
 
@@ -125,11 +127,13 @@ fun ColumnScope.BottomBar(
                 }
                 else R.string.next_question
             ),
-            modifier = Modifier.sizeIn(maxWidth = 175.dp),
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 6.dp),
             textColor =
                 if (isNextButtonEnabled) MaterialTheme.colorScheme.onSurface
                 else Grey,
-            innerPadding = PaddingValues(10.dp),
+            innerPadding = PaddingValues(vertical = 10.dp, horizontal = 5.dp),
             onClick = onNextQuestionClick
         )
     }

@@ -100,9 +100,7 @@ class QuizTestViewModel @Inject constructor(
                 chosenAnswers = chosenAs.toTypedArray().toIntArray().contentToString()
             )
         ) {
-            popUpTo(Screen.QuizTest.route) {
-                inclusive = true
-            }
+            popUpTo(Screen.QuizTest.route) { inclusive = true }
         }
     }
 
