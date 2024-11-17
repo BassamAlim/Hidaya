@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.VerseRepeatMode
+import bassamalim.hidaya.core.ui.components.FullScreenDialog
 import bassamalim.hidaya.core.ui.components.HorizontalRadioGroup
 import bassamalim.hidaya.core.ui.components.MyCheckbox
-import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyRow
@@ -37,21 +37,19 @@ import bassamalim.hidaya.features.settings.ui.PreferenceTitle
 import bassamalim.hidaya.features.settings.ui.SliderPref
 
 @Composable
-fun QuranSettingsDialog(
-    viewModel: QuranSettingsViewModel
-) {
+fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) return
 
-    MyDialog(
+    FullScreenDialog(
         shown = true,
         onDismiss = viewModel::onDismiss
     ) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 10.dp)
+                .padding(10.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             CategoryTitle(stringResource(R.string.page_preferences))
@@ -65,13 +63,13 @@ fun QuranSettingsDialog(
                 selection = state.viewType,
                 items = QuranViewType.entries,
                 entries = stringArrayResource(R.array.quran_view_type_entries),
-                onSelect = viewModel::onViewTypeChange
+                onSelect = viewModel::onViewTypeChange,
             )
 
             Row(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp),
+                    .padding(top = 5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 MyCheckbox(
@@ -80,10 +78,7 @@ fun QuranSettingsDialog(
                     isEnabled = state.isFillPageEnabled
                 )
 
-                MyText(
-                    stringResource(R.string.fill_page),
-                    textColor = MaterialTheme.colorScheme.primary
-                )
+                MyText(stringResource(R.string.fill_page))
             }
 
             SliderPref(
@@ -92,7 +87,7 @@ fun QuranSettingsDialog(
                 valueRange = 20F..50F,
                 valueFormatter = viewModel::formatSliderValue,
                 enabled = state.isTextSizeSliderEnabled,
-                onValueChange = viewModel::onTextSizeChange
+                onValueChange = viewModel::onTextSizeChange,
             )
 
             MyHorizontalDivider()
@@ -247,7 +242,9 @@ private fun SwitchSetting(title: String, isOn: Boolean, onSwitch: (Boolean) -> U
 
 @Composable
 private fun BottomBar(onCancel: () -> Unit, onSave: () -> Unit) {
-    MyRow {
+    MyRow(
+        Modifier.padding(top = 10.dp)
+    ) {
         MyRectangleButton(
             text = stringResource(R.string.cancel),
             modifier = Modifier.weight(1f),

@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,7 +37,6 @@ fun MyValuedSlider(
     valueRange: ClosedFloatingPointRange<Float>,
     modifier: Modifier = Modifier,
     progressMin: Float = 0f,
-    sliderFraction: Float = 0.8F,
     enabled: Boolean = true,
     valueFormatter: (String) -> String = { it },
     onValueChange: (Float) -> Unit,
@@ -57,7 +56,9 @@ fun MyValuedSlider(
         MySlider(
             value = value,
             valueRange = valueRange,
-            modifier = Modifier.fillMaxWidth(fraction = sliderFraction),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 10.dp),
             enabled = enabled,
             onValueChange = { newValue ->
                 val progress = newValue - progressMin
@@ -67,9 +68,6 @@ fun MyValuedSlider(
             onValueChangeFinished = onValueChangeFinished
         )
 
-        MyText(
-            text = sliderText,
-            textColor = MaterialTheme.colorScheme.primary
-        )
+        MyText(sliderText)
     }
 }

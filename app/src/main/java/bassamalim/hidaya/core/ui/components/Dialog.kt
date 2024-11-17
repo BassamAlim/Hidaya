@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,6 +57,34 @@ fun MyDialog(
 }
 
 @Composable
+fun FullScreenDialog(
+    shown: Boolean,
+    onDismiss: () -> Unit = {},
+    content: @Composable () -> Unit
+) {
+    if (shown) {
+        Dialog(
+            onDismissRequest = { onDismiss() },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = false
+            )
+        ) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.surface
+                    )
+            ) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
 fun InfoDialog(
     title: String,
     text: String,
@@ -70,7 +99,7 @@ fun InfoDialog(
                 MyCloseBtn(Modifier.align(Alignment.CenterStart)) { onDismiss() }
 
                 MyText(
-                    title,
+                    text = title,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.Center)
                 )
@@ -110,7 +139,7 @@ fun TutorialDialog(
                         MyText(text)
 
                         Row(
-                            Modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 10.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -121,7 +150,7 @@ fun TutorialDialog(
                             )
 
                             MyText(
-                                stringResource(R.string.do_not_show_again),
+                                text = stringResource(R.string.do_not_show_again),
                                 textColor = MaterialTheme.colorScheme.primary
                             )
                         }

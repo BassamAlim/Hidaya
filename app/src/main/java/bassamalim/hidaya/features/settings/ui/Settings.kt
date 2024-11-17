@@ -197,7 +197,6 @@ fun SliderPref(
     title: String,
     valueRange: ClosedFloatingPointRange<Float>,
     valueFormatter: (String) -> String,
-    sliderFraction: Float = 0.8F,
     enabled: Boolean = true,
     onValueChange: (Float) -> Unit = {},
     onValueChangeFinished: () -> Unit = {}
@@ -213,7 +212,6 @@ fun SliderPref(
             value = value,
             valueRange = valueRange,
             valueFormatter = valueFormatter,
-            sliderFraction = sliderFraction,
             enabled = enabled,
             onValueChange = onValueChange,
             onValueChangeFinished = onValueChangeFinished
@@ -227,7 +225,7 @@ fun CategoryTitle(title: String) {
         text = title,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 15.dp, horizontal = 15.dp),
+            .padding(top = 15.dp, bottom = 8.dp, start = 15.dp, end = 15.dp),
         fontSize = 16.sp,
         textAlign = TextAlign.Start,
         textColor = MaterialTheme.colorScheme.primary

@@ -71,6 +71,16 @@ fun <V> HorizontalRadioGroup(
     ) {
         entries.forEachIndexed { index, text ->
             val item = items[index]
+
+            var modifier = Modifier
+                .weight(1F)
+                .padding(horizontal = 5.dp)
+            if (item == selection) modifier = modifier.border(
+                width = 3.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(10.dp)
+            )
+
             MyRectangleButton(
                 text = text,
                 fontSize = 20.nsp,
@@ -78,20 +88,7 @@ fun <V> HorizontalRadioGroup(
                     if (item == selection) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface,
                 innerPadding = PaddingValues(vertical = 1.dp),
-                modifier =
-                    if (item == selection)
-                        Modifier
-                            .weight(1F)
-                            .padding(horizontal = 5.dp)
-                            .border(
-                                width = 3.dp,
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                    else
-                        Modifier
-                            .weight(1F)
-                            .padding(horizontal = 5.dp),
+                modifier = modifier,
                 onClick = { onSelect(items[index]) }
             )
         }

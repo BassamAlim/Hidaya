@@ -62,7 +62,6 @@ fun PrayerExtraReminderSettingsDialog(
                 valueRange = 0F..60F,
                 modifier = Modifier.fillMaxWidth(),
                 progressMin = viewModel.offsetMin,
-                sliderFraction = 0.875F,
                 valueFormatter = viewModel::formatSliderValue,
                 onValueChange = { value -> viewModel.onOffsetChange(value.toInt()) }
             )
