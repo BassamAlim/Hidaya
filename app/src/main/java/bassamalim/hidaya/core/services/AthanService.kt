@@ -27,6 +27,7 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.ui.theme.colorSchemeO
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -97,7 +98,7 @@ class AthanService : Service() {
         return START_NOT_STICKY
     }
 
-    private suspend fun build(reminder: Reminder): Notification {
+    private fun build(reminder: Reminder): Notification {
         val builder = NotificationCompat.Builder(this, channelId)
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(resources.getString(R.string.app_name))
@@ -112,7 +113,7 @@ class AthanService : Service() {
         builder.priority = NotificationCompat.PRIORITY_MAX
         builder.setAutoCancel(true)
         builder.setOnlyAlertOnce(true)
-        builder.color = getColor(R.color.surface_M)
+        builder.color = colorSchemeO.surfaceContainer.value.toInt() // TODO: get theme color
 
         return builder.build()
     }

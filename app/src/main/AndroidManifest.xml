@@ -27,11 +27,11 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="true"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.HidayaM">
+        android:supportsRtl="true">
 
         <activity
             android:name=".core.Activity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

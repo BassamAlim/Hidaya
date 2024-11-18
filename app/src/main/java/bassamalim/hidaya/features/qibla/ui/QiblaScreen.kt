@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -24,6 +25,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,6 +45,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.size.Size
+
 
 @Composable
 fun QiblaScreen(viewModel: QiblaViewModel) {
@@ -141,12 +144,9 @@ private fun CalibrationDialog(
 }
 
 @Composable
-private fun QiblaGraphics(
-    compassAngle: Float,
-    qiblaAngle: Float
-) {
+private fun QiblaGraphics(compassAngle: Float, qiblaAngle: Float) {
     Box(
-        Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -162,7 +162,8 @@ private fun QiblaGraphics(
             contentDescription = "",
             modifier = Modifier
                 .rotate(qiblaAngle)
-                .padding(bottom = 26.dp)
+                .padding(bottom = 26.dp),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
 
         Image(
@@ -172,27 +173,65 @@ private fun QiblaGraphics(
     }
 }
 
+//@Composable
+//private fun QiblaGraphics(compassAngle: Float, qiblaAngle: Float) {
+//    Box(
+//        modifier = Modifier.fillMaxWidth(),
+//        contentAlignment = Alignment.Center
+//    ) {
+//        val compassPainter = painterResource(id = R.drawable.compass)
+////        val compassVector = ImageVector.vectorResource(R.drawable.compass)
+//        val resource = vectorResource(id = R.drawable.compass)
+//        val painter = rememberVectorPainter(resource)
+//
+//
+//        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//            Canvas(modifier = Modifier.size(200.dp)) {
+//                drawPath(
+//                    path = compassVector.viewportPathData.first().,
+//                    color = fillColor,
+//                    style = Fill
+//                )
+//                drawPath(
+//                    path = compassVector.viewportPathData.second(),
+//                    color = strokeColor,
+//                    style = Stroke(width = 30f)
+//                )
+//            }
+//        }
+//
+//
+//        Image(
+//            painter = painterResource(id = R.drawable.qibla_pointer),
+//            contentDescription = "",
+//            modifier = Modifier
+//                .rotate(qiblaAngle)
+//                .padding(bottom = 26.dp),
+//            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+//        )
+//
+//        Image(
+//            painter = painterResource(id = R.drawable.ic_qibla_kaaba),
+//            contentDescription = ""
+//        )
+//    }
+//}
+
 @Composable
 private fun DirectionAccuracyInfoArea(
     accuracy: Int,
     onAccuracyIndicatorClick: () -> Unit
 ) {
     Row(
-        Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         MyText(
             text = when (accuracy) {
-                2 -> {
-                    stringResource(R.string.medium_accuracy_text)
-                }
-                0, 1 -> {
-                    stringResource(R.string.low_accuracy_text)
-                }
-                else -> {
-                    stringResource(R.string.high_accuracy_text)
-                }
+                2 -> stringResource(R.string.medium_accuracy_text)
+                0, 1 -> stringResource(R.string.low_accuracy_text)
+                else -> stringResource(R.string.high_accuracy_text)
             },
             modifier = Modifier.padding(horizontal = 8.dp)
         )
@@ -208,7 +247,7 @@ private fun DirectionAccuracyInfoArea(
             }
             else -> {
                 Box(
-                    modifier = Modifier
+                    Modifier
                         .size(16.dp)
                         .clip(CircleShape)
                         .background(

@@ -28,6 +28,7 @@ import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
+import bassamalim.hidaya.core.ui.theme.colorSchemeO
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.AndroidEntryPoint
@@ -158,23 +159,22 @@ class NotificationReceiver : BroadcastReceiver() {
         reminder: Reminder,
         notificationType: NotificationType
     ): Notification {
-        val builder = NotificationCompat.Builder(ctx, channelId)
-        builder.setSmallIcon(R.drawable.ic_athan)
-        builder.setTicker(ctx.resources.getString(R.string.app_name))
+        return NotificationCompat.Builder(ctx, channelId).apply {
+            setSmallIcon(R.drawable.ic_athan)
+            setTicker(ctx.resources.getString(R.string.app_name))
 
-        builder.setContentTitle(getTitle(reminder))
-        builder.setContentText(getSubtitle(reminder))
+            setContentTitle(getTitle(reminder))
+            setContentText(getSubtitle(reminder))
 
-        builder.priority = NotificationCompat.PRIORITY_MAX
-        builder.setAutoCancel(true)
-        builder.setOnlyAlertOnce(true)
-        builder.color = ctx.getColor(R.color.surface_M)
-        builder.setContentIntent(onClick(reminder))
+            priority = NotificationCompat.PRIORITY_MAX
+            setAutoCancel(true)
+            setOnlyAlertOnce(true)
+            color = colorSchemeO.surfaceContainer.value.toInt() // TODO: get theme color
+            setContentIntent(onClick(reminder))
 
-        if (notificationType == NotificationType.SILENT)
-            builder.setSilent(true)
-
-        return builder.build()
+            if (notificationType == NotificationType.SILENT)
+                setSilent(true)
+        }.build()
     }
 
     private fun getTitle(reminder: Reminder): String {

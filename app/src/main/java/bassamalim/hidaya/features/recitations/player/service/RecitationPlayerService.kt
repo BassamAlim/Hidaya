@@ -30,7 +30,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
@@ -44,6 +43,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.ui.theme.colorSchemeO
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
@@ -502,7 +502,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Add an app icon and set its accent color (Be careful about the color)
             .setSmallIcon(R.drawable.small_launcher_foreground)
-            .setColor(ContextCompat.getColor(this, R.color.surface_M))
+            .setColor(colorSchemeO.surfaceContainer.value.toInt())  // TODO: get theme color
             // Add buttons
             .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
             // So there will be no notification tone
@@ -531,14 +531,15 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     private fun initMetadata() {
         mediaSession.setMetadata(
             MediaMetadataCompat.Builder()
-                .putBitmap(    //Notification icon in card
-                    MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                    BitmapFactory.decodeResource(resources, R.color.surface_M)
-                )
-                .putBitmap(
-                    MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                    BitmapFactory.decodeResource(resources, R.color.surface_M)
-                )
+                // TODO: Migrate to Compose
+//                .putBitmap(    //Notification icon in card
+//                    MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+//                    BitmapFactory.decodeResource(resources, R.color.surface_M)
+//                )
+//                .putBitmap(
+//                    MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+//                    BitmapFactory.decodeResource(resources, R.color.surface_M)
+//                )
                 .putBitmap(    //lock screen icon for pre lollipop
                     MediaMetadataCompat.METADATA_KEY_ART,
                     BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
@@ -556,14 +557,15 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
     private fun updateMetadata(duration: Boolean) {
         mediaMetadata = MediaMetadataCompat.Builder()
-            .putBitmap(    //Notification icon in card
-                MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(resources, R.color.surface_M)
-            )
-            .putBitmap(
-                MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(resources, R.color.surface_M)
-            )
+            // TODO: Migrate to Compose
+//            .putBitmap(    //Notification icon in card
+//                MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+//                BitmapFactory.decodeResource(resources, R.color.surface_M)
+//            )
+//            .putBitmap(
+//                MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+//                BitmapFactory.decodeResource(resources, R.color.surface_M)
+//            )
             .putBitmap(    //lock screen icon for pre lollipop
                 MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
@@ -643,14 +645,14 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
         wifiLock =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
                     .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
             else
-                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
                     .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
 
 
-        am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        am = getSystemService(AUDIO_SERVICE) as AudioManager
 
         val attrs = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)

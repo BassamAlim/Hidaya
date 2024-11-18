@@ -36,6 +36,7 @@ import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.ui.theme.colorSchemeO
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -253,7 +254,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             // Be careful about the color
             .setSmallIcon(R.drawable.small_launcher_foreground)
             .setColorized(true)
-            .setColor(resources.getColor(R.color.surface_M, theme))
+            .setColor(colorSchemeO.surfaceContainer.value.toInt())  // TODO: get theme color
             // Add buttons
             // Enable launching the player by clicking the notification
             .setContentIntent(controller.sessionActivity)
@@ -283,15 +284,16 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun initMediaSessionMetadata() {
         val metadataBuilder: MediaMetadataCompat.Builder = MediaMetadataCompat.Builder()
 
+        // TODO: Migrate to Compose
         //Notification icon in card
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-            BitmapFactory.decodeResource(resources, R.color.surface_M)
-        )
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-            BitmapFactory.decodeResource(resources, R.color.surface_M)
-        )
+//        metadataBuilder.putBitmap(
+//            MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+//            BitmapFactory.decodeResource(resources, R.color.surface_M)
+//        )
+//        metadataBuilder.putBitmap(
+//            MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+//            BitmapFactory.decodeResource(resources, R.color.surface_M)
+//        )
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(
             MediaMetadataCompat.METADATA_KEY_ART,
@@ -348,10 +350,10 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         wifiLock =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
                     .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
             else
-                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
                     .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
 
         player.setAudioAttributes(
@@ -361,7 +363,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 .build()
         )
 
-        am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        am = getSystemService(AUDIO_SERVICE) as AudioManager
         val attrs = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()

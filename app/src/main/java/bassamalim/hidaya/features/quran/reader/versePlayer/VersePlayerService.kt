@@ -26,7 +26,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
@@ -39,6 +38,7 @@ import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.ui.theme.colorSchemeO
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -453,7 +453,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Add an app icon and set its accent color (Be careful about the color)
             .setSmallIcon(R.drawable.small_launcher_foreground)
-            .setColor(ContextCompat.getColor(this, R.color.surface_M))
+            .setColor(colorSchemeO.surfaceContainer.value.toInt())  // TODO: get theme color
             // Add buttons
             .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
             // So there will be no notification tone
@@ -550,14 +550,15 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     private fun initMetadata() {
         mediaSession.setMetadata(
             MediaMetadataCompat.Builder()
-                .putBitmap(    //Notification icon in card
-                    MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                    BitmapFactory.decodeResource(resources, R.color.surface_M)
-                )
-                .putBitmap(
-                    MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                    BitmapFactory.decodeResource(resources, R.color.surface_M)
-                )
+                // TODO: Migrate to Compose
+//                .putBitmap(    //Notification icon in card
+//                    MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+//                    BitmapFactory.decodeResource(resources, R.color.surface_M)
+//                )
+//                .putBitmap(
+//                    MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+//                    BitmapFactory.decodeResource(resources, R.color.surface_M)
+//                )
                 .putBitmap(    //lock screen icon for pre lollipop
                     MediaMetadataCompat.METADATA_KEY_ART,
                     BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
@@ -576,14 +577,16 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         val reciterId = recitationsRepository.getVerseReciterId().first()
 
         mediaMetadata = MediaMetadataCompat.Builder()
-            .putBitmap(    //Notification icon in card
-                MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(resources, R.color.surface_M)
-            )
-            .putBitmap(
-                MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(resources, R.color.surface_M)
-            )
+
+            // TODO: Migrate to Compose
+//            .putBitmap(    //Notification icon in card
+//                MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+//                BitmapFactory.decodeResource(resources, R.color.surface_M)
+//            )
+//            .putBitmap(
+//                MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+//                BitmapFactory.decodeResource(resources, R.color.surface_M)
+//            )
             .putBitmap(    //lock screen icon for pre lollipop
                 MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
