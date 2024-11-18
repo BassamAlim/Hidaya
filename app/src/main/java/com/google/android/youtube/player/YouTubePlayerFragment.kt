@@ -10,86 +10,94 @@ import com.google.android.youtube.player.internal.ab
 
 open class YouTubePlayerSupportFragmentXKt : Fragment(), YouTubePlayer.Provider {
 
-    private val a: A = A()
+    private val callbackHandler: CallbackHandler = CallbackHandler()
+    private var viewState: Bundle? = null
+    private var view: YouTubePlayerView? = null
+    private var developerKey: String? = null
+    private var initializationListener: YouTubePlayer.OnInitializedListener? = null
+    private val isInitialized = false
 
-    private var b: Bundle? = null
-
-    private var c: YouTubePlayerView? = null
-
-    private var d: String? = null
-
-    private var e: YouTubePlayer.OnInitializedListener? = null
-
-    private val f = false
-
-    private fun a() {
-        if (c != null && e != null) {
-            c?.a(f)
-            c?.a(this.activity, this, d, e, b)
-            b = null
-            e = null
+    private fun initializeIfReady() {
+        if (view != null && initializationListener != null) {
+            view?.a(isInitialized)
+            view?.a(this.activity, this, developerKey, initializationListener, viewState)
+            viewState = null
+            initializationListener = null
         }
     }
 
-    override fun initialize(p0: String?, p1: YouTubePlayer.OnInitializedListener?) {
-        this.d = ab.a(p0, "Developer key cannot be null or empty")
-        this.e = p1
-        this.a()
+    override fun initialize(key: String?, listener: YouTubePlayer.OnInitializedListener?) {
+        this.developerKey = ab.a(key, "Developer key cannot be null or empty")
+        this.initializationListener = listener
+
+        this.initializeIfReady()
     }
 
-    override fun onCreate(var1: Bundle?) {
-        super.onCreate(var1)
-        b = var1?.getBundle("YouTubePlayerSupportFragment.KEY_PLAYER_VIEW_STATE")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewState =
+            savedInstanceState?.getBundle("YouTubePlayerSupportFragment.KEY_PLAYER_VIEW_STATE")
     }
 
-    override fun onCreateView(var1: LayoutInflater, var2: ViewGroup?, var3: Bundle?): View? {
-        c = YouTubePlayerView(this.activity, null as AttributeSet?, 0, a)
-        this.a()
-        return c
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        view = YouTubePlayerView(this.activity, null as AttributeSet?, 0, callbackHandler)
+        this.initializeIfReady()
+        return view
     }
 
     override fun onStart() {
         super.onStart()
-        c?.a()
+
+        view?.a()
     }
 
     override fun onResume() {
         super.onResume()
-        c?.b()
+
+        view?.b()
     }
 
     override fun onPause() {
-        c?.c()
+        view?.c()
+
         super.onPause()
     }
 
-    override fun onSaveInstanceState(var1: Bundle) {
-        super.onSaveInstanceState(var1)
-        val var2 = if (c != null) {
-            (c as YouTubePlayerView).e()
-        } else b
-        var1.putBundle("YouTubePlayerSupportFragment.KEY_PLAYER_VIEW_STATE", var2)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val var2 = if (view != null) {
+            (view as YouTubePlayerView).e()
+        } else viewState
+
+        outState.putBundle("YouTubePlayerSupportFragment.KEY_PLAYER_VIEW_STATE", var2)
     }
 
     override fun onStop() {
-        c?.d()
+        view?.d()
         super.onStop()
     }
 
     override fun onDestroyView() {
         this.activity?.let {
-            c?.c(it.isFinishing)
-            c = null
+            view?.c(it.isFinishing)
+            view = null
         }
 
         super.onDestroyView()
     }
 
     override fun onDestroy() {
-        if (c != null) {
+        if (view != null) {
             val var1 = this.activity
-            (c as YouTubePlayerView).b(var1 == null || var1.isFinishing)
+            (view as YouTubePlayerView).b(var1 == null || var1.isFinishing)
         }
+
         super.onDestroy()
     }
 
@@ -99,20 +107,18 @@ open class YouTubePlayerSupportFragmentXKt : Fragment(), YouTubePlayer.Provider 
         }
     }
 
-    private class A : YouTubePlayerView.b {
+    private class CallbackHandler : YouTubePlayerView.b {
 
         override fun a(
-            p0: YouTubePlayerView?,
-            p1: String?,
-            p2: YouTubePlayer.OnInitializedListener?
+            view: YouTubePlayerView?,
+            developerKey: String?,
+            listener: YouTubePlayer.OnInitializedListener?
         ) {
             val fragment = newInstance()
-            fragment.initialize(p1, fragment.e)
+            fragment.initialize(developerKey, fragment.initializationListener)
         }
 
-        override fun a(p0: YouTubePlayerView?) {
-            // do nothing
-        }
+        override fun a(p0: YouTubePlayerView?) {}
     }
 
 }
