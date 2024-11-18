@@ -57,29 +57,13 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                 .fillMaxWidth()
                 .padding(padding)
         ) {
-            MyRectangleButton(
-                text =
-                    if (state.lastPlayedMedia != null) {
-                        "${stringResource(R.string.last_play)}: " +
-                                "${stringResource(R.string.sura)} ${state.lastPlayedMedia!!.suraName} " +
-                                stringResource(R.string.for_reciter) +
-                                " ${state.lastPlayedMedia!!.reciterName}" +
-                                stringResource(R.string.in_narration_of) +
-                                " ${state.lastPlayedMedia!!.narrationName}"
-                    }
-                    else stringResource(R.string.no_last_play),
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 18.sp,
-                innerPadding = PaddingValues(vertical = 4.dp),
-                onClick = viewModel::onContinueListeningClick
-            )
-
             TabLayout(
                 pageNames = listOf(
                     stringResource(R.string.all),
                     stringResource(R.string.favorite),
                     stringResource(R.string.downloaded)
                 ),
+                modifier = Modifier.weight(1f),
                 searchComponent = {
                     Row(
                         Modifier.fillMaxWidth(),
@@ -112,6 +96,25 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                     onDownloadNarrationClick = viewModel::onDownloadNarrationClick
                 )
             }
+
+            MyHorizontalDivider(thickness = 2.dp)
+
+            MyRectangleButton(
+                text =
+                    if (state.lastPlayedMedia != null) {
+                        "${stringResource(R.string.last_play)}: " +
+                                "${stringResource(R.string.sura)} ${state.lastPlayedMedia!!.suraName} " +
+                                stringResource(R.string.for_reciter) +
+                                " ${state.lastPlayedMedia!!.reciterName}" +
+                                stringResource(R.string.in_narration_of) +
+                                " ${state.lastPlayedMedia!!.narrationName}"
+                    }
+                    else stringResource(R.string.no_last_play),
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 18.sp,
+                innerPadding = PaddingValues(top = 2.dp, bottom = 6.dp),
+                onClick = viewModel::onContinueListeningClick
+            )
         }
     }
 }
@@ -152,7 +155,7 @@ private fun ReciterCard(
             .padding(vertical = 6.dp, horizontal = 8.dp),
         shadowElevation = 10.dp,
         shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
-        color = MaterialTheme.colorScheme.surface
+        color = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
         Column(
             Modifier
@@ -178,7 +181,7 @@ private fun ReciterCard(
                 )
             }
 
-            MyHorizontalDivider(thickness = 2.dp)
+            MyHorizontalDivider()
 
             Column(
                 Modifier.fillMaxWidth()
