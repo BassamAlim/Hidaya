@@ -27,11 +27,11 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="true"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
         <activity
             android:name=".core.Activity"
-            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +43,9 @@
         </activity>
 
         <receiver android:name=".core.receivers.NotificationReceiver" />
+
         <receiver android:name=".core.receivers.DailyUpdateReceiver" />
+
         <receiver
             android:name=".core.receivers.DeviceBootReceiver"
             android:exported="true">
@@ -51,13 +53,13 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name=".core.other.PrayersWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/prayers_widget_info" />
@@ -68,6 +70,7 @@
             android:excludeFromRecents="true"
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
+
         <service
             android:name=".features.recitations.player.service.RecitationPlayerService"
             android:exported="true"
@@ -77,6 +80,7 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
+
         <service
             android:name=".features.radio.service.RadioService"
             android:exported="true"
@@ -86,6 +90,7 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
+
         <service
             android:name=".features.quran.reader.versePlayer.VersePlayerService"
             android:exported="true"
