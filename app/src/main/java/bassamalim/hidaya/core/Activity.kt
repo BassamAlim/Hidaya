@@ -78,6 +78,7 @@ class Activity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
 
         val isFirstLaunch = savedInstanceState == null

@@ -118,9 +118,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.BookReader(
-                "{book_id}", "{chapter_id}"
-            ).route,
+            route = Screen.BookReader("{book_id}", "{chapter_id}").route,
             arguments = listOf(
                 navArgument("book_id") { type = NavType.IntType },
                 navArgument("chapter_id") { type = NavType.IntType }
@@ -305,9 +303,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.QuizResult(
-                "{score}", "{questions}", "{chosen_answers}"
-            ).route,
+            route = Screen.QuizResult("{score}", "{questions}", "{chosen_answers}").route,
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
                 navArgument("questions") { type = NavType.StringType },
@@ -424,9 +420,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RecitationSurasMenu(
-                "{reciter_id}", "{narration_id}"
-            ).route,
+            route = Screen.RecitationSurasMenu("{reciter_id}", "{narration_id}").route,
             arguments = listOf(
                 navArgument("reciter_id") { type = NavType.IntType },
                 navArgument("narration_id") { type = NavType.IntType }
