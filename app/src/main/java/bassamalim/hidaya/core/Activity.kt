@@ -16,6 +16,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
@@ -43,6 +44,7 @@ import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import bassamalim.hidaya.core.ui.theme.colorSchemeO
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -78,6 +80,8 @@ class Activity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.decorView.setBackgroundColor(colorSchemeO.background.toArgb())  // TODO: set the theme background color
 
         enableEdgeToEdge()
 
