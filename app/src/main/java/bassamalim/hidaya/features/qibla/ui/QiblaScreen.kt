@@ -60,7 +60,7 @@ fun QiblaScreen(viewModel: QiblaViewModel) {
 
     MyScaffold(title = stringResource(R.string.qibla)) { padding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(top = 20.dp, bottom = 100.dp),
@@ -86,7 +86,7 @@ fun QiblaScreen(viewModel: QiblaViewModel) {
                 )
 
                 MyText(
-                    String.format(
+                    text = String.format(
                         stringResource(R.string.distance_to_kaaba),
                         "${state.distanceToKaaba} ${stringResource(R.string.distance_unit)}"
                     ),
@@ -136,7 +136,7 @@ private fun CalibrationDialog(
             )
 
             MyText(
-                stringResource(R.string.qibla_warning),
+                text = stringResource(R.string.qibla_warning),
                 textColor = Negative
             )
         }
@@ -149,13 +149,7 @@ private fun QiblaGraphics(compassAngle: Float, qiblaAngle: Float) {
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.compass),
-            contentDescription = "",
-            modifier = Modifier
-                .rotate(compassAngle)
-                .padding(horizontal = 10.dp)
-        )
+        CompassGraphics(compassAngle)
 
         Image(
             painter = painterResource(id = R.drawable.qibla_pointer),
@@ -173,49 +167,26 @@ private fun QiblaGraphics(compassAngle: Float, qiblaAngle: Float) {
     }
 }
 
-//@Composable
-//private fun QiblaGraphics(compassAngle: Float, qiblaAngle: Float) {
-//    Box(
-//        modifier = Modifier.fillMaxWidth(),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        val compassPainter = painterResource(id = R.drawable.compass)
-////        val compassVector = ImageVector.vectorResource(R.drawable.compass)
-//        val resource = vectorResource(id = R.drawable.compass)
-//        val painter = rememberVectorPainter(resource)
-//
-//
-//        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//            Canvas(modifier = Modifier.size(200.dp)) {
-//                drawPath(
-//                    path = compassVector.viewportPathData.first().,
-//                    color = fillColor,
-//                    style = Fill
-//                )
-//                drawPath(
-//                    path = compassVector.viewportPathData.second(),
-//                    color = strokeColor,
-//                    style = Stroke(width = 30f)
-//                )
-//            }
-//        }
-//
-//
-//        Image(
-//            painter = painterResource(id = R.drawable.qibla_pointer),
-//            contentDescription = "",
-//            modifier = Modifier
-//                .rotate(qiblaAngle)
-//                .padding(bottom = 26.dp),
-//            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-//        )
-//
-//        Image(
-//            painter = painterResource(id = R.drawable.ic_qibla_kaaba),
-//            contentDescription = ""
-//        )
-//    }
-//}
+@Composable
+private fun CompassGraphics(angle: Float) {
+    Box(
+        Modifier
+            .rotate(angle)
+            .padding(horizontal = 10.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.compass_primary),
+            contentDescription = "",
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.compass_on_surface),
+            contentDescription = "",
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+        )
+    }
+}
 
 @Composable
 private fun DirectionAccuracyInfoArea(
