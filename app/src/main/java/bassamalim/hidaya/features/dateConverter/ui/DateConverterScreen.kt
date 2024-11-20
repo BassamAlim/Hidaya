@@ -14,12 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MyDatePickerDialog
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
@@ -27,11 +27,10 @@ import bassamalim.hidaya.core.ui.components.MyText
 @Composable
 fun DateConverterScreen(viewModel: DateConverterViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     MyScaffold(title = stringResource(R.string.date_converter)) { padding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(bottom = 50.dp),
@@ -56,7 +55,7 @@ fun DateConverterScreen(viewModel: DateConverterViewModel) {
                         .padding(vertical = 15.dp, horizontal = 30.dp),
                     fontSize = 22.sp,
                     innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
-                    onClick = { viewModel.onPickGregorianClick(context) }
+                    onClick = viewModel::onPickGregorianClick
                 )
             }
 
@@ -70,16 +69,21 @@ fun DateConverterScreen(viewModel: DateConverterViewModel) {
                 date = state.gregorianDate
             )
         }
+
+        if (state.isGregorianDatePickerShown) {
+            MyDatePickerDialog(
+                initialDateMillis = state.gregorianDatePickerMillis,
+                onConfirm = viewModel::onGregorianDatePicked,
+                onDismiss = viewModel::onGregorianDatePickerDismiss
+            )
+        }
     }
 }
 
 @Composable
-private fun ResultSpace(
-    title: String,
-    date: Date
-) {
+private fun ResultSpace(title: String, date: Date) {
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .border(
@@ -91,13 +95,13 @@ private fun ResultSpace(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MyText(
-            title,
-            Modifier.padding(10.dp),
+            text = title,
+            modifier = Modifier.padding(10.dp),
             fontSize = 22.sp
         )
 
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 10.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -106,27 +110,13 @@ private fun ResultSpace(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyText(
-                    stringResource(R.string.day),
-                    Modifier.padding(10.dp)
+                    text = stringResource(R.string.day),
+                    modifier = Modifier.padding(10.dp)
                 )
 
                 MyText(
-                    date.day,
-                    Modifier.padding(10.dp)
-                )
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MyText(
-                    stringResource(R.string.month),
-                    Modifier.padding(10.dp)
-                )
-
-                MyText(
-                    date.month,
-                    Modifier.padding(10.dp)
+                    text = date.day,
+                    modifier = Modifier.padding(10.dp)
                 )
             }
 
@@ -134,13 +124,27 @@ private fun ResultSpace(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyText(
-                    stringResource(R.string.year),
-                    Modifier.padding(10.dp)
+                    text = stringResource(R.string.month),
+                    modifier = Modifier.padding(10.dp)
                 )
 
                 MyText(
-                    date.year,
-                    Modifier.padding(10.dp)
+                    text = date.month,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MyText(
+                    text = stringResource(R.string.year),
+                    modifier = Modifier.padding(10.dp)
+                )
+
+                MyText(
+                    text = date.year,
+                    modifier = Modifier.padding(10.dp)
                 )
             }
         }

@@ -1,9 +1,6 @@
 package bassamalim.hidaya.features.settings.ui
 
 import android.app.Activity
-import android.app.TimePickerDialog
-import android.os.Message
-import android.widget.TimePicker
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -28,6 +25,7 @@ import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.ui.components.ExpandableCard
 import bassamalim.hidaya.core.ui.components.MyFatColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.TimePickerDialog
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
@@ -109,12 +107,11 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     }
 
     if (state.isTimePickerShown) {
-        TimePicker(
+        TimePickerDialog(
             initialHour = viewModel.timePickerInitialHour,
             initialMinute = viewModel.timePickerInitialMinute,
-            onTimePicked = viewModel::onTimePicked,
-            onCancel = viewModel::onTimePickerDismiss,
-            assignTimePicker = viewModel::assignTimePicker
+            onConfirm = viewModel::onTimePicked,
+            onDismiss = viewModel::onTimePickerDismiss
         )
     }
 }
@@ -261,41 +258,4 @@ private fun AthanSettings(athanAudioId: Int, onAthanAudioIdChange: (Int) -> Unit
             onSelection = onAthanAudioIdChange
         )
     }
-}
-
-@Composable
-private fun TimePicker(
-    initialHour: Int,
-    initialMinute: Int,
-    onTimePicked: (Int, Int) -> Unit,
-    onCancel: () -> Unit,
-    assignTimePicker: (TimePickerDialog) -> Unit
-) {
-    val context = LocalContext.current
-    val timePicker = TimePickerDialog(
-        context,
-        { _: TimePicker?, hour: Int, minute: Int ->
-            onTimePicked(hour, minute)
-        },
-        initialHour,
-        initialMinute,
-        false
-    )
-    timePicker.setOnCancelListener { onCancel() }
-    timePicker.setOnDismissListener { onCancel() }
-    timePicker.setTitle(stringResource(R.string.time_picker_title))
-    timePicker.setButton(
-        TimePickerDialog.BUTTON_POSITIVE,
-        stringResource(R.string.select),
-        null as Message?
-    )
-    timePicker.setButton(
-        TimePickerDialog.BUTTON_NEGATIVE,
-        stringResource(R.string.cancel),
-        null as Message?
-    )
-    timePicker.setCancelable(true)
-    timePicker.show()
-
-    assignTimePicker(timePicker)
 }

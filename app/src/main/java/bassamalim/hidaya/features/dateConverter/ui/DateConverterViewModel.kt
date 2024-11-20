@@ -1,12 +1,8 @@
 package bassamalim.hidaya.features.dateConverter.ui
 
-import android.app.DatePickerDialog
-import android.content.Context
 import android.os.Build
-import android.widget.DatePicker
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -47,35 +43,42 @@ class DateConverterViewModel @Inject constructor(
     private fun initializeData() {
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
+
+            _uiState.update { it.copy(
+                gregorianDatePickerMillis = gregorianCalendar.timeInMillis
+            )}
         }
     }
 
-    fun onPickGregorianClick(context: Context) {
-        val datePicker = DatePickerDialog(
-            context, { _: DatePicker?, year: Int, month: Int, day: Int ->
-                val choice = Calendar.getInstance()
-                choice[Calendar.YEAR] = year
-                choice[Calendar.MONTH] = month // starts from 0
-                choice[Calendar.DATE] = day
+    fun onPickGregorianClick() {
+        _uiState.update { it.copy(
+            isGregorianDatePickerShown = true
+        )}
+    }
 
-                gregorianCalendar = choice
-                hijriCalendar = domain.gregorianToHijri(choice) as UmmalquraCalendar
+    fun onGregorianDatePicked(millis: Long?) {
+        if (millis == null) return
 
-                updateDates()
-            },
-            gregorianCalendar[Calendar.YEAR],
-            gregorianCalendar[Calendar.MONTH],
-            gregorianCalendar[Calendar.DATE]
-        )
-        datePicker.setButton(
-            DatePickerDialog.BUTTON_POSITIVE,
-            context.getString(R.string.select), datePicker
-        )
-        datePicker.setButton(
-            DatePickerDialog.BUTTON_NEGATIVE,
-            context.getString(R.string.cancel), datePicker
-        )
-        datePicker.show()
+        val pickedDate = Calendar.getInstance().apply {
+            timeInMillis = millis
+        }
+
+        gregorianCalendar = pickedDate
+
+        hijriCalendar = domain.gregorianToHijri(pickedDate) as UmmalquraCalendar
+
+        updateDates()
+
+        _uiState.update { it.copy(
+            gregorianDatePickerMillis = pickedDate.timeInMillis,
+            isGregorianDatePickerShown = false
+        )}
+    }
+
+    fun onGregorianDatePickerDismiss() {
+        _uiState.update { it.copy(
+            isGregorianDatePickerShown = false
+        )}
     }
 
     fun onPickHijriClick() {

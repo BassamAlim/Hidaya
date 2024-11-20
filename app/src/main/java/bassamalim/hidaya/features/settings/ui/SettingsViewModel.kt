@@ -1,7 +1,6 @@
 package bassamalim.hidaya.features.settings.ui
 
 import android.app.Activity
-import android.app.TimePickerDialog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
@@ -22,6 +21,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,7 +29,6 @@ class SettingsViewModel @Inject constructor(
     private val domain: SettingsDomain
 ): ViewModel() {
 
-    private var timePicker: TimePickerDialog? = null
     private var timePickerReminder: Reminder.Devotional? = null
     var timePickerInitialHour: Int = 0
         private set
@@ -145,10 +144,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun assignTimePicker(timePicker: TimePickerDialog) {
-        this.timePicker = timePicker
-    }
-
     fun onTimePicked(hour: Int, minute: Int) {
         viewModelScope.launch {
             domain.setDevotionReminderEnabled(true, timePickerReminder!!)
@@ -160,6 +155,10 @@ class SettingsViewModel @Inject constructor(
             domain.setAlarm(timePickerReminder!!)
 
             timePickerReminder = null
+
+            _uiState.update { it.copy(
+                isTimePickerShown = false
+            )}
         }
     }
 
@@ -178,8 +177,8 @@ class SettingsViewModel @Inject constructor(
     ): String {
         val string = when (timeFormat) {
             TimeFormat.TWENTY_FOUR -> {
-                val hour = String.format("%02d", timeOfDay.hour)
-                val minute = String.format("%02d", timeOfDay.minute)
+                val hour = String.format(locale = Locale.US, format = "%02d", timeOfDay.hour)
+                val minute = String.format(locale = Locale.US, format = "%02d", timeOfDay.minute)
                 "$hour:$minute"
             }
             TimeFormat.TWELVE -> {
@@ -189,7 +188,11 @@ class SettingsViewModel @Inject constructor(
                     Language.ARABIC -> { if (hour >= 12) "م" else "ص" }
                 }
                 hour = (hour + 12 - 1) % 12 + 1
-                val formattedMinute = String.format("%02d", timeOfDay.minute)
+                val formattedMinute = String.format(
+                    locale = Locale.US,
+                    format = "%02d",
+                    timeOfDay.minute
+                )
                 "$hour:$formattedMinute $suffix"
             }
         }
