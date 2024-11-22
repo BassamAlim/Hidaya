@@ -30,7 +30,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
@@ -45,9 +44,7 @@ fun AboutScreen(viewModel: AboutViewModel) {
                 .padding(padding)
                 .padding(horizontal = 5.dp)
         ) {
-            ThankYouMessage(
-                onTitleClick = viewModel::onTitleClick
-            )
+            ThankYouMessage(onTitleClick = viewModel::onTitleClick)
 
             SourcesList()
 
@@ -61,16 +58,12 @@ fun AboutScreen(viewModel: AboutViewModel) {
 
     // show a toast when the database is rebuilt
     if (state.shouldShowRebuilt != 0) {
-        DatabaseRebuiltToast(
-            shouldShowRebuilt = state.shouldShowRebuilt
-        )
+        DatabaseRebuiltToast(shouldShowRebuilt = state.shouldShowRebuilt)
     }
 }
 
 @Composable
-private fun ColumnScope.ThankYouMessage(
-    onTitleClick: () -> Unit
-) {
+private fun ColumnScope.ThankYouMessage(onTitleClick: () -> Unit) {
     MyText(
         text = stringResource(R.string.thanks),
         fontSize = 25.sp,
@@ -101,7 +94,10 @@ private fun ColumnScope.SourcesList() {
         MyHorizontalDivider()
         Source(stringResource(R.string.remembrances_source))
         MyHorizontalDivider()
+        Source(stringResource(R.string.quiz_source))  // TODO: add new questions source?
+        MyHorizontalDivider()
         Source(stringResource(R.string.quiz_source))
+
     }
 }
 
@@ -126,7 +122,7 @@ private fun ColumnScope.HiddenArea(
         enter = expandVertically()
     ) {
         Column(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // rebuild database button
@@ -138,8 +134,8 @@ private fun ColumnScope.HiddenArea(
 
             // last daily update text
             MyText(
-                lastDailyUpdate,
-                Modifier
+                text = lastDailyUpdate,
+                modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(10.dp)
             )
@@ -148,9 +144,7 @@ private fun ColumnScope.HiddenArea(
 }
 
 @Composable
-private fun DatabaseRebuiltToast(
-    shouldShowRebuilt: Int
-) {
+private fun DatabaseRebuiltToast(shouldShowRebuilt: Int) {
     val ctx = LocalContext.current
     LaunchedEffect(key1 = shouldShowRebuilt) {
         Toast.makeText(

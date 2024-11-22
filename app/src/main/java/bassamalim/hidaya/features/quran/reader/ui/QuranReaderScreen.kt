@@ -459,7 +459,7 @@ private fun ListItems(
                     onVerseGloballyPositioned = onVerseGloballyPositioned
                 )
 
-                if (language != Language.ARABIC) {
+                if (language != Language.ARABIC && !section.translation.isNullOrEmpty()) {
                     MyText(
                         text = section.translation,
                         modifier = Modifier.padding(6.dp),
@@ -467,8 +467,9 @@ private fun ListItems(
                     )
                 }
 
-                if (section != sections.last())
+                if (section != sections.last()) {
                     MyHorizontalDivider()
+                }
             }
         }
     }

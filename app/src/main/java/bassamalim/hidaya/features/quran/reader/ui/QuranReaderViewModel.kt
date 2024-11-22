@@ -543,15 +543,19 @@ class QuranReaderViewModel @Inject constructor(
 
         return buildAnnotatedString {
             for (verse in verses) {
-                val verseColor = when (verse.id) {
+                val text = when (language) {
+                    Language.ARABIC -> verse.text!!
+                    Language.ENGLISH -> verse.text!!.reversed()
+                }
+                val color = when (verse.id) {
                     selectedVerseId -> selectedVerseColor
                     trackedVerseId -> trackedVerseColor
                     else -> defaultVerseColor
                 }
 
                 pushStringAnnotation(tag = verse.id.toString(), annotation = verse.id.toString())
-                withStyle(style = SpanStyle(color = verseColor)) {
-                    append(verse.text)
+                withStyle(style = SpanStyle(color = color)) {
+                    append(text)
                 }
                 pop()
             }
