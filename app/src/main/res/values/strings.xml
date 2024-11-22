@@ -117,6 +117,7 @@
     <string name="hadeeth_source">كتب الحديث: من موقع أم الكتاب وموقع الدرر السنية.</string>
     <string name="quiz_source">اسئلة الإختبار: من موقع فولدرات.</string>
     <string name="remembrances_source">الأذكار والأدعية: من موقع https://timesprayer.today</string>
+    <string name="quran_english_translation_source">الترجمة الانجليزية للمصحف: https://quranenc.com</string>
 
     <!-- Toasts -->
     <string name="give_location_permission_toast">لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة</string>

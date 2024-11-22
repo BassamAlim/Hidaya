@@ -94,10 +94,9 @@ private fun ColumnScope.SourcesList() {
         MyHorizontalDivider()
         Source(stringResource(R.string.remembrances_source))
         MyHorizontalDivider()
-        Source(stringResource(R.string.quiz_source))  // TODO: add new questions source?
-        MyHorizontalDivider()
         Source(stringResource(R.string.quiz_source))
-
+        MyHorizontalDivider()
+        Source(stringResource(R.string.quran_english_translation_source))
     }
 }
 

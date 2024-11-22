@@ -117,6 +117,7 @@
     <string name="interpretation_source">Interpretation: tafseer moyassar from King Fahd Glorious Quran Printing Complex.</string>
     <string name="quiz_source">Quiz questions: from folderat site.</string>
     <string name="remembrances_source">Remembrances and duas: from https://timesprayer.today</string>
+    <string name="quran_english_translation_source">Quran English translation: https://quranenc.com</string>
 
     <!-- Toasts -->
     <string name="give_location_permission_toast">Location can not be accessed, give the app location permission to calculate prayer times and qibla</string>
