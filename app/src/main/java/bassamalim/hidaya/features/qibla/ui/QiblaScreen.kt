@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MultiDrawableImage
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -149,7 +150,16 @@ private fun QiblaGraphics(compassAngle: Float, qiblaAngle: Float) {
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        CompassGraphics(compassAngle)
+        // compass image
+        MultiDrawableImage(
+            drawables = listOf(
+                R.drawable.compass_primary to MaterialTheme.colorScheme.primary,
+                R.drawable.compass_on_surface to MaterialTheme.colorScheme.onSurface
+            ),
+            modifier = Modifier
+                .rotate(compassAngle)
+                .padding(horizontal = 10.dp)
+        )
 
         Image(
             painter = painterResource(id = R.drawable.qibla_pointer),
@@ -163,27 +173,6 @@ private fun QiblaGraphics(compassAngle: Float, qiblaAngle: Float) {
         Image(
             painter = painterResource(id = R.drawable.ic_qibla_kaaba),
             contentDescription = ""
-        )
-    }
-}
-
-@Composable
-private fun CompassGraphics(angle: Float) {
-    Box(
-        Modifier
-            .rotate(angle)
-            .padding(horizontal = 10.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.compass_primary),
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-        )
-
-        Image(
-            painter = painterResource(id = R.drawable.compass_on_surface),
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
         )
     }
 }
