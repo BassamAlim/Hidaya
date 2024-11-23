@@ -22,7 +22,9 @@ class AboutViewModel @Inject constructor(
     private val domain: AboutDomain
 ): AndroidViewModel(app) {
 
-    private val _uiState = MutableStateFlow(AboutUiState())
+    private val _uiState = MutableStateFlow(AboutUiState(
+        sources = domain.getSources()
+    ))
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getLastUpdate()

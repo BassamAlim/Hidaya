@@ -5,6 +5,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppStatePreferencesDataSource
 import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.models.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class AppStateRepository @Inject constructor(
 
     fun isOnboardingCompleted() = appStatePreferencesDataSource.getOnboardingCompleted()
 
-    suspend fun setOnboardingCompleted(isCompleted: Boolean) {
+    fun setOnboardingCompleted(isCompleted: Boolean) {
         scope.launch {
             appStatePreferencesDataSource.updateOnboardingCompleted(isCompleted)
         }
@@ -45,7 +46,7 @@ class AppStateRepository @Inject constructor(
 
     fun getLastDailyUpdateMillis() = appStatePreferencesDataSource.getLastDailyUpdateMillis()
 
-    suspend fun setLastDailyUpdateMillis(millis: Long) {
+    fun setLastDailyUpdateMillis(millis: Long) {
         scope.launch {
             appStatePreferencesDataSource.updateLastDailyUpdateMillis(millis)
         }
@@ -53,9 +54,23 @@ class AppStateRepository @Inject constructor(
 
     fun getLastDbVersion() = appStatePreferencesDataSource.getLastDBVersion()
 
-    suspend fun setLastDbVersion(version: Int) {
+    fun setLastDbVersion(version: Int) {
         scope.launch {
             appStatePreferencesDataSource.updateLastDBVersion(version)
+        }
+    }
+
+    fun getSources(): List<Source> {
+        val titles = resources.getStringArray(R.array.source_titles)
+        val sourceNames = resources.getStringArray(R.array.sources)
+        val sourceUrls = resources.getStringArray(R.array.source_urls)
+
+        return titles.mapIndexed { index, _ ->
+            Source(
+                title = titles[index],
+                sourceName = sourceNames[index],
+                url = sourceUrls[index]
+            )
         }
     }
 

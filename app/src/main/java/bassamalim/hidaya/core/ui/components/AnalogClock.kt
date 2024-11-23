@@ -76,7 +76,7 @@ private fun Draw(
     val numbersColor = MaterialTheme.colorScheme.onSurface
     val hoursHandColor = MaterialTheme.colorScheme.onSurface
     val minutesHandColor = MaterialTheme.colorScheme.onSurface
-    val secondsHandColor = MaterialTheme.colorScheme.onSurface
+    val secondsHandColor = MaterialTheme.colorScheme.primary
     val pastArcColor = MaterialTheme.colorScheme.primary
     val remainingArcColor = MaterialTheme.colorScheme.onPrimaryContainer
 

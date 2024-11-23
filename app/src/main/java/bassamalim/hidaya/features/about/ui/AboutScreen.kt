@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,12 +22,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.models.Source
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -46,7 +53,7 @@ fun AboutScreen(viewModel: AboutViewModel) {
         ) {
             ThankYouMessage(onTitleClick = viewModel::onTitleClick)
 
-            SourcesList()
+            SourcesList(state.sources)
 
             HiddenArea(
                 isDevModeOn = state.isDevModeEnabled,
@@ -80,32 +87,50 @@ private fun ColumnScope.ThankYouMessage(onTitleClick: () -> Unit) {
 }
 
 @Composable
-private fun ColumnScope.SourcesList() {
+private fun ColumnScope.SourcesList(sources: List<Source>) {
     Column(
         Modifier
             .weight(1F)
             .verticalScroll(rememberScrollState())
     ) {
-        Source(stringResource(R.string.quran_source))
-        MyHorizontalDivider()
-        Source(stringResource(R.string.interpretation_source))
-        MyHorizontalDivider()
-        Source(stringResource(R.string.hadeeth_source))
-        MyHorizontalDivider()
-        Source(stringResource(R.string.remembrances_source))
-        MyHorizontalDivider()
-        Source(stringResource(R.string.quiz_source))
-        MyHorizontalDivider()
-        Source(stringResource(R.string.quran_english_translation_source))
+        MyText(
+            text = stringResource(R.string.sources),
+            fontSize = 23.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(top = 15.dp, bottom = 10.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+
+        sources.forEach { source ->
+            Source(source)
+            if (source != sources.last()) MyHorizontalDivider()
+        }
     }
 }
 
 @Composable
-private fun Source(text: String) {
+private fun Source(source: Source) {
+    val annotatedString = buildAnnotatedString {
+        append("${source.title}: ")
+        withLink(
+            LinkAnnotation.Url(
+                url = source.url,
+                styles = TextLinkStyles(
+                    style = SpanStyle(
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                )
+            )
+        ) {
+            append(source.sourceName)
+        }
+    }
+
     MyText(
-        text = text,
+        text = annotatedString,
         modifier = Modifier.padding(10.dp),
-        fontSize = 22.sp,
+        fontSize = 20.sp,
         textAlign = TextAlign.Start
     )
 }

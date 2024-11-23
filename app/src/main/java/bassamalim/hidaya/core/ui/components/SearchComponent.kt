@@ -4,15 +4,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -77,4 +87,36 @@ fun SearchComponent(
             unfocusedContainerColor = Color.Transparent
         )
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchComponent2(
+    initialValue: String,
+    modifier: Modifier = Modifier,
+    hint: String = stringResource(R.string.search),
+    onSubmit: () -> Unit = {},
+    onValueChange: (String) -> Unit = {}
+) {
+    val state = rememberTextFieldState()
+    var expanded by remember { mutableStateOf(false) }
+
+    SearchBar(
+        inputField = {
+            SearchBarDefaults.InputField(
+                state = state,
+                onSearch = { expanded = false },
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                placeholder = { Text(hint) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                trailingIcon = { Icon(Icons.Default.MoreVert, contentDescription = null) },
+            )
+        },
+        expanded = expanded,
+        onExpandedChange = {},
+        modifier = modifier
+    ) {
+
+    }
 }

@@ -16,7 +16,7 @@ class AppSettingsRepository @Inject constructor(
 
     fun getLanguage() = appSettingsPreferencesDataSource.getLanguage()
 
-    suspend fun setLanguage(language: Language) {
+    fun setLanguage(language: Language) {
         scope.launch {
             appSettingsPreferencesDataSource.updateLanguage(language)
         }
@@ -24,7 +24,7 @@ class AppSettingsRepository @Inject constructor(
 
     fun getNumeralsLanguage() = appSettingsPreferencesDataSource.getNumeralsLanguage()
 
-    suspend fun setNumeralsLanguage(numeralsLanguage: Language) {
+    fun setNumeralsLanguage(numeralsLanguage: Language) {
         scope.launch {
             appSettingsPreferencesDataSource.updateNumeralsLanguage(numeralsLanguage)
         }
@@ -32,7 +32,7 @@ class AppSettingsRepository @Inject constructor(
 
     fun getTheme() = appSettingsPreferencesDataSource.getTheme()
 
-    suspend fun setTheme(theme: Theme) {
+    fun setTheme(theme: Theme) {
         scope.launch {
             appSettingsPreferencesDataSource.updateTheme(theme)
         }
@@ -40,7 +40,7 @@ class AppSettingsRepository @Inject constructor(
 
     fun getTimeFormat() = appSettingsPreferencesDataSource.getTimeFormat()
 
-    suspend fun setTimeFormat(timeFormat: TimeFormat) {
+    fun setTimeFormat(timeFormat: TimeFormat) {
         scope.launch {
             appSettingsPreferencesDataSource.updateTimeFormat(timeFormat)
         }
@@ -48,7 +48,7 @@ class AppSettingsRepository @Inject constructor(
 
     fun getDateOffset() = appSettingsPreferencesDataSource.getDateOffset()
 
-    suspend fun setDateOffset(dateOffset: Int) {
+    fun setDateOffset(dateOffset: Int) {
         scope.launch {
             appSettingsPreferencesDataSource.updateDateOffset(dateOffset)
         }

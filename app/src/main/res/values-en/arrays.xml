@@ -209,4 +209,26 @@
         <item>Infinite</item>
     </string-array>
 
+    <string-array name="source_titles">
+        <item>Quran</item>
+        <item>Quran English Translation</item>
+        <item>Quran Interpretation</item>
+        <item>Hadeeth Books</item>
+        <item>Remembrances</item>
+        <item>Suar Recitations</item>
+        <item>Verse Recitations</item>
+        <item>Quiz Questions</item>
+    </string-array>
+
+    <string-array name="sources">
+        <item>King Fahd Glorious Quran Printing Complex</item>
+        <item>QuranEnc.com</item>
+        <item>Tafseer Moyassar - King Fahd Glorious Quran Printing Complex</item>
+        <item>Library of Hadeeth and its Science - omelketab.net and dorar.net</item>
+        <item>timesprayer.today</item>
+        <item>mp3Quran</item>
+        <item>EveryAyah Quran Files</item>
+        <item>folderat.com</item>
+    </string-array>
+
 </resources>

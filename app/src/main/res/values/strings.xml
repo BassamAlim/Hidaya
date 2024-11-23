@@ -112,13 +112,6 @@
     <string name="reminder_before">%s بعد %s دقيقة</string>
     <string name="reminder_after">%s منذ %s دقيقة</string>
 
-    <!-- Sources -->
-    <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
-    <string name="hadeeth_source">كتب الحديث: من موقع أم الكتاب وموقع الدرر السنية.</string>
-    <string name="quiz_source">اسئلة الإختبار: من موقع فولدرات.</string>
-    <string name="remembrances_source">الأذكار والأدعية: من موقع https://timesprayer.today</string>
-    <string name="quran_english_translation_source">الترجمة الانجليزية للمصحف: https://quranenc.com</string>
-
     <!-- Toasts -->
     <string name="give_location_permission_toast">لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة</string>
     <string name="location_permission_for_qibla">يجب السماح بالوصول للموقع لحساب اتجاه القبلة</string>
@@ -150,7 +143,6 @@
     <string name="recitation_settings">إعدادات التلاوة</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
     <string name="thanks">شكرا لاستخدامكم تطبيق هِداية</string>
-    <string name="interpretation_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="recitations">تلاوات</string>
     <string name="stop_on_sura_end">توقف عند نهاية السورة</string>
     <string name="stop_on_page_end">توقف عند نهاية الصفحة</string>
@@ -234,5 +226,6 @@
     <string name="previous_prayer">الصلاة السابقة</string>
     <string name="next_prayer">الصلاة القادمة</string>
     <string name="fill_page">ملئ الصفحة</string>
+    <string name="sources">المصادر</string>
 
 </resources>

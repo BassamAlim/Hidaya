@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.quran.searcher.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -109,7 +110,9 @@ private fun MatchItem(
     item: QuranSearcherMatch,
     onGoToPageClick: (QuranSearcherMatch) -> Unit
 ) {
-    MySurface {
+    MySurface(
+        Modifier.clickable { onGoToPageClick(item) }
+    ) {
         Column(
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally

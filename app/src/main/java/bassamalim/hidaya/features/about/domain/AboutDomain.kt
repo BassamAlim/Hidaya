@@ -27,4 +27,6 @@ class AboutDomain @Inject constructor(
         if (++counter >= 5) setDevModeEnabled()
     }
 
+    fun getSources() = appStateRepository.getSources()
+
 }

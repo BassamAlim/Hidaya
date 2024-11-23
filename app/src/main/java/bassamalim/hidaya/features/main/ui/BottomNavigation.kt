@@ -5,6 +5,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -14,8 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.nsp
 
 sealed class BottomNavItem(var route: String, var titleRId: Int, var icon: Int) {
     data object Home: BottomNavItem("home", R.string.title_home, R.drawable.ic_home)
@@ -45,13 +44,7 @@ fun MyBottomNavigation(navController: NavController) {
             val title = stringResource(item.titleRId)
 
             NavigationBarItem(
-                label = {
-                    MyText(
-                        text = title,
-                        fontSize = 9.nsp,
-                        softWrap = false
-                    )
-                },
+                label = { Text(title) },
                 alwaysShowLabel = true,
                 icon = {
                     Icon(

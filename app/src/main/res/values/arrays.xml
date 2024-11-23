@@ -276,4 +276,37 @@
         <item>لا نهائي</item>
     </string-array>
 
+    <string-array name="source_titles">
+        <item>المصحف</item>
+        <item>الترجمة الإنجليزية للمصحف</item>
+        <item>التفسير</item>
+        <item>كتب الحديث</item>
+        <item>الأذكار والأدعية</item>
+        <item>تلاوات السور</item>
+        <item>تلاوات الآيات</item>
+        <item>اسئلة الإختبار</item>
+    </string-array>
+
+    <string-array name="sources">
+        <item>مجمع الملك فهد لطباعة المصحف الشريف</item>
+        <item>موسوعة القرآن الكريم</item>
+        <item>التفسير الميسر - مجمع الملك فهد لطباعة المصحف الشريف</item>
+        <item>مكتبة الحديث الشريف وعلومه - أم الكتاب و الدرر السنية</item>
+        <item>timesprayer.today</item>
+        <item>mp3Quran</item>
+        <item>EveryAyah Quran Files</item>
+        <item>folderat.com</item>
+    </string-array>
+
+    <string-array name="source_urls" translatable="false">
+        <item>https://qurancomplex.gov.sa/techquran/dev/</item>
+        <item>https://quranenc.com/ar/home</item>
+        <item>https://qurancomplex.gov.sa/techquran/dev/</item>
+        <item>https://dorar.net</item>
+        <item>https://timesprayer.today</item>
+        <item>https://www.mp3quran.net</item>
+        <item>https://everyayah.com</item>
+        <item>https://folderat.com/Reference/1649/%D8%A3%D8%B3%D8%A6%D9%84%D8%A9-%D8%AF%D9%8A%D9%86%D9%8A%D8%A9-%D9%85%D8%B9-%D8%AE%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA</item>
+    </string-array>
+
 </resources>

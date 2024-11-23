@@ -112,13 +112,6 @@
     <string name="reminder_before">%s in %s minutes</string>
     <string name="reminder_after">%s %s minutes ago</string>
 
-    <!-- Sources -->
-    <string name="quran_source">Quran: from King Fahd Glorious Quran Printing Complex.</string>
-    <string name="interpretation_source">Interpretation: tafseer moyassar from King Fahd Glorious Quran Printing Complex.</string>
-    <string name="quiz_source">Quiz questions: from folderat site.</string>
-    <string name="remembrances_source">Remembrances and duas: from https://timesprayer.today</string>
-    <string name="quran_english_translation_source">Quran English translation: https://quranenc.com</string>
-
     <!-- Toasts -->
     <string name="give_location_permission_toast">Location can not be accessed, give the app location permission to calculate prayer times and qibla</string>
     <string name="location_permission_for_qibla">Location permission is needed to calculate qibla direction</string>
@@ -164,7 +157,6 @@
     <string name="no_matches">No matches found. Make sure you downloaded the books</string>
     <string name="books_no_matches">No matches found</string>
     <string name="hadeeth_books">Hadeeth books</string>
-    <string name="hadeeth_source">Hadeeth books: from omo-alkitab site and al-dorar al sunniya site.</string>
     <string name="search_in_books">Search for text in books</string>
     <string name="books_searcher">Hadeeth searcher</string>
     <string name="quran_searcher">Quran searcher</string>
@@ -233,5 +225,6 @@
     <string name="previous_prayer">Previous Prayer</string>
     <string name="next_prayer">Upcoming Prayer</string>
     <string name="fill_page">Fill page</string>
+    <string name="sources">Sources</string>
 
 </resources>
