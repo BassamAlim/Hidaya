@@ -34,9 +34,9 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
+import bassamalim.hidaya.core.ui.components.MyProgressSlider
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySlider
 import bassamalim.hidaya.core.ui.components.MyText
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -169,7 +169,7 @@ private fun ProgressSpace(
                 fontSize = 19.sp
             )
 
-            MySlider(
+            MyProgressSlider(
                 value = progress.toFloat(),
                 valueRange = 0F..duration.toFloat(),
                 modifier = Modifier.fillMaxWidth(0.7F),

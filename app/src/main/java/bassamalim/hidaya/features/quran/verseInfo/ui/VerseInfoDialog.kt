@@ -38,8 +38,6 @@ fun VerseInfoDialog(
                 text = state.interpretation,
                 modifier = Modifier.fillMaxWidth()
             )
-
-            Footer()
         }
     }
 }
@@ -55,13 +53,4 @@ private fun Header(onDismiss: () -> Unit) {
             modifier = Modifier.align(Alignment.Center)
         )
     }
-}
-
-@Composable
-private fun Footer() {
-    MyText(
-        text = stringResource(R.string.interpretation),
-        modifier = Modifier.fillMaxWidth(),
-        fontWeight = FontWeight.Bold
-    )
 }
