@@ -334,13 +334,6 @@ class Activity : ComponentActivity() {
             )
             alarm.setAll(prayerTimes)
         }
-        else if (appStateRepository.isOnboardingCompleted().first()) {
-            Toast.makeText(
-                this,
-                getString(R.string.give_location_permission_toast),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
     }
 
     private fun setupBootReceiver() {

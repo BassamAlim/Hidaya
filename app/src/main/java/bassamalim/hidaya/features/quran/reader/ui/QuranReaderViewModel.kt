@@ -7,6 +7,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -177,11 +178,15 @@ class QuranReaderViewModel @Inject constructor(
         }
     }
 
-    fun onPlayPauseClick(activity: Activity) {
+    fun onPlayPauseClick(
+        activity: Activity,
+        snackbarHostState: SnackbarHostState,
+        message: String
+    ) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            _uiState.update { it.copy(
-                isPlayerNotSupportedShown = true
-            )}
+            viewModelScope.launch {
+                snackbarHostState.showSnackbar(message)
+            }
             return
         }
 

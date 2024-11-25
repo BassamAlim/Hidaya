@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.locator.ui
 
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +11,6 @@ import bassamalim.hidaya.features.locator.domain.LocatorDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,13 +29,15 @@ class LocatorViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun provide(
-        locationRequestLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+        locationRequestLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>,
+        snackbarHostState: SnackbarHostState,
+        snackbarMessage: String
     ) {
         domain.setLocationRequestLauncher(locationRequestLauncher)
         domain.setShowBackgroundLocationPermissionNeeded {
-            _uiState.update { it.copy(
-                shouldShowAllowLocationToast = true
-            )}
+            viewModelScope.launch {
+                snackbarHostState.showSnackbar(snackbarMessage)
+            }
         }
         domain.setLaunch(::launch)
     }

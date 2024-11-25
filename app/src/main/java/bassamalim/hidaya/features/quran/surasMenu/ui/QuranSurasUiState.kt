@@ -5,6 +5,5 @@ data class QuranSurasUiState(
     val bookmarkPageText: String? = null,
     val bookmarkSuraText: String? = null,
     val searchText: String = "",
-    val isTutorialDialogShown: Boolean = false,
-    val shouldShowPageDoesNotExist: Int = 0
+    val isTutorialDialogShown: Boolean = false
 )

@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,6 +47,7 @@ import bassamalim.hidaya.features.remembrances.categoriesMenu.ui.RemembranceCate
 fun MainScreen(viewModel: MainViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val bottomNavController = rememberNavController()
+    val snackBarHostState = remember { SnackbarHostState() }
 
     MyScaffold(
         title = stringResource(R.string.app_name),
@@ -54,18 +58,19 @@ fun MainScreen(viewModel: MainViewModel) {
                 onDateClick = viewModel::onDateClick
             )
         },
-        bottomBar = { MyBottomNavigation(bottomNavController) }
+        bottomBar = { MyBottomNavigation(bottomNavController) },
+        snackBarHost = { SnackbarHost(snackBarHostState) }
     ) { padding ->
-        NavigationGraph(bottomNavController, padding)
+        NavigationGraph(
+            bottomNavController = bottomNavController,
+            snackBarHostState = snackBarHostState,
+            padding = padding
+        )
     }
 }
 
 @Composable
-private fun TopBar(
-    hijriDate: String,
-    gregorianDate: String,
-    onDateClick: () -> Unit
-) {
+private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> Unit) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceContainer,
         shadowElevation = 8.dp,
@@ -77,7 +82,7 @@ private fun TopBar(
             Modifier.fillMaxSize()
         ) {
             Row(
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -85,18 +90,18 @@ private fun TopBar(
             ) {
                 // App name
                 MyText(
-                    stringResource(R.string.app_name),
+                    text = stringResource(R.string.app_name),
                     textColor = MaterialTheme.colorScheme.onPrimary
                 )
 
                 Column(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxHeight()
                         .clickable(onClick = onDateClick),
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Column(
-                        Modifier
+                        modifier = Modifier
                             .fillMaxHeight()
                             .padding(horizontal = 10.dp),
                         horizontalAlignment = Alignment.End
@@ -125,10 +130,11 @@ private fun TopBar(
 @Composable
 private fun NavigationGraph(
     bottomNavController: NavHostController,
+    snackBarHostState: SnackbarHostState,
     padding: PaddingValues
 ) {
     NavHost(
-        bottomNavController,
+        navController = bottomNavController,
         startDestination = BottomNavItem.Home.route,
         modifier = Modifier.padding(padding)
     ) {
@@ -188,7 +194,8 @@ private fun NavigationGraph(
             popExitTransition = TabPopExit
         ) {
             MoreScreen(
-                hiltViewModel()
+                viewModel = hiltViewModel(),
+                snackBarHostState = snackBarHostState
             )
         }
     }

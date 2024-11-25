@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.about.ui
 
 import android.app.Activity
 import android.app.Application
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.features.about.domain.AboutDomain
@@ -36,13 +37,15 @@ class AboutViewModel @Inject constructor(
         initialValue = AboutUiState()
     )
 
-    fun onRebuildDatabaseClick(activity: Activity) {
+    fun onRebuildDatabaseClick(
+        activity: Activity,
+        snackbarHostState: SnackbarHostState,
+        message: String
+    ) {
         viewModelScope.launch {
             domain.rebuildDatabase(activity)
 
-            _uiState.update { it.copy(
-                shouldShowRebuilt = it.shouldShowRebuilt + 1
-            )}
+            snackbarHostState.showSnackbar(message)
         }
     }
 

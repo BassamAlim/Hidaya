@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.prayers.board.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -16,11 +15,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,42 +43,38 @@ import java.util.SortedMap
 fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (state.isLoading) LoadingScreen()
-    else {
-        ParentColumn {
-            LocationCard(
-                isLocationAvailable = state.isLocationAvailable,
-                locationName = state.locationName,
-                onLocatorClick = viewModel::onLocatorClick
-            )
+    if (state.isLoading) return LoadingScreen()
 
-            PrayersSpace(
-                prayersData = state.prayersData,
-                isLocationAvailable = state.isLocationAvailable,
-                onPrayerCardClick = { prayer, isLocationAvailable ->
-                    viewModel.onPrayerCardClick(prayer, isLocationAvailable)
-                },
-                onReminderCardClick = viewModel::onExtraReminderCardClick
-            )
-
-            DayCard(
-                dateText = state.dateText,
-                isNoDateOffset = state.isNoDateOffset,
-                onDateClick = viewModel::onDateClick,
-                onPreviousDayClick = viewModel::onPreviousDayClick,
-                onNextDayClick = viewModel::onNextDayClick
-            )
-        }
-
-        TutorialDialog(
-            shown = state.isTutorialDialogShown,
-            text = stringResource(R.string.prayers_tips),
-            onDismiss = viewModel::onTutorialDialogDismiss
+    ParentColumn {
+        LocationCard(
+            isLocationAvailable = state.isLocationAvailable,
+            locationName = state.locationName,
+            onLocatorClick = viewModel::onLocatorClick
         )
 
-        if (state.shouldShowLocationFailedToast)
-            LocationFailedToast()
+        PrayersSpace(
+            prayersData = state.prayersData,
+            isLocationAvailable = state.isLocationAvailable,
+            onPrayerCardClick = { prayer, isLocationAvailable ->
+                viewModel.onPrayerCardClick(prayer, isLocationAvailable)
+            },
+            onReminderCardClick = viewModel::onExtraReminderCardClick
+        )
+
+        DayCard(
+            dateText = state.dateText,
+            isNoDateOffset = state.isNoDateOffset,
+            onDateClick = viewModel::onDateClick,
+            onPreviousDayClick = viewModel::onPreviousDayClick,
+            onNextDayClick = viewModel::onNextDayClick
+        )
     }
+
+    TutorialDialog(
+        shown = state.isTutorialDialogShown,
+        text = stringResource(R.string.prayers_tips),
+        onDismiss = viewModel::onTutorialDialogDismiss
+    )
 }
 
 @Composable
@@ -94,15 +87,16 @@ private fun LocationCard(
         Modifier.padding(top = 5.dp)
     ) {
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MyText(
-                if (isLocationAvailable) locationName
-                else stringResource(R.string.click_to_locate),
+                text =
+                    if (isLocationAvailable) locationName
+                    else stringResource(R.string.click_to_locate),
                 modifier = Modifier
                     .widthIn(1.dp, 300.dp)
                     .padding(start = 15.dp)
@@ -128,7 +122,7 @@ private fun ColumnScope.PrayersSpace(
     onReminderCardClick: (Prayer) -> Unit
 ) {
     Column(
-        Modifier
+        modifier = Modifier
             .weight(1F)
             .padding(vertical = 10.dp, horizontal = 6.dp)
             .verticalScroll(rememberScrollState()),
@@ -192,7 +186,7 @@ private fun RowScope.PrayerCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MyText(
-                data.text,
+                text = data.text,
                 fontSize = 29.nsp,
                 fontWeight = FontWeight.Medium
             )
@@ -210,8 +204,8 @@ private fun RowScope.PrayerCard(
                             }
                         ),
                         contentDescription = stringResource(R.string.notification_image_description),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -235,13 +229,13 @@ private fun ExtraReminderCard(
     ) {
         if (isLocationAvailable) {
             MyRow(
-                Modifier.padding(vertical = 19.dp),
+                modifier = Modifier.padding(vertical = 19.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 if (isReminderOffsetSpecified) {
                     MyText(
-                        reminderOffsetText,
-                        Modifier.padding(end = 3.dp),
+                        text = reminderOffsetText,
+                        modifier = Modifier.padding(end = 3.dp),
                         textColor = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -271,7 +265,7 @@ private fun DayCard(
         Modifier.padding(bottom = 8.dp)
     ) {
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -303,17 +297,5 @@ private fun DayCard(
                 onClick = onNextDayClick
             )
         }
-    }
-}
-
-@Composable
-private fun LocationFailedToast() {
-    val context = LocalContext.current
-    LaunchedEffect(null) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.location_failed),
-            Toast.LENGTH_SHORT
-        ).show()
     }
 }

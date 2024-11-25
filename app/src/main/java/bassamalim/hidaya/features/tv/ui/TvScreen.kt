@@ -1,12 +1,14 @@
 package bassamalim.hidaya.features.tv.ui
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -27,10 +29,12 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import kotlinx.coroutines.launch
 
 @Composable
 fun TvScreen(viewModel: TvViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     if (state.isLoading) return
 
@@ -40,11 +44,12 @@ fun TvScreen(viewModel: TvViewModel) {
         ) {
             YoutubeScreen(
                 language = viewModel.language,
-                onInitializationSuccess = viewModel::onInitializationSuccess
+                onInitializationSuccess = viewModel::onInitializationSuccess,
+                snackbarHostState = snackbarHostState
             )
 
             MyColumn(
-                modifier = Modifier.padding(top = 100.dp)
+                Modifier.padding(top = 100.dp)
             ) {
                 MyHorizontalButton(
                     text = stringResource(R.string.quran_channel),
@@ -79,8 +84,11 @@ fun TvScreen(viewModel: TvViewModel) {
 fun YoutubeScreen(
     language: Language,
     onInitializationSuccess: (YouTubePlayer) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val playbackFailedMessage = stringResource(R.string.playback_failed)
 
     // a fix because locale changes when displaying YouTubePlayerView for some reason
     DisposableEffect(Unit) {
@@ -103,11 +111,9 @@ fun YoutubeScreen(
                     ) {
                         super.onError(youTubePlayer, error)
                         Log.e(Global.TAG, java.lang.String.valueOf(error))
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.playback_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(playbackFailedMessage)
+                        }
                     }
                 })
             }

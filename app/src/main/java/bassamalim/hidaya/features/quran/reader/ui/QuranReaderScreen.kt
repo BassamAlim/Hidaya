@@ -3,7 +3,6 @@ package bassamalim.hidaya.features.quran.reader.ui
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -24,6 +23,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -79,6 +80,7 @@ import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
 fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current as Activity
     val configuration = LocalConfiguration.current
 
@@ -105,17 +107,25 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             )
         },
         bottomBar = {
+            val featureNotFoundMessage = stringResource(R.string.feature_not_supported)
             BottomBar(
                 activity = activity,
                 isBookmarked = state.isBookmarked,
                 playerState = state.playerState,
                 onBookmarkClick = viewModel::onBookmarkClick,
                 onPreviousVerseClick = viewModel::onPreviousVerseClick,
-                onPlayPauseClick = viewModel::onPlayPauseClick,
+                onPlayPauseClick = {
+                    viewModel.onPlayPauseClick(
+                        activity = activity,
+                        snackbarHostState = snackbarHostState,
+                        message = featureNotFoundMessage
+                    )
+                },
                 onNextVerseClick = viewModel::onNextVerseClick,
                 onSettingsClick = viewModel::onSettingsClick
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         PageContent(
             viewType = state.viewType,
@@ -143,10 +153,6 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
         text = stringResource(R.string.suras_reader_tips),
         onDismiss = viewModel::onTutorialDialogDismiss
     )
-
-    if (state.isPlayerNotSupportedShown) {
-        PlayerNotSupportedToast()
-    }
 }
 
 @Composable
@@ -159,7 +165,7 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
         shadowElevation = 8.dp
     ) {
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -209,7 +215,7 @@ private fun BottomBar(
         Modifier.height(56.dp)
     ) {
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -588,7 +594,7 @@ private fun SuraHeader(
     onGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
     Box(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth(0.95f)
             .height(height ?: (textSize * 1.6).dp)
             .onGloballyPositioned { layoutCoordinates ->
@@ -626,18 +632,6 @@ private fun Basmalah(textSize: Int, height: Dp? = null) {
         contentScale = ContentScale.FillBounds,
         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
     )
-}
-
-@Composable
-private fun PlayerNotSupportedToast() {
-    val context = LocalContext.current
-    LaunchedEffect(null) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.feature_not_supported),
-            Toast.LENGTH_SHORT
-        ).show()
-    }
 }
 
 @Composable

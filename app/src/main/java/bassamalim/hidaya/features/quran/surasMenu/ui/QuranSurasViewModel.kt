@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.quran.surasMenu.ui
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
@@ -115,7 +116,7 @@ class QuranSurasViewModel @Inject constructor(
         )}
     }
 
-    fun onSearchSubmit() {
+    fun onSearchSubmit(navbarHostState: SnackbarHostState, message: String) {
         try {
             val num = _uiState.value.searchText.toInt()
             if (num in 1..604) {
@@ -127,9 +128,9 @@ class QuranSurasViewModel @Inject constructor(
                 )
             }
             else {
-                _uiState.update { it.copy(
-                    shouldShowPageDoesNotExist = it.shouldShowPageDoesNotExist + 1
-                )}
+                viewModelScope.launch {
+                    navbarHostState.showSnackbar(message)
+                }
             }
         } catch (_: NumberFormatException) {}
     }

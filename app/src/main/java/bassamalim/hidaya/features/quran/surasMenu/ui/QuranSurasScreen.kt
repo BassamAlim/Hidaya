@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.quran.surasMenu.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,12 +10,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,77 +40,80 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val navbarHostState = remember { SnackbarHostState() }
 
-    if (state.isLoading) {
-        LoadingScreen()
-    }
-    else {
-        MyScaffold(
-            title = "",
-            topBar = {},  // override the default top bar
-            fab = {
-                MyFloatingActionButton(
-                    iconId = R.drawable.ic_quran_search,
-                    description = stringResource(R.string.search_in_quran),
-                    onClick = viewModel::onQuranSearcherClick
-                )
-            }
-        ) { padding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(padding)
-            ) {
-                MyRectangleButton(
-                    text =
-                        if (state.bookmarkPageText == null) {
-                            stringResource(R.string.no_bookmarked_page)
-                        }
-                        else {
-                            stringResource(R.string.bookmarked_page) +
-                                    " ${stringResource(R.string.page)}" +
-                                    " ${state.bookmarkPageText}," +
-                                    " ${stringResource(R.string.sura)}" +
-                                    " ${state.bookmarkSuraText}"
-                        },
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 18.sp,
-                    innerPadding = PaddingValues(vertical = 4.dp),
-                    onClick = viewModel::onBookmarkedPageClick
-                )
+    if (state.isLoading) return LoadingScreen()
 
-                TabLayout(
-                    pageNames = listOf(
-                        stringResource(R.string.all),
-                        stringResource(R.string.favorite)
-                    ),
-                    searchComponent = {
-                        SearchComponent(
-                            value = state.searchText,
-                            hint = stringResource(R.string.quran_search_hint),
-                            modifier = Modifier.fillMaxWidth(),
-                            onValueChange = viewModel::onSearchTextChange,
-                            onSubmit = viewModel::onSearchSubmit
-                        )
+    MyScaffold(
+        title = "",
+        topBar = {},  // override the default top bar
+        floatingActionButton = {
+            MyFloatingActionButton(
+                iconId = R.drawable.ic_quran_search,
+                description = stringResource(R.string.search_in_quran),
+                onClick = viewModel::onQuranSearcherClick
+            )
+        },
+        snackBarHost = { SnackbarHost(navbarHostState) }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(padding)
+        ) {
+            MyRectangleButton(
+                text =
+                    if (state.bookmarkPageText == null) {
+                        stringResource(R.string.no_bookmarked_page)
                     }
-                ) { page ->
-                    Tab(
-                        surasFlow = viewModel.getItems(page),
-                        onSuraClick = viewModel::onSuraClick,
-                        onFavoriteClick = viewModel::onFavoriteClick
+                    else {
+                        stringResource(R.string.bookmarked_page) +
+                                " ${stringResource(R.string.page)}" +
+                                " ${state.bookmarkPageText}," +
+                                " ${stringResource(R.string.sura)}" +
+                                " ${state.bookmarkSuraText}"
+                    },
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 18.sp,
+                innerPadding = PaddingValues(vertical = 4.dp),
+                onClick = viewModel::onBookmarkedPageClick
+            )
+
+            TabLayout(
+                pageNames = listOf(
+                    stringResource(R.string.all),
+                    stringResource(R.string.favorite)
+                ),
+                searchComponent = {
+                    val pageDoesNotExistMessage = stringResource(R.string.page_does_not_exist)
+                    SearchComponent(
+                        value = state.searchText,
+                        hint = stringResource(R.string.quran_search_hint),
+                        modifier = Modifier.fillMaxWidth(),
+                        onValueChange = viewModel::onSearchTextChange,
+                        onSubmit = {
+                            viewModel.onSearchSubmit(
+                                navbarHostState = navbarHostState,
+                                message = pageDoesNotExistMessage
+                            )
+                        }
                     )
                 }
+            ) { page ->
+                Tab(
+                    surasFlow = viewModel.getItems(page),
+                    onSuraClick = viewModel::onSuraClick,
+                    onFavoriteClick = viewModel::onFavoriteClick
+                )
             }
         }
-
-        TutorialDialog(
-            shown = state.isTutorialDialogShown,
-            text = stringResource(R.string.quran_menu_tips),
-            onDismiss = viewModel::onTutorialDialogDismiss
-        )
-
-        if (state.shouldShowPageDoesNotExist != 0) PageDoesNotExistToast()
     }
+
+    TutorialDialog(
+        shown = state.isTutorialDialogShown,
+        text = stringResource(R.string.quran_menu_tips),
+        onDismiss = viewModel::onTutorialDialogDismiss
+    )
 }
 
 @Composable
@@ -162,16 +165,4 @@ private fun Tab(
             }
         }
     )
-}
-
-@Composable
-private fun PageDoesNotExistToast() {
-    val context = LocalContext.current
-    LaunchedEffect(null) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.page_does_not_exist),
-            Toast.LENGTH_SHORT
-        ).show()
-    }
 }

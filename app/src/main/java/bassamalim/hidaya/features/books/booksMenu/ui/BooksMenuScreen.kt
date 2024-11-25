@@ -1,14 +1,16 @@
 package bassamalim.hidaya.features.books.booksMenu.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,22 +33,32 @@ import bassamalim.hidaya.core.utils.FileUtils
 @Composable
 fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
 
     if (state.isLoading) return LoadingScreen()
 
     MyScaffold(
         title = stringResource(R.string.hadeeth_books),
-        fab = {
+        floatingActionButton = {
+            val noDownloadedBooksMessage = stringResource(R.string.no_downloaded_books)
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_books),
-                onClick = { viewModel.onSearcherClick() }
+                onClick = {
+                    viewModel.onSearcherClick(
+                        snackBarHostState = snackBarHostState,
+                        message = noDownloadedBooksMessage
+                    )
+                }
             )
+        },
+        snackBarHost = {
+            SnackbarHost(hostState = snackBarHostState)
         }
     ) { padding ->
         // books list
         MyLazyColumn(
-            Modifier
+            modifier = Modifier
                 .padding(padding)
                 .padding(vertical = 5.dp),
             lazyList = {
@@ -69,8 +81,6 @@ fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
 
         if (state.shouldShowWait != 0)
             WaitMessage(state.shouldShowWait)
-        if (state.shouldShowNoBooksDownloaded != 0)
-            NoBooksDownloadedMessage(state.shouldShowNoBooksDownloaded)
     }
 }
 
@@ -97,12 +107,9 @@ private fun BookCard(
 }
 
 @Composable
-private fun DownloadBtn(
-    downloadState: DownloadState,
-    onClick: () -> Unit,
-) {
+private fun DownloadBtn(downloadState: DownloadState, onClick: () -> Unit) {
     Box(
-        Modifier.padding(end = 10.dp),
+        modifier = Modifier.padding(end = 10.dp),
         contentAlignment = Alignment.Center
     ) {
         if (downloadState == DownloadState.DOWNLOADING)
@@ -126,17 +133,5 @@ private fun WaitMessage(shouldShow: Int) {
     val context = LocalContext.current
     LaunchedEffect(shouldShow) {
         FileUtils.showWaitMassage(context)
-    }
-}
-
-@Composable
-private fun NoBooksDownloadedMessage(shouldShow: Int) {
-    val context = LocalContext.current
-    LaunchedEffect(shouldShow) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.no_downloaded_books),
-            Toast.LENGTH_LONG
-        ).show()
     }
 }

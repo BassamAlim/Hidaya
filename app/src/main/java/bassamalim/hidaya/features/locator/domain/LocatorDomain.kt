@@ -29,7 +29,7 @@ class LocatorDomain @Inject constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
-    suspend fun locate() {
+    fun locate() {
         if (isPermissionsGranted()) {
             LocationServices.getFusedLocationProviderClient(app).lastLocation
                 .addOnSuccessListener { location: Location? ->
@@ -70,7 +70,7 @@ class LocatorDomain @Inject constructor(
         ))
     }
 
-    suspend fun handleLocationRequestResult(result: Map<String, Boolean>) {
+    fun handleLocationRequestResult(result: Map<String, Boolean>) {
         if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
             return
 

@@ -50,14 +50,12 @@ class PrayersBoardViewModel @Inject constructor(
             state.copy(
                 isLocationAvailable = true,
                 prayersData = getPrayersData(prayerTimeMap, prayerSettings),
-                locationName = getLocationName(location),
-                shouldShowLocationFailedToast = false
+                locationName = getLocationName(location)
             )
         }
         else state.copy(
             isLocationAvailable = false,
-            locationName = "",
-            shouldShowLocationFailedToast = true
+            locationName = ""
         )
     }.onStart {
         initializeData()

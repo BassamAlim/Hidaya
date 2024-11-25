@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.books.booksMenu.ui
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.DownloadState
@@ -114,14 +115,14 @@ class BooksMenuViewModel @Inject constructor(
         }
     }
 
-    fun onSearcherClick() {
+    fun onSearcherClick(snackBarHostState: SnackbarHostState, message: String) {
         val noDownloadedBooks = !uiState.value.books.values.any {
             it.downloadState == DownloadState.DOWNLOADED
         }
         if (noDownloadedBooks) {
-            _uiState.update { it.copy(
-                shouldShowNoBooksDownloaded = it.shouldShowNoBooksDownloaded + 1
-            )}
+            viewModelScope.launch {
+                snackBarHostState.showSnackbar(message)
+            }
         }
         else navigator.navigate(Screen.BookSearcher)
     }

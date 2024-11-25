@@ -1,7 +1,6 @@
 package bassamalim.hidaya.features.about.ui
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.clickable
@@ -14,8 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,30 +42,36 @@ import bassamalim.hidaya.core.ui.components.MyText
 @Composable
 fun AboutScreen(viewModel: AboutViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current as Activity
+    val databaseRebuiltMessage = stringResource(R.string.database_rebuilt)
 
-    MyScaffold(title = stringResource(R.string.about)) { padding ->
+    MyScaffold(
+        title = stringResource(R.string.about),
+        snackBarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 5.dp)
         ) {
-            ThankYouMessage(onTitleClick = viewModel::onTitleClick)
+            ThankYouMessage(viewModel::onTitleClick)
 
             SourcesList(state.sources)
 
             HiddenArea(
                 isDevModeOn = state.isDevModeEnabled,
                 lastDailyUpdate = state.lastDailyUpdate,
-                onRebuildDatabaseClick = { viewModel.onRebuildDatabaseClick(activity) }
+                onRebuildDatabaseClick = {
+                    viewModel.onRebuildDatabaseClick(
+                        activity = activity,
+                        snackbarHostState = snackbarHostState,
+                        message = databaseRebuiltMessage
+                    )
+                }
             )
         }
-    }
-
-    // show a toast when the database is rebuilt
-    if (state.shouldShowRebuilt != 0) {
-        DatabaseRebuiltToast(shouldShowRebuilt = state.shouldShowRebuilt)
     }
 }
 
@@ -164,17 +170,5 @@ private fun ColumnScope.HiddenArea(
                     .padding(10.dp)
             )
         }
-    }
-}
-
-@Composable
-private fun DatabaseRebuiltToast(shouldShowRebuilt: Int) {
-    val ctx = LocalContext.current
-    LaunchedEffect(key1 = shouldShowRebuilt) {
-        Toast.makeText(
-            ctx,
-            ctx.getString(R.string.database_rebuilt),
-            Toast.LENGTH_SHORT
-        ).show()
     }
 }
