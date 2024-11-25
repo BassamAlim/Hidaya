@@ -24,7 +24,7 @@ import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.other.PrayersWidget
+import bassamalim.hidaya.core.widgets.PrayersWidget
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils

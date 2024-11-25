@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:initialKeyguardLayout="@layout/glance_default_loading_layout"
     android:description="@string/app_widget_description"
-    android:initialKeyguardLayout="@layout/widget_prayers"
-    android:initialLayout="@layout/widget_prayers"
     android:minWidth="300dp"
     android:minHeight="50dp"
     android:previewImage="@drawable/prayers_widget_preview"
