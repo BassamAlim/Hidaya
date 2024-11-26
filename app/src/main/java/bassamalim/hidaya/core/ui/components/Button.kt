@@ -19,6 +19,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -303,15 +306,16 @@ fun MySquareButton(
 
 @Composable
 fun MyFavoriteButton(isFavorite: Boolean, onClick: () -> Unit) {
-    MyIconButton(
-        iconId =
-            if (isFavorite) R.drawable.ic_star
-            else R.drawable.ic_star_outline,
-        description = "Favorite",
-        onClick = onClick,
-        tint = MaterialTheme.colorScheme.primary,
-        iconSize = 28.dp
-    )
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector =
+                if (isFavorite) Icons.Filled.Star
+                else Icons.Outlined.StarOutline,
+            contentDescription = stringResource(R.string.favorite),
+            modifier = Modifier.size(26.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
 }
 
 @Composable

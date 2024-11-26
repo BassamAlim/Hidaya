@@ -106,7 +106,5 @@ fun SearchComponent(
 //        expanded = expanded,
 //        onExpandedChange = {},
 //        modifier = modifier
-//    ) {
-//
-//    }
+//    ) {}
 //}
