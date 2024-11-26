@@ -1,10 +1,11 @@
 package bassamalim.hidaya.core.widgets
 
 import android.content.Context
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -26,7 +27,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.util.Calendar
-import java.util.SortedMap
 
 class PrayersWidget(
     private val appSettingsRepository: AppSettingsRepository,
@@ -36,33 +36,47 @@ class PrayersWidget(
 ) : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val prayerTimesStrings = withContext(dispatcher) {
+        val prayerTimeStrings = withContext(dispatcher) {
             bootstrapApp(context)
 
             getPrayerTimeStringMap(context)
         }
 
         provideContent {
-            if (prayerTimesStrings == null) {
-                Text(text = stringResource(R.string.error_fetching_data))
+            GlanceTheme {
+                WidgetContent(prayerTimeStrings)
             }
-            else {
-                Row(
-                    modifier = GlanceModifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    for (prayer in prayerTimesStrings) {
-                        Text(
-                            text = prayer.value,
-                            modifier = GlanceModifier.defaultWeight(),
-                            style = TextStyle(
-                                textAlign = TextAlign.Center
-                            )
+        }
+    }
+
+    @Composable
+    private fun WidgetContent(prayerTimesStrings: Map<Prayer, String>?) {
+        if (prayerTimesStrings == null) {
+            Text(
+                text = stringResource(R.string.error_fetching_data),
+                style = TextStyle(
+                    color = GlanceTheme.colors.onSurface,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+        else {
+            Row(
+                modifier = GlanceModifier
+                    .fillMaxSize()
+                    .background(GlanceTheme.colors.surface),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                for (prayer in prayerTimesStrings) {
+                    Text(
+                        text = prayer.value,
+                        modifier = GlanceModifier.defaultWeight(),
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurface,
+                            textAlign = TextAlign.Center
                         )
-                    }
+                    )
                 }
             }
         }
@@ -76,9 +90,8 @@ class PrayersWidget(
         )
     }
 
-    private suspend fun getPrayerTimeStringMap(context: Context): SortedMap<Prayer, String>? {
+    private suspend fun getPrayerTimeStringMap(context: Context): Map<Prayer, String>? {
         val location = locationRepository.getLocation().first<Location?>() ?: return null
-
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
@@ -94,8 +107,8 @@ class PrayersWidget(
 
         val prayerNames = context.resources.getStringArray(R.array.prayer_names)
 
-        val strings = sortedMapOf<Prayer, String>()
-        for (n in prayerNames.indices) {
+        val strings = mutableMapOf<Prayer, String>()
+        for (n in prayerNames.indices.reversed()) {
             if (n == 1) continue  // To skip sunrise
 
             val name = prayerNames[n]
@@ -104,14 +117,7 @@ class PrayersWidget(
 
             strings[prayer] = "$name\n$timeString"
         }
-
-        return sortedMapOf<Prayer, String>(
-            Prayer.FAJR to strings[Prayer.FAJR]!!,
-            Prayer.ISHAA to strings[Prayer.ISHAA]!!,
-            Prayer.MAGHRIB to strings[Prayer.MAGHRIB]!!,
-            Prayer.ASR to strings[Prayer.ASR]!!,
-            Prayer.DHUHR to strings[Prayer.DHUHR]!!,
-        )
+        return strings
     }
 
 }
