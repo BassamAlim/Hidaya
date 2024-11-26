@@ -1,15 +1,18 @@
 package bassamalim.hidaya.core.widgets
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.text.Text
@@ -44,39 +47,53 @@ class PrayersWidget(
 
         provideContent {
             GlanceTheme {
-                WidgetContent(prayerTimeStrings)
+                WidgetContent(prayerTimeStrings, context)
             }
         }
     }
 
     @Composable
-    private fun WidgetContent(prayerTimesStrings: Map<Prayer, String>?) {
-        if (prayerTimesStrings == null) {
-            Text(
-                text = stringResource(R.string.error_fetching_data),
-                style = TextStyle(
-                    color = GlanceTheme.colors.onSurface,
-                    textAlign = TextAlign.Center
-                )
-            )
-        }
-        else {
-            Row(
-                modifier = GlanceModifier
-                    .fillMaxSize()
-                    .background(GlanceTheme.colors.surface),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                for (prayer in prayerTimesStrings) {
-                    Text(
-                        text = prayer.value,
-                        modifier = GlanceModifier.defaultWeight(),
-                        style = TextStyle(
-                            color = GlanceTheme.colors.onSurface,
-                            textAlign = TextAlign.Center
-                        )
+    private fun WidgetContent(prayerTimesStrings: Map<Prayer, String>?, context: Context) {
+        Box(
+            modifier = GlanceModifier.clickable {
+//                actionStartActivity(Activity::class.java)
+
+//                actionStartActivity<Activity>()
+
+                val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+                intent?.let {
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(it)
+                }
+            }
+        ) {
+            if (prayerTimesStrings == null) {
+                Text(
+                    text = stringResource(R.string.error_fetching_data),
+                    style = TextStyle(
+                        color = GlanceTheme.colors.onSurface,
+                        textAlign = TextAlign.Center
                     )
+                )
+            }
+            else {
+                Row(
+                    modifier = GlanceModifier
+                        .fillMaxSize()
+                        .background(GlanceTheme.colors.surface),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    for (prayer in prayerTimesStrings) {
+                        Text(
+                            text = prayer.value,
+                            modifier = GlanceModifier.defaultWeight(),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                textAlign = TextAlign.Center
+                            )
+                        )
+                    }
                 }
             }
         }
