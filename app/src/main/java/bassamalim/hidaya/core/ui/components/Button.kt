@@ -305,14 +305,14 @@ fun MySquareButton(
 }
 
 @Composable
-fun MyFavoriteButton(isFavorite: Boolean, onClick: () -> Unit) {
+fun MyFavoriteButton(isFavorite: Boolean, onClick: () -> Unit, size: Dp = 26.dp) {
     IconButton(onClick = onClick) {
         Icon(
             imageVector =
                 if (isFavorite) Icons.Filled.Star
                 else Icons.Outlined.StarOutline,
             contentDescription = stringResource(R.string.favorite),
-            modifier = Modifier.size(26.dp),
+            modifier = Modifier.size(size),
             tint = MaterialTheme.colorScheme.primary
         )
     }

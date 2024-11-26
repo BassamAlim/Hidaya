@@ -593,6 +593,17 @@ private fun SuraHeader(
     height: Dp? = null,
     onGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
+// TODO: Implement revelation icon
+//                        Icon(
+//                            painter = painterResource(
+//                                if (item.revelation == 0) R.drawable.ic_kaaba
+//                                else R.drawable.ic_madina
+//                            ),
+//                            contentDescription = stringResource(R.string.revelation_view_description),
+//                            modifier = Modifier.size(30.dp),
+//                            tint = MaterialTheme.colorScheme.outlineVariant
+//                        )
+
     Box(
         modifier = Modifier
             .fillMaxWidth(0.95f)
