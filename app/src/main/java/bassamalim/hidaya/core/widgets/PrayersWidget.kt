@@ -56,10 +56,6 @@ class PrayersWidget(
     private fun WidgetContent(prayerTimesStrings: Map<Prayer, String>?, context: Context) {
         Box(
             modifier = GlanceModifier.clickable {
-//                actionStartActivity(Activity::class.java)
-
-//                actionStartActivity<Activity>()
-
                 val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
                 intent?.let {
                     it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
