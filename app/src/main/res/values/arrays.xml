@@ -67,8 +67,9 @@
     </string-array>
 
     <string-array name="themes_entries">
+        <item>الأساسي</item>
+        <item>الأبيض</item>
         <item>الفاتح</item>
-        <item>الداكن</item>
         <item>ليلي</item>
     </string-array>
 

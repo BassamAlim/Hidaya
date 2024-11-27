@@ -35,6 +35,6 @@ fun AppTheme(
 private fun getColors(theme: Theme) = when (theme) {
     Theme.ORIGINAL -> colorSchemeO
     Theme.WHITE -> colorSchemeW
-    Theme.LIGHT -> colorSchemeW
-    Theme.NIGHT -> colorSchemeO
+    Theme.LIGHT -> colorSchemeL
+    Theme.NIGHT -> colorSchemeN
 }

@@ -67,8 +67,9 @@
     </string-array>
 
     <string-array name="themes_entries">
+        <item>Original</item>
+        <item>White</item>
         <item>Light</item>
-        <item>Dark</item>
         <item>Night</item>
     </string-array>
 

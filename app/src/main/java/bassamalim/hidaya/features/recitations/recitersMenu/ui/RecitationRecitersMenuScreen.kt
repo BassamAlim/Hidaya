@@ -154,7 +154,7 @@ private fun ReciterCard(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp, horizontal = 10.dp)
+            .padding(10.dp)
             .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline), RoundedCornerShape(10.dp))
     ) {
         Row(
@@ -192,17 +192,6 @@ private fun ReciterCard(
             }
         }
     }
-
-//    Surface(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(vertical = 6.dp, horizontal = 8.dp),
-//        shadowElevation = 10.dp,
-//        shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
-//        color = MaterialTheme.colorScheme.surfaceContainerLow
-//    ) {
-//
-//    }
 }
 
 @Composable

@@ -89,10 +89,7 @@ private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> 
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // App name
-                MyText(
-                    text = stringResource(R.string.app_name),
-                    textColor = MaterialTheme.colorScheme.onPrimary
-                )
+                MyText(stringResource(R.string.app_name))
 
                 Column(
                     modifier = Modifier
@@ -110,15 +107,13 @@ private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> 
                         MyText(
                             text = hijriDate,
                             fontSize = 16.nsp,
-                            fontWeight = FontWeight.Bold,
-                            textColor = MaterialTheme.colorScheme.onPrimary
+                            fontWeight = FontWeight.Bold
                         )
 
                         // Gregorian date
                         MyText(
                             text = gregorianDate,
-                            fontSize = 16.nsp,
-                            textColor = MaterialTheme.colorScheme.onPrimary
+                            fontSize = 16.nsp
                         )
                     }
                 }

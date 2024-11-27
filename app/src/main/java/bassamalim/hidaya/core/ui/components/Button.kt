@@ -339,8 +339,8 @@ fun MyDownloadButton(
                 description = stringResource(R.string.download_description),
                 iconSize = size,
                 tint =
-                    if (state == DownloadState.DOWNLOADED) MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.onPrimary,
+                    if (state == DownloadState.DOWNLOADED) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurface,
                 onClick = onClick
             )
         }

@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
@@ -43,7 +42,6 @@ fun Tabs(pagerState: PagerState, pageNames: List<String>) {
     TabRow(
         selectedTabIndex = pagerState.currentPage,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        contentColor = Color.White,
         indicator = { tabPositions ->
 
             SecondaryIndicator(
@@ -60,8 +58,8 @@ fun Tabs(pagerState: PagerState, pageNames: List<String>) {
                         text = pageNames[index],
                         fontSize = 18.sp,
                         textColor =
-                            if (pagerState.currentPage == index) MaterialTheme.colorScheme.secondary
-                            else MaterialTheme.colorScheme.onPrimary
+                            if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurface
                     )
                 },
                 selected = pagerState.currentPage == index,
