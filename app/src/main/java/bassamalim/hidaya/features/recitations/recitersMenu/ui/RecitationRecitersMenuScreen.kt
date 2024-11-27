@@ -1,5 +1,8 @@
 package bassamalim.hidaya.features.recitations.recitersMenu.ui
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -149,55 +151,58 @@ private fun ReciterCard(
     onNarrationClick: (Int, Int) -> Unit,
     onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
 ) {
-    Surface(
-        modifier = Modifier
+    Column(
+        Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 8.dp),
-        shadowElevation = 10.dp,
-        shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLow
+            .padding(vertical = 10.dp, horizontal = 10.dp)
+            .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline), RoundedCornerShape(10.dp))
     ) {
-        Column(
-            Modifier
+        Row(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 10.dp),
+                .padding(bottom = 3.dp, start = 10.dp, end = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 3.dp, start = 10.dp, end = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MyText(
-                    text = reciter.reciterName,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
+            MyText(
+                text = reciter.reciterName,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            MyFavoriteButton(
+                isFavorite = reciter.isFavoriteReciter,
+                onClick = { onFavoriteClick(reciter.reciterId, reciter.isFavoriteReciter) }
+            )
+        }
+
+        MyHorizontalDivider(padding = PaddingValues(top = 5.dp))
+
+        Column(
+            Modifier.fillMaxWidth()
+        ) {
+            reciter.narrations.forEachIndexed { idx, narration ->
+                NarrationsCard(
+                    idx = idx,
+                    reciterId = reciter.reciterId,
+                    narration = narration,
+                    onNarrationClick = onNarrationClick,
+                    onDownloadClick = onDownloadNarrationClick
                 )
-
-                MyFavoriteButton(
-                    isFavorite = reciter.isFavoriteReciter,
-                    onClick = { onFavoriteClick(reciter.reciterId, reciter.isFavoriteReciter) }
-                )
-            }
-
-            MyHorizontalDivider()
-
-            Column(
-                Modifier.fillMaxWidth()
-            ) {
-                reciter.narrations.forEachIndexed { idx, narration ->
-                    NarrationsCard(
-                        idx = idx,
-                        reciterId = reciter.reciterId,
-                        narration = narration,
-                        onNarrationClick = onNarrationClick,
-                        onDownloadClick = onDownloadNarrationClick
-                    )
-                }
             }
         }
     }
+
+//    Surface(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(vertical = 6.dp, horizontal = 8.dp),
+//        shadowElevation = 10.dp,
+//        shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
+//        color = MaterialTheme.colorScheme.surfaceContainerLow
+//    ) {
+//
+//    }
 }
 
 @Composable
@@ -211,18 +216,20 @@ private fun NarrationsCard(
     val suraString = stringResource(R.string.sura)
 
     if (idx != 0)
-        MyHorizontalDivider()
+        MyHorizontalDivider(padding = PaddingValues(0.dp))
 
     Box(
-        Modifier.clickable {
-            onNarrationClick(reciterId, narration.id)
-        }
+        Modifier
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .clickable {
+                onNarrationClick(reciterId, narration.id)
+            }
     ) {
         Box(
             Modifier.padding(start = 10.dp)
         ) {
             Row(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically,

@@ -2,6 +2,7 @@ package bassamalim.hidaya.core.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
@@ -42,12 +43,13 @@ fun MyFloatingActionButton(
 @Composable
 fun MyHorizontalDivider(
     modifier: Modifier = Modifier,
-    thickness: Dp = 1.dp
+    thickness: Dp = 1.dp,
+    padding: PaddingValues = PaddingValues(vertical = 5.dp)
 ) {
     HorizontalDivider(
         modifier = modifier
             .alpha(0.6F)
-            .padding(vertical = 5.dp),
+            .padding(padding),
         thickness = thickness,
         color = MaterialTheme.colorScheme.outlineVariant
     )
