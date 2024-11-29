@@ -42,12 +42,12 @@ val colorSchemeO = darkColorScheme(
     outline = Color(0xFF787C80),
     outlineVariant = Color(0xFF818588),
     scrim = Color(0xFF000000),
-    surfaceBright = Color(0xFF222831),
-    surfaceContainer = Color(0xFF222831),
-    surfaceContainerHigh = Color(0xFF2A323D),
     surfaceContainerHighest = Color(0xFF343E4B),
+    surfaceContainerHigh = Color(0xFF2A323D),
+    surfaceContainer = Color(0xFF222831),
     surfaceContainerLow = Color(0xFF222D37),
     surfaceContainerLowest = Color(0xFF141A20),
+    surfaceBright = Color(0xFF222831),
     surfaceDim = Color(0xFF1D252E)
 )
 
@@ -144,23 +144,6 @@ val colorSchemeL = lightColorScheme(
     surfaceDim = Color(0xFF9D9D9D)
 )
 
-// Theme N
-//val BGN = Color(0xFF101010)
-//val PrimaryN = Color(0xFF141517)
-//val PrimaryWeakN = Color(0xB3323232)
-//val OnPrimaryN = Color(0xFFBCC2C7)
-//val SurfaceN = Color(0xFF141517)
-//val OnSurfaceN = Color(0xFFBCC2C7)
-//val AccentN = Color(0xFF0097AA)
-//val AltAccentN = Color(0xFF037583)
-//val RippleN = Color(0xFF3B3E43)
-//val TextN = Color(0xFFBCC2C7)
-//val WeakTextN = Color(0xFFACB1B6)
-//val HighlightN = Color(0xFF01849C)
-//val TrackN = Color(0xFF113297)
-//val ShadowN = Color(0xFF343D47)
-//val QuranBGN = Color(0xFF101010)
-
 val colorSchemeN = darkColorScheme(
     primary = Color(0xFF00ADB5),
     onPrimary = Color(0xFFBCC2C7),
@@ -175,11 +158,11 @@ val colorSchemeN = darkColorScheme(
     onTertiary = Color(0xFFBCC2C7),
     tertiaryContainer = Color(0xFF72C499),
     onTertiaryContainer = Color(0xFF318A5C),
-    background = Color(0xFF1A2027),
+    background = Color(0xFF101010),
     onBackground = Color(0xFFBCC2C7),
-    surface = Color(0xFF1A2027),
+    surface = Color(0xFF010203),
     onSurface = Color(0xFFBCC2C7),
-    surfaceVariant = Color(0xFF1A2027),  // used for quran background
+    surfaceVariant = Color(0xFF181818),  // used for quran background
     onSurfaceVariant = Color(0xFFBCC2C7),  // used for quran text
     surfaceTint = Color(0xFF1A2027),
     inverseSurface = Color(0xFF141A20),
@@ -191,11 +174,11 @@ val colorSchemeN = darkColorScheme(
     outline = Color(0xFF787C80),
     outlineVariant = Color(0xFF818588),
     scrim = Color(0xFF000000),
+    surfaceContainerHighest = Color(0xFF252627),
+    surfaceContainerHigh = Color(0xFF202122),
+    surfaceContainer = Color(0xFF151617),
+    surfaceContainerLow = Color(0xFF121314),
+    surfaceContainerLowest = Color(0xFF070809),
     surfaceBright = Color(0xFF222831),
-    surfaceContainer = Color(0xFF222831),
-    surfaceContainerHigh = Color(0xFF2A323D),
-    surfaceContainerHighest = Color(0xFF343E4B),
-    surfaceContainerLow = Color(0xFF222D37),
-    surfaceContainerLowest = Color(0xFF141A20),
     surfaceDim = Color(0xFF1D252E)
 )
