@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -172,23 +173,8 @@ private fun ItemCard(
     rankType: RankType,
     numeralsLanguage: Language
 ) {
-    MySurface(
-        Modifier.heightIn(min = 80.dp)
-    ) {
-        MyRow {
-            MyText(
-                text = translateNums("$rank.", numeralsLanguage),
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                textColor = when (rank) {
-                    1 -> bassamalim.hidaya.core.ui.theme.Gold
-                    2 -> bassamalim.hidaya.core.ui.theme.Silver
-                    3 -> bassamalim.hidaya.core.ui.theme.Bronze
-                    else -> MaterialTheme.colorScheme.onSurface
-                },
-                modifier = Modifier.fillMaxWidth(0.2f)
-            )
-
+    ListItem(
+        headlineContent = {
             MyText(
                 text = "${stringResource(R.string.user)} ${item.first}",
                 fontWeight =
@@ -201,9 +187,24 @@ private fun ItemCard(
                     3 -> bassamalim.hidaya.core.ui.theme.Bronze
                     else -> MaterialTheme.colorScheme.onSurface
                 },
-                modifier = Modifier.fillMaxWidth(0.4f)
+                modifier = Modifier.padding(start = 20.dp)
             )
-
+        },
+        modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp),
+        leadingContent = {
+            MyText(
+                text = translateNums("$rank.", numeralsLanguage),
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                textColor = when (rank) {
+                    1 -> bassamalim.hidaya.core.ui.theme.Gold
+                    2 -> bassamalim.hidaya.core.ui.theme.Silver
+                    3 -> bassamalim.hidaya.core.ui.theme.Bronze
+                    else -> MaterialTheme.colorScheme.onSurface
+                }
+            )
+        },
+        trailingContent = {
             MyText(
                 text = when (rankType) {
                     RankType.BY_READING -> "${item.second} ${stringResource(R.string.pages)}"
@@ -216,9 +217,10 @@ private fun ItemCard(
                     2 -> bassamalim.hidaya.core.ui.theme.Silver
                     3 -> bassamalim.hidaya.core.ui.theme.Bronze
                     else -> MaterialTheme.colorScheme.onSurface
-                },
-                modifier = Modifier.fillMaxWidth(0.4f)
+                }
             )
         }
-    }
+    )
+
+    HorizontalDivider(thickness = 0.3.dp)
 }

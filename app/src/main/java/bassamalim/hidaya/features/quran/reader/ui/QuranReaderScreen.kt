@@ -176,16 +176,14 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
                 text = "${stringResource(R.string.sura)} $suraName",
                 fontSize = 18.nsp,
                 fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Start,
-                textColor = MaterialTheme.colorScheme.onPrimary
+                textAlign = TextAlign.Start
             )
 
             // Page number
             MyText(
                 text = "${stringResource(R.string.page)} $pageNumText",
                 fontSize = 18.nsp,
-                fontWeight = FontWeight.Medium,
-                textColor = MaterialTheme.colorScheme.onPrimary
+                fontWeight = FontWeight.Medium
             )
 
             // Juz number
@@ -193,8 +191,7 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
                 text = "${stringResource(R.string.juz)} $juzNumText",
                 fontSize = 18.nsp,
                 fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.End,
-                textColor = MaterialTheme.colorScheme.onPrimary
+                textAlign = TextAlign.End
             )
         }
     }
@@ -227,7 +224,6 @@ private fun BottomBar(
                     if (isBookmarked) R.drawable.ic_bookmarked
                     else R.drawable.ic_bookmark,
                 description = stringResource(R.string.bookmark_page_button_description),
-                tint = MaterialTheme.colorScheme.onPrimary,
                 iconSize = 40.dp,
                 onClick = { onBookmarkClick(isBookmarked) }
             )
@@ -238,7 +234,6 @@ private fun BottomBar(
                     iconId = R.drawable.ic_skip_previous,
                     description = stringResource(R.string.rewind_btn_description),
                     iconSize = 40.dp,
-                    tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = onPreviousVerseClick
                 )
 
@@ -247,7 +242,6 @@ private fun BottomBar(
                     state = playerState,
                     size = 40.dp,
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = { onPlayPauseClick(activity) }
                 )
 
@@ -256,7 +250,6 @@ private fun BottomBar(
                     iconId = R.drawable.ic_skip_next,
                     description = stringResource(R.string.fast_forward_btn_description),
                     iconSize = 40.dp,
-                    tint = MaterialTheme.colorScheme.onPrimary,
                     onClick = onNextVerseClick
                 )
             }
@@ -265,7 +258,6 @@ private fun BottomBar(
             MyIconButton(
                 iconId = R.drawable.ic_display_settings,
                 description = stringResource(R.string.settings),
-                tint = MaterialTheme.colorScheme.onPrimary,
                 iconSize = 40.dp,
                 innerPadding = PaddingValues(2.dp),
                 onClick = onSettingsClick
