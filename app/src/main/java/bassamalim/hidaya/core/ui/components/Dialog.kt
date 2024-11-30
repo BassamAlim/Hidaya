@@ -163,20 +163,20 @@ fun TutorialDialog(
 }
 
 @Composable
-fun DialogDismissButton(onDismiss: () -> Unit) {
+fun DialogDismissButton(text: String = stringResource(R.string.cancel), onDismiss: () -> Unit) {
     TextButton(onClick = onDismiss) {
         MyText(
-            text = stringResource(R.string.cancel),
+            text = text,
             modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
         )
     }
 }
 
 @Composable
-fun DialogSubmitButton(onSubmit: () -> Unit) {
+fun DialogSubmitButton(text: String = stringResource(R.string.select), onSubmit: () -> Unit) {
     TextButton(onClick = onSubmit) {
         MyText(
-            text = stringResource(R.string.select),
+            text = text,
             modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
         )
     }

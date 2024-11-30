@@ -73,7 +73,7 @@ fun DateConverterScreen(viewModel: DateConverterViewModel) {
         if (state.isGregorianDatePickerShown) {
             MyDatePickerDialog(
                 initialDateMillis = state.gregorianDatePickerMillis,
-                onConfirm = viewModel::onGregorianDatePicked,
+                onSubmit = viewModel::onGregorianDatePicked,
                 onDismiss = viewModel::onGregorianDatePickerDismiss
             )
         }

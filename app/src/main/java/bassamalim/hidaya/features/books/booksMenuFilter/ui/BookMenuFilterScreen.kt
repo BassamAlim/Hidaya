@@ -23,16 +23,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.DialogDismissButton
 import bassamalim.hidaya.core.ui.components.DialogSubmitButton
-import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.MyTextButton
 
 @Composable
 fun BooksMenuFilterDialog(viewModel: BooksMenuFilterViewModel) {
     AlertDialog(
         onDismissRequest = viewModel::onDismiss,
         dismissButton = {
-            DialogDismissButton(viewModel::onDismiss)
+            DialogDismissButton { viewModel.onDismiss() }
         },
         confirmButton = {
             DialogSubmitButton {
