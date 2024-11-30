@@ -69,8 +69,7 @@
     <string-array name="themes_entries">
         <item>الأساسي</item>
         <item>الأبيض</item>
-        <item>الفاتح</item>
-        <item>ليلي</item>
+        <item>الأسود</item>
     </string-array>
 
     <integer-array name="searcher_matches_items">

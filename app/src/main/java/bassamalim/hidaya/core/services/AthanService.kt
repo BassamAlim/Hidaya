@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -26,8 +27,9 @@ import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
+import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.ui.theme.colorSchemeO
+import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -79,17 +81,16 @@ class AthanService : Service() {
             Log.i(Global.TAG, "In athan service for $reminder")
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val am = getSystemService(AUDIO_SERVICE) as AudioManager
-                // Request audio focus
-                am.requestAudioFocus(             // Request permanent focus.
-                    AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                        .setAudioAttributes(
-                            AudioAttributes.Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                                .build()
-                        ).build()
-                )
+                (getSystemService(AUDIO_SERVICE) as AudioManager)
+                    .requestAudioFocus(
+                        AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                            .setAudioAttributes(
+                                AudioAttributes.Builder()
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                                    .build()
+                            ).build()
+                    )
             }
 
             play(reminder)
@@ -98,24 +99,26 @@ class AthanService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun build(reminder: Reminder): Notification {
-        val builder = NotificationCompat.Builder(this, channelId)
-        builder.setSmallIcon(R.drawable.ic_athan)
-        builder.setTicker(resources.getString(R.string.app_name))
+    private suspend fun build(reminder: Reminder): Notification {
+        return NotificationCompat.Builder(this, channelId).apply {
+            setSmallIcon(R.drawable.ic_athan)
+            setTicker(resources.getString(R.string.app_name))
 
-        builder.setContentTitle(getTitle(reminder))
-        builder.setContentText(getSubtitle(reminder))
+            setContentTitle(getTitle(reminder))
+            setContentText(getSubtitle(reminder))
 
-        builder.addAction(0, getString(R.string.stop_athan), getStopIntent())
-        builder.clearActions()
-        builder.setContentIntent(getStopAndOpenIntent())
-        builder.setDeleteIntent(getStopIntent())
-        builder.priority = NotificationCompat.PRIORITY_MAX
-        builder.setAutoCancel(true)
-        builder.setOnlyAlertOnce(true)
-        builder.color = colorSchemeO.surfaceContainer.value.toInt() // TODO: get theme color
-
-        return builder.build()
+            addAction(0, getString(R.string.stop_athan), getStopIntent())
+            clearActions()
+            setContentIntent(getStopAndOpenIntent())
+            setDeleteIntent(getStopIntent())
+            priority = NotificationCompat.PRIORITY_MAX
+            setAutoCancel(true)
+            setOnlyAlertOnce(true)
+            color = getThemeColor(
+                color = ThemeColor.SURFACE_CONTAINER,
+                theme = appSettingsRepository.getTheme().first()
+            ).toArgb()
+        }.build()
     }
 
     private fun getTitle(reminder: Reminder): String {
@@ -145,9 +148,9 @@ class AthanService : Service() {
 
     private fun getStopAndOpenIntent(): PendingIntent {
         return PendingIntent.getActivity(
-            this, 12,
-            Intent(this, Activity::class.java)
-                .setAction(StartAction.STOP_ATHAN.name),
+            this,
+            12,
+            Intent(this, Activity::class.java).setAction(StartAction.STOP_ATHAN.name),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
@@ -159,11 +162,13 @@ class AthanService : Service() {
                 channelId,
                 getString(R.string.prayer_notification_channel),
                 NotificationManager.IMPORTANCE_HIGH
-            )
-            channel.description = "Athan notification channel"
-            channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
+            ).apply {
+                description = "Athan notification channel"
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
+
+            getSystemService(NotificationManager::class.java)
+                .createNotificationChannel(channel)
         }
     }
 
@@ -173,17 +178,18 @@ class AthanService : Service() {
 
         GlobalScope.launch {
             val athanAudio = getAthanAudio()
-            mediaPlayer = MediaPlayer.create(this@AthanService, athanAudio)
-            mediaPlayer!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-            mediaPlayer!!.setAudioAttributes(
-                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
-            )
-            mediaPlayer!!.setOnPreparedListener { mediaPlayer?.start() }
-            mediaPlayer!!.setOnCompletionListener {
-                GlobalScope.launch {
-                    showReminderNotification(reminder)
-                    onDestroy()
+            mediaPlayer = MediaPlayer.create(this@AthanService, athanAudio).apply {
+                setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+                setAudioAttributes(
+                    AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
+                )
+                setOnPreparedListener { mediaPlayer?.start() }
+                setOnCompletionListener {
+                    GlobalScope.launch {
+                        showReminderNotification(reminder)
+                        onDestroy()
+                    }
                 }
             }
         }
@@ -201,17 +207,16 @@ class AthanService : Service() {
 
     private suspend fun showReminderNotification(reminder: Reminder) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-            // Request audio focus
-            audioManager.requestAudioFocus(                   // Request permanent focus
-                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .setUsage(AudioAttributes.USAGE_ALARM)
-                            .build()
-                    ).build()
-            )
+            (getSystemService(AUDIO_SERVICE) as AudioManager)
+                .requestAudioFocus(                   // Request permanent focus
+                    AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                        .setAudioAttributes(
+                            AudioAttributes.Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .setUsage(AudioAttributes.USAGE_ALARM)
+                                .build()
+                        ).build()
+                )
         }
 
         val havePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

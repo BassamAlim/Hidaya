@@ -35,6 +35,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Theme
+import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Navigator
@@ -44,7 +45,7 @@ import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.core.ui.theme.colorSchemeO
+import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -81,14 +82,20 @@ class Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.decorView.setBackgroundColor(colorSchemeO.background.toArgb())  // TODO: set the theme background color
+        lifecycleScope.launch {
+            theme = appSettingsRepository.getTheme()
+            window.decorView.setBackgroundColor(
+                getThemeColor(
+                    color = ThemeColor.BACKGROUND,
+                    theme = theme.first()
+                ).toArgb()
+            )
+        }
 
         enableEdgeToEdge()
 
         val isFirstLaunch = savedInstanceState == null
         startRoute = intent.getStringExtra("start_route")
-
-        theme = appSettingsRepository.getTheme()
 
         lifecycleScope.launch {
             if (isFirstLaunch) testDb()

@@ -25,6 +25,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
@@ -36,9 +37,10 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
+import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.ui.theme.colorSchemeO
+import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -170,14 +172,13 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             mediaSession.isActive = true
 
-            buildNotification()
-
-            // Put the service in the foreground, post notification
-            startForeground(notificationId, notification)
-
-            wifiLock.acquire()
-
             GlobalScope.launch {
+                buildNotification()
+
+                // Put the service in the foreground, post notification
+                startForeground(notificationId, notification)
+
+                wifiLock.acquire()
                 updatePbState(PlaybackStateCompat.STATE_PLAYING)
                 updateNotification(true)
                 updateMetadata(ayaId, false)
@@ -205,25 +206,27 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             mediaSession.isActive = true
 
-            buildNotification()
+            GlobalScope.launch {
+                buildNotification()
 
-            // Put the service in the foreground, post notification
-            startForeground(notificationId, notification)
+                // Put the service in the foreground, post notification
+                startForeground(notificationId, notification)
 
-            wifiLock.acquire()
+                wifiLock.acquire()
 
-            updatePbState(PlaybackStateCompat.STATE_PLAYING)
-            updateNotification(true)
+                updatePbState(PlaybackStateCompat.STATE_PLAYING)
+                updateNotification(true)
 
-            // Request audio focus for playback, this registers the afChangeListener
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && audioManager.requestAudioFocus(audioFocusRequest)
-                != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                return
+                // Request audio focus for playback, this registers the afChangeListener
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                    && audioManager.requestAudioFocus(audioFocusRequest)
+                    != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                    return@launch
 
-            receiver.register()
+                receiver.register()
 
-            apm.resume()
+                apm.resume()
+            }
         }
 
         override fun onPause() {
@@ -372,12 +375,14 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     }
 
     private fun setupActions() {
-        intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-        intentFilter.addAction(ACTION_PLAY)
-        intentFilter.addAction(ACTION_PAUSE)
-        intentFilter.addAction(ACTION_NEXT)
-        intentFilter.addAction(ACTION_PREV)
-        intentFilter.addAction(ACTION_STOP)
+        intentFilter.apply {
+            addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+            addAction(ACTION_PLAY)
+            addAction(ACTION_PAUSE)
+            addAction(ACTION_NEXT)
+            addAction(ACTION_PREV)
+            addAction(ACTION_STOP)
+        }
 
         val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
@@ -426,7 +431,8 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         )
     }
 
-    private fun buildNotification() {
+    @OptIn(DelicateCoroutinesApi::class)
+    private suspend fun buildNotification() {
         // Get the session's metadata
         controller = mediaSession.controller
         mediaMetadata = controller.metadata
@@ -449,30 +455,30 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
                     this, PlaybackStateCompat.ACTION_STOP
                 )
             )
-            // Make the transport controls visible on the lockscreen
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            // Add an app icon and set its accent color (Be careful about the color)
             .setSmallIcon(R.drawable.small_launcher_foreground)
-            .setColor(colorSchemeO.surfaceContainer.value.toInt())  // TODO: get theme color
-            // Add buttons
+            .setColor(
+                getThemeColor(
+                    color = ThemeColor.SURFACE_CONTAINER,
+                    theme = appSettingsRepository.getTheme().first()
+                ).toArgb()
+            )
             .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
-            // So there will be no notification tone
             .setSilent(true)
-            // So the user wouldn't swipe it off
             .setOngoing(true)
-            // Take advantage of MediaStyle features
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSession.sessionToken)
                     .setShowActionsInCompactView(0, 1, 2)
-                    // Add a cancel button
                     .setShowCancelButton(true)
                     .setCancelButtonIntent(
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
-                            this, PlaybackStateCompat.ACTION_STOP
+                            this,
+                            PlaybackStateCompat.ACTION_STOP
                         )
                     )
             )
+
         notification = notificationBuilder.build()
 
         // Display the notification and place the service in the foreground

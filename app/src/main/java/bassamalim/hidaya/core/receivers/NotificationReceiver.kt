@@ -15,6 +15,7 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Build
 import android.util.Log
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -25,10 +26,11 @@ import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Reminder
+import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
-import bassamalim.hidaya.core.ui.theme.colorSchemeO
+import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.AndroidEntryPoint
@@ -117,9 +119,9 @@ class NotificationReceiver : BroadcastReceiver() {
         createNotificationChannel(reminder)
 
         if (reminder is Reminder.Prayer && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val am = ctx.getSystemService(Service.AUDIO_SERVICE) as AudioManager
+            val audioManager = ctx.getSystemService(Service.AUDIO_SERVICE) as AudioManager
             // Request audio focus
-            am.requestAudioFocus(                   // Request permanent focus
+            audioManager.requestAudioFocus(                   // Request permanent focus
                 AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                     .setAudioAttributes(
                         AudioAttributes.Builder()
@@ -169,7 +171,10 @@ class NotificationReceiver : BroadcastReceiver() {
             priority = NotificationCompat.PRIORITY_MAX
             setAutoCancel(true)
             setOnlyAlertOnce(true)
-            color = colorSchemeO.surfaceContainer.value.toInt() // TODO: get theme color
+            this.color = getThemeColor(
+                color = ThemeColor.SURFACE_CONTAINER,
+                theme = appSettingsRepository.getTheme().first()
+            ).toArgb()
             setContentIntent(onClick(reminder))
 
             if (notificationType == NotificationType.SILENT)

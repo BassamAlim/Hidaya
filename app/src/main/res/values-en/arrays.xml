@@ -69,8 +69,7 @@
     <string-array name="themes_entries">
         <item>Original</item>
         <item>White</item>
-        <item>Light</item>
-        <item>Night</item>
+        <item>Black</item>
     </string-array>
 
     <string-array name="searcher_matches_entries">

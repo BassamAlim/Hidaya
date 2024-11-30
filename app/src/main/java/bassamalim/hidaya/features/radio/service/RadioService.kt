@@ -21,26 +21,29 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.ui.theme.colorSchemeO
+import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -63,7 +66,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notification: Notification
     private lateinit var player: MediaPlayer
-    private lateinit var am: AudioManager
+    private lateinit var audioManager: AudioManager
     private val intentFilter: IntentFilter = IntentFilter()
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var wifiLock: WifiLock
@@ -88,8 +91,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                         Log.i(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService")
                         callback.onPause()
                     }
-
-                    ACTION_PLAY_PAUSE ->
+                    ACTION_PLAY_PAUSE -> {
                         if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
                             Log.i(Global.TAG, "In ACTION_PAUSE of RadioService")
                             callback.onPause()
@@ -99,7 +101,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                             Log.i(Global.TAG, "In ACTION_PLAY of RadioService")
                             callback.onPlay()
                         }
-
+                    }
                     ACTION_STOP -> {
                         Log.i(Global.TAG, "In ACTION_STOP of RadioService")
                         callback.onStop()
@@ -124,6 +126,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of RadioClient")
@@ -142,30 +145,26 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onPlay() {
             super.onPlay()
 
-            buildNotification()
-            // Request audio focus for playback, this registers the afChangeListener
-            var result: Int = AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                result = am.requestAudioFocus(audioFocusRequest)
+            GlobalScope.launch {
+                buildNotification()
+                var result = AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    result = audioManager.requestAudioFocus(audioFocusRequest)
 
-            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Start the service
-                startService(Intent(applicationContext, RadioService::class.java))
-                // Set the session active  (and update metadata and state)
-                mediaSession.isActive = true
+                if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    startService(Intent(applicationContext, RadioService::class.java))
+                    mediaSession.isActive = true
 
-                // start the player
-                startPlaying()
+                    startPlaying()
 
-                updatePbState(PlaybackStateCompat.STATE_PLAYING, player.currentPosition)
-                updateNotification(true)
+                    updatePbState(PlaybackStateCompat.STATE_PLAYING, player.currentPosition)
+                    updateNotification(true)
 
-                // Register Receiver
-                receiverWrapper.register()
-                // Put the service in the foreground, post notification
-                startForeground(id, notification)
+                    receiverWrapper.register()
+                    startForeground(id, notification)
 
-                wifiLock.acquire()
+                    wifiLock.acquire()
+                }
             }
         }
 
@@ -176,165 +175,165 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updatePbState(PlaybackStateCompat.STATE_STOPPED, player.currentPosition)
 
             receiverWrapper.unregister()
-            am.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
+            audioManager.abandonAudioFocusRequest(audioFocusRequest)
             if (wifiLock.isHeld) wifiLock.release()
             player.release()
 
-            stopSelf()    // Stop the service
-            mediaSession.isActive = false    // Set the session inactive
-            stopForeground()    // Take the service out of the foreground
+            stopSelf()
+            mediaSession.isActive = false
+            stopForeground()
         }
 
         override fun onPause() {
             super.onPause()
             Log.i(Global.TAG, "In onPause of RadioClient")
 
-            // pause the player (custom call)
             mediaSession.isActive = false
-            player.stop()    // since its radio, it can not be paused and resumed normally
+            player.stop()
 
-            // Update metadata and state
             updatePbState(PlaybackStateCompat.STATE_PAUSED, player.currentPosition)
             updateNotification(false)
 
-            // Take the service out of the foreground, retain the notification
             stopForeground()
         }
     }
 
     override fun onAudioFocusChange(i: Int) {
         when (i) {
-            AudioManager.AUDIOFOCUS_GAIN -> player.setVolume(1.0f, 1.0f)
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK ->
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                player.setVolume(1.0f, 1.0f)
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
                 if (player.isPlaying) player.setVolume(0.3f, 0.3f)
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS ->
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS -> {
                 if (player.isPlaying) callback.onPause()
+            }
         }
     }
 
     private fun initSession() {
-        // Create a MediaSessionCompat
         mediaSession = MediaSessionCompat(this, "RadioService")
 
-        // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
-        val stateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
-        )
-        mediaSession.setPlaybackState(stateBuilder.build())
+        val state = PlaybackStateCompat.Builder()
+            .setActions(PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE)
+            .build()
+        mediaSession.setPlaybackState(state)
 
-        // callback() has methods that handle callbacks from a media controller
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) mediaSession.setCallback(callback)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            mediaSession.setCallback(callback)
 
-        // Set the session's token so that client activities can communicate with it.
         sessionToken = mediaSession.sessionToken
     }
 
-    private fun buildNotification() {
-        // Given a media session and its context (usually the component containing the session)
-
-        // Get the session's metadata
+    private suspend fun buildNotification() {
         controller = mediaSession.controller
-        val mediaMetadata: MediaMetadataCompat = controller.metadata
-        val description: MediaDescriptionCompat = mediaMetadata.description
         mediaSession.setSessionActivity(getContentIntent())
         createNotificationChannel()
 
-        // Create a NotificationCompat.Builder
         notificationBuilder = NotificationCompat.Builder(this, channelId)
-
-        notificationBuilder
-            // Add the metadata for the currently playing track
-            .setContentTitle(description.title)
-            // Stop the service when the notification is swiped away
-            .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-                PlaybackStateCompat.ACTION_STOP))
-            // Make the transport controls visible on the lockscreen
+            .setContentTitle(controller.metadata.description.title)
+            .setDeleteIntent(
+                MediaButtonReceiver.buildMediaButtonPendingIntent(
+                    this,
+                    PlaybackStateCompat.ACTION_STOP
+                )
+            )
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            // Add an app icon and set its accent color
-            // Be careful about the color
             .setSmallIcon(R.drawable.small_launcher_foreground)
             .setColorized(true)
-            .setColor(colorSchemeO.surfaceContainer.value.toInt())  // TODO: get theme color
-            // Add buttons
-            // Enable launching the player by clicking the notification
+            .setColor(
+                getThemeColor(
+                    color = ThemeColor.SURFACE_CONTAINER,
+                    theme = appSettingsRepository.getTheme().first()
+                ).toArgb()
+            )
             .setContentIntent(controller.sessionActivity)
             .addAction(playPauseAction)
-            // So there will be no notification tone
             .setSilent(true)
-            // So the user wouldn't swipe it off
             .setOngoing(true)
-            // Take advantage of MediaStyle features
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSession.sessionToken)
                     .setShowActionsInCompactView(0)
-                    .setShowCancelButton(true) // Add a cancel button
+                    .setShowCancelButton(true)
                     .setCancelButtonIntent(
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
                             this, PlaybackStateCompat.ACTION_STOP
                         )
                     )
             )
+
         notification = notificationBuilder.build()
 
-        // Display the notification and place the service in the foreground
         startForeground(id, notification)
     }
 
     private fun initMediaSessionMetadata() {
-        val metadataBuilder: MediaMetadataCompat.Builder = MediaMetadataCompat.Builder()
-
+        val metadataBuilder = MediaMetadataCompat.Builder()
         // TODO: Migrate to Compose
-        //Notification icon in card
-//        metadataBuilder.putBitmap(
+//        .putBitmap(
 //            MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
 //            BitmapFactory.decodeResource(resources, R.color.surface_M)
 //        )
-//        metadataBuilder.putBitmap(
+//        .putBitmap(
 //            MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
 //            BitmapFactory.decodeResource(resources, R.color.surface_M)
 //        )
         //lock screen icon for pre lollipop
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_ART,
-            BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
-        )
-
-        metadataBuilder.putText(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, getString(R.string.quran_radio)
-        )
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, getString(R.string.quran_radio))
+            .putBitmap(
+                MediaMetadataCompat.METADATA_KEY_ART,
+                BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
+            )
+            .putText(
+                MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
+                getString(R.string.quran_radio)
+            )
+            .putText(
+                MediaMetadataCompat.METADATA_KEY_TITLE,
+                getString(R.string.quran_radio)
+            )
 
         mediaSession.setMetadata(metadataBuilder.build())
     }
 
     private fun updatePbState(state: Int, position: Int) {
-        val stateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder()
-
-        stateBuilder.setState(state, position.toLong(), 1F)
+        val state = PlaybackStateCompat.Builder()
+            .setState(state, position.toLong(), 1F)
             .setActions(
                 PlaybackStateCompat.ACTION_PLAY_PAUSE
                         or PlaybackStateCompat.ACTION_PLAY
                         or PlaybackStateCompat.ACTION_PAUSE
                         or PlaybackStateCompat.ACTION_SEEK_TO
             )
+            .build()
 
-        mediaSession.setPlaybackState(stateBuilder.build())
+        mediaSession.setPlaybackState(state)
     }
 
     private fun updateNotification(playing: Boolean) {
         playPauseAction =
             if (playing) {
                 NotificationCompat.Action(
-                    R.drawable.ic_pause, "play_pause", PendingIntent.getBroadcast(
-                        this, id, Intent(ACTION_PLAY_PAUSE).setPackage(packageName), flags
+                    R.drawable.ic_pause,
+                    "play_pause",
+                    PendingIntent.getBroadcast(
+                        this,
+                        id,
+                        Intent(ACTION_PLAY_PAUSE).setPackage(packageName),
+                        flags
                     )
                 )
             }
             else {
                 NotificationCompat.Action(
-                    R.drawable.ic_play, "play_pause", PendingIntent.getBroadcast(
-                        this, id, Intent(ACTION_PLAY_PAUSE).setPackage(packageName), flags
+                    R.drawable.ic_play,
+                    "play_pause",
+                    PendingIntent.getBroadcast(
+                        this,
+                        id,
+                        Intent(ACTION_PLAY_PAUSE).setPackage(packageName),
+                        flags
                     )
                 )
             }
@@ -348,13 +347,12 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         player = MediaPlayer()
         player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
+        val wifiManager = (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
         wifiLock =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
-                    .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
+                wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
             else
-                (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
-                    .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
+                wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
 
         player.setAudioAttributes(
             AudioAttributes.Builder()
@@ -363,12 +361,12 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 .build()
         )
 
-        am = getSystemService(AUDIO_SERVICE) as AudioManager
-        val attrs = AudioAttributes.Builder()
-            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-            .build()
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val attrs = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build()
             audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                 .setOnAudioFocusChangeListener(this)
                 .setAudioAttributes(attrs)
@@ -383,10 +381,12 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         player.setOnInfoListener { _, what, _ ->
             when (what) {
-                MediaPlayer.MEDIA_INFO_BUFFERING_START ->
+                MediaPlayer.MEDIA_INFO_BUFFERING_START -> {
                     updatePbState(PlaybackStateCompat.STATE_BUFFERING, player.currentPosition)
-                MediaPlayer.MEDIA_INFO_BUFFERING_END ->
+                }
+                MediaPlayer.MEDIA_INFO_BUFFERING_END -> {
                     updatePbState(PlaybackStateCompat.STATE_PLAYING, player.currentPosition)
+                }
             }
             false
         }
@@ -398,16 +398,22 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun setActions() {
-        intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-        intentFilter.addAction(ACTION_PLAY_PAUSE)
-        intentFilter.addAction(ACTION_STOP)
+        intentFilter.apply {
+            addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+            addAction(ACTION_PLAY_PAUSE)
+            addAction(ACTION_STOP)
+        }
 
-        val pkg = packageName
         flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playPauseAction = NotificationCompat.Action(
-            R.drawable.ic_play, "play_pause", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_PLAY_PAUSE).setPackage(pkg), flags
+            R.drawable.ic_play,
+            "play_pause",
+            PendingIntent.getBroadcast(
+                this,
+                id,
+                Intent(ACTION_PLAY_PAUSE).setPackage(packageName),
+                flags
             )
         )
     }
@@ -440,27 +446,30 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val description = "quran radio"
             channelId = "QuranRadio"
             val name = getString(R.string.quran_radio)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val notificationChannel = NotificationChannel(channelId, name, importance)
-            notificationChannel.description = description
-            notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            val notificationChannel = NotificationChannel(channelId, name, importance).apply {
+                description = "quran radio"
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
             notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
 
     private fun stopForeground() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_DETACH)
-        else stopForeground(false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            stopForeground(STOP_FOREGROUND_DETACH)
+        else
+            stopForeground(false)
     }
 
     private fun getContentIntent(): PendingIntent {
-        val intent = Intent(this, Activity::class.java)
-        intent.action = "back"
-//        intent.putExtra("start_route", Screen.RadioClient.route)
+        val intent = Intent(this, Activity::class.java).apply {
+            action = "back"
+//            putExtra("start_route", Screen.RadioClient.route)
+        }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
@@ -468,7 +477,9 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     override fun onGetRoot(
-        clientPackageName: String, clientUid: Int, rootHints: Bundle?
+        clientPackageName: String,
+        clientUid: Int,
+        rootHints: Bundle?
     ): BrowserRoot {
         // (Optional) Control the level of access for the specified package name.
         return if (allowBrowsing(clientPackageName, clientUid)) {

@@ -14,23 +14,11 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object VerseReciter : Preference("aya_reciter", "13")
 
-    data object VerseRepeat : Preference("aya_repeat", 1f)  // float to use in slider
-
     data object BooksTextSize : Preference("books_text_size_key", 15f)
 
     data object BookmarkedPage : Preference("bookmarked_page", -1)
 
     data object BookmarkedSura : Preference("bookmarked_sura", -1)
-
-    data object BookSearcherMaxMatchesIndex : Preference(
-        "books_searcher_max_matches_index",
-        0
-    )
-
-    data class BookChaptersFavs(val bookId: Int) : Preference(
-        key = "book${bookId}_favs",
-        default = ""
-    )
 
     data object CountryID : Preference("country_id", -1)
 
@@ -48,8 +36,6 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object Language : Preference("language_key", Languages.ARABIC.name)
 
-    data object LastDailyUpdateDay : Preference("last_daily_update_day", 0)
-
     data object LocationType : Preference("location_type", LocationTypes.AUTO.name)
 
     data object LastDBVersion : Preference("last_db_version", 1)
@@ -66,11 +52,6 @@ sealed class Preference(val key: String, val default: Any) {
     data object PrayerTimesJuristicMethod : Preference("juristic_method_key", "SHAFII")
 
     data object PrayerTimesAdjustment : Preference("high_lat_adjustment_key", "NONE")
-
-    data object QuranSearcherMaxMatchesIndex : Preference(
-        "quran_searcher_max_matches_index",
-        0
-    )
 
     data object QuranPagesRecord : Preference("quran_pages_record", 0)
 
@@ -92,10 +73,6 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object StoredLocation : Preference("stored_location", "{}")
 
-    data object SelectedSearchBooks : Preference("selected_search_books", "")
-
-    data object SelectedNarrations : Preference("selected_rewayat", "")
-
     data object RecitationsPlaybackRecord : Preference("telawat_playback_record", 0L)
 
     data object RecitationsRepeatMode : Preference("telawat_repeat_mode", 0)
@@ -104,7 +81,7 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object TimeFormat : Preference("time_format_key", TimeFormats.TWELVE.name)
 
-    data object Theme : Preference("theme_key", Themes.LIGHT.name)
+    data object Theme : Preference("theme_key", Themes.ORIGINAL.name)
 
     data object WerdPage : Preference("werd_page", 25)
 

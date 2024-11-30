@@ -29,6 +29,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
@@ -41,9 +42,10 @@ import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.StartAction
+import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.ui.theme.colorSchemeO
+import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
@@ -76,7 +78,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notification: Notification
     private lateinit var player: MediaPlayer
-    private lateinit var am: AudioManager
+    private lateinit var audioManager: AudioManager
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var wifiLock: WifiLock
     private lateinit var suraNames: List<String>
@@ -214,35 +216,38 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
             if (mediaId == null) return  // bandage for an error
 
-            buildNotification()
+            GlobalScope.launch {
+                buildNotification()
 
-            // Request audio focus for playback, this registers the afChangeListener
-            val result = am.requestAudioFocus(audioFocusRequest)
+                // Request audio focus for playback, this registers the afChangeListener
+                val result = audioManager.requestAudioFocus(audioFocusRequest)
 
-            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Start the service
-                startService(Intent(applicationContext, RecitationPlayerService::class.java))
-                // Set the session active  (and update metadata and state)
-                mediaSession.isActive = true
+                if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    // Start the service
+                    startService(Intent(applicationContext, RecitationPlayerService::class.java))
+                    // Set the session active  (and update metadata and state)
+                    mediaSession.isActive = true
 
-                receiver.register()
-                // Put the service in the foreground, post notification
-                startForeground(notificationId, notification)
+                    receiver.register()
+                    // Put the service in the foreground, post notification
+                    startForeground(notificationId, notification)
 
-                // start the player (custom call)
-                if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
-                    || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED) {
-                    player.start()
-                    refresh()
+                    // start the player (custom call)
+                    if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
+                        || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED) {
+                        player.start()
+                        refresh()
+                    }
+                    else startPlaying(suraIndex)
+
+                    updatePbState(
+                        PlaybackStateCompat.STATE_PLAYING,
+                        controller.playbackState.bufferedPosition
+                    )
+                    updateNotification(true)
                 }
-                else startPlaying(suraIndex)
-
-                updatePbState(
-                    PlaybackStateCompat.STATE_PLAYING,
-                    controller.playbackState.bufferedPosition
-                )
-                updateNotification(true)
             }
+
         }
 
         override fun onPause() {
@@ -277,7 +282,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             )
 
             handler.removeCallbacks(runnable)
-            am.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
+            audioManager.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
             receiver.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
@@ -471,7 +476,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         )
     }
 
-    private fun buildNotification() {
+    private suspend fun buildNotification() {
         // Get the session's metadata
         controller = mediaSession.controller
         mediaMetadata = controller.metadata
@@ -483,8 +488,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
         // Create a NotificationCompat.Builder
         notificationBuilder = NotificationCompat.Builder(this, channelId)
-
-        notificationBuilder
             // Add the metadata for the currently playing track
             .setContentTitle(description.title)
             .setContentText(description.subtitle)
@@ -502,7 +505,12 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Add an app icon and set its accent color (Be careful about the color)
             .setSmallIcon(R.drawable.small_launcher_foreground)
-            .setColor(colorSchemeO.surfaceContainer.value.toInt())  // TODO: get theme color
+            .setColor(
+                getThemeColor(
+                    color = ThemeColor.SURFACE_CONTAINER,
+                    theme = appSettingsRepository.getTheme().first()
+                ).toArgb()
+            )
             // Add buttons
             .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
             // So there will be no notification tone
@@ -652,7 +660,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
                     .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
 
 
-        am = getSystemService(AUDIO_SERVICE) as AudioManager
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
 
         val attrs = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
