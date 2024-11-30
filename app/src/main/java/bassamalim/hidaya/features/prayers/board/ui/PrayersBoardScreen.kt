@@ -29,11 +29,11 @@ import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
-import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.nsp
@@ -279,13 +279,13 @@ private fun DayCard(
                 onClick = onPreviousDayClick
             )
 
-            MyClickableText(
+            MyTextButton(
                 text =
                     if (isNoDateOffset) stringResource(R.string.day)
                     else dateText,
                 fontSize = 24.sp,
                 textColor = MaterialTheme.colorScheme.onSurface,
-                innerPadding = PaddingValues(vertical = 3.dp, horizontal = 15.dp),
+                textModifier = Modifier.padding(vertical = 3.dp, horizontal = 15.dp),
                 onClick = onDateClick
             )
 

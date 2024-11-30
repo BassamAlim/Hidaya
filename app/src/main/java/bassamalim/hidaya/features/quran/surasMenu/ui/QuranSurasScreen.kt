@@ -37,8 +37,9 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val navbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
     val lazyListState = rememberLazyListState()
+    val noBookmarkMessage = stringResource(R.string.no_bookmarked_page)
 
     if (state.isLoading) return LoadingScreen()
 
@@ -52,11 +53,16 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
                 MyFloatingActionButton(
                     iconId = R.drawable.ic_bookmarked,
                     description = stringResource(R.string.search_in_quran),
-                    onClick = viewModel::onBookmarkedPageClick
+                    onClick = {
+                        viewModel.onBookmarkedPageClick(
+                            snackbarHostState = snackbarHostState,
+                            message = noBookmarkMessage
+                        )
+                    }
                 )
             }
         },
-        snackBarHost = { SnackbarHost(navbarHostState) }
+        snackBarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         TabLayout(
             pageNames = listOf(
@@ -75,7 +81,7 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
                     onValueChange = viewModel::onSearchTextChange,
                     onSubmit = {
                         viewModel.onSearchSubmit(
-                            navbarHostState = navbarHostState,
+                            snackbarHostState = snackbarHostState,
                             message = pageDoesNotExistMessage
                         )
                     }

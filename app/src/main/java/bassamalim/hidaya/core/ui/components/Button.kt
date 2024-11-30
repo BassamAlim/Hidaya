@@ -29,6 +29,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +40,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -46,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.theme.nsp
+import bassamalim.hidaya.core.ui.theme.tajwal
 
 @Composable
 fun PrimaryPillBtn(
@@ -405,4 +411,35 @@ fun MyCloseBtn(
         tint = MaterialTheme.colorScheme.onPrimary,
         onClick = onClose
     )
+}
+
+@Composable
+fun MyTextButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = 18.sp,
+    textColor: Color = MaterialTheme.colorScheme.primary,
+    fontWeight: FontWeight = FontWeight.Normal,
+    textAlign: TextAlign = TextAlign.Center,
+    fontFamily: FontFamily = tajwal,
+    textModifier: Modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp),
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Text(
+            text = text,
+            modifier = textModifier,
+            fontSize = fontSize,
+            style = TextStyle(
+                fontFamily = fontFamily,
+                color = textColor,
+                fontWeight = fontWeight,
+                textAlign = textAlign,
+                lineHeight = fontSize * 1.4
+            )
+        )
+    }
 }

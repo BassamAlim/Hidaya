@@ -31,7 +31,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.TimeOfDay
 import bassamalim.hidaya.core.ui.components.AnalogClock
-import bassamalim.hidaya.core.ui.components.MyClickableText
+import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
 import bassamalim.hidaya.core.ui.components.ParentColumn
@@ -217,7 +217,7 @@ private fun TodayWerdCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                MyClickableText(
+                MyTextButton(
                     text = stringResource(R.string.go_to_page),
                     textColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(top = 10.dp, bottom = 5.dp),

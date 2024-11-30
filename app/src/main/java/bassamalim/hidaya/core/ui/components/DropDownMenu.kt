@@ -1,15 +1,17 @@
 package bassamalim.hidaya.core.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -31,9 +34,13 @@ fun <V> MyDropDownMenu(
     var expanded by remember { mutableStateOf(false) }
 
     Box(
+        modifier = Modifier
+            .clip(CircleShape)
+            .clickable { expanded = !expanded },
         contentAlignment = Alignment.Center
     ) {
         Row(
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             MyText(
@@ -42,31 +49,28 @@ fun <V> MyDropDownMenu(
                 modifier = Modifier.padding(horizontal = 5.dp)
             )
 
-            MyIconButton(
+            Icon(
                 imageVector =
                     if (expanded) Icons.Default.KeyboardArrowUp
                     else Icons.Default.KeyboardArrowDown,
-                description = "Show Dropdown",
-                tint = MaterialTheme.colorScheme.onSurface,
-                onClick = { expanded = !expanded }
+                contentDescription = "Show Dropdown",
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
-        // setting corner width to 0 because there is a problem that shows white corners
-        MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(0.dp))) {
-            DropdownMenu(
-                expanded = expanded,
-                modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-                onDismissRequest = { expanded = false }
-            ) {
-                entries.forEachIndexed { index, value ->
-                    DropdownMenuItem(
-                        text = { MyText(value) },
-                        onClick = {
-                            expanded = false
-                            onChoice(items[index])
-                        }
-                    )
-                }
+
+        DropdownMenu(
+            expanded = expanded,
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+            onDismissRequest = { expanded = false }
+        ) {
+            entries.forEachIndexed { index, value ->
+                DropdownMenuItem(
+                    text = { MyText(value) },
+                    onClick = {
+                        expanded = false
+                        onChoice(items[index])
+                    }
+                )
             }
         }
     }

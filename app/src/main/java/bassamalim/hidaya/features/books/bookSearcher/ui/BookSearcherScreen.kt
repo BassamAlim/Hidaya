@@ -34,7 +34,7 @@ fun BookSearcherScreen(viewModel: BookSearcherViewModel) {
 
     MyScaffold(stringResource(R.string.books_searcher)) { padding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -75,7 +75,7 @@ private fun SearchArea(
     val highlightColor = MaterialTheme.colorScheme.primary
 
     Column(
-        Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -100,7 +100,7 @@ private fun SearchArea(
         )
 
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -121,7 +121,7 @@ private fun SearchArea(
 @Composable
 private fun BooksFilter(isFiltered: Boolean, onFilterClick: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {

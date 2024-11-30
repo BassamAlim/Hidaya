@@ -90,7 +90,7 @@ class QuranSurasViewModel @Inject constructor(
         navigator.navigate(Screen.QuranSearcher)
     }
 
-    fun onBookmarkedPageClick() {
+    fun onBookmarkedPageClick(snackbarHostState: SnackbarHostState, message: String) {
         if (bookmarkedPage != -1) {
             navigator.navigate(
                 Screen.QuranReader(
@@ -98,6 +98,9 @@ class QuranSurasViewModel @Inject constructor(
                     targetValue = bookmarkedPage.toString()
                 )
             )
+        }
+        else viewModelScope.launch {
+            snackbarHostState.showSnackbar(message)
         }
     }
 
@@ -116,7 +119,7 @@ class QuranSurasViewModel @Inject constructor(
         )}
     }
 
-    fun onSearchSubmit(navbarHostState: SnackbarHostState, message: String) {
+    fun onSearchSubmit(snackbarHostState: SnackbarHostState, message: String) {
         try {
             val num = _uiState.value.searchText.toInt()
             if (num in 1..604) {
@@ -129,7 +132,7 @@ class QuranSurasViewModel @Inject constructor(
             }
             else {
                 viewModelScope.launch {
-                    navbarHostState.showSnackbar(message)
+                    snackbarHostState.showSnackbar(message)
                 }
             }
         } catch (_: NumberFormatException) {}

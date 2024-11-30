@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -34,13 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
@@ -120,25 +121,19 @@ private fun TopArea(
                 .padding(vertical = 10.dp, horizontal = 20.dp)
         ) {
             // year
-            Box(
-                Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .clickable { onYearSelectorToggled() }
-            ) {
-                MyText(
-                    text = displayedYear,
-                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                    fontSize = 19.sp,
-                    textColor = MaterialTheme.colorScheme.onPrimary,
-                )
-            }
+            MyTextButton(
+                text = displayedYear,
+                onClick = onYearSelectorToggled,
+                fontSize = 19.sp,
+                textColor = MaterialTheme.colorScheme.onSurface
+            )
 
             // main text
             MyText(
                 text = mainText,
                 fontSize = 22.nsp,
                 fontWeight = FontWeight.Bold,
-                textColor = MaterialTheme.colorScheme.onPrimary
+                textColor = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -190,19 +185,20 @@ private fun MonthSelector(
         MyIconButton(
             iconId = R.drawable.ic_left_arrow,
             iconSize = 16.dp,
-            tint = MaterialTheme.colorScheme.onPrimary,
+            tint = MaterialTheme.colorScheme.onSurface,
             onClick = onPreviousMonthClick
         )
 
         MyText(
-            displayedMonth,
-            Modifier.width(150.dp)
+            text = displayedMonth,
+            modifier = Modifier.width(150.dp),
+            textColor = MaterialTheme.colorScheme.onSurface
         )
 
         MyIconButton(
             iconId = R.drawable.ic_right_arrow,
             iconSize = 16.dp,
-            tint = MaterialTheme.colorScheme.onPrimary,
+            tint = MaterialTheme.colorScheme.onSurface,
             onClick = onNextMonthClick
         )
     }
@@ -220,14 +216,15 @@ private fun DaySelector(
 ) {
     // week days
     Row(
-        Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         weekDaysAbbreviations.forEach {
             MyText(
                 text = it,
                 modifier = Modifier.size(40.dp),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                textColor = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -261,14 +258,14 @@ private fun BottomArea(
             .padding(bottom = 16.dp)
     ) {
         // select
-        MyClickableText(
+        MyTextButton(
             text = stringResource(R.string.select),
             modifier = Modifier.padding(start = 10.dp),
             onClick = onSelectClick
         )
 
         // cancel
-        MyClickableText(
+        MyTextButton(
             text = stringResource(R.string.cancel),
             modifier = Modifier.padding(start = 10.dp),
             onClick = onCancelClick
@@ -291,7 +288,7 @@ private fun DaysGrid(
         ) {
             daysGrid.forEachIndexed { y, row ->
                 Row(
-                    Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     row.forEachIndexed { x, cell ->
@@ -339,20 +336,26 @@ private fun YearSelector(
         ),
         lazyList = {
             items(yearOptions) { item ->
-                MyText(
-                    item,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .clickable { onYearSelected(item) },
-                    textColor =
-                        if (item == selectedYear) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface
-                )
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    MyTextButton(
+                        text = item,
+                        onClick = { onYearSelected(item) },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(
+                                if (item == selectedYear) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.surface
+                            ),
+                        textColor =
+                            if (item == selectedYear) MaterialTheme.colorScheme.onPrimary
+                            else MaterialTheme.colorScheme.onSurface,
+                        textModifier = Modifier.padding(vertical = 4.dp, horizontal = 36.dp)
+                    )
+                }
             }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(370.dp)
+        }
     )
 }
