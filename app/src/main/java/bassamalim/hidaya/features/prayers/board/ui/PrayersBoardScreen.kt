@@ -1,9 +1,9 @@
 package bassamalim.hidaya.features.prayers.board.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,7 +31,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.ui.components.LoadingScreen
-import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
@@ -55,9 +57,7 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
         PrayersSpace(
             prayersData = state.prayersData,
             isLocationAvailable = state.isLocationAvailable,
-            onPrayerCardClick = { prayer, isLocationAvailable ->
-                viewModel.onPrayerCardClick(prayer, isLocationAvailable)
-            },
+            onPrayerCardClick = viewModel::onPrayerCardClick,
             onReminderCardClick = viewModel::onExtraReminderCardClick
         )
 
@@ -106,7 +106,7 @@ private fun LocationCard(
                 iconId = R.drawable.ic_location,
                 description = stringResource(R.string.locate),
                 modifier = Modifier.padding(end = 8.dp),
-                tint = MaterialTheme.colorScheme.onSurface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
                 iconSize = 32.dp,
                 onClick = onLocatorClick
             )
@@ -118,7 +118,7 @@ private fun LocationCard(
 private fun ColumnScope.PrayersSpace(
     prayersData: SortedMap<Prayer, PrayerCardData>,
     isLocationAvailable: Boolean,
-    onPrayerCardClick: (Prayer, Boolean) -> Unit,
+    onPrayerCardClick: (Prayer) -> Unit,
     onReminderCardClick: (Prayer) -> Unit
 ) {
     Column(
@@ -136,6 +136,9 @@ private fun ColumnScope.PrayersSpace(
                 onPrayerCardClick = onPrayerCardClick,
                 onReminderCardClick = onReminderCardClick
             )
+
+            if (prayer != prayersData.lastKey())
+                HorizontalDivider(thickness = 0.5.dp)
         }
     }
 }
@@ -145,70 +148,62 @@ private fun PrayerSpace(
     prayer: Prayer,
     data: PrayerCardData,
     isLocationAvailable: Boolean,
-    onPrayerCardClick: (Prayer, Boolean) -> Unit,
+    onPrayerCardClick: (Prayer) -> Unit,
     onReminderCardClick: (Prayer) -> Unit
 ) {
     MyRow {
-        PrayerCard(
-            prayer = prayer,
-            data = data,
-            isLocationAvailable = isLocationAvailable,
-            onPrayerCardClick = onPrayerCardClick
+        MyText(
+            text = data.text,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 6.dp),
+            fontSize = 29.nsp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Start
         )
 
-        ExtraReminderCard(
-            prayer = prayer,
-            isReminderOffsetSpecified = data.isExtraReminderOffsetSpecified,
-            reminderOffsetText = data.extraReminderOffset,
-            isLocationAvailable = isLocationAvailable,
-            onReminderCardClick = onReminderCardClick
-        )
+        if (isLocationAvailable) {
+            NotificationType(
+                prayer = prayer,
+                data = data,
+                onPrayerCardClick = onPrayerCardClick
+            )
+
+            ExtraReminderCard(
+                prayer = prayer,
+                isReminderOffsetSpecified = data.isExtraReminderOffsetSpecified,
+                reminderOffsetText = data.extraReminderOffset,
+                onReminderCardClick = onReminderCardClick
+            )
+        }
     }
 }
 
 @Composable
-private fun RowScope.PrayerCard(
+private fun RowScope.NotificationType(
     prayer: Prayer,
     data: PrayerCardData,
-    isLocationAvailable: Boolean,
-    onPrayerCardClick: (Prayer, Boolean) -> Unit
+    onPrayerCardClick: (Prayer) -> Unit
 ) {
-    MyClickableSurface(
-        modifier = Modifier.weight(1f),
-        cornerRadius = 15.dp,
-        padding = PaddingValues(vertical = 3.dp, horizontal = 4.dp),
-        onClick = { onPrayerCardClick(prayer, isLocationAvailable) }
+    Box(
+        Modifier.padding(horizontal = 6.dp)
     ) {
-        MyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+        FilledTonalIconButton(
+            onClick = { onPrayerCardClick(prayer) },
+            modifier = Modifier.size(48.dp)
         ) {
-            MyText(
-                text = data.text,
-                fontSize = 29.nsp,
-                fontWeight = FontWeight.Medium
+            Icon(
+                painter = painterResource(
+                    when (data.notificationType) {
+                        NotificationType.ATHAN -> R.drawable.ic_speaker
+                        NotificationType.NOTIFICATION -> R.drawable.ic_notification
+                        NotificationType.SILENT -> R.drawable.ic_silent_notifications
+                        NotificationType.OFF -> R.drawable.ic_notifications_off
+                    }
+                ),
+                contentDescription = stringResource(R.string.notification_image_description),
+                modifier = Modifier.size(32.dp)
             )
-
-            if (isLocationAvailable) {
-                MyRow {
-                    // Notification type
-                    Icon(
-                        painter = painterResource(
-                            when (data.notificationType) {
-                                NotificationType.ATHAN -> R.drawable.ic_speaker
-                                NotificationType.NOTIFICATION -> R.drawable.ic_sound
-                                NotificationType.SILENT -> R.drawable.ic_silent
-                                NotificationType.OFF -> R.drawable.ic_block
-                            }
-                        ),
-                        contentDescription = stringResource(R.string.notification_image_description),
-                        modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
         }
     }
 }
@@ -218,18 +213,16 @@ private fun ExtraReminderCard(
     prayer: Prayer,
     isReminderOffsetSpecified: Boolean,
     reminderOffsetText: String,
-    isLocationAvailable: Boolean,
     onReminderCardClick: (Prayer) -> Unit
 ) {
-    MyClickableSurface(
-        modifier = Modifier.fillMaxWidth(0.19f),
-        cornerRadius = 15.dp,
-        padding = PaddingValues(horizontal = 3.dp),
-        onClick = { onReminderCardClick(prayer) }
+    Box(
+        Modifier.padding(horizontal = 6.dp)
     ) {
-        if (isLocationAvailable) {
+        FilledTonalIconButton(
+            onClick = { onReminderCardClick(prayer) },
+            modifier = Modifier.size(48.dp)
+        ) {
             MyRow(
-                modifier = Modifier.padding(vertical = 19.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 if (isReminderOffsetSpecified) {
@@ -241,12 +234,9 @@ private fun ExtraReminderCard(
                 }
 
                 Icon(
-                    painter = painterResource(R.drawable.ic_add_reminder),
+                    painter = painterResource(R.drawable.ic_add_alert),
                     contentDescription = stringResource(R.string.extra_notifications),
-                    modifier = Modifier.size(32.dp),
-                    tint =
-                        if (isReminderOffsetSpecified) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface
+                    modifier = Modifier.size(32.dp)
                 )
             }
         }
@@ -275,7 +265,7 @@ private fun DayCard(
                 iconId = R.drawable.ic_left_arrow,
                 description = stringResource(R.string.previous_day_button_description),
                 modifier = Modifier.padding(2.dp),
-                tint = MaterialTheme.colorScheme.onSurface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
                 onClick = onPreviousDayClick
             )
 
@@ -293,7 +283,7 @@ private fun DayCard(
                 iconId = R.drawable.ic_right_arrow,
                 description = stringResource(R.string.next_day_button_description),
                 modifier = Modifier.padding(2.dp),
-                tint = MaterialTheme.colorScheme.onSurface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
                 onClick = onNextDayClick
             )
         }

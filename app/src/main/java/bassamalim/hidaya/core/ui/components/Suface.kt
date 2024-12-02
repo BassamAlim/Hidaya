@@ -68,7 +68,7 @@ fun MyClickableSurface(
         shadowElevation = elevation,
     ) {
         Box(
-            Modifier.clickable { onClick() },
+            modifier = Modifier.clickable { onClick() },
             contentAlignment = Alignment.Center
         ) {
             content()

@@ -121,7 +121,7 @@ private fun DownloadBtn(downloadState: DownloadState, onClick: () -> Unit) {
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
                 iconSize = 32.dp,
-                tint = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onClick
             )
         }

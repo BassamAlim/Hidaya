@@ -185,7 +185,7 @@ private fun MonthSelector(
         MyIconButton(
             iconId = R.drawable.ic_left_arrow,
             iconSize = 16.dp,
-            tint = MaterialTheme.colorScheme.onSurface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onPreviousMonthClick
         )
 
@@ -198,7 +198,7 @@ private fun MonthSelector(
         MyIconButton(
             iconId = R.drawable.ic_right_arrow,
             iconSize = 16.dp,
-            tint = MaterialTheme.colorScheme.onSurface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onNextMonthClick
         )
     }

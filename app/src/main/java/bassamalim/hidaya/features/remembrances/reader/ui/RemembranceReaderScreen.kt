@@ -135,7 +135,7 @@ private fun RemembrancePassageCard(
                         iconId = R.drawable.ic_help,
                         description = stringResource(R.string.source_btn_description),
                         modifier = Modifier.padding(2.dp),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                         iconSize = 26.dp,
                         onClick = { onInfoClick(passage.reference!!) }
                     )

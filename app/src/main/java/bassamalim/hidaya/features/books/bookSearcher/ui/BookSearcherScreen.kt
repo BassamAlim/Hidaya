@@ -131,7 +131,7 @@ private fun BooksFilter(isFiltered: Boolean, onFilterClick: () -> Unit) {
             iconId = R.drawable.ic_filter,
             description = stringResource(R.string.filter_search_description),
             iconSize = 30.dp,
-            tint =
+            contentColor =
                 if (isFiltered) MaterialTheme.colorScheme.secondary
                 else MaterialTheme.colorScheme.outline,
             onClick = onFilterClick

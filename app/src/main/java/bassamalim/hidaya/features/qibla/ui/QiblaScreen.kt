@@ -201,7 +201,7 @@ private fun DirectionAccuracyInfoArea(
                 MyIconButton(
                     iconId = R.drawable.ic_warning,
                     description = stringResource(R.string.accuracy_indicator_description),
-                    tint = Negative,
+                    contentColor = Negative,
                     onClick = onAccuracyIndicatorClick
                 )
             }

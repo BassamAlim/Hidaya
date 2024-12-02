@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -26,50 +26,45 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.ui.components.DialogDismissButton
+import bassamalim.hidaya.core.ui.components.DialogSubmitButton
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
-import bassamalim.hidaya.core.ui.components.MyDialog
-import bassamalim.hidaya.core.ui.components.MyHorizontalButton
-import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
-fun PrayerSettingsDialog(
-    viewModel: PrayerSettingViewModel
-) {
+fun PrayerSettingsDialog(viewModel: PrayerSettingsViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyDialog(
-        shown = true,
-        onDismiss = viewModel::onDismiss
-    ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            MyText(
-                String.format(stringResource(R.string.settings_of), state.prayerName),
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 5.dp, bottom = 20.dp)
-            )
-
-            NotificationTypesRadioGroup(
-                prayer = state.prayer,
-                selection = state.notificationType,
-                onSelect = viewModel::onNotificationTypeChange
-            )
-
-            MyRow(
-                Modifier.padding(top = 20.dp)
-            ) {
-                SaveBtn(onSave = viewModel::onSave)
-
-                CancelBtn(onDismiss = viewModel::onDismiss)
+    AlertDialog(
+        onDismissRequest = viewModel::onDismiss,
+        dismissButton = {
+            DialogDismissButton { viewModel.onDismiss() }
+        },
+        confirmButton = {
+            DialogSubmitButton(text = stringResource(R.string.save)) {
+                viewModel.onSave()
             }
+        },
+        title = {
+            MyText(
+                text = String.format(stringResource(R.string.settings_of), state.prayerName),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            DialogContent(viewModel, state)
         }
-    }
+    )
+}
+
+@Composable
+private fun DialogContent(viewModel: PrayerSettingsViewModel, state: PrayerSettingsUiState) {
+    NotificationTypesRadioGroup(
+        prayer = state.prayer,
+        selection = state.notificationType,
+        onSelect = viewModel::onNotificationTypeChange
+    )
 }
 
 @Composable
@@ -79,9 +74,9 @@ private fun NotificationTypesRadioGroup(
     onSelect: (NotificationType) -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Athan
         if (prayer != Prayer.SUNRISE) {
@@ -142,7 +137,7 @@ private fun NotificationTypeOption(
             onClick = onSelection
         ) {
             Row(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 14.dp, horizontal = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -156,8 +151,8 @@ private fun NotificationTypeOption(
                 )
 
                 MyText(
-                    name,
-                    Modifier.padding(start = 20.dp),
+                    text = name,
+                    modifier = Modifier.padding(start = 20.dp),
                     textColor =
                         if (isSelected) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurface
@@ -165,24 +160,4 @@ private fun NotificationTypeOption(
             }
         }
     }
-}
-
-@Composable
-private fun RowScope.SaveBtn(onSave: () -> Unit) {
-    MyHorizontalButton(
-        text = stringResource(R.string.save),
-        fontSize = 24.sp,
-        modifier = Modifier.weight(1f),
-        onClick = onSave
-    )
-}
-
-@Composable
-private fun RowScope.CancelBtn(onDismiss: () -> Unit) {
-    MyHorizontalButton(
-        text = stringResource(R.string.cancel),
-        fontSize = 24.sp,
-        modifier = Modifier.weight(1f),
-        onClick = onDismiss
-    )
 }

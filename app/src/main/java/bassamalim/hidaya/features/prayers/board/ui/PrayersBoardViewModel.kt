@@ -82,9 +82,7 @@ class PrayersBoardViewModel @Inject constructor(
         navigator.navigate(Screen.Locator(isInitial = false.toString()))
     }
 
-    fun onPrayerCardClick(prayer: Prayer, isLocationAvailable: Boolean) {
-        if (!isLocationAvailable) return
-
+    fun onPrayerCardClick(prayer: Prayer) {
         navigator.navigate(Screen.PrayerSettings(prayerName = prayer.name))
     }
 

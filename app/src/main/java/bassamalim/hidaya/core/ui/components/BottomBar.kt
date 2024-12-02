@@ -34,7 +34,7 @@ fun ReaderBottomBar(textSize: Float, onSeek: (Float) -> Unit) {
             MyIconButton(
                 iconId = R.drawable.ic_text_size,
                 iconSize = 30.dp,
-                tint = MaterialTheme.colorScheme.onPrimary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 onClick = {
                     isSelected = !isSelected
                 }

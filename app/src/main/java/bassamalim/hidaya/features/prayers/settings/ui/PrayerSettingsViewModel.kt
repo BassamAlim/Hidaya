@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PrayerSettingViewModel @Inject constructor(
+class PrayerSettingsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val domain: PrayerSettingsDomain,
     private val navigator: Navigator
@@ -28,7 +28,7 @@ class PrayerSettingViewModel @Inject constructor(
 
     lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(PrayerSettingUiState(
+    private val _uiState = MutableStateFlow(PrayerSettingsUiState(
         prayer = prayer,
         prayerName = domain.getPrayerName(prayer)
     ))
@@ -37,7 +37,7 @@ class PrayerSettingViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-        initialValue = PrayerSettingUiState()
+        initialValue = PrayerSettingsUiState()
     )
 
     private fun initializeData() {

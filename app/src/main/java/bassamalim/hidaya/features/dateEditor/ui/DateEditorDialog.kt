@@ -78,7 +78,7 @@ private fun DateOffsetEditor(
     ) {
         MyIconButton(
             iconId = R.drawable.ic_left_arrow,
-            tint = MaterialTheme.colorScheme.onSurface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onPreviousDayClick
         )
 
@@ -89,7 +89,7 @@ private fun DateOffsetEditor(
 
         MyIconButton(
             iconId = R.drawable.ic_right_arrow,
-            tint = MaterialTheme.colorScheme.onSurface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onNextDayClick
         )
     }

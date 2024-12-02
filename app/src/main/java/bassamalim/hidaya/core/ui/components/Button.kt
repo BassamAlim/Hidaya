@@ -25,8 +25,11 @@ import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -228,22 +231,70 @@ fun MyIconButton(
     modifier: Modifier = Modifier,
     iconSize: Dp = 24.dp,
     description: String = "",
-    tint: Color = LocalContentColor.current,
+    containerColor: Color = IconButtonDefaults.iconButtonColors().containerColor,
+    contentColor: Color = IconButtonDefaults.iconButtonColors().contentColor,
     isEnabled: Boolean = true,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     onClick: () -> Unit
 ) {
     IconButton(
         onClick = { if (isEnabled) onClick() },
-        modifier = modifier
+        modifier = modifier,
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        )
     ) {
         Icon(
             painter = painterResource(iconId),
             contentDescription = description,
             modifier = Modifier
                 .size(iconSize)
-                .padding(innerPadding),
-            tint = tint
+                .padding(innerPadding)
+        )
+    }
+}
+
+@Composable
+fun MyFilledIconButton(
+    iconId: Int,
+    modifier: Modifier = Modifier,
+    description: String = "",
+    containerColor: Color = IconButtonDefaults.filledIconButtonColors().containerColor,
+    contentColor: Color = IconButtonDefaults.filledIconButtonColors().contentColor,
+    isEnabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    FilledIconButton(
+        onClick = { if (isEnabled) onClick() },
+        modifier = modifier,
+        colors = IconButtonDefaults.filledIconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        )
+    ) {
+        Icon(
+            painter = painterResource(iconId),
+            contentDescription = description
+        )
+    }
+}
+
+@Composable
+fun MyFilledTonalIconButton(
+    iconId: Int,
+    modifier: Modifier = Modifier,
+    description: String = "",
+    isEnabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    FilledTonalIconButton(
+        onClick = { if (isEnabled) onClick() },
+        modifier = modifier
+    ) {
+        Icon(
+            painter = painterResource(iconId),
+            contentDescription = description
         )
     }
 }
@@ -344,7 +395,7 @@ fun MyDownloadButton(
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
                 iconSize = size,
-                tint =
+                contentColor =
                     if (state == DownloadState.DOWNLOADED) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface,
                 onClick = onClick
@@ -408,7 +459,7 @@ fun MyCloseBtn(
         iconId = R.drawable.ic_close,
         modifier = modifier,
         description = stringResource(R.string.close),
-        tint = MaterialTheme.colorScheme.onPrimary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         onClick = onClose
     )
 }
