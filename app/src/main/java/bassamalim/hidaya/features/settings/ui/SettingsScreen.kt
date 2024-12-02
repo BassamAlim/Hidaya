@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -137,7 +139,7 @@ fun AppearanceSettings(
             items = Language.entries.toTypedArray(),
             entries = stringArrayResource(R.array.language_entries),
             title = stringResource(R.string.language),
-            iconResId = R.drawable.ic_translation,
+            icon = R.drawable.ic_translation,
             onSelection = onLanguageChange
         )
 
@@ -147,7 +149,7 @@ fun AppearanceSettings(
             items = Language.entries.toTypedArray(),
             entries = stringArrayResource(R.array.numerals_language_entries),
             title = stringResource(R.string.numerals_language),
-            iconResId = R.drawable.ic_translation,
+            icon = R.drawable.ic_translation,
             onSelection = onNumeralsLanguageChange
         )
 
@@ -159,7 +161,7 @@ fun AppearanceSettings(
                 translateNums(numeralsLanguage = numeralsLanguage, string = it)
             }.toTypedArray(),
             title = stringResource(R.string.time_format),
-            iconResId = R.drawable.ic_time_format,
+            icon = R.drawable.ic_time_format,
             onSelection = onTimeFormatChange
         )
 
@@ -169,7 +171,7 @@ fun AppearanceSettings(
             items = Theme.entries.toTypedArray(),
             entries = stringArrayResource(R.array.themes_entries),
             title = stringResource(R.string.theme),
-            iconResId = R.drawable.ic_theme,
+            icon = R.drawable.ic_theme,
             onSelection = onThemeChange
         )
     }
@@ -254,7 +256,7 @@ private fun AthanSettings(athanAudioId: Int, onAthanAudioIdChange: (Int) -> Unit
                 .mapIndexed { i, _ -> i+1 }.toTypedArray(),
             entries = stringArrayResource(R.array.athan_voices_entries),
             title = stringResource(R.string.athan_voice),
-            iconResId = R.drawable.ic_speaker,
+            icon = Icons.Default.Campaign,
             onSelection = onAthanAudioIdChange
         )
     }

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,26 @@ fun MyFloatingActionButton(
     ) {
         Icon(
             painter = painterResource(id = iconId),
+            contentDescription = description,
+            modifier = Modifier
+                .size(60.dp)
+                .padding(12.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+fun MyFloatingActionButton(
+    imageVector: ImageVector,
+    description: String,
+    onClick: () -> Unit
+) {
+    FloatingActionButton(
+        onClick = onClick
+    ) {
+        Icon(
+            imageVector = imageVector,
             contentDescription = description,
             modifier = Modifier
                 .size(60.dp)

@@ -21,6 +21,9 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -183,8 +186,8 @@ private fun MonthSelector(
             .padding(vertical = 10.dp)
     ) {
         MyIconButton(
-            iconId = R.drawable.ic_left_arrow,
-            iconSize = 16.dp,
+            imageVector = Icons.AutoMirrored.Default.ArrowBackIos,
+            iconModifier = Modifier.size(16.dp),
             contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onPreviousMonthClick
         )
@@ -196,8 +199,8 @@ private fun MonthSelector(
         )
 
         MyIconButton(
-            iconId = R.drawable.ic_right_arrow,
-            iconSize = 16.dp,
+            imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
+            iconModifier = Modifier.size(16.dp),
             contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onNextMonthClick
         )

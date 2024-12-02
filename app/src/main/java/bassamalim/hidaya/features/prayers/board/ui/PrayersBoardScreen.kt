@@ -12,6 +12,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAlert
+import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsOff
+import androidx.compose.material.icons.filled.NotificationsPaused
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -20,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -103,11 +109,11 @@ private fun LocationCard(
             )
 
             MyIconButton(
-                iconId = R.drawable.ic_location,
+                imageVector = Icons.Default.MyLocation,
                 description = stringResource(R.string.locate),
                 modifier = Modifier.padding(end = 8.dp),
+                iconModifier = Modifier.size(32.dp),
                 contentColor = MaterialTheme.colorScheme.onSurface,
-                iconSize = 32.dp,
                 onClick = onLocatorClick
             )
         }
@@ -193,14 +199,12 @@ private fun RowScope.NotificationType(
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                painter = painterResource(
-                    when (data.notificationType) {
-                        NotificationType.ATHAN -> R.drawable.ic_speaker
-                        NotificationType.NOTIFICATION -> R.drawable.ic_notification
-                        NotificationType.SILENT -> R.drawable.ic_silent_notifications
-                        NotificationType.OFF -> R.drawable.ic_notifications_off
-                    }
-                ),
+                imageVector = when (data.notificationType) {
+                    NotificationType.ATHAN -> Icons.Filled.Campaign
+                    NotificationType.NOTIFICATION -> Icons.Filled.Notifications
+                    NotificationType.SILENT -> Icons.Filled.NotificationsPaused
+                    NotificationType.OFF -> Icons.Filled.NotificationsOff
+                },
                 contentDescription = stringResource(R.string.notification_image_description),
                 modifier = Modifier.size(32.dp)
             )
@@ -234,7 +238,7 @@ private fun ExtraReminderCard(
                 }
 
                 Icon(
-                    painter = painterResource(R.drawable.ic_add_alert),
+                    imageVector = Icons.Default.AddAlert,
                     contentDescription = stringResource(R.string.extra_notifications),
                     modifier = Modifier.size(32.dp)
                 )

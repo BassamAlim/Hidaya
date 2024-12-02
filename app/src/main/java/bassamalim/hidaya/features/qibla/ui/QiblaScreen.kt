@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -70,7 +73,7 @@ fun QiblaScreen(viewModel: QiblaViewModel) {
         ) {
             if (!state.error) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_check),
+                    imageVector = Icons.Default.Check,
                     contentDescription = stringResource(R.string.select),
                     modifier = Modifier.alpha(if (state.isOnPoint) 1F else 0F),
                     tint = Color.Green
@@ -199,7 +202,7 @@ private fun DirectionAccuracyInfoArea(
         when (accuracy) {
             0, 1 -> {
                 MyIconButton(
-                    iconId = R.drawable.ic_warning,
+                    imageVector = Icons.Outlined.Info,
                     description = stringResource(R.string.accuracy_indicator_description),
                     contentColor = Negative,
                     onClick = onAccuracyIndicatorClick

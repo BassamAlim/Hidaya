@@ -98,7 +98,7 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
                 items = viewModel.reciterIds,
                 entries = viewModel.reciterNames.toTypedArray(),
                 title = stringResource(R.string.reciter),
-                iconResId = -1,
+                icon = -1,
                 onSelection = viewModel::onReciterChange
             )
 

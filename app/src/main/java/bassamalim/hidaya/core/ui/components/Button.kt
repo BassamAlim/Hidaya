@@ -20,6 +20,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Button
@@ -303,9 +307,9 @@ fun MyFilledTonalIconButton(
 fun MyIconButton(
     imageVector: ImageVector,
     modifier: Modifier = Modifier,
-    size: Dp = 24.dp,
+    iconModifier: Modifier = Modifier,
     description: String = "",
-    tint: Color = LocalContentColor.current,
+    contentColor: Color = LocalContentColor.current,
     isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -316,8 +320,8 @@ fun MyIconButton(
         Icon(
             imageVector = imageVector,
             contentDescription = description,
-            modifier = Modifier.size(size),
-            tint = tint
+            modifier = iconModifier,
+            tint = contentColor
         )
     }
 }
@@ -326,12 +330,41 @@ fun MyIconButton(
 fun MyBackButton(onClick: (() -> Unit)? = null) {
     val context = LocalContext.current
 
-    MyIconButton(iconId = R.drawable.ic_back) {
+    MyIconButton(Icons.AutoMirrored.Default.ArrowBackIos) {
         if (onClick == null)
                 (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
         else
             onClick()
     }
+}
+
+@Composable
+fun MySquareButton(
+    text: String,
+    imageVector: ImageVector,
+    tint: Color,
+    modifier: Modifier = Modifier,
+    iconSize: Dp = Dp.Unspecified,
+    onClick: () -> Unit
+) {
+    MyRectangleButton(
+        text = text,
+        fontSize = 18.nsp,
+        modifier = modifier
+            .size(180.dp)
+            .padding(vertical = 7.dp, horizontal = 7.dp),
+        image = {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = text,
+                modifier =
+                    if (iconSize == Dp.Unspecified) Modifier
+                    else Modifier.size(iconSize),
+                tint = tint
+            )
+        },
+        onClick = onClick
+    )
 }
 
 @Composable
@@ -346,14 +379,16 @@ fun MySquareButton(
     MyRectangleButton(
         text = text,
         fontSize = 18.nsp,
-        modifier = Modifier
+        modifier = modifier
             .size(180.dp)
             .padding(vertical = 7.dp, horizontal = 7.dp),
         image = {
             Icon(
                 painter = painterResource(drawableId),
                 contentDescription = text,
-                modifier = modifier.size(iconSize),
+                modifier =
+                    if (iconSize == Dp.Unspecified) Modifier
+                    else Modifier.size(iconSize),
                 tint = tint
             )
         },
@@ -383,21 +418,18 @@ fun MyDownloadButton(
     onClick: () -> Unit
 ) {
     Box(
-        modifier,
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         if (state == DownloadState.DOWNLOADING)
             MyCircularProgressIndicator(Modifier.size(size))
         else {
             MyIconButton(
-                iconId =
-                    if (state == DownloadState.DOWNLOADED) R.drawable.ic_downloaded
-                    else R.drawable.ic_download,
+                imageVector =
+                    if (state == DownloadState.DOWNLOADED) Icons.Default.DownloadDone
+                    else Icons.Default.Download,
                 description = stringResource(R.string.download_description),
-                iconSize = size,
-                contentColor =
-                    if (state == DownloadState.DOWNLOADED) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurface,
+                iconModifier = Modifier.size(size),
                 onClick = onClick
             )
         }
@@ -456,7 +488,7 @@ fun MyCloseBtn(
     onClose: () -> Unit
 ) {
     MyIconButton(
-        iconId = R.drawable.ic_close,
+        imageVector = Icons.Default.Close,
         modifier = modifier,
         description = stringResource(R.string.close),
         contentColor = MaterialTheme.colorScheme.onPrimary,

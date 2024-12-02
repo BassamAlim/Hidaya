@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.VerticalDivider
@@ -20,7 +23,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,13 +33,13 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.TimeOfDay
 import bassamalim.hidaya.core.ui.components.AnalogClock
-import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
-import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.MyTextButton
+import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
@@ -229,7 +231,7 @@ private fun TodayWerdCard(
                     enter = scaleIn()
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_check),
+                        imageVector = Icons.Default.Check,
                         contentDescription = stringResource(R.string.already_read_description),
                         tint = Positive,
                         modifier = Modifier.size(40.dp)
@@ -250,36 +252,36 @@ private fun RecordsCard(
     MySurface {
         MyColumn {
             MyRow(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 14.dp, horizontal = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyText(
-                    stringResource(R.string.recitations_time_record_title),
-                    Modifier.widthIn(1.dp, 200.dp)
+                    text = stringResource(R.string.recitations_time_record_title),
+                    modifier = Modifier.widthIn(1.dp, 200.dp)
                 )
 
                 MyText(
-                    recitationsRecord,
+                    text = recitationsRecord,
                     fontSize = 30.sp
                 )
             }
 
             MyRow(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 14.dp, horizontal = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyText(
-                    stringResource(R.string.quran_pages_record_title),
-                    Modifier.widthIn(1.dp, 280.dp),
+                    text = stringResource(R.string.quran_pages_record_title),
+                    modifier = Modifier.widthIn(1.dp, 280.dp),
                     textAlign = TextAlign.Start,
                 )
 
                 MyText(
-                    quranPagesRecord,
+                    text = quranPagesRecord,
                     fontSize = 30.sp
                 )
             }
@@ -289,7 +291,7 @@ private fun RecordsCard(
                 textColor = MaterialTheme.colorScheme.primary,
                 icon = {
                     Icon(
-                        painter = painterResource(R.drawable.ic_leaderboard),
+                        imageVector = Icons.Default.Leaderboard,
                         contentDescription = stringResource(R.string.leaderboard),
                         tint =
                             if (isLeaderboardEnabled) MaterialTheme.colorScheme.primary

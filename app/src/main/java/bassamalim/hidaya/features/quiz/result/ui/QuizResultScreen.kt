@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.quiz.result.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,12 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -29,6 +31,8 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.theme.Negative
+import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
 fun QuizResultScreen(viewModel: QuizResultViewModel) {
@@ -126,13 +130,15 @@ private fun Answer(answerNum: Int, answerText: String, isCorrectAnswer: Boolean,
         )
 
         if (answerNum == chosenAnswer || isCorrectAnswer) {
-            Image(
-                painter = painterResource(
-                    if (isCorrectAnswer) R.drawable.ic_check
-                    else R.drawable.ic_wrong
-                ),
+            Icon(
+                imageVector =
+                    if (isCorrectAnswer) Icons.Default.Check
+                    else Icons.Default.Close,
                 contentDescription = "",
-                modifier = Modifier.size(25.dp)
+                modifier = Modifier.size(25.dp),
+                tint =
+                    if (isCorrectAnswer) Positive
+                    else Negative
             )
         }
     }

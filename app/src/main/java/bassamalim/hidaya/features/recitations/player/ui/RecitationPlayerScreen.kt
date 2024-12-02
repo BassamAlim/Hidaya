@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -67,7 +70,7 @@ fun RecitationPlayerScreen(viewModel: RecitationPlayerViewModel) {
         onBack = { viewModel.onBackPressed(activity) }
     ) { padding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
             verticalArrangement = Arrangement.SpaceEvenly,
@@ -108,7 +111,7 @@ private fun InfoSpace(suraName: String, narrationName: String, reciterName: Stri
             )
     ) {
         Column(
-            Modifier.padding(vertical = 25.dp, horizontal = 75.dp),
+            modifier = Modifier.padding(vertical = 25.dp, horizontal = 75.dp),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -151,7 +154,7 @@ private fun ProgressSpace(
     onNextTrackClick: () -> Unit,
 ) {
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth(0.95f)
             .clip(RoundedCornerShape(10))
             .background(MaterialTheme.colorScheme.surfaceContainerHigh),
@@ -233,12 +236,12 @@ private fun BottomBar(
 ) {
     BottomAppBar {
         Row(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             MyIconButton(
-                iconId = R.drawable.ic_repeat,
+                imageVector = Icons.Default.Repeat,
                 description = stringResource(R.string.repeat_description),
                 contentColor =
                     if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) MaterialTheme.colorScheme.secondary
@@ -252,7 +255,7 @@ private fun BottomBar(
             )
 
             MyIconButton(
-                iconId = R.drawable.ic_shuffle,
+                imageVector = Icons.Default.Shuffle,
                 description = stringResource(R.string.shuffle_description),
                 contentColor =
                     if (shuffleMode == SHUFFLE_MODE_ALL) MaterialTheme.colorScheme.secondary

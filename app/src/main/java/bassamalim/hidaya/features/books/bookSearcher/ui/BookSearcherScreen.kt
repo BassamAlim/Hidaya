@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -128,9 +131,9 @@ private fun BooksFilter(isFiltered: Boolean, onFilterClick: () -> Unit) {
         MyText(stringResource(R.string.selected_books))
 
         MyIconButton(
-            iconId = R.drawable.ic_filter,
+            imageVector = Icons.Default.FilterAlt,
             description = stringResource(R.string.filter_search_description),
-            iconSize = 30.dp,
+            iconModifier = Modifier.size(30.dp),
             contentColor =
                 if (isFiltered) MaterialTheme.colorScheme.secondary
                 else MaterialTheme.colorScheme.outline,

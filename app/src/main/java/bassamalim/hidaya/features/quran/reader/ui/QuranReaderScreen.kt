@@ -15,11 +15,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.DisplaySettings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -220,11 +225,11 @@ private fun BottomBar(
         ) {
             // Bookmark btn
             MyIconButton(
-                iconId =
-                    if (isBookmarked) R.drawable.ic_bookmarked
-                    else R.drawable.ic_bookmark,
+                imageVector =
+                    if (isBookmarked) Icons.Default.BookmarkBorder
+                    else Icons.Default.Bookmark,
                 description = stringResource(R.string.bookmark_page_button_description),
-                iconSize = 40.dp,
+                iconModifier = Modifier.size(40.dp),
                 onClick = { onBookmarkClick(isBookmarked) }
             )
 
@@ -256,10 +261,11 @@ private fun BottomBar(
 
             // Preference btn
             MyIconButton(
-                iconId = R.drawable.ic_display_settings,
+                imageVector = Icons.Default.DisplaySettings,
                 description = stringResource(R.string.settings),
-                iconSize = 40.dp,
-                innerPadding = PaddingValues(2.dp),
+                iconModifier = Modifier
+                    .size(40.dp)
+                    .padding(2.dp),
                 onClick = onSettingsClick
             )
         }

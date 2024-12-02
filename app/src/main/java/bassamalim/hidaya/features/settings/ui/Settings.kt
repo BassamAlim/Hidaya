@@ -30,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -47,7 +49,7 @@ fun <V> MenuSetting(
     items: Array<V>,
     entries: Array<String>,
     title: String,
-    iconResId: Int = -1,
+    icon: Any? = null,
     onSelection: (V) -> Unit = {}
 ) {
     var isShown by remember { mutableStateOf(false) }
@@ -65,13 +67,31 @@ fun <V> MenuSetting(
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (iconResId != -1) {
-                Icon(
-                    painter = painterResource(iconResId),
-                    contentDescription = title,
-                    modifier = Modifier.padding(end = 20.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
+            if (icon != null) {
+                if (icon is ImageVector) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = title,
+                        modifier = Modifier.padding(end = 20.dp),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                else if (icon is Painter) {
+                    Icon(
+                        painter = icon,
+                        contentDescription = title,
+                        modifier = Modifier.padding(end = 20.dp),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                else if (icon is Int) {
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = title,
+                        modifier = Modifier.padding(end = 20.dp),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
 
             Column {

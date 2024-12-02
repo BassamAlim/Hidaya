@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -15,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import bassamalim.hidaya.R
 
 @Composable
 fun ReaderBottomBar(textSize: Float, onSeek: (Float) -> Unit) {
@@ -32,8 +34,8 @@ fun ReaderBottomBar(textSize: Float, onSeek: (Float) -> Unit) {
             horizontalArrangement = Arrangement.Center
         ) {
             MyIconButton(
-                iconId = R.drawable.ic_text_size,
-                iconSize = 30.dp,
+                imageVector = Icons.Default.FormatSize,
+                iconModifier = Modifier.size(30.dp),
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 onClick = {
                     isSelected = !isSelected

@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -79,10 +82,10 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                         )
 
                         MyIconButton(
-                            iconId = R.drawable.ic_filter,
+                            imageVector = Icons.Default.FilterAlt,
                             modifier = Modifier.padding(end = 10.dp),
                             description = stringResource(R.string.filter_search_description),
-                            iconSize = 32.dp,
+                            iconModifier = Modifier.size(32.dp),
                             contentColor =
                                 if (state.isFiltered) MaterialTheme.colorScheme.secondary
                                 else MaterialTheme.colorScheme.outline,

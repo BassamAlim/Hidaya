@@ -1,6 +1,16 @@
 package bassamalim.hidaya.features.more.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.FactCheck
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LiveTv
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Radio
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -25,8 +35,9 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         MyRow {
             MySquareButton(
                 text = stringResource(R.string.recitations),
-                drawableId = R.drawable.ic_headphone,
+                imageVector = Icons.Default.Headphones,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = { viewModel.onRecitationsClick(snackBarHostState, unsupportedMessage) }
             )
 
@@ -34,6 +45,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
                 text = stringResource(R.string.qibla),
                 drawableId = R.drawable.ic_qibla_compass,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = viewModel::onQiblaClick
             )
         }
@@ -41,8 +53,9 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         MyRow {
             MySquareButton(
                 text = stringResource(R.string.quiz_title),
-                drawableId = R.drawable.ic_exam,
+                imageVector = Icons.AutoMirrored.Default.FactCheck,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = viewModel::onQuizClick
             )
 
@@ -50,6 +63,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
                 text = stringResource(R.string.hadeeth_books),
                 drawableId = R.drawable.ic_books,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = viewModel::onBooksClick
             )
         }
@@ -57,15 +71,17 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         MyRow {
             MySquareButton(
                 text = stringResource(R.string.tv_channels),
-                drawableId = R.drawable.ic_television,
+                imageVector = Icons.Default.LiveTv,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = viewModel::onTvClick
             )
 
             MySquareButton(
                 text = stringResource(R.string.quran_radio),
-                drawableId = R.drawable.ic_radio,
+                imageVector = Icons.Default.Radio,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = { viewModel.onRadioClick(snackBarHostState, unsupportedMessage) }
             )
         }
@@ -73,15 +89,17 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         MyRow {
             MySquareButton(
                 text = stringResource(R.string.date_converter),
-                drawableId = R.drawable.ic_calendar,
+                imageVector = Icons.Default.CalendarMonth,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = viewModel::onDateConverterClick
             )
 
             MySquareButton(
                 text = stringResource(R.string.settings),
-                drawableId = R.drawable.ic_settings,
+                imageVector = Icons.Default.Settings,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = viewModel::onSettingsClick
             )
         }
@@ -89,15 +107,17 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         MyRow {
             MySquareButton(
                 text = stringResource(R.string.contact),
-                drawableId = R.drawable.ic_mail,
+                imageVector = Icons.Default.Mail,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = { viewModel.onContactClick(context) }
             )
 
             MySquareButton(
                 text = stringResource(R.string.share_app),
-                drawableId = R.drawable.ic_share,
+                imageVector = Icons.Default.Share,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
                 onClick = { viewModel.onShareClick(context) }
             )
         }
@@ -105,9 +125,10 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         MyRow {
             MySquareButton(
                 text = stringResource(R.string.about),
-                drawableId = R.drawable.ic_info,
-                tint = MaterialTheme.colorScheme.onSurface,
-                onClick = viewModel::onAboutClick
+                imageVector = Icons.Default.Info,
+                onClick = viewModel::onAboutClick,
+                iconSize = 56.dp,
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
     }

@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -116,11 +119,11 @@ private fun DownloadBtn(downloadState: DownloadState, onClick: () -> Unit) {
             MyCircularProgressIndicator(Modifier.size(32.dp))
         else {
             MyIconButton(
-                iconId =
-                    if (downloadState == DownloadState.DOWNLOADED) R.drawable.ic_downloaded
-                    else R.drawable.ic_download,
+                imageVector =
+                    if (downloadState == DownloadState.DOWNLOADED) Icons.Default.DownloadDone
+                    else Icons.Default.Download,
                 description = stringResource(R.string.download_description),
-                iconSize = 32.dp,
+                iconModifier = Modifier.size(32.dp),
                 contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onClick
             )
