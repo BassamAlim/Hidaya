@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -62,7 +63,7 @@ fun <V> MenuSetting(
             .clickable { isShown = true }
     ) {
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -72,7 +73,9 @@ fun <V> MenuSetting(
                     Icon(
                         imageVector = icon,
                         contentDescription = title,
-                        modifier = Modifier.padding(end = 20.dp),
+                        modifier = Modifier
+                            .size(56.dp)
+                            .padding(end = 20.dp),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -80,7 +83,9 @@ fun <V> MenuSetting(
                     Icon(
                         painter = icon,
                         contentDescription = title,
-                        modifier = Modifier.padding(end = 20.dp),
+                        modifier = Modifier
+                            .size(56.dp)
+                            .padding(end = 20.dp),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -88,7 +93,9 @@ fun <V> MenuSetting(
                     Icon(
                         painter = painterResource(icon),
                         contentDescription = title,
-                        modifier = Modifier.padding(end = 20.dp),
+                        modifier = Modifier
+                            .size(56.dp)
+                            .padding(end = 20.dp),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }

@@ -39,7 +39,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyIconButton
-import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
+import bassamalim.hidaya.core.ui.components.MyIconPlayerButton
 import bassamalim.hidaya.core.ui.components.MyProgressSlider
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -205,7 +205,7 @@ private fun ProgressSpace(
                 onClick = onPreviousTrackClick
             )
 
-            MyIconPlayerBtn(
+            MyIconPlayerButton(
                 state = playbackState,
                 modifier = Modifier.padding(10.dp),
                 enabled = areControlsEnabled,

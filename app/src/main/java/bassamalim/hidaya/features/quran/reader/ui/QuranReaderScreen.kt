@@ -25,8 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.DisplaySettings
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -75,7 +73,7 @@ import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
-import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
+import bassamalim.hidaya.core.ui.components.MyIconPlayerButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
@@ -236,33 +234,36 @@ private fun BottomBar(
             )
 
             MyRow {
-                // Rewind btn
+                // Skip to previous button
                 MyIconButton(
-                    imageVector = Icons.Default.SkipPrevious,
+                    iconId = R.drawable.ic_skip_previous,
                     description = stringResource(R.string.rewind_btn_description),
-                    iconModifier = Modifier.size(40.dp),
+                    iconSize = 40.dp,
                     onClick = onPreviousVerseClick
                 )
 
-                // Play/Pause btn
-                MyIconPlayerBtn(
-                    state = playerState,
-                    onClick = { onPlayPauseClick(activity) },
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    size = 40.dp,
-                    filled = false
-                )
+                // Play/Pause button
+                Box (
+                    Modifier.padding(horizontal = 4.dp)
+                ) {
+                    MyIconPlayerButton(
+                        state = playerState,
+                        onClick = { onPlayPauseClick(activity) },
+                        iconSize = 40.dp,
+                        filled = false
+                    )
+                }
 
-                // Fast Forward btn
+                // Skip to next button
                 MyIconButton(
-                    imageVector = Icons.Default.SkipNext,
+                    iconId = R.drawable.ic_skip_next,
                     description = stringResource(R.string.fast_forward_btn_description),
-                    iconModifier = Modifier.size(40.dp),
+                    iconSize = 40.dp,
                     onClick = onNextVerseClick
                 )
             }
 
-            // Preference btn
+            // Preference button
             MyIconButton(
                 imageVector = Icons.Default.DisplaySettings,
                 description = stringResource(R.string.settings),

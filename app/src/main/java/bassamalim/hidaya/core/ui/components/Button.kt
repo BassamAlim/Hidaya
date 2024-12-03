@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
@@ -45,7 +43,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -441,22 +438,18 @@ fun MyDownloadButton(
 }
 
 @Composable
-fun MyIconPlayerBtn(
+fun MyIconPlayerButton(
     state: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    size: Dp = 80.dp,
-    padding: Dp = 0.dp,
+    iconSize: Dp = Dp.Unspecified,
     enabled: Boolean = true,
     filled: Boolean = true,
     tint: Color = LocalContentColor.current
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
+    IconButton(
+        onClick = { if (enabled) onClick() },
         modifier = modifier
-            .size(size)
-            .clip(CircleShape)
-            .clickable { if (enabled) onClick() }
     ) {
         AnimatedContent(
             targetState = state,
@@ -482,7 +475,7 @@ fun MyIconPlayerBtn(
                             else Icons.Default.PlayArrow
                         },
                     contentDescription = stringResource(R.string.play_pause_btn_description),
-                    modifier = Modifier.padding(padding),
+                    modifier = Modifier.size(iconSize),
                     tint = tint
                 )
             }
