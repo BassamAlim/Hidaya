@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
@@ -97,31 +98,34 @@ private fun SuraCard(
     onDownloadClick: (ReciterSura) -> Unit
 ) {
     MyClickableSurface(
+        modifier = Modifier.padding(2.dp),
+        elevation = 6.dp,
         onClick = { onClick(sura.id) }
     ) {
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 8.dp),
+                .padding(top = 10.dp, bottom = 10.dp, start = 14.dp, end = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MyDownloadButton(
-                state = sura.downloadState,
-                size = 28.dp,
-                onClick = { onDownloadClick(sura) }
-            )
-
             MyText(
                 text = sura.suraName,
                 modifier = Modifier
                     .weight(1F)
-                    .padding(10.dp)
+                    .padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
+                textAlign = TextAlign.Start
             )
 
             MyFavoriteButton(
                 isFavorite = sura.isFavorite,
                 onClick = { onFavoriteClick(sura) }
+            )
+
+            MyDownloadButton(
+                state = sura.downloadState,
+                size = 28.dp,
+                onClick = { onDownloadClick(sura) }
             )
         }
     }

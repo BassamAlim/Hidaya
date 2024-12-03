@@ -126,7 +126,8 @@ fun <V> MenuSetting(
                         ) {
                             MyText(
                                 text = title,
-                                modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)
+                                modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
+                                textColor = MaterialTheme.colorScheme.onSurface
                             )
 
                             Column(
@@ -158,7 +159,10 @@ fun <V> MenuSetting(
                                             )
                                         )
 
-                                        MyText(text = text)
+                                        MyText(
+                                            text = text,
+                                            textColor = MaterialTheme.colorScheme.onSurface
+                                        )
                                     }
                                 }
                             }
@@ -261,13 +265,18 @@ fun CategoryTitle(title: String) {
 
 @Composable
 fun PreferenceTitle(title: String, modifier: Modifier = Modifier) {
-    MyText(text = title, modifier = modifier)
+    MyText(
+        text = title,
+        modifier = modifier,
+        textColor = MaterialTheme.colorScheme.onSurface
+    )
 }
 
 @Composable
 private fun SummaryText(text: String) {
     MyText(
         text = text,
-        fontSize = 16.sp
+        fontSize = 16.sp,
+        textColor = MaterialTheme.colorScheme.onSurface
     )
 }

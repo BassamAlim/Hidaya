@@ -1,6 +1,9 @@
 package bassamalim.hidaya.features.books.booksMenu.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
@@ -18,18 +21,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.LoadingScreen
-import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyCircularProgressIndicator
+import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.utils.FileUtils
 
@@ -95,19 +99,30 @@ private fun BookCard(
     onItemClick: (Int, Book) -> Unit,
     onDownloadButtonClick: (Int, Book) -> Unit,
 ) {
-    MyButtonSurface(
-        text = book.title,
-        innerVPadding = 15.dp,
-        fontSize = 22.sp,
-        modifier = Modifier.padding(vertical = 2.dp),
-        iconButton = {
+    MyClickableSurface(
+        modifier = Modifier.padding(2.dp),
+        elevation = 6.dp,
+        onClick = { onItemClick(id, book) }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, bottom = 10.dp, start = 14.dp, end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            MyText(
+                text = book.title,
+                modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
+                textAlign = TextAlign.Start
+            )
+
             DownloadBtn(
                 downloadState = book.downloadState,
                 onClick = { onDownloadButtonClick(id, book) }
             )
-        },
-        onClick = { onItemClick(id, book) }
-    )
+        }
+    }
 }
 
 @Composable

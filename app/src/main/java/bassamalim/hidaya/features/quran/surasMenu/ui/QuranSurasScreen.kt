@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
@@ -155,7 +156,8 @@ private fun Tab(
                     ) {
                         MyText(
                             text = "${stringResource(R.string.sura)} ${item.decoratedName}",
-                            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp)
+                            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
+                            textAlign = TextAlign.Start
                         )
 
                         MyFavoriteButton(

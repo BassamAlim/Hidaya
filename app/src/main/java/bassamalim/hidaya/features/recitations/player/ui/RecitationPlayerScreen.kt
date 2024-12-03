@@ -19,8 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Shuffle
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -154,7 +152,7 @@ private fun ProgressSpace(
     onSliderChangeFinished: () -> Unit,
     onPreviousTrackClick: () -> Unit,
     onPlayPauseClick: () -> Unit,
-    onNextTrackClick: () -> Unit,
+    onNextTrackClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -164,21 +162,24 @@ private fun ProgressSpace(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MyRow(
-            Modifier
+        Row(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp)
+                .padding(vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             MyText(
                 text = progressText,
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier
+                    .weight(0.4f)
+                    .padding(horizontal = 10.dp),
                 fontSize = 19.sp
             )
 
             MyProgressSlider(
                 value = progress.toFloat(),
                 valueRange = 0F..duration.toFloat(),
-                modifier = Modifier.fillMaxWidth(0.7F),
+                modifier = Modifier.weight(1f),
                 enabled = areControlsEnabled,
                 onValueChange = onSliderChange,
                 onValueChangeFinished = onSliderChangeFinished
@@ -186,7 +187,9 @@ private fun ProgressSpace(
 
             MyText(
                 text = durationText,
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier
+                    .weight(0.4f)
+                    .padding(horizontal = 10.dp),
                 fontSize = 19.sp
             )
         }
@@ -194,30 +197,33 @@ private fun ProgressSpace(
         MyRow(
             Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp, bottom = 5.dp)
+                .padding(top = 10.dp, bottom = 16.dp)
         ) {
             MyIconButton(
-                imageVector = Icons.Default.SkipPrevious,
+                iconId = R.drawable.ic_skip_previous,
                 description = stringResource(R.string.previous_track_btn_description),
-                isEnabled = areControlsEnabled,
-                iconModifier = Modifier.size(40.dp),
+                modifier = Modifier.size(80.dp),
+                iconSize = 70.dp,
+                enabled = areControlsEnabled,
                 contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onPreviousTrackClick
             )
 
             MyIconPlayerButton(
                 state = playbackState,
-                modifier = Modifier.padding(10.dp),
                 enabled = areControlsEnabled,
+                modifier = Modifier.size(100.dp),
+                iconSize = 90.dp,
                 tint = MaterialTheme.colorScheme.primary,
                 onClick = onPlayPauseClick
             )
 
             MyIconButton(
-                imageVector = Icons.Default.SkipNext,
+                iconId = R.drawable.ic_skip_next,
                 description = stringResource(R.string.next_track_btn_description),
-                isEnabled = areControlsEnabled,
-                iconModifier = Modifier.size(40.dp),
+                enabled = areControlsEnabled,
+                modifier = Modifier.size(80.dp),
+                iconSize = 70.dp,
                 contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onNextTrackClick
             )

@@ -112,6 +112,9 @@ fun MyValuedSlider(
             onValueChangeFinished = onValueChangeFinished
         )
 
-        MyText(sliderText)
+        MyText(
+            text = sliderText,
+            textColor = MaterialTheme.colorScheme.onSurface
+        )
     }
 }

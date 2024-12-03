@@ -1,20 +1,25 @@
 package bassamalim.hidaya.features.books.bookChaptersMenu.ui
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Book
-import bassamalim.hidaya.core.ui.components.MyButtonSurface
+import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import kotlinx.coroutines.flow.Flow
@@ -61,17 +66,46 @@ private fun Tab(
     MyLazyColumn(
         lazyList = {
             items(chapters) { chapter ->
-                MyButtonSurface(
-                    text = chapter.title,
-                    iconButton = {
-                        MyFavoriteButton(
-                            isFavorite = chapter.isFavorite,
-                            onClick = { onFavClick(chapter.id) }
-                        )
-                    },
-                    onClick = { onItemClick(chapter) }
+                ItemContainer(
+                    chapter = chapter,
+                    onItemClick = onItemClick,
+                    onFavClick = onFavClick
                 )
             }
         }
     )
+}
+
+@Composable
+private fun ItemContainer(
+    chapter: Book.Chapter,
+    onItemClick: (Book.Chapter) -> Unit,
+    onFavClick: (Int) -> Unit
+) {
+    MyClickableSurface(
+        modifier = Modifier.padding(2.dp),
+        elevation = 6.dp,
+        onClick = { onItemClick(chapter) }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, bottom = 10.dp, start = 14.dp, end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            MyText(
+                text = chapter.title,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
+                textAlign = TextAlign.Start
+            )
+
+            MyFavoriteButton(
+                isFavorite = chapter.isFavorite,
+                onClick = { onFavClick(chapter.id) }
+            )
+        }
+    }
 }

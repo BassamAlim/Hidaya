@@ -56,7 +56,8 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
 
             MyText(
                 text = stringResource(R.string.display_method),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
+                textColor = MaterialTheme.colorScheme.onSurface
             )
 
             HorizontalRadioGroup(
@@ -78,7 +79,10 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
                     isEnabled = state.isFillPageEnabled
                 )
 
-                MyText(stringResource(R.string.fill_page))
+                MyText(
+                    text = stringResource(R.string.fill_page),
+                    textColor = MaterialTheme.colorScheme.onSurface
+                )
             }
 
             SliderPref(
@@ -98,7 +102,6 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
                 items = viewModel.reciterIds,
                 entries = viewModel.reciterNames.toTypedArray(),
                 title = stringResource(R.string.reciter),
-                icon = -1,
                 onSelection = viewModel::onReciterChange
             )
 

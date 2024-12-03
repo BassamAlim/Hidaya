@@ -238,12 +238,12 @@ fun MyIconButton(
     description: String = "",
     containerColor: Color = IconButtonDefaults.iconButtonColors().containerColor,
     contentColor: Color = IconButtonDefaults.iconButtonColors().contentColor,
-    isEnabled: Boolean = true,
+    enabled: Boolean = true,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     onClick: () -> Unit
 ) {
     IconButton(
-        onClick = { if (isEnabled) onClick() },
+        onClick = { if (enabled) onClick() },
         modifier = modifier,
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = containerColor,
@@ -398,8 +398,16 @@ fun MySquareButton(
 }
 
 @Composable
-fun MyFavoriteButton(isFavorite: Boolean, onClick: () -> Unit, size: Dp = 26.dp) {
-    IconButton(onClick = onClick) {
+fun MyFavoriteButton(
+    isFavorite: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    size: Dp = 26.dp
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
         Icon(
             imageVector =
                 if (isFavorite) Icons.Filled.Star
@@ -431,7 +439,8 @@ fun MyDownloadButton(
                     else Icons.Default.Download,
                 description = stringResource(R.string.download_description),
                 iconModifier = Modifier.size(size),
-                onClick = onClick
+                onClick = onClick,
+                contentColor = MaterialTheme.colorScheme.primary
             )
         }
     }
