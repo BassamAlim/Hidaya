@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -194,10 +197,10 @@ private fun ProgressSpace(
                 .padding(top = 10.dp, bottom = 5.dp)
         ) {
             MyIconButton(
-                iconId = R.drawable.ic_previous_track,
+                imageVector = Icons.Default.SkipPrevious,
                 description = stringResource(R.string.previous_track_btn_description),
                 isEnabled = areControlsEnabled,
-                iconSize = 40.dp,
+                iconModifier = Modifier.size(40.dp),
                 contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onPreviousTrackClick
             )
@@ -206,17 +209,15 @@ private fun ProgressSpace(
                 state = playbackState,
                 modifier = Modifier.padding(10.dp),
                 enabled = areControlsEnabled,
-                playIcon = R.drawable.ic_circle_play,
-                pauseIcon = R.drawable.ic_circle_pause,
                 tint = MaterialTheme.colorScheme.primary,
                 onClick = onPlayPauseClick
             )
 
             MyIconButton(
-                iconId = R.drawable.ic_next_track,
+                imageVector = Icons.Default.SkipNext,
                 description = stringResource(R.string.next_track_btn_description),
                 isEnabled = areControlsEnabled,
-                iconSize = 40.dp,
+                iconModifier = Modifier.size(40.dp),
                 contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onNextTrackClick
             )

@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -77,7 +80,7 @@ private fun DateOffsetEditor(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         MyIconButton(
-            iconId = R.drawable.ic_left_arrow,
+            imageVector = Icons.AutoMirrored.Default.ArrowBackIos,
             contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onPreviousDayClick
         )
@@ -88,7 +91,7 @@ private fun DateOffsetEditor(
         )
 
         MyIconButton(
-            iconId = R.drawable.ic_right_arrow,
+            imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
             contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onNextDayClick
         )

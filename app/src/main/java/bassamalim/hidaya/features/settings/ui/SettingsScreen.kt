@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -171,7 +172,7 @@ fun AppearanceSettings(
             items = Theme.entries.toTypedArray(),
             entries = stringArrayResource(R.array.themes_entries),
             title = stringResource(R.string.theme),
-            icon = R.drawable.ic_theme,
+            icon = Icons.Default.Contrast,
             onSelection = onThemeChange
         )
     }

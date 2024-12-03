@@ -46,6 +46,7 @@ fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
             val noDownloadedBooksMessage = stringResource(R.string.no_downloaded_books)
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
+//                imageVector = Icons.Default.FindInPage,
                 description = stringResource(R.string.search_in_books),
                 onClick = {
                     viewModel.onSearcherClick(

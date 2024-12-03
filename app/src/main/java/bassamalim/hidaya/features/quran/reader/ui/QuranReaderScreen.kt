@@ -25,6 +25,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.DisplaySettings
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -226,8 +228,8 @@ private fun BottomBar(
             // Bookmark btn
             MyIconButton(
                 imageVector =
-                    if (isBookmarked) Icons.Default.BookmarkBorder
-                    else Icons.Default.Bookmark,
+                    if (isBookmarked) Icons.Default.Bookmark
+                    else Icons.Default.BookmarkBorder,
                 description = stringResource(R.string.bookmark_page_button_description),
                 iconModifier = Modifier.size(40.dp),
                 onClick = { onBookmarkClick(isBookmarked) }
@@ -236,25 +238,26 @@ private fun BottomBar(
             MyRow {
                 // Rewind btn
                 MyIconButton(
-                    iconId = R.drawable.ic_skip_previous,
+                    imageVector = Icons.Default.SkipPrevious,
                     description = stringResource(R.string.rewind_btn_description),
-                    iconSize = 40.dp,
+                    iconModifier = Modifier.size(40.dp),
                     onClick = onPreviousVerseClick
                 )
 
                 // Play/Pause btn
                 MyIconPlayerBtn(
                     state = playerState,
-                    size = 40.dp,
+                    onClick = { onPlayPauseClick(activity) },
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    onClick = { onPlayPauseClick(activity) }
+                    size = 40.dp,
+                    filled = false
                 )
 
                 // Fast Forward btn
                 MyIconButton(
-                    iconId = R.drawable.ic_skip_next,
+                    imageVector = Icons.Default.SkipNext,
                     description = stringResource(R.string.fast_forward_btn_description),
-                    iconSize = 40.dp,
+                    iconModifier = Modifier.size(40.dp),
                     onClick = onNextVerseClick
                 )
             }

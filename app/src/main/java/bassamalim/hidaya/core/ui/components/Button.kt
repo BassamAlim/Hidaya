@@ -24,6 +24,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.DownloadDone
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PauseCircleFilled
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Button
@@ -439,14 +443,13 @@ fun MyDownloadButton(
 @Composable
 fun MyIconPlayerBtn(
     state: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     size: Dp = 80.dp,
     padding: Dp = 0.dp,
     enabled: Boolean = true,
-    playIcon: Int = R.drawable.ic_play,
-    pauseIcon: Int = R.drawable.ic_pause,
-    tint: Color = LocalContentColor.current,
-    onClick: () -> Unit
+    filled: Boolean = true,
+    tint: Color = LocalContentColor.current
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -469,10 +472,15 @@ fun MyIconPlayerBtn(
                 MyCircularProgressIndicator()
             else {
                 Icon(
-                    painter = painterResource(
-                        if (state == PlaybackStateCompat.STATE_PLAYING) pauseIcon
-                        else playIcon
-                    ),
+                    imageVector =
+                        if (filled) {
+                            if (state == PlaybackStateCompat.STATE_PLAYING) Icons.Default.PauseCircleFilled
+                            else Icons.Default.PlayCircleFilled
+                        }
+                        else {
+                            if (state == PlaybackStateCompat.STATE_PLAYING) Icons.Default.Pause
+                            else Icons.Default.PlayArrow
+                        },
                     contentDescription = stringResource(R.string.play_pause_btn_description),
                     modifier = Modifier.padding(padding),
                     tint = tint

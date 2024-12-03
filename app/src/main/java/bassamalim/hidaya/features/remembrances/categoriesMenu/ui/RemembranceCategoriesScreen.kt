@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -109,7 +111,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             // places recitations button
             MySquareButton(
                 text = stringResource(R.string.places_remembrances),
-                drawableId = R.drawable.ic_going_out,
+                imageVector = Icons.AutoMirrored.Default.Logout,
                 tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 6) }
             )

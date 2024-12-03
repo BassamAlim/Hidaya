@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.AddAlert
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.MyLocation
@@ -266,7 +268,7 @@ private fun DayCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MyIconButton(
-                iconId = R.drawable.ic_left_arrow,
+                imageVector = Icons.AutoMirrored.Default.ArrowBackIos,
                 description = stringResource(R.string.previous_day_button_description),
                 modifier = Modifier.padding(2.dp),
                 contentColor = MaterialTheme.colorScheme.onSurface,
@@ -284,7 +286,7 @@ private fun DayCard(
             )
 
             MyIconButton(
-                iconId = R.drawable.ic_right_arrow,
+                imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
                 description = stringResource(R.string.next_day_button_description),
                 modifier = Modifier.padding(2.dp),
                 contentColor = MaterialTheme.colorScheme.onSurface,

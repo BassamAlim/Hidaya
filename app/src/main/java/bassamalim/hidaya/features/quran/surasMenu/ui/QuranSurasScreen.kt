@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -53,7 +53,7 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
                 visible = !lazyListState.isScrollInProgress && lazyListState.canScrollForward
             ) {
                 MyFloatingActionButton(
-                    imageVector = Icons.Default.Bookmark,
+                    imageVector = Icons.Default.Bookmarks,
                     description = stringResource(R.string.search_in_quran),
                     onClick = {
                         viewModel.onBookmarkedPageClick(
