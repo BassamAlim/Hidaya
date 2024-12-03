@@ -71,7 +71,7 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                 modifier = Modifier.weight(1f),
                 searchComponent = {
                     Row(
-                        Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         SearchComponent(
@@ -163,7 +163,7 @@ private fun ReciterCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 3.dp, start = 10.dp, end = 10.dp),
+                .padding(top = 6.dp, bottom = 6.dp, start = 16.dp, end = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -236,7 +236,7 @@ private fun NarrationsCard(
 
                 MyDownloadButton(
                     state = narration.downloadState,
-                    size = 28.dp,
+                    iconSize = 28.dp,
                     onClick = { onDownloadClick(reciterId, narration, suraString) }
                 )
             }

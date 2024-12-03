@@ -250,24 +250,30 @@ private fun BottomBar(
             MyIconButton(
                 imageVector = Icons.Default.Repeat,
                 description = stringResource(R.string.repeat_description),
+                onClick = { onRepeatClick(repeatMode) },
+                iconModifier = Modifier.size(30.dp),
                 contentColor =
-                    if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.onPrimary,
-                onClick = { onRepeatClick(repeatMode) }
+                    if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE)
+                        MaterialTheme.colorScheme.secondary
+                    else
+                        MaterialTheme.colorScheme.onPrimary
             )
 
             MyDownloadButton(
                 state = downloadState,
                 onClick = onDownloadClick,
+                iconSize = 30.dp,
+                contentColor = MaterialTheme.colorScheme.onSurface
             )
 
             MyIconButton(
                 imageVector = Icons.Default.Shuffle,
                 description = stringResource(R.string.shuffle_description),
+                onClick = { onShuffleClick(shuffleMode) },
+                iconModifier = Modifier.size(30.dp),
                 contentColor =
                     if (shuffleMode == SHUFFLE_MODE_ALL) MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.onPrimary,
-                onClick = { onShuffleClick(shuffleMode) }
+                    else MaterialTheme.colorScheme.onPrimary
             )
         }
     }

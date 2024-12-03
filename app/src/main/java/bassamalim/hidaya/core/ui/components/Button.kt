@@ -423,7 +423,8 @@ fun MyFavoriteButton(
 fun MyDownloadButton(
     state: DownloadState,
     modifier: Modifier = Modifier,
-    size: Dp = 26.dp,
+    iconSize: Dp = 26.dp,
+    contentColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit
 ) {
     Box(
@@ -431,16 +432,16 @@ fun MyDownloadButton(
         contentAlignment = Alignment.Center
     ) {
         if (state == DownloadState.DOWNLOADING)
-            MyCircularProgressIndicator(Modifier.size(size))
+            MyCircularProgressIndicator(Modifier.size(iconSize))
         else {
             MyIconButton(
                 imageVector =
                     if (state == DownloadState.DOWNLOADED) Icons.Default.DownloadDone
                     else Icons.Default.Download,
                 description = stringResource(R.string.download_description),
-                iconModifier = Modifier.size(size),
+                iconModifier = Modifier.size(iconSize),
                 onClick = onClick,
-                contentColor = MaterialTheme.colorScheme.primary
+                contentColor = contentColor
             )
         }
     }

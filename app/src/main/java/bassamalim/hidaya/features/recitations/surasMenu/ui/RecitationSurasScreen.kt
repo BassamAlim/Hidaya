@@ -124,7 +124,7 @@ private fun SuraCard(
 
             MyDownloadButton(
                 state = sura.downloadState,
-                size = 28.dp,
+                iconSize = 28.dp,
                 onClick = { onDownloadClick(sura) }
             )
         }
