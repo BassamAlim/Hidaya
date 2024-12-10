@@ -10,6 +10,10 @@ val Negative = Color(0xFFE2574C)
 val Gold = Color(0xFFFFD700)
 val Silver = Color(0xFFC0C0C0)
 val Bronze = Color(0xFFCD7F32)
+val Bookmark1Color = Color(0xFF2778FF)
+val Bookmark2Color = Color(0xFF35C0AD)
+val Bookmark3Color = Color(0xFF683DDE)
+val Bookmark4Color = Color(0xFFB2A133)
 
 
 val originalColorScheme = darkColorScheme(
@@ -42,7 +46,7 @@ val originalColorScheme = darkColorScheme(
     outline = Color(0xFF787C80),
     outlineVariant = Color(0xFF818588),
     scrim = Color(0xFF000000),
-    surfaceContainerHighest = Color(0xFF343E4B),
+    surfaceContainerHighest = Color(0xFF313C4B),
     surfaceContainerHigh = Color(0xFF2A323D),
     surfaceContainer = Color(0xFF222831),
     surfaceContainerLow = Color(0xFF222D37),

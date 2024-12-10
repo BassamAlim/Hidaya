@@ -1,9 +1,11 @@
 package bassamalim.hidaya.features.quran.surasMenu.ui
 
+import bassamalim.hidaya.core.models.QuranBookmarks
+
 data class QuranSurasUiState(
     val isLoading: Boolean = true,
-    val bookmarkPageText: String? = null,
-    val bookmarkSuraText: String? = null,
+    val isBookmarksExpanded: Boolean = false,
+    val bookmarks: QuranBookmarks = QuranBookmarks(),
     val searchText: String = "",
     val isTutorialDialogShown: Boolean = false
 )

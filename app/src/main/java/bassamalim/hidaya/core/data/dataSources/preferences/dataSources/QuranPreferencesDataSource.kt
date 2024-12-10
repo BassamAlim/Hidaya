@@ -3,7 +3,7 @@ package bassamalim.hidaya.core.data.dataSources.preferences.dataSources
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.QuranPreferences
-import bassamalim.hidaya.core.models.QuranPageBookmark
+import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.coroutines.flow.Flow
@@ -48,10 +48,10 @@ class QuranPreferencesDataSource(
         }
     }
 
-    fun getPageBookmark() = flow.map { it.pageBookmark }
-    suspend fun updatePageBookmark(page: QuranPageBookmark?) {
+    fun getBookmarks() = flow.map { it.bookmarks }
+    suspend fun updateBookmarks(bookmarks: QuranBookmarks) {
         dataStore.updateData { preferences ->
-            preferences.copy(pageBookmark = page)
+            preferences.copy(bookmarks = bookmarks)
         }
     }
 

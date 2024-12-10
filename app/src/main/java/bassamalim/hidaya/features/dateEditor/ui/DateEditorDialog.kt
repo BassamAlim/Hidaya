@@ -8,61 +8,57 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyDialog
+import bassamalim.hidaya.core.ui.components.DialogDismissButton
+import bassamalim.hidaya.core.ui.components.DialogSubmitButton
+import bassamalim.hidaya.core.ui.components.DialogTitle
 import bassamalim.hidaya.core.ui.components.MyIconButton
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
-fun DateEditorDialog(
-    viewModel: DateEditorViewModel
-) {
+fun DateEditorDialog(viewModel: DateEditorViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyDialog(shown = true) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 20.dp, horizontal = 30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Title
-            MyText(
-                stringResource(R.string.adjust_date),
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 10.dp)
-            )
+    AlertDialog(
+        onDismissRequest = viewModel::onDismiss,
+        dismissButton = { DialogDismissButton { viewModel.onDismiss() } },
+        confirmButton = {
+            DialogSubmitButton(text = stringResource(R.string.save), onSubmit = viewModel::onSave)
+        },
+        title = { DialogTitle(stringResource(R.string.adjust_date)) },
+        text = { DialogContent(viewModel, state) }
+    )
+}
 
-            // Date offset
-            MyText(
+@Composable
+private fun DialogContent(viewModel: DateEditorViewModel, state: DateEditorUiState) {
+    Column {
+        // Date offset
+        MyText(
+            text =
                 if (state.isUnchanged) stringResource(R.string.unchanged)
                 else state.dateOffsetText,
-                fontSize = 22.sp
-            )
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 22.sp,
+            textAlign = TextAlign.Center
+        )
 
-            DateOffsetEditor(
-                dateText = state.dateText,
-                onPreviousDayClick = viewModel::onPreviousDayClick,
-                onNextDayClick = viewModel::onNextDayClick
-            )
-
-            BottomBar(
-                onSave = viewModel::onSave,
-                onDismiss = viewModel::onDismiss
-            )
-        }
+        DateOffsetEditor(
+            dateText = state.dateText,
+            onPreviousDayClick = viewModel::onPreviousDayClick,
+            onNextDayClick = viewModel::onNextDayClick
+        )
     }
 }
 
@@ -73,9 +69,9 @@ private fun DateOffsetEditor(
     onNextDayClick: () -> Unit
 ) {
     Row(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp),
+            .padding(top = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
@@ -85,36 +81,12 @@ private fun DateOffsetEditor(
             onClick = onPreviousDayClick
         )
 
-        MyText(
-            dateText,
-            fontSize = 22.sp
-        )
+        MyText(text = dateText, fontSize = 22.sp)
 
         MyIconButton(
             imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
             contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onNextDayClick
-        )
-    }
-}
-
-@Composable
-private fun BottomBar(
-    onSave: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        MyRectangleButton(
-            text = stringResource(R.string.save),
-            onClick = onSave
-        )
-
-        MyRectangleButton(
-            text = stringResource(R.string.cancel),
-            onClick = onDismiss
         )
     }
 }

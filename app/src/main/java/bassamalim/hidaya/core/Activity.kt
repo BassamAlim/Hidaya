@@ -78,32 +78,36 @@ class Activity : ComponentActivity() {
     private var startRoute: String? = null
     private lateinit var language: Language
     private lateinit var theme: Flow<Theme>
+    private lateinit var initialTheme: Theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
             theme = appSettingsRepository.getTheme()
+            initialTheme = theme.first()
+
             window.decorView.setBackgroundColor(
                 getThemeColor(
                     color = ThemeColor.BACKGROUND,
                     theme = theme.first()
                 ).toArgb()
             )
-        }
 
-        enableEdgeToEdge()
+            enableEdgeToEdge()
 
-        val isFirstLaunch = savedInstanceState == null
-        startRoute = intent.getStringExtra("start_route")
-
-        lifecycleScope.launch {
+            val isFirstLaunch = savedInstanceState == null
+            startRoute = intent.getStringExtra("start_route")
             if (isFirstLaunch) testDb()
 
             shouldOnboard = !appStateRepository.isOnboardingCompleted().first()
             language = appSettingsRepository.getLanguage().first()
 
-            bootstrapApp()
+            ActivityUtils.configure(
+                context = this@Activity,
+                applicationContext = applicationContext,
+                language = language
+            )
 
             if (isFirstLaunch) {
                 handleAction(intent.action)
@@ -131,14 +135,6 @@ class Activity : ComponentActivity() {
             ActivityUtils.restartApplication(this)
         }
         else Log.d(Global.TAG, "Database is up to date")
-    }
-
-    private fun bootstrapApp() {
-        ActivityUtils.configure(
-            context = this@Activity,
-            applicationContext = applicationContext,
-            language = language
-        )
     }
 
     private suspend fun handleAction(action: String?) {
@@ -235,7 +231,7 @@ class Activity : ComponentActivity() {
     private fun launchApp() {
         setContent {
             val themeState by theme.collectAsState(
-                initial = Theme.ORIGINAL,
+                initial = initialTheme,
                 context = lifecycleScope.coroutineContext
             )
 

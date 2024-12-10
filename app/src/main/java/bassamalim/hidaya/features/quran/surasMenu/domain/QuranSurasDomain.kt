@@ -15,7 +15,7 @@ class QuranSurasDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getBookmark() = quranRepository.getPageBookmark()
+    fun getBookmarks() = quranRepository.getBookmarks()
 
     fun getAllSuras(language: Language) = quranRepository.observeAllSuras(language)
 

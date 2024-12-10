@@ -3,6 +3,9 @@ package bassamalim.hidaya.features.quran.reader.ui
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -23,9 +26,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.DisplaySettings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -115,9 +120,8 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             val featureNotFoundMessage = stringResource(R.string.feature_not_supported)
             BottomBar(
                 activity = activity,
-                isBookmarked = state.isBookmarked,
                 playerState = state.playerState,
-                onBookmarkClick = viewModel::onBookmarkClick,
+                onBookmarksClick = viewModel::onBookmarksClick,
                 onPreviousVerseClick = viewModel::onPreviousVerseClick,
                 onPlayPauseClick = {
                     viewModel.onPlayPauseClick(
@@ -129,6 +133,14 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                 onNextVerseClick = viewModel::onNextVerseClick,
                 onSettingsClick = viewModel::onSettingsClick
             )
+        },
+        floatingActionButton = {
+//            BookmarkOptionButtons(
+//                isExpanded = state.bookmarkOptionButtonsExpanded,
+//                onReadingBookmarkClick = ,
+//                onMemorizationBookmarkClick = ,
+//                onRevisionBookmarkClick =
+//            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
@@ -205,17 +217,14 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
 @Composable
 private fun BottomBar(
     activity: Activity,
-    isBookmarked: Boolean,
     playerState: Int,
-    onBookmarkClick: (Boolean) -> Unit,
+    onBookmarksClick: () -> Unit,
     onPreviousVerseClick: () -> Unit,
     onPlayPauseClick: (Activity) -> Unit,
     onNextVerseClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    BottomAppBar(
-        Modifier.height(56.dp)
-    ) {
+    BottomAppBar(Modifier.height(56.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -223,14 +232,14 @@ private fun BottomBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Bookmark btn
+            // Bookmark button
             MyIconButton(
-                imageVector =
-                    if (isBookmarked) Icons.Default.Bookmark
-                    else Icons.Default.BookmarkBorder,
-                description = stringResource(R.string.bookmark_page_button_description),
-                iconModifier = Modifier.size(40.dp),
-                onClick = { onBookmarkClick(isBookmarked) }
+                imageVector = Icons.Default.Bookmarks,
+                description = stringResource(R.string.bookmark_verse_button_description),
+                iconModifier = Modifier
+                    .size(36.dp)
+                    .padding(2.dp),
+                onClick = onBookmarksClick
             )
 
             MyRow {
@@ -243,9 +252,7 @@ private fun BottomBar(
                 )
 
                 // Play/Pause button
-                Box (
-                    Modifier.padding(horizontal = 4.dp)
-                ) {
+                Box (Modifier.padding(horizontal = 4.dp)) {
                     MyIconPlayerButton(
                         state = playerState,
                         onClick = { onPlayPauseClick(activity) },
@@ -272,6 +279,75 @@ private fun BottomBar(
                     .padding(2.dp),
                 onClick = onSettingsClick
             )
+        }
+    }
+}
+
+@Composable
+private fun BookmarkOptionButtons(
+    isExpanded: Boolean,
+    onReadingBookmarkClick: () -> Unit,
+    onMemorizationBookmarkClick: () -> Unit,
+    onRevisionBookmarkClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
+    ) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Reading FAB
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = slideInVertically(initialOffsetY = { height -> (height * 3.9).toInt() }),
+                exit = slideOutVertically(targetOffsetY = { height -> (height * 3.9).toInt() })
+            ) {
+                FloatingActionButton(
+                    onClick = onReadingBookmarkClick,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Bookmark,
+                        contentDescription = stringResource(R.string.bookmarked_reading_verse)
+                    )
+                }
+            }
+
+            // Memorization FAB
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = slideInVertically(initialOffsetY = { height -> (height * 2.6).toInt() }),
+                exit = slideOutVertically(targetOffsetY = { height -> (height * 2.6).toInt() })
+            ) {
+                FloatingActionButton(
+                    onClick = onMemorizationBookmarkClick,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Bookmark,
+                        contentDescription = stringResource(R.string.bookmarked_memorization_verse)
+                    )
+                }
+            }
+
+            // Revision FAB
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = slideInVertically(initialOffsetY = { height -> (height * 1.3).toInt() }),
+                exit = slideOutVertically(targetOffsetY = { height -> (height * 1.3).toInt() })
+            ) {
+                FloatingActionButton(
+                    onClick = onRevisionBookmarkClick,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Bookmark,
+                        contentDescription = stringResource(R.string.bookmarked_revision_verse)
+                    )
+                }
+            }
         }
     }
 }

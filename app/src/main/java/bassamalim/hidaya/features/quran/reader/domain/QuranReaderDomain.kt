@@ -19,7 +19,6 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.features.quran.reader.versePlayer.VersePlayerService
@@ -220,10 +219,22 @@ class QuranReaderDomain @Inject constructor(
 
     fun getTextSize() = quranRepository.getTextSize()
 
-    fun getPageBookmark() = quranRepository.getPageBookmark()
+    fun getBookmarks() = quranRepository.getBookmarks()
 
-    suspend fun setBookmarkedPage(pageBookmark: QuranPageBookmark?) {
-        quranRepository.setPageBookmark(pageBookmark)
+    fun setBookmark1VerseId(verseId: Int?) {
+        quranRepository.setBookmark1VerseId(verseId)
+    }
+
+    fun setBookmark2VerseId(verseId: Int?) {
+        quranRepository.setBookmark2VerseId(verseId)
+    }
+
+    fun setBookmark3VerseId(verseId: Int?) {
+        quranRepository.setBookmark3VerseId(verseId)
+    }
+
+    fun setBookmark4VerseId(verseId: Int?) {
+        quranRepository.setBookmark4VerseId(verseId)
     }
 
     private fun getPagesRecord() = userRepository.getLocalRecord().map {
@@ -240,11 +251,11 @@ class QuranReaderDomain @Inject constructor(
 
     private fun getWerdPage() = quranRepository.getWerdPageNum()
 
-    private suspend fun setWerdDone() {
+    private fun setWerdDone() {
         quranRepository.setWerdDone(true)
     }
 
-    suspend fun setDoNotShowTutorial() {
+    fun setDoNotShowTutorial() {
         quranRepository.setShouldShowReaderTutorial(false)
     }
 

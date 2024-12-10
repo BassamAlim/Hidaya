@@ -1,56 +1,145 @@
 package bassamalim.hidaya.features.quran.verseInfo.ui
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BookmarkAdd
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyCloseBtn
-import bassamalim.hidaya.core.ui.components.MyDialog
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.theme.Bookmark1Color
+import bassamalim.hidaya.core.ui.theme.Bookmark2Color
+import bassamalim.hidaya.core.ui.theme.Bookmark3Color
+import bassamalim.hidaya.core.ui.theme.Bookmark4Color
+import bassamalim.hidaya.core.ui.theme.hafs_smart
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VerseInfoDialog(
-    viewModel: VerseInfoViewModel
-) {
+fun VerseInfoDialog(viewModel: VerseInfoViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyDialog(shown = true, onDismiss = viewModel::onDismiss) {
-        Column(
-            Modifier
-                .padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Header(viewModel::onDismiss)
-
-            // Interpretation
-            MyText(
-                text = state.interpretation,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+    ModalBottomSheet(onDismissRequest = viewModel::onDismiss) {
+        SheetContent(viewModel, state)
     }
 }
 
 @Composable
-private fun Header(onDismiss: () -> Unit) {
-    Box(Modifier.fillMaxWidth()) {
-        MyCloseBtn(Modifier.align(Alignment.CenterStart)) { onDismiss() }
+private fun SheetContent(viewModel: VerseInfoViewModel, state: VerseInfoUiState) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        BookmarkOptionsSection(
+            onBookmark1Click = viewModel::onBookmark1Click,
+            onBookmark2Click = viewModel::onBookmark2Click,
+            onBookmark3Click = viewModel::onBookmark3Click,
+            onBookmark4Click = viewModel::onBookmark4Click
+        )
 
+        VerseTextSection(state.verseText)
+
+        InterpretationSection(state.interpretation)
+    }
+}
+
+@Composable
+private fun VerseTextSection(verseText: String) {
+    MyText(
+        text = verseText,
+        modifier = Modifier
+            .padding(6.dp),
+        fontFamily = hafs_smart,
+        textAlign = TextAlign.Center,
+        textColor = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+@Composable
+private fun InterpretationSection(interpretation: AnnotatedString) {
+    Column {
         MyText(
             text = stringResource(R.string.interpretation),
+            modifier = Modifier.padding(bottom = 6.dp),
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.Center)
+            textColor = MaterialTheme.colorScheme.onSurface
+        )
+
+        MyText(
+            text = interpretation,
+            modifier = Modifier.padding(6.dp),
+            fontFamily = hafs_smart,
+            textAlign = TextAlign.Justify,
+            textColor = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+private fun BookmarkOptionsSection(
+    onBookmark1Click: () -> Unit,
+    onBookmark2Click: () -> Unit,
+    onBookmark3Click: () -> Unit,
+    onBookmark4Click: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        MyIconButton(
+            imageVector = Icons.Default.BookmarkAdd,
+            description = stringResource(R.string.bookmark_verse_button_description),
+            onClick = onBookmark1Click,
+            iconModifier = Modifier.size(32.dp),
+            contentColor = Bookmark1Color
+        )
+
+        MyIconButton(
+            imageVector = Icons.Default.BookmarkAdd,
+            description = stringResource(R.string.bookmark_verse_button_description),
+            onClick = onBookmark2Click,
+            iconModifier = Modifier.size(32.dp),
+            contentColor = Bookmark2Color
+        )
+
+        MyIconButton(
+            imageVector = Icons.Default.BookmarkAdd,
+            description = stringResource(R.string.bookmark_verse_button_description),
+            onClick = onBookmark3Click,
+            iconModifier = Modifier.size(32.dp),
+            contentColor = Bookmark3Color
+        )
+
+        MyIconButton(
+            imageVector = Icons.Default.BookmarkAdd,
+            description = stringResource(R.string.bookmark_verse_button_description),
+            onClick = onBookmark4Click,
+            iconModifier = Modifier.size(32.dp),
+            contentColor = Bookmark4Color
         )
     }
 }

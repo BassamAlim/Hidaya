@@ -60,7 +60,6 @@
     <string name="shuffle_description">تشغيل عشوائي</string>
     <string name="download_description">تحميل</string>
     <string name="repeat_description">تكرار</string>
-    <string name="notification_image_description">نوع التنبيه</string>
     <string name="reminder_image_description">تنبيه إضافي</string>
     <string name="accuracy_indicator_description">دقة القياس</string>
     <string name="app_widget_description">تطبيق مصغر</string>
@@ -72,7 +71,7 @@
     <string name="play_pause_btn_description">اوقف/اكمل التشغيل</string>
     <string name="fast_forward_btn_description">تقدم</string>
     <string name="revelation_view_description">مكان نزول السورة</string>
-    <string name="bookmark_page_button_description">حفظ الصفحة</string>
+    <string name="bookmark_verse_button_description">حفظ الآية</string>
     <string name="filter_search_description">تصفية البحث</string>
     <string name="source_btn_description">إظهار المرجع</string>
     <string name="already_read_description">تمت القراءة</string>
@@ -227,5 +226,10 @@
     <string name="next_prayer">الصلاة القادمة</string>
     <string name="fill_page">ملئ الصفحة</string>
     <string name="sources">المصادر</string>
+    <string name="bookmarked_verses">الآيات المحفوظة</string>
+    <string name="bookmarked_reading_verse">آية القراءة المحفوظة</string>
+    <string name="bookmarked_memorization_verse">آية الحفظ المحفوظة</string>
+    <string name="bookmarked_revision_verse">آية المراجعة المحفوظة</string>
+    <string name="notification_type">نوع التنبيه</string>
 
 </resources>

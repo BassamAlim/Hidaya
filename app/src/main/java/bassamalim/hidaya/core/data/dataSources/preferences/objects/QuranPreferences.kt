@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.data.dataSources.preferences.objects
 
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.customSerializers.IntBooleanPersistentMapSerializer
-import bassamalim.hidaya.core.models.QuranPageBookmark
+import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
@@ -14,7 +14,7 @@ data class QuranPreferences(
     val viewType: QuranViewType = QuranViewType.PAGE,
     val fillPage: Boolean = false,
     val textSize: Float = 30f,
-    val pageBookmark: QuranPageBookmark? = null,
+    val bookmarks: QuranBookmarks = QuranBookmarks(),
     val searchMaxMatches: Int = 10,
     val shouldShowMenuTutorial: Boolean = true,
     val shouldShowReaderTutorial: Boolean = true,

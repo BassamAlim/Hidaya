@@ -8,7 +8,6 @@ import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import bassamalim.hidaya.features.quran.surasMenu.domain.QuranSurasDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,28 +32,15 @@ class QuranSurasViewModel @Inject constructor(
     private lateinit var language: Language
     private var numeralsLanguage: Language? = null
     private lateinit var suraNames: List<String>
-    private var bookmarkedPage = -1
     private lateinit var allSurasFlow: Flow<List<Sura>>
 
     private val _uiState = MutableStateFlow(QuranSurasUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.getBookmark()
-    ) { state, bookmark ->
-        if (state.isLoading) return@combine state
-
-        bookmarkedPage = bookmark?.pageNum ?: -1
-        state.copy(
-            bookmarkPageText =
-                if (bookmark == null || numeralsLanguage == null) null
-                else translateNums(
-                    numeralsLanguage = numeralsLanguage!!,
-                    string = bookmark.pageNum.toString()
-                ),
-            bookmarkSuraText =
-                if (bookmark == null) null
-                else suraNames[bookmark.suraId]
-        )
+        domain.getBookmarks()
+    ) { state, bookmarks ->
+        if (state.isLoading) state
+        else state.copy(bookmarks = bookmarks)
     }.onStart {
         initializeData()
     }.stateIn(
@@ -90,26 +76,59 @@ class QuranSurasViewModel @Inject constructor(
         navigator.navigate(Screen.QuranSearcher)
     }
 
-    fun onBookmarkedPageClick(snackbarHostState: SnackbarHostState, message: String) {
-        if (bookmarkedPage != -1) {
-            navigator.navigate(
-                Screen.QuranReader(
-                    targetType = QuranTarget.PAGE.name,
-                    targetValue = bookmarkedPage.toString()
-                )
+    fun onBookmarksClick() {
+        _uiState.update { it.copy(
+            isBookmarksExpanded = !it.isBookmarksExpanded
+        )}
+    }
+
+    fun onBookmark1Click() {
+        if (_uiState.value.bookmarks.bookmark1VerseId == null) return
+
+        navigator.navigate(
+            Screen.QuranReader(
+                targetType = QuranTarget.VERSE.name,
+                targetValue = _uiState.value.bookmarks.bookmark1VerseId.toString()
             )
-        }
-        else viewModelScope.launch {
-            snackbarHostState.showSnackbar(message)
-        }
+        )
+    }
+
+    fun onBookmark2Click() {
+        if (_uiState.value.bookmarks.bookmark2VerseId == null) return
+
+        navigator.navigate(
+            Screen.QuranReader(
+                targetType = QuranTarget.VERSE.name,
+                targetValue = _uiState.value.bookmarks.bookmark2VerseId.toString()
+            )
+        )
+    }
+
+    fun onBookmark3Click() {
+        if (_uiState.value.bookmarks.bookmark3VerseId == null) return
+
+        navigator.navigate(
+            Screen.QuranReader(
+                targetType = QuranTarget.VERSE.name,
+                targetValue = _uiState.value.bookmarks.bookmark3VerseId.toString()
+            )
+        )
+    }
+
+    fun onBookmark4Click() {
+        if (_uiState.value.bookmarks.bookmark4VerseId == null) return
+
+        navigator.navigate(
+            Screen.QuranReader(
+                targetType = QuranTarget.VERSE.name,
+                targetValue = _uiState.value.bookmarks.bookmark4VerseId.toString()
+            )
+        )
     }
 
     fun onFavoriteClick(itemId: Int, oldState: Boolean) {
         viewModelScope.launch {
-            domain.setFav(
-                suraId = itemId,
-                fav = !oldState
-            )
+            domain.setFav(suraId = itemId, fav = !oldState)
         }
     }
 

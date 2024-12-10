@@ -40,7 +40,11 @@ class PrayersWidget(
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val prayerTimeStrings = withContext(dispatcher) {
-            bootstrapApp(context)
+            ActivityUtils.configure(
+                context = context,
+                applicationContext = context.applicationContext,
+                language = appSettingsRepository.getLanguage().first()
+            )
 
             getPrayerTimeStringMap(context)
         }
@@ -93,14 +97,6 @@ class PrayersWidget(
                 }
             }
         }
-    }
-
-    private suspend fun bootstrapApp(context: Context) {
-        ActivityUtils.configure(
-            context = context,
-            applicationContext = context.applicationContext,
-            language = appSettingsRepository.getLanguage().first()
-        )
     }
 
     private suspend fun getPrayerTimeStringMap(context: Context): Map<Prayer, String>? {

@@ -12,6 +12,8 @@ import bassamalim.hidaya.features.quran.verseInfo.domain.VerseInfoDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -28,7 +30,12 @@ class VerseInfoViewModel @Inject constructor(
     private val verseId = savedStateHandle.get<Int>("verse_id")!!
 
     private val _uiState = MutableStateFlow(VerseInfoUiState())
-    val uiState = _uiState.onStart {
+    val uiState = combine(
+        _uiState.asStateFlow(),
+        domain.getBookmarks()
+    ) { uiState, bookmarks ->
+        uiState.copy(bookmarks = bookmarks)
+    }.onStart {
         initializeData()
     }.stateIn(
         scope = viewModelScope,
@@ -42,8 +49,33 @@ class VerseInfoViewModel @Inject constructor(
 
             _uiState.update { it.copy(
                 isLoading = false,
+                verseText = verse.decoratedText,
                 interpretation = annotateInterpretation(verse.interpretation)
             )}
+        }
+    }
+
+    fun onBookmark1Click() {
+        viewModelScope.launch {
+            domain.setBookmark1VerseId(verseId)
+        }
+    }
+
+    fun onBookmark2Click() {
+        viewModelScope.launch {
+            domain.setBookmark2VerseId(verseId)
+        }
+    }
+
+    fun onBookmark3Click() {
+        viewModelScope.launch {
+            domain.setBookmark3VerseId(verseId)
+        }
+    }
+
+    fun onBookmark4Click() {
+        viewModelScope.launch {
+            domain.setBookmark4VerseId(verseId)
         }
     }
 

@@ -5,9 +5,9 @@
 
     <!-- Tabs Titles -->
     <string name="title_home">Home</string>
-    <string name="title_prayers">Prayer times</string>
+    <string name="title_prayers">Prayers</string>
     <string name="title_quran">Quran</string>
-    <string name="title_remembrances">Remembrances</string>
+    <string name="title_remembrances">Athkar</string>
     <string name="title_more">More</string>
 
     <!-- Preference Categories -->
@@ -61,7 +61,6 @@
     <string name="shuffle_description">Shuffle</string>
     <string name="download_description">Download</string>
     <string name="repeat_description">Repeat</string>
-    <string name="notification_image_description">Current alert type</string>
     <string name="reminder_image_description">Extra reminder</string>
     <string name="accuracy_indicator_description">Accuracy</string>
     <string name="app_widget_description">App widget</string>
@@ -72,7 +71,7 @@
     <string name="play_pause_btn_description">Play/Pause</string>
     <string name="fast_forward_btn_description">Fast forward</string>
     <string name="revelation_view_description">Sura nuzool location</string>
-    <string name="bookmark_page_button_description">Save Page</string>
+    <string name="bookmark_verse_button_description">Save verse</string>
     <string name="filter_search_description">Filter search</string>
     <string name="source_btn_description">Show reference</string>
     <string name="already_read_description">Already read</string>
@@ -226,5 +225,10 @@
     <string name="next_prayer">Upcoming Prayer</string>
     <string name="fill_page">Fill page</string>
     <string name="sources">Sources</string>
+    <string name="bookmarked_verses">Bookmarked verses</string>
+    <string name="bookmarked_reading_verse">Bookmarked reading verse</string>
+    <string name="bookmarked_memorization_verse">Bookmarked memorization verse</string>
+    <string name="bookmarked_revision_verse">Bookmarked revision verse</string>
+    <string name="notification_type">Alert type</string>
 
 </resources>

@@ -6,7 +6,6 @@ import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.dataSources.preferences.Preference
 import bassamalim.hidaya.core.data.dataSources.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.QuranPreferences
-import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
@@ -38,16 +37,6 @@ object QuranPreferencesMigration {
                 textSize = sharedPrefs.getFloat(
                     key = Preference.QuranTextSize.key,
                     defValue = Preference.QuranTextSize.default as Float
-                ),
-                pageBookmark = QuranPageBookmark(
-                    pageNum = sharedPrefs.getInt(
-                        key = Preference.BookmarkedPage.key,
-                        defValue = Preference.BookmarkedPage.default as Int
-                    ),
-                    suraId = sharedPrefs.getInt(
-                        key = Preference.BookmarkedSura.key,
-                        defValue = Preference.BookmarkedSura.default as Int
-                    )
                 ),
                 searchMaxMatches = 10,
                 shouldShowMenuTutorial = sharedPrefs.getBoolean(

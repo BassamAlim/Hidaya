@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,8 +30,6 @@ import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -62,89 +59,13 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.tajwal
 
 @Composable
-fun PrimaryPillBtn(
-    text: String,
-    modifier: Modifier = Modifier,
-    widthPercent: Float = 0.75f,
-    tint: Color = MaterialTheme.colorScheme.primary,
-    textColor: Color = MaterialTheme.colorScheme.onPrimary,
-    fontSize: TextUnit = 22.sp,
-    enabled: Boolean = true,
-    padding: PaddingValues = PaddingValues(vertical = 16.dp),
-    innerPadding: PaddingValues = PaddingValues(vertical = 3.dp),
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth(widthPercent)
-            .padding(padding),
-        shape = RoundedCornerShape(30.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = tint
-        ),
-        elevation =  ButtonDefaults.buttonElevation(
-            defaultElevation = 10.dp,
-            pressedElevation = 15.dp,
-            disabledElevation = 0.dp
-        ),
-        enabled = enabled
-    ) {
-        MyText(
-            text = text,
-            modifier = Modifier.padding(innerPadding),
-            fontSize = fontSize,
-            fontWeight = FontWeight.Bold,
-            textColor = textColor
-        )
-    }
-}
-
-@Composable
-fun SecondaryPillBtn(
-    text: String,
-    modifier: Modifier = Modifier,
-    widthPercent: Float = 0.65f,
-    tint: Color = MaterialTheme.colorScheme.secondary,
-    textColor: Color = MaterialTheme.colorScheme.onSecondary,
-    fontSize: TextUnit = 20.sp,
-    enabled: Boolean = true,
-    padding: PaddingValues = PaddingValues(vertical = 10.dp),
-    innerPadding: PaddingValues = PaddingValues(vertical = 4.dp),
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth(widthPercent)
-            .padding(padding),
-        shape = RoundedCornerShape(30.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = tint
-        ),
-        elevation =  ButtonDefaults.buttonElevation(
-            defaultElevation = 10.dp,
-            pressedElevation = 15.dp,
-            disabledElevation = 0.dp
-        ),
-        enabled = enabled
-    ) {
-        MyText(
-            text = text,
-            modifier = Modifier.padding(innerPadding),
-            fontSize = fontSize,
-            fontWeight = FontWeight.Bold,
-            textColor = textColor
-        )
-    }
-}
-
-@Composable
 fun MyRectangleButton(
     text: String,
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(3.dp),
-    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+    ),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -187,7 +108,9 @@ fun MyRectangleButton(
 fun MyHorizontalButton(
     text: String,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+    ),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -198,9 +121,7 @@ fun MyHorizontalButton(
     onClick: () -> Unit
 ) {
     Button(
-        onClick = {
-            if (enabled) onClick()
-        },
+        onClick = { if (enabled) onClick() },
         modifier = modifier.padding(3.dp),
         colors = colors,
         shape = RoundedCornerShape(10.dp),
@@ -256,50 +177,6 @@ fun MyIconButton(
             modifier = Modifier
                 .size(iconSize)
                 .padding(innerPadding)
-        )
-    }
-}
-
-@Composable
-fun MyFilledIconButton(
-    iconId: Int,
-    modifier: Modifier = Modifier,
-    description: String = "",
-    containerColor: Color = IconButtonDefaults.filledIconButtonColors().containerColor,
-    contentColor: Color = IconButtonDefaults.filledIconButtonColors().contentColor,
-    isEnabled: Boolean = true,
-    onClick: () -> Unit
-) {
-    FilledIconButton(
-        onClick = { if (isEnabled) onClick() },
-        modifier = modifier,
-        colors = IconButtonDefaults.filledIconButtonColors(
-            containerColor = containerColor,
-            contentColor = contentColor
-        )
-    ) {
-        Icon(
-            painter = painterResource(iconId),
-            contentDescription = description
-        )
-    }
-}
-
-@Composable
-fun MyFilledTonalIconButton(
-    iconId: Int,
-    modifier: Modifier = Modifier,
-    description: String = "",
-    isEnabled: Boolean = true,
-    onClick: () -> Unit
-) {
-    FilledTonalIconButton(
-        onClick = { if (isEnabled) onClick() },
-        modifier = modifier
-    ) {
-        Icon(
-            painter = painterResource(iconId),
-            contentDescription = description
         )
     }
 }
@@ -494,10 +371,7 @@ fun MyIconPlayerButton(
 }
 
 @Composable
-fun MyCloseBtn(
-    modifier: Modifier = Modifier,
-    onClose: () -> Unit
-) {
+fun MyCloseButton(onClose: () -> Unit, modifier: Modifier = Modifier) {
     MyIconButton(
         imageVector = Icons.Default.Close,
         modifier = modifier,
@@ -519,10 +393,7 @@ fun MyTextButton(
     fontFamily: FontFamily = tajwal,
     textModifier: Modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp),
 ) {
-    TextButton(
-        onClick = onClick,
-        modifier = modifier
-    ) {
+    TextButton(onClick = onClick, modifier = modifier) {
         Text(
             text = text,
             modifier = textModifier,

@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import bassamalim.hidaya.R
@@ -29,7 +30,6 @@ import bassamalim.hidaya.R
 @Composable
 fun MyDialog(
     shown: Boolean,
-    easyDismiss: Boolean = true,
     onDismiss: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
@@ -37,8 +37,8 @@ fun MyDialog(
         Dialog(
             onDismissRequest = { onDismiss() },
             properties = DialogProperties(
-                dismissOnBackPress = easyDismiss,
-                dismissOnClickOutside = easyDismiss
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true
             )
         ) {
             Surface(
@@ -93,11 +93,12 @@ fun InfoDialog(
     onDismiss: () -> Unit = {}
 ) {
     MyDialog(shown = shown, onDismiss = onDismiss) {
-        Column(
-            Modifier.padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
-        ) {
+        Column(Modifier.padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)) {
             Box(Modifier.fillMaxWidth()) {
-                MyCloseBtn(Modifier.align(Alignment.CenterStart)) { onDismiss() }
+                MyCloseButton(
+                    onClose = onDismiss,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                )
 
                 MyText(
                     text = title,
@@ -106,7 +107,7 @@ fun InfoDialog(
                 )
             }
 
-            MyText(text, Modifier.fillMaxWidth())
+            MyText(text = text, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -120,12 +121,8 @@ fun TutorialDialog(
     var doNotShowAgain by remember { mutableStateOf(false) }
 
     if (shown) {
-        Dialog(
-            onDismissRequest = { onDismiss(doNotShowAgain) }
-        ) {
-            Surface(
-                color = Color.Transparent
-            ) {
+        Dialog(onDismissRequest = { onDismiss(doNotShowAgain) }) {
+            Surface(color = Color.Transparent) {
                 Box(
                     Modifier.background(
                         shape = RoundedCornerShape(16.dp),
@@ -135,7 +132,7 @@ fun TutorialDialog(
                     Column(
                         Modifier.padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
                     ) {
-                        MyCloseBtn(onClose = { onDismiss(doNotShowAgain) })
+                        MyCloseButton({ onDismiss(doNotShowAgain) })
 
                         MyText(text)
 
@@ -163,13 +160,12 @@ fun TutorialDialog(
 }
 
 @Composable
-fun DialogDismissButton(text: String = stringResource(R.string.cancel), onDismiss: () -> Unit) {
-    TextButton(onClick = onDismiss) {
-        MyText(
-            text = text,
-            modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
-        )
-    }
+fun DialogTitle(title: String) {
+    MyText(
+        text = title,
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold
+    )
 }
 
 @Composable
@@ -177,7 +173,20 @@ fun DialogSubmitButton(text: String = stringResource(R.string.select), onSubmit:
     TextButton(onClick = onSubmit) {
         MyText(
             text = text,
-            modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+            modifier = Modifier.padding(horizontal = 6.dp)
+        )
+    }
+}
+
+@Composable
+fun DialogDismissButton(
+    text: String = stringResource(R.string.cancel),
+    onDismiss: () -> Unit
+) {
+    TextButton(onClick = onDismiss) {
+        MyText(
+            text = text,
+            modifier = Modifier.padding(horizontal = 6.dp)
         )
     }
 }

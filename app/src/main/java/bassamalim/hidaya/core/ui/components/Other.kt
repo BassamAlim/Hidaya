@@ -25,18 +25,16 @@ import androidx.compose.ui.unit.dp
 fun MyFloatingActionButton(
     iconId: Int,
     description: String,
+    iconSize: Dp = 36.dp,
     onClick: () -> Unit
 ) {
-    FloatingActionButton(
-        onClick = onClick
-    ) {
+    FloatingActionButton(onClick = onClick) {
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = description,
             modifier = Modifier
-                .size(60.dp)
-                .padding(12.dp),
-            tint = MaterialTheme.colorScheme.primary
+                .size(iconSize)
+                .padding(6.dp)
         )
     }
 }
@@ -45,18 +43,16 @@ fun MyFloatingActionButton(
 fun MyFloatingActionButton(
     imageVector: ImageVector,
     description: String,
+    iconSize: Dp = 36.dp,
     onClick: () -> Unit
 ) {
-    FloatingActionButton(
-        onClick = onClick
-    ) {
+    FloatingActionButton(onClick = onClick) {
         Icon(
             imageVector = imageVector,
             contentDescription = description,
             modifier = Modifier
-                .size(60.dp)
-                .padding(12.dp),
-            tint = MaterialTheme.colorScheme.primary
+                .size(iconSize)
+                .padding(6.dp)
         )
     }
 }

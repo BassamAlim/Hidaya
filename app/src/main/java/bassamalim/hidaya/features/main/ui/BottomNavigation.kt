@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,11 +22,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import bassamalim.hidaya.R
 
 sealed class BottomNavItem(var route: String, var titleRId: Int, var icon: Any) {
-    data object Home: BottomNavItem("home", R.string.title_home, Icons.Default.Home)
-    data object PrayersBoard: BottomNavItem("prayers", R.string.title_prayers, Icons.Default.AccessTimeFilled)
-    data object QuranSuras: BottomNavItem("quran", R.string.title_quran, R.drawable.ic_bar_quran)
-    data object RemembranceCategories: BottomNavItem("remembrances", R.string.title_remembrances, R.drawable.ic_duaa)
-    data object More: BottomNavItem("more", R.string.title_more, Icons.Default.MoreHoriz)
+    data object Home:
+        BottomNavItem("home", R.string.title_home, Icons.Default.Home)
+    data object PrayersBoard:
+        BottomNavItem("prayers", R.string.title_prayers, Icons.Default.AccessTimeFilled)
+    data object QuranSuras:
+        BottomNavItem("quran", R.string.title_quran, R.drawable.ic_bar_quran)
+    data object RemembranceCategories:
+        BottomNavItem("remembrances", R.string.title_remembrances, R.drawable.ic_dua)
+    data object More:
+        BottomNavItem("more", R.string.title_more, Icons.Default.MoreHoriz)
 }
 
 @Composable
@@ -40,9 +44,7 @@ fun MyBottomNavigation(navController: NavController) {
         BottomNavItem.More
     )
 
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
-    ) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainer) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
@@ -56,13 +58,6 @@ fun MyBottomNavigation(navController: NavController) {
                     if (item.icon is ImageVector) {
                         Icon(
                             imageVector = item.icon as ImageVector,
-                            contentDescription = title,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                    else if (item.icon is Painter) {
-                        Icon(
-                            painter = item.icon as Painter,
                             contentDescription = title,
                             modifier = Modifier.size(24.dp)
                         )

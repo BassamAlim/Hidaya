@@ -6,7 +6,6 @@ import bassamalim.hidaya.core.data.dataSources.room.daos.VersesDao
 import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
@@ -64,7 +63,7 @@ class QuranRepository @Inject constructor(
         else it.mapIndexed { index, value -> index + 1 to (value == 1) }.toMap()
     }
 
-    suspend fun setSuraFavoriteStatus(suraId: Int, isFavorite: Boolean) {
+    fun setSuraFavoriteStatus(suraId: Int, isFavorite: Boolean) {
         scope.launch {
             withContext(dispatcher) {
                 surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
@@ -77,7 +76,7 @@ class QuranRepository @Inject constructor(
         }
     }
 
-    suspend fun setSuraFavorites(map: Map<Int, Boolean>) {
+    fun setSuraFavorites(map: Map<Int, Boolean>) {
         scope.launch {
             withContext(dispatcher) {
                 map.forEach { (suraId, isFavorite) ->
@@ -127,11 +126,41 @@ class QuranRepository @Inject constructor(
         quranPreferencesDataSource.updateTextSize(textSize)
     }
 
-    fun getPageBookmark() = quranPreferencesDataSource.getPageBookmark()
+    fun getBookmarks() = quranPreferencesDataSource.getBookmarks()
 
-    suspend fun setPageBookmark(bookmark: QuranPageBookmark?) {
+    fun setBookmark1VerseId(verseId: Int?) {
         scope.launch {
-            quranPreferencesDataSource.updatePageBookmark(bookmark)
+            quranPreferencesDataSource.updateBookmarks(
+                quranPreferencesDataSource.getBookmarks().first()
+                    .copy(bookmark1VerseId = verseId)
+            )
+        }
+    }
+
+    fun setBookmark2VerseId(verseId: Int?) {
+        scope.launch {
+            quranPreferencesDataSource.updateBookmarks(
+                quranPreferencesDataSource.getBookmarks().first()
+                    .copy(bookmark2VerseId = verseId)
+            )
+        }
+    }
+
+    fun setBookmark3VerseId(verseId: Int?) {
+        scope.launch {
+            quranPreferencesDataSource.updateBookmarks(
+                quranPreferencesDataSource.getBookmarks().first()
+                    .copy(bookmark3VerseId = verseId)
+            )
+        }
+    }
+
+    fun setBookmark4VerseId(verseId: Int?) {
+        scope.launch {
+            quranPreferencesDataSource.updateBookmarks(
+                quranPreferencesDataSource.getBookmarks().first()
+                    .copy(bookmark4VerseId = verseId)
+            )
         }
     }
 
@@ -143,7 +172,7 @@ class QuranRepository @Inject constructor(
 
     fun getShouldShowMenuTutorial() = quranPreferencesDataSource.getShouldShowMenuTutorial()
 
-    suspend fun setShouldShowMenuTutorial(shouldShowMenuTutorial: Boolean) {
+    fun setShouldShowMenuTutorial(shouldShowMenuTutorial: Boolean) {
         scope.launch{
             quranPreferencesDataSource.updateShouldShowMenuTutorial(shouldShowMenuTutorial)
         }
@@ -151,7 +180,7 @@ class QuranRepository @Inject constructor(
 
     fun getShouldShowReaderTutorial() = quranPreferencesDataSource.getShouldShowReaderTutorial()
 
-    suspend fun setShouldShowReaderTutorial(shouldShowReaderTutorial: Boolean) {
+    fun setShouldShowReaderTutorial(shouldShowReaderTutorial: Boolean) {
         scope.launch {
             quranPreferencesDataSource.updateShouldShowReaderTutorial(shouldShowReaderTutorial)
         }
@@ -159,7 +188,7 @@ class QuranRepository @Inject constructor(
 
     fun getWerdPageNum() = quranPreferencesDataSource.getWerdPageNum()
 
-    suspend fun setWerdPageNum(werdPageNum: Int) {
+    fun setWerdPageNum(werdPageNum: Int) {
         scope.launch {
             quranPreferencesDataSource.updateWerdPageNum(werdPageNum)
         }
@@ -167,7 +196,7 @@ class QuranRepository @Inject constructor(
 
     fun isWerdDone() = quranPreferencesDataSource.getWerdDone()
 
-    suspend fun setWerdDone(isWerdDone: Boolean) {
+    fun setWerdDone(isWerdDone: Boolean) {
         scope.launch {
             quranPreferencesDataSource.updateWerdDone(isWerdDone)
         }

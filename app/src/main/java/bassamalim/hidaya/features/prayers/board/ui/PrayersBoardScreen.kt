@@ -207,7 +207,7 @@ private fun RowScope.NotificationType(
                     NotificationType.SILENT -> Icons.Filled.NotificationsPaused
                     NotificationType.OFF -> Icons.Filled.NotificationsOff
                 },
-                contentDescription = stringResource(R.string.notification_image_description),
+                contentDescription = stringResource(R.string.notification_type),
                 modifier = Modifier.size(32.dp)
             )
         }

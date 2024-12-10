@@ -23,7 +23,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -81,8 +80,8 @@ class QuranReaderViewModel @Inject constructor(
         domain.getViewType(),
         domain.getFillPage(),
         domain.getTextSize(),
-        domain.getPageBookmark()
-    ) { state, viewType, fillPage, textSize, pageBookmark ->
+        domain.getBookmarks()
+    ) { state, viewType, fillPage, textSize, bookmarks ->
         if (state.isLoading) return@combine state
 
         state.copy(
@@ -92,8 +91,7 @@ class QuranReaderViewModel @Inject constructor(
             ),
             viewType = if (language == Language.ARABIC) viewType else QuranViewType.LIST,
             fillPage = fillPage,
-            textSize = textSize,
-            isBookmarked = (pageBookmark?.pageNum ?: -1) == pageNum,
+            textSize = textSize
         )
     }.onStart {
         initializeData()
@@ -171,11 +169,24 @@ class QuranReaderViewModel @Inject constructor(
         }
     }
 
-    fun onBookmarkClick(isBookmarked: Boolean) {
-        viewModelScope.launch {
-            if (isBookmarked) domain.setBookmarkedPage(null)
-            else domain.setBookmarkedPage(QuranPageBookmark(pageNum = pageNum, suraId = suraId))
-        }
+    fun onBookmarksClick() {
+        // TODO: show bookmark options
+    }
+
+    fun onBookmark1Click(verseId: Int) {
+        domain.setBookmark1VerseId(verseId)
+    }
+
+    fun onBookmark2Click(verseId: Int) {
+        domain.setBookmark2VerseId(verseId)
+    }
+
+    fun onBookmark3Click(verseId: Int) {
+        domain.setBookmark3VerseId(verseId)
+    }
+
+    fun onBookmark4Click(verseId: Int) {
+        domain.setBookmark4VerseId(verseId)
     }
 
     fun onPlayPauseClick(
