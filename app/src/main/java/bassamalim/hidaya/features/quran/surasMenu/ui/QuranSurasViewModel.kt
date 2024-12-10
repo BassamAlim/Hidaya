@@ -82,46 +82,13 @@ class QuranSurasViewModel @Inject constructor(
         )}
     }
 
-    fun onBookmark1Click() {
-        if (_uiState.value.bookmarks.bookmark1VerseId == null) return
+    fun onBookmarkOptionClick(verseId: Int?) {
+        if (verseId == null) return  // TODO: show snackbar
 
         navigator.navigate(
             Screen.QuranReader(
                 targetType = QuranTarget.VERSE.name,
-                targetValue = _uiState.value.bookmarks.bookmark1VerseId.toString()
-            )
-        )
-    }
-
-    fun onBookmark2Click() {
-        if (_uiState.value.bookmarks.bookmark2VerseId == null) return
-
-        navigator.navigate(
-            Screen.QuranReader(
-                targetType = QuranTarget.VERSE.name,
-                targetValue = _uiState.value.bookmarks.bookmark2VerseId.toString()
-            )
-        )
-    }
-
-    fun onBookmark3Click() {
-        if (_uiState.value.bookmarks.bookmark3VerseId == null) return
-
-        navigator.navigate(
-            Screen.QuranReader(
-                targetType = QuranTarget.VERSE.name,
-                targetValue = _uiState.value.bookmarks.bookmark3VerseId.toString()
-            )
-        )
-    }
-
-    fun onBookmark4Click() {
-        if (_uiState.value.bookmarks.bookmark4VerseId == null) return
-
-        navigator.navigate(
-            Screen.QuranReader(
-                targetType = QuranTarget.VERSE.name,
-                targetValue = _uiState.value.bookmarks.bookmark4VerseId.toString()
+                targetValue = verseId.toString()
             )
         )
     }

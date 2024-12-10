@@ -221,22 +221,6 @@ class QuranReaderDomain @Inject constructor(
 
     fun getBookmarks() = quranRepository.getBookmarks()
 
-    fun setBookmark1VerseId(verseId: Int?) {
-        quranRepository.setBookmark1VerseId(verseId)
-    }
-
-    fun setBookmark2VerseId(verseId: Int?) {
-        quranRepository.setBookmark2VerseId(verseId)
-    }
-
-    fun setBookmark3VerseId(verseId: Int?) {
-        quranRepository.setBookmark3VerseId(verseId)
-    }
-
-    fun setBookmark4VerseId(verseId: Int?) {
-        quranRepository.setBookmark4VerseId(verseId)
-    }
-
     private fun getPagesRecord() = userRepository.getLocalRecord().map {
         it.quranPages
     }

@@ -49,6 +49,7 @@ class VerseInfoViewModel @Inject constructor(
 
             _uiState.update { it.copy(
                 isLoading = false,
+                verseId = verseId,
                 verseText = verse.decoratedText,
                 interpretation = annotateInterpretation(verse.interpretation)
             )}

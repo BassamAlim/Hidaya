@@ -226,9 +226,7 @@
     <string name="fill_page">Fill page</string>
     <string name="sources">Sources</string>
     <string name="bookmarked_verses">Bookmarked verses</string>
-    <string name="bookmarked_reading_verse">Bookmarked reading verse</string>
-    <string name="bookmarked_memorization_verse">Bookmarked memorization verse</string>
-    <string name="bookmarked_revision_verse">Bookmarked revision verse</string>
+    <string name="bookmarked_verse">Bookmarked verse</string>
     <string name="notification_type">Alert type</string>
 
 </resources>

@@ -91,7 +91,8 @@ class QuranReaderViewModel @Inject constructor(
             ),
             viewType = if (language == Language.ARABIC) viewType else QuranViewType.LIST,
             fillPage = fillPage,
-            textSize = textSize
+            textSize = textSize,
+            bookmarks = bookmarks
         )
     }.onStart {
         initializeData()
@@ -170,23 +171,22 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun onBookmarksClick() {
-        // TODO: show bookmark options
+        _uiState.update { it.copy(
+            bookmarkOptionsExpanded = !it.bookmarkOptionsExpanded
+        )}
     }
 
-    fun onBookmark1Click(verseId: Int) {
-        domain.setBookmark1VerseId(verseId)
-    }
+    fun onBookmarkOptionClick(verseId: Int?) {
+        if (verseId == null) return
 
-    fun onBookmark2Click(verseId: Int) {
-        domain.setBookmark2VerseId(verseId)
-    }
-
-    fun onBookmark3Click(verseId: Int) {
-        domain.setBookmark3VerseId(verseId)
-    }
-
-    fun onBookmark4Click(verseId: Int) {
-        domain.setBookmark4VerseId(verseId)
+        navigator.navigate(
+            Screen.QuranReader(
+                targetType = QuranTarget.VERSE.name,
+                targetValue = verseId.toString()
+            )
+        ) {
+            launchSingleTop = true  // TODO: use anywhere where repeated clicks could open multiple instances
+        }
     }
 
     fun onPlayPauseClick(

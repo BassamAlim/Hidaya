@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,11 +27,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.DisplaySettings
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -74,6 +74,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
@@ -82,6 +83,10 @@ import bassamalim.hidaya.core.ui.components.MyIconPlayerButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
+import bassamalim.hidaya.core.ui.theme.Bookmark1Color
+import bassamalim.hidaya.core.ui.theme.Bookmark2Color
+import bassamalim.hidaya.core.ui.theme.Bookmark3Color
+import bassamalim.hidaya.core.ui.theme.Bookmark4Color
 import bassamalim.hidaya.core.ui.theme.hafs_smart
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
@@ -122,6 +127,9 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                 activity = activity,
                 playerState = state.playerState,
                 onBookmarksClick = viewModel::onBookmarksClick,
+                bookmarkOptionsExpanded = state.bookmarkOptionsExpanded,
+                bookmarks = state.bookmarks,
+                onBookmarkOptionClick = viewModel::onBookmarkOptionClick,
                 onPreviousVerseClick = viewModel::onPreviousVerseClick,
                 onPlayPauseClick = {
                     viewModel.onPlayPauseClick(
@@ -133,14 +141,6 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                 onNextVerseClick = viewModel::onNextVerseClick,
                 onSettingsClick = viewModel::onSettingsClick
             )
-        },
-        floatingActionButton = {
-//            BookmarkOptionButtons(
-//                isExpanded = state.bookmarkOptionButtonsExpanded,
-//                onReadingBookmarkClick = ,
-//                onMemorizationBookmarkClick = ,
-//                onRevisionBookmarkClick =
-//            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
@@ -214,141 +214,177 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
     }
 }
 
+// TODO: fix animation
 @Composable
 private fun BottomBar(
     activity: Activity,
     playerState: Int,
     onBookmarksClick: () -> Unit,
+    bookmarkOptionsExpanded: Boolean,
+    bookmarks: QuranBookmarks,
+    onBookmarkOptionClick: (Int?) -> Unit,
     onPreviousVerseClick: () -> Unit,
     onPlayPauseClick: (Activity) -> Unit,
     onNextVerseClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
     BottomAppBar(Modifier.height(56.dp)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Bookmark button
-            MyIconButton(
-                imageVector = Icons.Default.Bookmarks,
-                description = stringResource(R.string.bookmark_verse_button_description),
-                iconModifier = Modifier
-                    .size(36.dp)
-                    .padding(2.dp),
-                onClick = onBookmarksClick
-            )
-
-            MyRow {
-                // Skip to previous button
+        if (bookmarkOptionsExpanded) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Bookmark button
                 MyIconButton(
-                    iconId = R.drawable.ic_skip_previous,
-                    description = stringResource(R.string.rewind_btn_description),
-                    iconSize = 40.dp,
-                    onClick = onPreviousVerseClick
+                    imageVector = Icons.Default.Bookmarks,
+                    description = stringResource(R.string.bookmarked_verses),
+                    modifier = Modifier.padding(end = 36.dp),
+                    iconModifier = Modifier
+                        .size(36.dp)
+                        .padding(2.dp),
+                    onClick = onBookmarksClick
                 )
 
-                // Play/Pause button
-                Box (Modifier.padding(horizontal = 4.dp)) {
-                    MyIconPlayerButton(
-                        state = playerState,
-                        onClick = { onPlayPauseClick(activity) },
+                BookmarkOptionButtons(
+                    isExpanded = bookmarkOptionsExpanded,
+                    bookmarks = bookmarks,
+                    onBookmarkOptionClick = onBookmarkOptionClick
+                )
+            }
+        }
+        else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Bookmark button
+                MyIconButton(
+                    imageVector = Icons.Default.Bookmarks,
+                    description = stringResource(R.string.bookmark_verse_button_description),
+                    iconModifier = Modifier
+                        .size(36.dp)
+                        .padding(2.dp),
+                    onClick = onBookmarksClick
+                )
+
+                MyRow {
+                    // Skip to previous button
+                    MyIconButton(
+                        iconId = R.drawable.ic_skip_previous,
+                        description = stringResource(R.string.rewind_btn_description),
                         iconSize = 40.dp,
-                        filled = false
+                        onClick = onPreviousVerseClick
+                    )
+
+                    // Play/Pause button
+                    Box (Modifier.padding(horizontal = 4.dp)) {
+                        MyIconPlayerButton(
+                            state = playerState,
+                            onClick = { onPlayPauseClick(activity) },
+                            iconSize = 40.dp,
+                            filled = false
+                        )
+                    }
+
+                    // Skip to next button
+                    MyIconButton(
+                        iconId = R.drawable.ic_skip_next,
+                        description = stringResource(R.string.fast_forward_btn_description),
+                        iconSize = 40.dp,
+                        onClick = onNextVerseClick
                     )
                 }
 
-                // Skip to next button
+                // Preference button
                 MyIconButton(
-                    iconId = R.drawable.ic_skip_next,
-                    description = stringResource(R.string.fast_forward_btn_description),
-                    iconSize = 40.dp,
-                    onClick = onNextVerseClick
+                    imageVector = Icons.Default.DisplaySettings,
+                    description = stringResource(R.string.settings),
+                    iconModifier = Modifier
+                        .size(40.dp)
+                        .padding(2.dp),
+                    onClick = onSettingsClick
                 )
             }
-
-            // Preference button
-            MyIconButton(
-                imageVector = Icons.Default.DisplaySettings,
-                description = stringResource(R.string.settings),
-                iconModifier = Modifier
-                    .size(40.dp)
-                    .padding(2.dp),
-                onClick = onSettingsClick
-            )
         }
     }
 }
 
 @Composable
-private fun BookmarkOptionButtons(
+private fun RowScope.BookmarkOptionButtons(
     isExpanded: Boolean,
-    onReadingBookmarkClick: () -> Unit,
-    onMemorizationBookmarkClick: () -> Unit,
-    onRevisionBookmarkClick: () -> Unit
+    bookmarks: QuranBookmarks,
+    onBookmarkOptionClick: (Int?) -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
+    Row(
+        modifier = Modifier.weight(1f),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Reading FAB
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter = slideInVertically(initialOffsetY = { height -> (height * 3.9).toInt() }),
-                exit = slideOutVertically(targetOffsetY = { height -> (height * 3.9).toInt() })
-            ) {
-                FloatingActionButton(
-                    onClick = onReadingBookmarkClick,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Bookmark,
-                        contentDescription = stringResource(R.string.bookmarked_reading_verse)
-                    )
-                }
-            }
+        // Bookmark1 FAB
+        BookmarkOptionButton(
+            isExpanded = isExpanded,
+            verseId = bookmarks.bookmark1VerseId,
+            color = Bookmark1Color,
+            heightOffset = 5.2f,
+            onBookmarkOptionClick = onBookmarkOptionClick
+        )
 
-            // Memorization FAB
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter = slideInVertically(initialOffsetY = { height -> (height * 2.6).toInt() }),
-                exit = slideOutVertically(targetOffsetY = { height -> (height * 2.6).toInt() })
-            ) {
-                FloatingActionButton(
-                    onClick = onMemorizationBookmarkClick,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Bookmark,
-                        contentDescription = stringResource(R.string.bookmarked_memorization_verse)
-                    )
-                }
-            }
+        // Bookmark2 FAB
+        BookmarkOptionButton(
+            isExpanded = isExpanded,
+            verseId = bookmarks.bookmark2VerseId,
+            color = Bookmark2Color,
+            heightOffset = 3.9f,
+            onBookmarkOptionClick = onBookmarkOptionClick
+        )
 
-            // Revision FAB
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter = slideInVertically(initialOffsetY = { height -> (height * 1.3).toInt() }),
-                exit = slideOutVertically(targetOffsetY = { height -> (height * 1.3).toInt() })
-            ) {
-                FloatingActionButton(
-                    onClick = onRevisionBookmarkClick,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Bookmark,
-                        contentDescription = stringResource(R.string.bookmarked_revision_verse)
-                    )
-                }
-            }
-        }
+        // Bookmark3 FAB
+        BookmarkOptionButton(
+            isExpanded = isExpanded,
+            verseId = bookmarks.bookmark3VerseId,
+            color = Bookmark3Color,
+            heightOffset = 2.6f,
+            onBookmarkOptionClick = onBookmarkOptionClick
+        )
+
+        // Bookmark4 FAB
+        BookmarkOptionButton(
+            isExpanded = isExpanded,
+            verseId = bookmarks.bookmark4VerseId,
+            color = Bookmark4Color,
+            heightOffset = 1.3f,
+            onBookmarkOptionClick = onBookmarkOptionClick
+        )
+    }
+}
+
+@Composable
+private fun BookmarkOptionButton(
+    isExpanded: Boolean,
+    verseId: Int?,
+    color: Color,
+    heightOffset: Float,
+    onBookmarkOptionClick: (Int?) -> Unit
+) {
+    AnimatedVisibility(
+        visible = isExpanded,
+        enter = slideInVertically(initialOffsetY = { height -> (height * heightOffset).toInt() }),
+        exit = slideOutVertically(targetOffsetY = { height -> (height * heightOffset).toInt() })
+    ) {
+        MyIconButton(
+            imageVector =
+                if (verseId != null) Icons.Default.Bookmark
+                else Icons.Default.BookmarkBorder,
+            description = stringResource(R.string.bookmarked_verse),
+            onClick = { onBookmarkOptionClick(verseId) },
+            iconModifier = Modifier.size(32.dp),
+            contentColor = color
+        )
     }
 }
 

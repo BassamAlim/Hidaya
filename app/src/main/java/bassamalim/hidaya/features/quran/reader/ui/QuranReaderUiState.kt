@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.quran.reader.ui
 
 import android.support.v4.media.session.PlaybackStateCompat
+import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.core.models.Verse
 
 data class QuranReaderUiState(
@@ -15,6 +16,7 @@ data class QuranReaderUiState(
     val fillPage: Boolean = false,
     val textSize: Float = 15f,
     val playerState: Int = PlaybackStateCompat.STATE_STOPPED,
-    val bookmarkOptionButtonsExpanded: Boolean = false,
+    val bookmarks: QuranBookmarks = QuranBookmarks(),
+    val bookmarkOptionsExpanded: Boolean = false,
     val isTutorialDialogShown: Boolean = false
 )

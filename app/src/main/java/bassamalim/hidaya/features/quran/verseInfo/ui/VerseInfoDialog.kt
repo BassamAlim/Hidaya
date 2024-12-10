@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkAdd
+import androidx.compose.material.icons.filled.BookmarkRemove
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.Bookmark1Color
@@ -48,6 +50,8 @@ private fun SheetContent(viewModel: VerseInfoViewModel, state: VerseInfoUiState)
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         BookmarkOptionsSection(
+            verseId = state.verseId,
+            bookmarks = state.bookmarks,
             onBookmark1Click = viewModel::onBookmark1Click,
             onBookmark2Click = viewModel::onBookmark2Click,
             onBookmark3Click = viewModel::onBookmark3Click,
@@ -94,6 +98,8 @@ private fun InterpretationSection(interpretation: AnnotatedString) {
 
 @Composable
 private fun BookmarkOptionsSection(
+    verseId: Int,
+    bookmarks: QuranBookmarks,
     onBookmark1Click: () -> Unit,
     onBookmark2Click: () -> Unit,
     onBookmark3Click: () -> Unit,
@@ -111,7 +117,9 @@ private fun BookmarkOptionsSection(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         MyIconButton(
-            imageVector = Icons.Default.BookmarkAdd,
+            imageVector =
+                if (bookmarks.bookmark1VerseId == null) Icons.Default.BookmarkAdd
+                else Icons.Default.BookmarkRemove,
             description = stringResource(R.string.bookmark_verse_button_description),
             onClick = onBookmark1Click,
             iconModifier = Modifier.size(32.dp),
@@ -119,7 +127,9 @@ private fun BookmarkOptionsSection(
         )
 
         MyIconButton(
-            imageVector = Icons.Default.BookmarkAdd,
+            imageVector =
+                if (bookmarks.bookmark2VerseId == null) Icons.Default.BookmarkAdd
+                else Icons.Default.BookmarkRemove,
             description = stringResource(R.string.bookmark_verse_button_description),
             onClick = onBookmark2Click,
             iconModifier = Modifier.size(32.dp),
@@ -127,7 +137,9 @@ private fun BookmarkOptionsSection(
         )
 
         MyIconButton(
-            imageVector = Icons.Default.BookmarkAdd,
+            imageVector =
+                if (bookmarks.bookmark3VerseId == null) Icons.Default.BookmarkAdd
+                else Icons.Default.BookmarkRemove,
             description = stringResource(R.string.bookmark_verse_button_description),
             onClick = onBookmark3Click,
             iconModifier = Modifier.size(32.dp),
@@ -135,7 +147,9 @@ private fun BookmarkOptionsSection(
         )
 
         MyIconButton(
-            imageVector = Icons.Default.BookmarkAdd,
+            imageVector =
+                if (bookmarks.bookmark4VerseId == null) Icons.Default.BookmarkAdd
+                else Icons.Default.BookmarkRemove,
             description = stringResource(R.string.bookmark_verse_button_description),
             onClick = onBookmark4Click,
             iconModifier = Modifier.size(32.dp),

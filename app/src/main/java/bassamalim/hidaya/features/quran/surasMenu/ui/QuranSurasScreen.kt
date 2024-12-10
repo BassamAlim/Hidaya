@@ -69,10 +69,7 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
                     isExpanded = state.isBookmarksExpanded,
                     bookmarks = state.bookmarks,
                     onBookmarksClick = viewModel::onBookmarksClick,
-                    onBookmark1Click = viewModel::onBookmark1Click,
-                    onBookmark2Click = viewModel::onBookmark2Click,
-                    onBookmark3Click = viewModel::onBookmark3Click,
-                    onBookmark4Click = viewModel::onBookmark4Click
+                    onBookmarkOptionClick = viewModel::onBookmarkOptionClick
                 )
             }
         },
@@ -166,10 +163,7 @@ private fun BookmarksFab(
     isExpanded: Boolean,
     bookmarks: QuranBookmarks,
     onBookmarksClick: () -> Unit,
-    onBookmark1Click: () -> Unit,
-    onBookmark2Click: () -> Unit,
-    onBookmark3Click: () -> Unit,
-    onBookmark4Click: () -> Unit
+    onBookmarkOptionClick: (Int?) -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -186,14 +180,14 @@ private fun BookmarksFab(
                 exit = slideOutVertically(targetOffsetY = { height -> (height * 5.2).toInt() })
             ) {
                 FloatingActionButton(
-                    onClick = onBookmark1Click,
+                    onClick = { onBookmarkOptionClick(bookmarks.bookmark1VerseId) },
                     contentColor = Bookmark1Color
                 ) {
                     Icon(
                         imageVector =
                             if (bookmarks.bookmark1VerseId != null) Icons.Default.Bookmark
                             else Icons.Default.BookmarkBorder,
-                        contentDescription = stringResource(R.string.bookmarked_reading_verse)
+                        contentDescription = stringResource(R.string.bookmarked_verse)
                     )
                 }
             }
@@ -205,14 +199,14 @@ private fun BookmarksFab(
                 exit = slideOutVertically(targetOffsetY = { height -> (height * 3.9).toInt() })
             ) {
                 FloatingActionButton(
-                    onClick = onBookmark2Click,
+                    onClick = { onBookmarkOptionClick(bookmarks.bookmark2VerseId) },
                     contentColor = Bookmark2Color
                 ) {
                     Icon(
                         imageVector =
                             if (bookmarks.bookmark2VerseId != null) Icons.Default.Bookmark
                             else Icons.Default.BookmarkBorder,
-                        contentDescription = stringResource(R.string.bookmarked_memorization_verse)
+                        contentDescription = stringResource(R.string.bookmarked_verse)
                     )
                 }
             }
@@ -224,14 +218,14 @@ private fun BookmarksFab(
                 exit = slideOutVertically(targetOffsetY = { height -> (height * 2.6).toInt() })
             ) {
                 FloatingActionButton(
-                    onClick = onBookmark3Click,
+                    onClick = { onBookmarkOptionClick(bookmarks.bookmark3VerseId) },
                     contentColor = Bookmark3Color
                 ) {
                     Icon(
                         imageVector =
                             if (bookmarks.bookmark3VerseId != null) Icons.Default.Bookmark
                             else Icons.Default.BookmarkBorder,
-                        contentDescription = stringResource(R.string.bookmarked_revision_verse)
+                        contentDescription = stringResource(R.string.bookmarked_verse)
                     )
                 }
             }
@@ -243,14 +237,14 @@ private fun BookmarksFab(
                 exit = slideOutVertically(targetOffsetY = { height -> (height * 1.3).toInt() })
             ) {
                 FloatingActionButton(
-                    onClick = onBookmark4Click,
+                    onClick = { onBookmarkOptionClick(bookmarks.bookmark4VerseId) },
                     contentColor = Bookmark4Color
                 ) {
                     Icon(
                         imageVector =
-                        if (bookmarks.bookmark4VerseId != null) Icons.Default.Bookmark
-                        else Icons.Default.BookmarkBorder,
-                        contentDescription = stringResource(R.string.bookmarked_revision_verse)
+                            if (bookmarks.bookmark4VerseId != null) Icons.Default.Bookmark
+                            else Icons.Default.BookmarkBorder,
+                        contentDescription = stringResource(R.string.bookmarked_verse)
                     )
                 }
             }

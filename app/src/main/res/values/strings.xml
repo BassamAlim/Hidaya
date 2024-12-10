@@ -227,9 +227,7 @@
     <string name="fill_page">ملئ الصفحة</string>
     <string name="sources">المصادر</string>
     <string name="bookmarked_verses">الآيات المحفوظة</string>
-    <string name="bookmarked_reading_verse">آية القراءة المحفوظة</string>
-    <string name="bookmarked_memorization_verse">آية الحفظ المحفوظة</string>
-    <string name="bookmarked_revision_verse">آية المراجعة المحفوظة</string>
+    <string name="bookmarked_verse">آية محفوظة</string>
     <string name="notification_type">نوع التنبيه</string>
 
 </resources>
