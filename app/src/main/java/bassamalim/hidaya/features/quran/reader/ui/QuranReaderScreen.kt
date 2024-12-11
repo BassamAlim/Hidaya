@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -71,16 +70,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyIconPlayerButton
-import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.Bookmark1Color
@@ -98,8 +98,9 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current as Activity
     val configuration = LocalConfiguration.current
+    val noBookmarkMessage = stringResource(R.string.no_bookmarked_page)
 
-    if (state.isLoading) return
+    if (state.isLoading) return LoadingScreen()
 
     val pagerState = rememberPagerState(
         initialPage = viewModel.pageNum - 1,
@@ -129,7 +130,13 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                 onBookmarksClick = viewModel::onBookmarksClick,
                 bookmarkOptionsExpanded = state.bookmarkOptionsExpanded,
                 bookmarks = state.bookmarks,
-                onBookmarkOptionClick = viewModel::onBookmarkOptionClick,
+                onBookmarkOptionClick = { verseId ->
+                    viewModel.onBookmarkOptionClick(
+                        verseId = verseId,
+                        snackbarHostState = snackbarHostState,
+                        message = noBookmarkMessage
+                    )
+                },
                 onPreviousVerseClick = viewModel::onPreviousVerseClick,
                 onPlayPauseClick = {
                     viewModel.onPlayPauseClick(
@@ -214,7 +221,6 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
     }
 }
 
-// TODO: fix animation
 @Composable
 private fun BottomBar(
     activity: Activity,
@@ -229,50 +235,41 @@ private fun BottomBar(
     onSettingsClick: () -> Unit
 ) {
     BottomAppBar(Modifier.height(56.dp)) {
-        if (bookmarkOptionsExpanded) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp),
-                verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Bookmark button
+            Box(
+                modifier = if (bookmarkOptionsExpanded) Modifier.fillMaxSize() else Modifier,
+                contentAlignment = Alignment.CenterStart
             ) {
-                // Bookmark button
-                MyIconButton(
-                    imageVector = Icons.Default.Bookmarks,
-                    description = stringResource(R.string.bookmarked_verses),
-                    modifier = Modifier.padding(end = 36.dp),
-                    iconModifier = Modifier
-                        .size(36.dp)
-                        .padding(2.dp),
-                    onClick = onBookmarksClick
-                )
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    MyIconButton(
+                        imageVector = Icons.Default.Bookmarks,
+                        description = stringResource(R.string.bookmark_verse_button_description),
+                        modifier = Modifier
+                            .zIndex(1f)
+                            .padding(end = if (bookmarkOptionsExpanded) 32.dp else 0.dp),
+                        iconModifier = Modifier
+                            .size(36.dp)
+                            .padding(2.dp),
+                        onClick = onBookmarksClick
+                    )
 
-                BookmarkOptionButtons(
-                    isExpanded = bookmarkOptionsExpanded,
-                    bookmarks = bookmarks,
-                    onBookmarkOptionClick = onBookmarkOptionClick
-                )
+                    BookmarkOptionButtons(
+                        isExpanded = bookmarkOptionsExpanded,
+                        bookmarks = bookmarks,
+                        onBookmarkOptionClick = onBookmarkOptionClick
+                    )
+                }
             }
-        }
-        else {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                // Bookmark button
-                MyIconButton(
-                    imageVector = Icons.Default.Bookmarks,
-                    description = stringResource(R.string.bookmark_verse_button_description),
-                    iconModifier = Modifier
-                        .size(36.dp)
-                        .padding(2.dp),
-                    onClick = onBookmarksClick
-                )
 
-                MyRow {
+            if (!bookmarkOptionsExpanded) {
+                Row {
                     // Skip to previous button
                     MyIconButton(
                         iconId = R.drawable.ic_skip_previous,
@@ -315,52 +312,46 @@ private fun BottomBar(
 }
 
 @Composable
-private fun RowScope.BookmarkOptionButtons(
+private fun BookmarkOptionButtons(
     isExpanded: Boolean,
     bookmarks: QuranBookmarks,
     onBookmarkOptionClick: (Int?) -> Unit
 ) {
-    Row(
-        modifier = Modifier.weight(1f),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        // Bookmark1 FAB
-        BookmarkOptionButton(
-            isExpanded = isExpanded,
-            verseId = bookmarks.bookmark1VerseId,
-            color = Bookmark1Color,
-            heightOffset = 5.2f,
-            onBookmarkOptionClick = onBookmarkOptionClick
-        )
+    // Bookmark1 FAB
+    BookmarkOptionButton(
+        isExpanded = isExpanded,
+        verseId = bookmarks.bookmark1VerseId,
+        color = Bookmark1Color,
+        widthOffset = 1.3f,
+        onBookmarkOptionClick = onBookmarkOptionClick
+    )
 
-        // Bookmark2 FAB
-        BookmarkOptionButton(
-            isExpanded = isExpanded,
-            verseId = bookmarks.bookmark2VerseId,
-            color = Bookmark2Color,
-            heightOffset = 3.9f,
-            onBookmarkOptionClick = onBookmarkOptionClick
-        )
+    // Bookmark2 FAB
+    BookmarkOptionButton(
+        isExpanded = isExpanded,
+        verseId = bookmarks.bookmark2VerseId,
+        color = Bookmark2Color,
+        widthOffset = 2.6f,
+        onBookmarkOptionClick = onBookmarkOptionClick
+    )
 
-        // Bookmark3 FAB
-        BookmarkOptionButton(
-            isExpanded = isExpanded,
-            verseId = bookmarks.bookmark3VerseId,
-            color = Bookmark3Color,
-            heightOffset = 2.6f,
-            onBookmarkOptionClick = onBookmarkOptionClick
-        )
+    // Bookmark3 FAB
+    BookmarkOptionButton(
+        isExpanded = isExpanded,
+        verseId = bookmarks.bookmark3VerseId,
+        color = Bookmark3Color,
+        widthOffset = 3.9f,
+        onBookmarkOptionClick = onBookmarkOptionClick
+    )
 
-        // Bookmark4 FAB
-        BookmarkOptionButton(
-            isExpanded = isExpanded,
-            verseId = bookmarks.bookmark4VerseId,
-            color = Bookmark4Color,
-            heightOffset = 1.3f,
-            onBookmarkOptionClick = onBookmarkOptionClick
-        )
-    }
+    // Bookmark4 FAB
+    BookmarkOptionButton(
+        isExpanded = isExpanded,
+        verseId = bookmarks.bookmark4VerseId,
+        color = Bookmark4Color,
+        widthOffset = 5.2f,
+        onBookmarkOptionClick = onBookmarkOptionClick
+    )
 }
 
 @Composable
@@ -368,13 +359,13 @@ private fun BookmarkOptionButton(
     isExpanded: Boolean,
     verseId: Int?,
     color: Color,
-    heightOffset: Float,
+    widthOffset: Float,
     onBookmarkOptionClick: (Int?) -> Unit
 ) {
     AnimatedVisibility(
         visible = isExpanded,
-        enter = slideInVertically(initialOffsetY = { height -> (height * heightOffset).toInt() }),
-        exit = slideOutVertically(targetOffsetY = { height -> (height * heightOffset).toInt() })
+        enter = slideInHorizontally(initialOffsetX = { width -> (width * widthOffset).toInt() }),
+        exit = slideOutHorizontally(targetOffsetX = { width -> (width * widthOffset).toInt() })
     ) {
         MyIconButton(
             imageVector =

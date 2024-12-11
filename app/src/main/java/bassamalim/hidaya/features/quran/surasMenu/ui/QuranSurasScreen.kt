@@ -55,6 +55,7 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyListState = rememberLazyListState()
+    val noBookmarkMessage = stringResource(R.string.no_bookmarked_page)
 
     if (state.isLoading) return LoadingScreen()
 
@@ -69,7 +70,13 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
                     isExpanded = state.isBookmarksExpanded,
                     bookmarks = state.bookmarks,
                     onBookmarksClick = viewModel::onBookmarksClick,
-                    onBookmarkOptionClick = viewModel::onBookmarkOptionClick
+                    onBookmarkOptionClick = { verseId ->
+                        viewModel.onBookmarkOptionClick(
+                            verseId = verseId,
+                            snackbarHostState = snackbarHostState,
+                            message = noBookmarkMessage
+                        )
+                    }
                 )
             }
         },
@@ -169,10 +176,7 @@ private fun BookmarksFab(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
     ) {
-        Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             // Bookmark1 FAB
             AnimatedVisibility(
                 visible = isExpanded,

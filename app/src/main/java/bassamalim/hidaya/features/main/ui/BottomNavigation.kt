@@ -78,7 +78,7 @@ fun MyBottomNavigation(navController: NavController) {
                                 saveState = true
                             }
                         }
-                        launchSingleTop = true
+                        launchSingleTop = true  // TODO: use anywhere where repeated clicks could open multiple instances
                         restoreState = true
                     }
                 }

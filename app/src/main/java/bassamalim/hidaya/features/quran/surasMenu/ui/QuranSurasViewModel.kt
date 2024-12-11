@@ -82,15 +82,25 @@ class QuranSurasViewModel @Inject constructor(
         )}
     }
 
-    fun onBookmarkOptionClick(verseId: Int?) {
-        if (verseId == null) return  // TODO: show snackbar
-
-        navigator.navigate(
-            Screen.QuranReader(
-                targetType = QuranTarget.VERSE.name,
-                targetValue = verseId.toString()
+    // TODO: fix snackbar not showing
+    fun onBookmarkOptionClick(
+        verseId: Int?,
+        snackbarHostState: SnackbarHostState,
+        message: String
+    ) {
+        if (verseId == null) {
+            viewModelScope.launch {
+                snackbarHostState.showSnackbar(message)
+            }
+        }
+        else {
+            navigator.navigate(
+                Screen.QuranReader(
+                    targetType = QuranTarget.VERSE.name,
+                    targetValue = verseId.toString()
+                )
             )
-        )
+        }
     }
 
     fun onFavoriteClick(itemId: Int, oldState: Boolean) {

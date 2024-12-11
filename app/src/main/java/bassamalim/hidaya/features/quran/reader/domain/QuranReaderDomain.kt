@@ -205,7 +205,7 @@ class QuranReaderDomain @Inject constructor(
 
     suspend fun getSuraPageNum(suraId: Int) = quranRepository.getSuraPageNum(suraId)
 
-    suspend fun getVersePageNum(ayaId: Int) = quranRepository.getVersePageNum(ayaId)
+    suspend fun getVersePageNum(verseId: Int) = quranRepository.getVersePageNum(verseId)
 
     suspend fun getAllVerses() = quranRepository.getAllVerses()
 

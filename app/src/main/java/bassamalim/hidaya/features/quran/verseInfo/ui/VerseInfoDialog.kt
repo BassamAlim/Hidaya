@@ -100,10 +100,10 @@ private fun InterpretationSection(interpretation: AnnotatedString) {
 private fun BookmarkOptionsSection(
     verseId: Int,
     bookmarks: QuranBookmarks,
-    onBookmark1Click: () -> Unit,
-    onBookmark2Click: () -> Unit,
-    onBookmark3Click: () -> Unit,
-    onBookmark4Click: () -> Unit
+    onBookmark1Click: (Int?) -> Unit,
+    onBookmark2Click: (Int?) -> Unit,
+    onBookmark3Click: (Int?) -> Unit,
+    onBookmark4Click: (Int?) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -118,40 +118,40 @@ private fun BookmarkOptionsSection(
     ) {
         MyIconButton(
             imageVector =
-                if (bookmarks.bookmark1VerseId == null) Icons.Default.BookmarkAdd
-                else Icons.Default.BookmarkRemove,
+                if (verseId == bookmarks.bookmark1VerseId) Icons.Default.BookmarkRemove
+                else Icons.Default.BookmarkAdd,
             description = stringResource(R.string.bookmark_verse_button_description),
-            onClick = onBookmark1Click,
+            onClick = { onBookmark1Click(bookmarks.bookmark1VerseId) },
             iconModifier = Modifier.size(32.dp),
             contentColor = Bookmark1Color
         )
 
         MyIconButton(
             imageVector =
-                if (bookmarks.bookmark2VerseId == null) Icons.Default.BookmarkAdd
-                else Icons.Default.BookmarkRemove,
+                if (verseId == bookmarks.bookmark2VerseId) Icons.Default.BookmarkRemove
+                else Icons.Default.BookmarkAdd,
             description = stringResource(R.string.bookmark_verse_button_description),
-            onClick = onBookmark2Click,
+            onClick = { onBookmark2Click(bookmarks.bookmark2VerseId) },
             iconModifier = Modifier.size(32.dp),
             contentColor = Bookmark2Color
         )
 
         MyIconButton(
             imageVector =
-                if (bookmarks.bookmark3VerseId == null) Icons.Default.BookmarkAdd
-                else Icons.Default.BookmarkRemove,
+                if (verseId == bookmarks.bookmark3VerseId) Icons.Default.BookmarkRemove
+                else Icons.Default.BookmarkAdd,
             description = stringResource(R.string.bookmark_verse_button_description),
-            onClick = onBookmark3Click,
+            onClick = { onBookmark3Click(bookmarks.bookmark3VerseId) },
             iconModifier = Modifier.size(32.dp),
             contentColor = Bookmark3Color
         )
 
         MyIconButton(
             imageVector =
-                if (bookmarks.bookmark4VerseId == null) Icons.Default.BookmarkAdd
-                else Icons.Default.BookmarkRemove,
+                if (verseId == bookmarks.bookmark4VerseId) Icons.Default.BookmarkRemove
+                else Icons.Default.BookmarkAdd,
             description = stringResource(R.string.bookmark_verse_button_description),
-            onClick = onBookmark4Click,
+            onClick = { onBookmark4Click(bookmarks.bookmark4VerseId) },
             iconModifier = Modifier.size(32.dp),
             contentColor = Bookmark4Color
         )

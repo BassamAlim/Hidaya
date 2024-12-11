@@ -137,7 +137,7 @@ class QuranReaderViewModel @Inject constructor(
         domain.stopPlayer(activity)
     }
 
-    fun onPageChange(currentPageIdx: Int, pageIdx: Int, scrollState: ScrollState) {
+    fun onPageChange(currentPageIdx: Int, pageIdx: Int, scrollState: ScrollState? = null) {
         if (currentPageIdx == pageIdx) {
             pageNum = pageIdx+1
 
@@ -166,8 +166,12 @@ class QuranReaderViewModel @Inject constructor(
 
             domain.handlePageChange(pageNum)
 
-            this.scrollState = scrollState
+            scrollState?.let { this.scrollState = it }
         }
+    }
+
+    private fun goToPage(pageNum: Int) {
+        onPageChange(currentPageIdx = -1, pageIdx = pageNum-1)
     }
 
     fun onBookmarksClick() {
@@ -176,16 +180,25 @@ class QuranReaderViewModel @Inject constructor(
         )}
     }
 
-    fun onBookmarkOptionClick(verseId: Int?) {
-        if (verseId == null) return
+    fun onBookmarkOptionClick(
+        verseId: Int?,
+        snackbarHostState: SnackbarHostState,
+        message: String
+    ) {
+        if (verseId == null) {
+            viewModelScope.launch {
+                snackbarHostState.showSnackbar(message)
+            }
+            return
+        }
 
-        navigator.navigate(
-            Screen.QuranReader(
-                targetType = QuranTarget.VERSE.name,
-                targetValue = verseId.toString()
-            )
-        ) {
-            launchSingleTop = true  // TODO: use anywhere where repeated clicks could open multiple instances
+        viewModelScope.launch {
+            val targetPageNum = domain.getVersePageNum(verseId)
+            pagerState.scrollToPage(targetPageNum - 1)
+
+            _uiState.update { it.copy(
+                selectedVerse = it.pageVerses.first { verse -> verse.id == verseId }
+            )}
         }
     }
 
