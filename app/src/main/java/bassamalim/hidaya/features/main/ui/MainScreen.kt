@@ -47,7 +47,7 @@ import bassamalim.hidaya.features.remembrances.categoriesMenu.ui.RemembranceCate
 fun MainScreen(viewModel: MainViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val bottomNavController = rememberNavController()
-    val snackBarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     MyScaffold(
         title = stringResource(R.string.app_name),
@@ -59,11 +59,11 @@ fun MainScreen(viewModel: MainViewModel) {
             )
         },
         bottomBar = { MyBottomNavigation(bottomNavController) },
-        snackBarHost = { SnackbarHost(snackBarHostState) }
+        snackBarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         NavigationGraph(
             bottomNavController = bottomNavController,
-            snackBarHostState = snackBarHostState,
+            snackbarHostState = snackbarHostState,
             padding = padding
         )
     }
@@ -125,7 +125,7 @@ private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> 
 @Composable
 private fun NavigationGraph(
     bottomNavController: NavHostController,
-    snackBarHostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState,
     padding: PaddingValues
 ) {
     NavHost(
@@ -165,7 +165,8 @@ private fun NavigationGraph(
             popExitTransition = TabPopExit
         ) {
             QuranSurasScreen(
-                hiltViewModel()
+                viewModel = hiltViewModel(),
+                snackbarHostState = snackbarHostState
             )
         }
 
@@ -190,7 +191,7 @@ private fun NavigationGraph(
         ) {
             MoreScreen(
                 viewModel = hiltViewModel(),
-                snackBarHostState = snackBarHostState
+                snackBarHostState = snackbarHostState
             )
         }
     }

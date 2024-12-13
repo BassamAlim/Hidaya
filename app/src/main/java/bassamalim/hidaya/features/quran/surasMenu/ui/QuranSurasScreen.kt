@@ -24,7 +24,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -51,9 +50,11 @@ import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
+fun QuranSurasScreen(
+    viewModel: QuranSurasViewModel,
+    snackbarHostState: SnackbarHostState
+) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
     val lazyListState = rememberLazyListState()
     val noBookmarkMessage = stringResource(R.string.no_bookmarked_page)
 
@@ -80,6 +81,7 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
                 )
             }
         },
+        // TODO: fix snackbar not showing
         snackBarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         TabLayout(

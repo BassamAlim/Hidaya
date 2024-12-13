@@ -82,7 +82,6 @@ class QuranSurasViewModel @Inject constructor(
         )}
     }
 
-    // TODO: fix snackbar not showing
     fun onBookmarkOptionClick(
         verseId: Int?,
         snackbarHostState: SnackbarHostState,
