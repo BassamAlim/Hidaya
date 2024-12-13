@@ -456,7 +456,8 @@ private fun PageContent(
                         textSize = textSize,
                         language = language,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned,
-                        onVerseGloballyPositioned = onVerseGloballyPositioned
+                        onVerseGloballyPositioned = onVerseGloballyPositioned,
+                        onVersePointerInput = onVersePointerInput
                     )
                 }
             }
@@ -526,7 +527,8 @@ private fun PageItems(
                 is VersesSection -> {
                     PageViewScreen(
                         annotatedString = section.annotatedString,
-                        textSize = textSize
+                        textSize = textSize,
+                        onVersePointerInput = onVersePointerInput
                     )
                 }
             }
@@ -543,7 +545,8 @@ private fun ListItems(
     textSize: Int,
     language: Language,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
-    onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
+    onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
     for (section in sections) {
         when (section) {
@@ -567,7 +570,8 @@ private fun ListItems(
                     textSize = textSize,
                     selectedVerse = selectedVerse,
                     trackedVerseId = trackedVerseId,
-                    onVerseGloballyPositioned = onVerseGloballyPositioned
+                    onVerseGloballyPositioned = onVerseGloballyPositioned,
+                    onVersePointerInput = onVersePointerInput
                 )
 
                 if (language != Language.ARABIC && !section.translation.isNullOrEmpty()) {
@@ -587,10 +591,20 @@ private fun ListItems(
 }
 
 @Composable
-private fun PageViewScreen(annotatedString: AnnotatedString, textSize: Int) {
+private fun PageViewScreen(
+    annotatedString: AnnotatedString,
+    textSize: Int,
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
+) {
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
     Text(
         text = annotatedString,
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
+        modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 6.dp)
+            .pointerInput(Unit) {
+                onVersePointerInput(this, layoutResult, annotatedString)
+            },
         style = TextStyle(
             fontFamily = hafs_smart,
             fontSize = textSize.sp,
@@ -668,14 +682,20 @@ private fun ListViewScreen(
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
-    onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
+    onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
     Text(
         text = annotatedString,
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 6.dp)
             .onGloballyPositioned { layoutCoordinates ->
                 onVerseGloballyPositioned(verseId, isCurrentPage, layoutCoordinates)
+            }
+            .pointerInput(Unit) {
+                onVersePointerInput(this, layoutResult, annotatedString)
             },
         style = TextStyle(
             fontFamily = hafs_smart,
