@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
@@ -113,50 +114,42 @@ fun InfoDialog(
 }
 
 @Composable
-fun TutorialDialog(
-    shown: Boolean,
-    text: String,
-    onDismiss: (Boolean) -> Unit
-) {
+fun TutorialDialog(shown: Boolean, text: String, onDismissRequest: (Boolean) -> Unit) {
+    if (!shown) return
+
     var doNotShowAgain by remember { mutableStateOf(false) }
 
-    if (shown) {
-        Dialog(onDismissRequest = { onDismiss(doNotShowAgain) }) {
-            Surface(color = Color.Transparent) {
-                Box(
-                    Modifier.background(
-                        shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.surface
-                    )
+    AlertDialog(
+        onDismissRequest = { onDismissRequest(doNotShowAgain) },
+        confirmButton = {
+            DialogDismissButton(
+                text = stringResource(R.string.hide),
+                onDismiss = { onDismissRequest(doNotShowAgain) }
+            )
+        },
+        text = {
+            Column {
+                MyText(text)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        Modifier.padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
-                    ) {
-                        MyCloseButton({ onDismiss(doNotShowAgain) })
+                    MyCheckbox(
+                        isChecked = doNotShowAgain,
+                        onCheckedChange = { doNotShowAgain = it }
+                    )
 
-                        MyText(text)
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            MyCheckbox(
-                                isChecked = doNotShowAgain,
-                                onCheckedChange = { doNotShowAgain = it }
-                            )
-
-                            MyText(
-                                text = stringResource(R.string.do_not_show_again),
-                                textColor = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
+                    MyText(
+                        text = stringResource(R.string.do_not_show_again),
+                        textColor = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
         }
-    }
+    )
 }
 
 @Composable

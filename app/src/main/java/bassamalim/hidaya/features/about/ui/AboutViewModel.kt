@@ -44,7 +44,13 @@ class AboutViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             domain.rebuildDatabase(activity)
+            snackbarHostState.showSnackbar(message)
+        }
+    }
 
+    fun onResetTutorials(snackbarHostState: SnackbarHostState, message: String) {
+        viewModelScope.launch {
+            domain.resetTutorials()
             snackbarHostState.showSnackbar(message)
         }
     }

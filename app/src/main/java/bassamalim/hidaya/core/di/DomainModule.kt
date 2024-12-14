@@ -57,8 +57,11 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideAboutDomain(
-        appStateRepository: AppStateRepository
-    ) = AboutDomain(appStateRepository)
+        appStateRepository: AppStateRepository,
+        booksRepository: BooksRepository,
+        prayersRepository: PrayersRepository,
+        quranRepository: QuranRepository
+    ) = AboutDomain(appStateRepository, booksRepository, prayersRepository, quranRepository)
 
     @Provides @Singleton
     fun provideBookChaptersDomain(

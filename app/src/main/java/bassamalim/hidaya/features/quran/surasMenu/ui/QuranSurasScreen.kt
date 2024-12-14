@@ -120,7 +120,7 @@ fun QuranSurasScreen(
     TutorialDialog(
         shown = state.isTutorialDialogShown,
         text = stringResource(R.string.quran_menu_tips),
-        onDismiss = viewModel::onTutorialDialogDismiss
+        onDismissRequest = viewModel::onTutorialDialogDismiss
     )
 }
 

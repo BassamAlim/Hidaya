@@ -175,7 +175,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     TutorialDialog(
         shown = state.isTutorialDialogShown,
         text = stringResource(R.string.suras_reader_tips),
-        onDismiss = viewModel::onTutorialDialogDismiss
+        onDismissRequest = viewModel::onTutorialDialogDismiss
     )
 }
 

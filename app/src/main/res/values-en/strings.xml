@@ -228,5 +228,8 @@
     <string name="bookmarked_verses">Bookmarked verses</string>
     <string name="bookmarked_verse">Bookmarked verse</string>
     <string name="notification_type">Alert type</string>
+    <string name="reset_tutorials">Reset tutorials</string>
+    <string name="tutorials_reset">Tutorials reset done</string>
+    <string name="hide">Hide</string>
 
 </resources>

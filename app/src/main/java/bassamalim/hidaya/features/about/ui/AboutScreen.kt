@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -35,7 +36,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Source
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 
@@ -44,7 +44,6 @@ fun AboutScreen(viewModel: AboutViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current as Activity
-    val databaseRebuiltMessage = stringResource(R.string.database_rebuilt)
 
     MyScaffold(
         title = stringResource(R.string.about),
@@ -63,11 +62,17 @@ fun AboutScreen(viewModel: AboutViewModel) {
             HiddenArea(
                 isDevModeOn = state.isDevModeEnabled,
                 lastDailyUpdate = state.lastDailyUpdate,
-                onRebuildDatabaseClick = {
+                onRebuildDatabaseClick = { message ->
                     viewModel.onRebuildDatabaseClick(
                         activity = activity,
                         snackbarHostState = snackbarHostState,
-                        message = databaseRebuiltMessage
+                        message = message
+                    )
+                },
+                onResetTutorials = { message ->
+                    viewModel.onResetTutorials(
+                        snackbarHostState = snackbarHostState,
+                        message = message
                     )
                 }
             )
@@ -145,22 +150,25 @@ private fun Source(source: Source) {
 private fun ColumnScope.HiddenArea(
     isDevModeOn: Boolean,
     lastDailyUpdate: String,
-    onRebuildDatabaseClick: () -> Unit,
+    onRebuildDatabaseClick: (String) -> Unit,
+    onResetTutorials: (String) -> Unit
 ) {
-    AnimatedVisibility(
-        visible = isDevModeOn,
-        enter = expandVertically()
-    ) {
+    AnimatedVisibility(visible = isDevModeOn, enter = expandVertically()) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val databaseRebuiltMessage = stringResource(R.string.database_rebuilt)
             // rebuild database button
-            MyRectangleButton(
-                text = stringResource(R.string.rebuild_database),
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = onRebuildDatabaseClick
-            )
+            FilledTonalButton(onClick = { onRebuildDatabaseClick(databaseRebuiltMessage) }) {
+                MyText(stringResource(R.string.rebuild_database))
+            }
+
+            val tutorialsResetMessage = stringResource(R.string.tutorials_reset)
+            // reset tutorials do not show again button
+            FilledTonalButton(onClick = { onResetTutorials(tutorialsResetMessage) }) {
+                MyText(stringResource(R.string.reset_tutorials))
+            }
 
             // last daily update text
             MyText(
