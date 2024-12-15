@@ -3,7 +3,7 @@
 
     <!-- Tab Titles -->
     <string name="title_home">الرئيسية</string>
-    <string name="title_prayers">أوقات الصلاة</string>
+    <string name="title_prayers">الصلوات</string>
     <string name="title_quran">القرآن</string>
     <string name="title_remembrances">الأذكار</string>
     <string name="title_more">المزيد</string>

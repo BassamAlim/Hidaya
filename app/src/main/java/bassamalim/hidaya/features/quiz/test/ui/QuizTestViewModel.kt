@@ -72,7 +72,7 @@ class QuizTestViewModel @Inject constructor(
         if (_uiState.value.questionIdx == 9) {
             _uiState.update { it.copy(
                 selection = answerIndex,
-                nextBtnEnabled = !(it.questionIdx == 9 && !it.allAnswered),
+                nextButtonEnabled = !(it.questionIdx == 9 && !it.allAnswered),
             )}
         }
         else onNextQuestionClick()
@@ -115,8 +115,8 @@ class QuizTestViewModel @Inject constructor(
             question = question.question,
             answers = question.answers.map { answer -> answer.text },
             selection = chosenAs[it.questionIdx],
-            prevBtnEnabled = it.questionIdx != 0,
-            nextBtnEnabled = !(it.questionIdx == 9 && !it.allAnswered),
+            previousButtonEnabled = it.questionIdx != 0,
+            nextButtonEnabled = !(it.questionIdx == 9 && !it.allAnswered),
         )}
     }
 

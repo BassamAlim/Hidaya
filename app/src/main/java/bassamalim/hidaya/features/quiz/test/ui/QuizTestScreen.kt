@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,21 +12,21 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.RadioGroup
-import bassamalim.hidaya.core.ui.theme.Grey
 
 @Composable
 fun QuizTestScreen(viewModel: QuizTestViewModel) {
@@ -35,9 +34,7 @@ fun QuizTestScreen(viewModel: QuizTestViewModel) {
 
     if (state.isLoading) return
 
-    MyScaffold(
-        title = "${stringResource(R.string.question)} ${state.titleQuestionNumber}"
-    ) { padding ->
+    MyScaffold(title = "${stringResource(R.string.question)} ${state.titleQuestionNumber}") { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -60,8 +57,8 @@ fun QuizTestScreen(viewModel: QuizTestViewModel) {
             BottomBar(
                 questionIdx = state.questionIdx,
                 isAllAnswered = state.allAnswered,
-                isPreviousButtonEnabled = state.prevBtnEnabled,
-                isNextButtonEnabled = state.nextBtnEnabled,
+                isPreviousButtonEnabled = state.previousButtonEnabled,
+                isNextButtonEnabled = state.nextButtonEnabled,
                 onPreviousQuestionClick = viewModel::onPreviousQuestionClick,
                 onNextQuestionClick = viewModel::onNextQuestionClick
             )
@@ -70,11 +67,9 @@ fun QuizTestScreen(viewModel: QuizTestViewModel) {
 }
 
 @Composable
-fun QuestionArea(
-    question: String
-) {
+fun QuestionArea(question: String) {
     Box(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .heightIn(1.dp, 200.dp)
             .verticalScroll(rememberScrollState())
@@ -107,34 +102,40 @@ fun ColumnScope.BottomBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        MyRectangleButton(
-            text = stringResource(R.string.previous_question),
+        FilledTonalButton(
+            onClick = onPreviousQuestionClick,
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 6.dp),
-            textColor =
-                if (isPreviousButtonEnabled) MaterialTheme.colorScheme.onSurface
-                else Grey,
-            innerPadding = PaddingValues(vertical = 10.dp, horizontal = 5.dp),
-            onClick = onPreviousQuestionClick
-        )
+            enabled = isPreviousButtonEnabled
+        ) {
+            MyText(
+                text = stringResource(R.string.previous_question),
+                modifier = Modifier.padding(vertical = 6.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
 
-        MyRectangleButton(
-            text = stringResource(
-                if (questionIdx == 9) {
-                    if (isAllAnswered) R.string.finish_quiz
-                    else R.string.answer_all_questions
-                }
-                else R.string.next_question
-            ),
+        FilledTonalButton(
+            onClick = onNextQuestionClick,
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 6.dp),
-            textColor =
-                if (isNextButtonEnabled) MaterialTheme.colorScheme.onSurface
-                else Grey,
-            innerPadding = PaddingValues(vertical = 10.dp, horizontal = 5.dp),
-            onClick = onNextQuestionClick
-        )
+            enabled = isNextButtonEnabled
+        ) {
+            MyText(
+                text = stringResource(
+                    if (questionIdx == 9) {
+                        if (isAllAnswered) R.string.finish_quiz
+                        else R.string.answer_all_questions
+                    }
+                    else R.string.next_question
+                ),
+                modifier = Modifier.padding(vertical = 6.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
     }
 }

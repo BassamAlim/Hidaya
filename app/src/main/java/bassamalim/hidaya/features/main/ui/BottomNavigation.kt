@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.theme.tajwal
 
 sealed class BottomNavItem(var route: String, var titleRId: Int, var icon: Any) {
     data object Home:
@@ -52,7 +53,7 @@ fun MyBottomNavigation(navController: NavController) {
             val title = stringResource(item.titleRId)
 
             NavigationBarItem(
-                label = { Text(title) },
+                label = { Text(text = title, fontFamily = tajwal) },
                 alwaysShowLabel = true,
                 icon = {
                     if (item.icon is ImageVector) {

@@ -419,6 +419,7 @@ private fun PageContent(
 
         Column(
             modifier = columnModifier,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (viewType) {

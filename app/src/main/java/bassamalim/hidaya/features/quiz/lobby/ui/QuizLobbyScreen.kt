@@ -2,9 +2,9 @@ package bassamalim.hidaya.features.quiz.lobby.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,9 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import androidx.compose.material3.MaterialTheme
+import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
 fun QuizLobbyScreen(viewModel: QuizLobbyViewModel) {
@@ -27,14 +26,16 @@ fun QuizLobbyScreen(viewModel: QuizLobbyViewModel) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            MyRectangleButton(
-                text = stringResource(R.string.start_quiz),
-                innerPadding = PaddingValues(vertical = 10.dp, horizontal = 25.dp),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                textColor = MaterialTheme.colorScheme.primary,
+            Button(
                 onClick = viewModel::onStartQuizClick
-            )
+            ) {
+                MyText(
+                    text = stringResource(R.string.start_quiz),
+                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 32.dp),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }

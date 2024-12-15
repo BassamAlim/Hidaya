@@ -1,12 +1,5 @@
 Modifications:
-- showing the whole quran page content without scrolling by default
-- showing past prayer for only 30 minutes after the prayer
-- white theme
-- new logo
-- waves for radio screen
 - longer time before screen off in quran
-- rewrite records with big numbers
-- digital dua counter?
 
 Parallelism:
 class GetAllBooksAndAuthorsUseCase(

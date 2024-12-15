@@ -4,7 +4,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val Grey = Color(0xFF484849)
 val Positive = Color(0xFF1BA739)
 val Negative = Color(0xFFE2574C)
 val Gold = Color(0xFFFFD700)
@@ -18,16 +17,16 @@ val Bookmark4Color = Color(0xFFB2A133)
 
 val originalColorScheme = darkColorScheme(
     primary = Color(0xFF00ADB5),
-    onPrimary = Color(0xFFBCC2C7),
+    onPrimary = Color(0xFFD9DEE1),
     primaryContainer = Color(0xFF004f53),
     onPrimaryContainer = Color(0xFF3EACB1),
     inversePrimary = Color(0xFF00ADB5),
     secondary = Color(0xFF00ADB5),
-    onSecondary = Color(0xFFBCC2C7),
+    onSecondary = Color(0xFFD9DEE1),
     secondaryContainer = Color(0xFF004f53),
     onSecondaryContainer = Color(0xFF3EACB1),
     tertiary = Color(0xFF48C986),  // used for quran track
-    onTertiary = Color(0xFFBCC2C7),
+    onTertiary = Color(0xFFD9DEE1),
     tertiaryContainer = Color(0xFF72C499),
     onTertiaryContainer = Color(0xFF318A5C),
     background = Color(0xFF1A2027),
@@ -57,16 +56,16 @@ val originalColorScheme = darkColorScheme(
 
 val whiteColorScheme = lightColorScheme(
     primary = Color(0xFF00ADB5),
-    onPrimary = Color(0xFFD3F1F3),
+    onPrimary = Color(0xFFD9DEE1),
     primaryContainer = Color(0xFFC1E9EA),
     onPrimaryContainer = Color(0xFF3EACB1),
     inversePrimary = Color(0xFF00ADB5),
     secondary = Color(0xFF00ADB5),
-    onSecondary = Color(0xFFBCC2C7),
+    onSecondary = Color(0xFFD9DEE1),
     secondaryContainer = Color(0xFFC1E9EA),
     onSecondaryContainer = Color(0xFF3EACB1),
     tertiary = Color(0xFF48C986),  // used for quran track
-    onTertiary = Color(0xFFBCC2C7),
+    onTertiary = Color(0xFFD9DEE1),
     tertiaryContainer = Color(0xFF72C499),
     onTertiaryContainer = Color(0xFF318A5C),
     background = Color(0xFFFDFEFF),
@@ -96,16 +95,16 @@ val whiteColorScheme = lightColorScheme(
 
 val blackColorScheme = darkColorScheme(
     primary = Color(0xFF00ADB5),
-    onPrimary = Color(0xFFBCC2C7),
+    onPrimary = Color(0xFFD9DEE1),
     primaryContainer = Color(0xFF004f53),
     onPrimaryContainer = Color(0xFF3EACB1),
     inversePrimary = Color(0xFF00ADB5),
     secondary = Color(0xFF00ADB5),
-    onSecondary = Color(0xFFBCC2C7),
+    onSecondary = Color(0xFFD9DEE1),
     secondaryContainer = Color(0xFF004f53),
     onSecondaryContainer = Color(0xFF3EACB1),
     tertiary = Color(0xFF48C986),  // used for quran track
-    onTertiary = Color(0xFFBCC2C7),
+    onTertiary = Color(0xFFD9DEE1),
     tertiaryContainer = Color(0xFF72C499),
     onTertiaryContainer = Color(0xFF318A5C),
     background = Color(0xFF010203),
