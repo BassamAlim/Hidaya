@@ -3,12 +3,12 @@ package bassamalim.hidaya.features.dateConverter.ui
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDatePickerDialog
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 
@@ -37,26 +36,28 @@ fun DateConverterScreen(viewModel: DateConverterViewModel) {
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column {
-                MyRectangleButton(
-                    text = stringResource(R.string.pick_hijri_date),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 15.dp, horizontal = 30.dp),
-                    fontSize = 22.sp,
-                    innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
-                    onClick = viewModel::onPickHijriClick
-                )
+            Column(verticalArrangement = Arrangement.Center) {
+                FilledTonalButton(
+                    onClick = viewModel::onPickHijriClick,
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 36.dp)
+                ) {
+                    MyText(
+                        text = stringResource(R.string.pick_hijri_date),
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp),
+                        fontSize = 22.sp
+                    )
+                }
 
-                MyRectangleButton(
-                    text = stringResource(R.string.pick_gregorian_date),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 15.dp, horizontal = 30.dp),
-                    fontSize = 22.sp,
-                    innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
-                    onClick = viewModel::onPickGregorianClick
-                )
+                FilledTonalButton(
+                    onClick = viewModel::onPickGregorianClick,
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 32.dp)
+                ) {
+                    MyText(
+                        text = stringResource(R.string.pick_gregorian_date),
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp),
+                        fontSize = 22.sp
+                    )
+                }
             }
 
             ResultSpace(
@@ -106,9 +107,7 @@ private fun ResultSpace(title: String, date: Date) {
                 .padding(bottom = 10.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 MyText(
                     text = stringResource(R.string.day),
                     modifier = Modifier.padding(10.dp)
@@ -120,9 +119,7 @@ private fun ResultSpace(title: String, date: Date) {
                 )
             }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 MyText(
                     text = stringResource(R.string.month),
                     modifier = Modifier.padding(10.dp)
@@ -134,9 +131,7 @@ private fun ResultSpace(title: String, date: Date) {
                 )
             }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 MyText(
                     text = stringResource(R.string.year),
                     modifier = Modifier.padding(10.dp)
