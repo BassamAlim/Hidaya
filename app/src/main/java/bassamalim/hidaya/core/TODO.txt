@@ -1,6 +1,3 @@
-Modifications:
-- longer time before screen off in quran
-
 Parallelism:
 class GetAllBooksAndAuthorsUseCase(
     private val booksRepository: BooksRepository,
