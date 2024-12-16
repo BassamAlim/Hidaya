@@ -89,6 +89,7 @@ import bassamalim.hidaya.core.ui.theme.Bookmark4Color
 import bassamalim.hidaya.core.ui.theme.hafs_smart
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
+import kotlin.math.pow
 
 @Composable
 fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
@@ -643,7 +644,7 @@ private fun FilledPageViewScreen(
         style = TextStyle(
             fontFamily = hafs_smart,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            lineHeight = (lineHeight.value - (18f / fontSize.value ) * 3f).sp,
+            lineHeight = (lineHeight.value - (33f / fontSize.value).pow(2.2f)).sp,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
