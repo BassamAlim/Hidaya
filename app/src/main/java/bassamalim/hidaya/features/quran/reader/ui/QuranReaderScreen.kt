@@ -8,7 +8,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -399,14 +398,12 @@ private fun PageContent(
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
     configuration: Configuration
 ) {
-    val lineHeight = remember { getLineHeight(padding, configuration) }
+    val lineHeight = remember { getLineHeight(configuration) }
 
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = padding
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
@@ -646,12 +643,12 @@ private fun FilledPageViewScreen(
         style = TextStyle(
             fontFamily = hafs_smart,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            lineHeight = lineHeight.value.sp,
+            lineHeight = (lineHeight.value - (18f / fontSize.value ) * 3f).sp,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
-                trim = LineHeightStyle.Trim.Both
+                trim = LineHeightStyle.Trim.None
             ),
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Justify,
             platformStyle = PlatformTextStyle(includeFontPadding = false),
             lineBreak = LineBreak(
                 strategy = LineBreak.Strategy.Balanced,
@@ -660,7 +657,6 @@ private fun FilledPageViewScreen(
             )
         ),
         overflow = TextOverflow.Visible,
-        textAlign = TextAlign.Justify,
         onTextLayout = { textLayoutResult ->
             layoutResult = textLayoutResult
 
@@ -782,10 +778,10 @@ private fun EnforcePortrait(activity: Activity) {
     }
 }
 
-private fun getLineHeight(padding: PaddingValues, configuration: Configuration): Dp {
+private fun getLineHeight(configuration: Configuration): Dp {
     val screenHeightPx = configuration.screenHeightDp.dp
     val topBarHeight = 36.dp
-    val availableHeight = screenHeightPx -
-            topBarHeight - padding.calculateTopPadding() - padding.calculateBottomPadding()
+    val bottomBarHeight = 56.dp
+    val availableHeight = screenHeightPx - topBarHeight - bottomBarHeight
     return availableHeight / 15f
 }
