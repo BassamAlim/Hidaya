@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
@@ -213,7 +214,10 @@ private fun QuranSearchBar(
         },
         expanded = expanded,
         onExpandedChange = {},
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp, bottom = 8.dp, start = 6.dp, end = 6.dp),
+        shape = RoundedCornerShape(10.dp)
     ) {
         val suraAndPageMatches = searchSurasAndPages(state.text.toString()).take(3)
         val highlightColor = MaterialTheme.colorScheme.primary
