@@ -6,6 +6,5 @@ data class QuranSurasUiState(
     val isLoading: Boolean = true,
     val isBookmarksExpanded: Boolean = false,
     val bookmarks: QuranBookmarks = QuranBookmarks(),
-    val searchText: String = "",
     val isTutorialDialogShown: Boolean = false
 )

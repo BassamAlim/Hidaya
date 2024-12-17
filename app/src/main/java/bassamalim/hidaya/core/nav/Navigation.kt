@@ -42,7 +42,6 @@ import bassamalim.hidaya.features.quiz.lobby.ui.QuizLobbyScreen
 import bassamalim.hidaya.features.quiz.result.ui.QuizResultScreen
 import bassamalim.hidaya.features.quiz.test.ui.QuizTestScreen
 import bassamalim.hidaya.features.quran.reader.ui.QuranReaderScreen
-import bassamalim.hidaya.features.quran.searcher.ui.QuranSearcherScreen
 import bassamalim.hidaya.features.quran.settings.ui.QuranSettingsDialog
 import bassamalim.hidaya.features.quran.verseInfo.ui.VerseInfoDialog
 import bassamalim.hidaya.features.radio.ui.RadioClientScreen
@@ -343,18 +342,6 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             QuranReaderScreen(
-                hiltViewModel()
-            )
-        }
-
-        composable(
-            route = Screen.QuranSearcher.route,
-            enterTransition = inFromBottom,
-            exitTransition = outToBottom,
-            popEnterTransition = inFromTop,
-            popExitTransition = outToTop
-        ) {
-            QuranSearcherScreen(
                 hiltViewModel()
             )
         }

@@ -19,15 +19,17 @@ class QuranSurasDomain @Inject constructor(
 
     fun getAllSuras(language: Language) = quranRepository.observeAllSuras(language)
 
+    suspend fun getAllVerses() = quranRepository.getAllVerses()
+
     suspend fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 
-    suspend fun setFav(suraId: Int, fav: Boolean) {
+    fun setFav(suraId: Int, fav: Boolean) {
         quranRepository.setSuraFavoriteStatus(suraId, fav)
     }
 
     suspend fun getShouldShowTutorial() = quranRepository.getShouldShowMenuTutorial().first()
 
-    suspend fun setDoNotShowTutorialAgain() {
+    fun setDoNotShowTutorialAgain() {
         quranRepository.setShouldShowMenuTutorial(false)
     }
 

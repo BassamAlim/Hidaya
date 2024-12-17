@@ -15,7 +15,6 @@ data class QuranPreferences(
     val fillPage: Boolean = false,
     val textSize: Float = 30f,
     val bookmarks: QuranBookmarks = QuranBookmarks(),
-    val searchMaxMatches: Int = 10,
     val shouldShowMenuTutorial: Boolean = true,
     val shouldShowReaderTutorial: Boolean = true,
     val werdPageNum: Int = 25,

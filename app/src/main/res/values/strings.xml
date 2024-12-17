@@ -232,5 +232,7 @@
     <string name="reset_tutorials">إعادة إظهار المساعدات</string>
     <string name="tutorials_reset">تمت إعادة إظهار المساعدات</string>
     <string name="hide">إخفاء</string>
+    <string name="suras_and_pages">السور والصفحات</string>
+    <string name="verses">الآيات</string>
 
 </resources>

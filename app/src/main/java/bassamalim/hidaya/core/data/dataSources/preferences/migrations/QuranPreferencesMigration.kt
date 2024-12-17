@@ -38,7 +38,6 @@ object QuranPreferencesMigration {
                     key = Preference.QuranTextSize.key,
                     defValue = Preference.QuranTextSize.default as Float
                 ),
-                searchMaxMatches = 10,
                 shouldShowMenuTutorial = sharedPrefs.getBoolean(
                     key = Preference.ShowQuranTutorial.key,
                     defValue = Preference.ShowQuranTutorial.default as Boolean

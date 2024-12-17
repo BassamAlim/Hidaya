@@ -164,12 +164,6 @@ class QuranRepository @Inject constructor(
         }
     }
 
-    fun getSearchMaxMatches() = quranPreferencesDataSource.getSearchMaxMatches()
-
-    suspend fun setSearchMaxMatches(searchMaxMatches: Int) {
-        quranPreferencesDataSource.updateSearchMaxMatches(searchMaxMatches)
-    }
-
     fun getShouldShowMenuTutorial() = quranPreferencesDataSource.getShouldShowMenuTutorial()
 
     fun setShouldShowMenuTutorial(shouldShowMenuTutorial: Boolean) {

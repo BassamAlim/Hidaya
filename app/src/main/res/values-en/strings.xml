@@ -231,5 +231,7 @@
     <string name="reset_tutorials">Reset tutorials</string>
     <string name="tutorials_reset">Tutorials reset done</string>
     <string name="hide">Hide</string>
+    <string name="suras_and_pages">Suras and pages</string>
+    <string name="verses">Verses</string>
 
 </resources>

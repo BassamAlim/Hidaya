@@ -55,13 +55,6 @@ class QuranPreferencesDataSource(
         }
     }
 
-    fun getSearchMaxMatches() = flow.map { it.searchMaxMatches }
-    suspend fun updateSearchMaxMatches(maxMatches: Int) {
-        dataStore.updateData { preferences ->
-            preferences.copy(searchMaxMatches = maxMatches)
-        }
-    }
-
     fun getShouldShowMenuTutorial() = flow.map { it.shouldShowMenuTutorial }
     suspend fun updateShouldShowMenuTutorial(shouldShow: Boolean) {
         dataStore.updateData { preferences ->

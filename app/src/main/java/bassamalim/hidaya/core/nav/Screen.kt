@@ -64,8 +64,6 @@ sealed class Screen(val route: String) {
         val targetValue: String = "-1",
     ): Screen("quran_reader/$targetType/$targetValue")
 
-    data object QuranSearcher: Screen("quran_searcher")
-
     data object QuranSettings: Screen("quran_settings")
 
     data object Radio: Screen("radio")

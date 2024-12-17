@@ -78,33 +78,3 @@ fun SearchComponent(
         )
     )
 }
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun SearchComponent2(
-//    initialValue: String,
-//    modifier: Modifier = Modifier,
-//    hint: String = stringResource(R.string.search),
-//    onSubmit: () -> Unit = {},
-//    onValueChange: (String) -> Unit = {}
-//) {
-//    val state = rememberTextFieldState(initialValue)
-//    var expanded by remember { mutableStateOf(false) }
-//
-//    SearchBar(
-//        inputField = {
-//            SearchBarDefaults.InputField(
-//                state = state,
-//                onSearch = { expanded = false },
-//                expanded = expanded,
-//                onExpandedChange = { expanded = it },
-//                placeholder = { Text(hint) },
-//                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-//                trailingIcon = { Icon(Icons.Default.MoreVert, contentDescription = null) },
-//            )
-//        },
-//        expanded = expanded,
-//        onExpandedChange = {},
-//        modifier = modifier
-//    ) {}
-//}

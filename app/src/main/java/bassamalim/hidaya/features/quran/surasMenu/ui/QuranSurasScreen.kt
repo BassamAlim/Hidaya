@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.quran.surasMenu.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,22 +14,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.QuranBookmarks
@@ -39,7 +55,6 @@ import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.Bookmark1Color
@@ -81,7 +96,6 @@ fun QuranSurasScreen(
                 )
             }
         },
-        // TODO: fix snackbar not showing
         snackBarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         TabLayout(
@@ -93,18 +107,11 @@ fun QuranSurasScreen(
                 .fillMaxWidth()
                 .padding(padding),
             searchComponent = {
-                val pageDoesNotExistMessage = stringResource(R.string.page_does_not_exist)
-                SearchComponent(
-                    value = state.searchText,
-                    hint = stringResource(R.string.quran_search_hint),
-                    modifier = Modifier.fillMaxWidth(),
-                    onValueChange = viewModel::onSearchTextChange,
-                    onSubmit = {
-                        viewModel.onSearchSubmit(
-                            snackbarHostState = snackbarHostState,
-                            message = pageDoesNotExistMessage
-                        )
-                    }
+                QuranSearchBar(
+                    searchSurasAndPages = viewModel::searchSurasAndPages,
+                    searchVerses = viewModel::searchVerses,
+                    onSuraClick = viewModel::onSuraClick,
+                    onVerseClick = viewModel::onVerseClick
                 )
             }
         ) { page ->
@@ -167,12 +174,129 @@ private fun Tab(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun QuranSearchBar(
+    searchSurasAndPages: (String) -> List<Sura>,
+    searchVerses: (String, Color) -> List<QuranSearcherMatch>,
+    onSuraClick: (Int) -> Unit,
+    onVerseClick: (Int) -> Unit
+) {
+    val state = rememberTextFieldState()
+    var expanded by remember { mutableStateOf(false) }
+
+    SearchBar(
+        inputField = {
+            SearchBarDefaults.InputField(
+                state = state,
+                onSearch = { expanded = false },
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                placeholder = { MyText(stringResource(R.string.quran_search_hint)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.search)
+                    )
+                },
+                trailingIcon = {
+                    if (state.text.isNotEmpty()) {
+                        IconButton(onClick = state::clearText) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(R.string.close)
+                            )
+                        }
+                    }
+                }
+            )
+        },
+        expanded = expanded,
+        onExpandedChange = {},
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        val suraAndPageMatches = searchSurasAndPages(state.text.toString()).take(3)
+        val highlightColor = MaterialTheme.colorScheme.primary
+        val verseMatches = searchVerses(state.text.toString(), highlightColor).take(100)
+
+        MyText(
+            text = stringResource(R.string.suras_and_pages),
+            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
+            fontSize = 16.sp,
+            textAlign = TextAlign.Start
+        )
+
+        MyLazyColumn(
+            state = rememberLazyListState(),
+            lazyList = {
+                items(suraAndPageMatches) { sura ->
+                    ListItem(
+                        headlineContent = {
+                            MyText(
+                                text = "${stringResource(R.string.sura)} ${sura.decoratedName}",
+                                modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
+                                textAlign = TextAlign.Start
+                            )
+                        },
+                        modifier = Modifier.clickable { onSuraClick(sura.id) }
+                    )
+
+                    HorizontalDivider(thickness = 0.3.dp)
+                }
+            }
+        )
+
+        MyText(
+            text = stringResource(R.string.verses),
+            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
+            fontSize = 16.sp,
+            textAlign = TextAlign.Start
+        )
+
+        MyLazyColumn(
+            state = rememberLazyListState(),
+            lazyList = {
+                items(verseMatches) { verse ->
+                    MatchItem(
+                        item = verse,
+                        onVerseClick = onVerseClick
+                    )
+
+                    HorizontalDivider(thickness = 0.3.dp)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun MatchItem(item: QuranSearcherMatch, onVerseClick: (Int) -> Unit) {
+    ListItem(
+        headlineContent = {
+            MyText(
+                text = "${stringResource(R.string.sura)} ${item.suraName}, " +
+                        "${stringResource(R.string.verse_number)} ${item.verseNum}",
+                modifier = Modifier.padding(top = 6.dp)
+            )
+        },
+        modifier = Modifier.clickable { onVerseClick(item.id) },
+        supportingContent = {
+            MyText(
+                text = item.text,
+                modifier = Modifier.padding(vertical = 6.dp),
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start
+            )
+        }
+    )
+}
+
 @Composable
 private fun BookmarksFab(
     isExpanded: Boolean,
     bookmarks: QuranBookmarks,
     onBookmarksClick: () -> Unit,
-    onBookmarkOptionClick: (Int?) -> Unit,
+    onBookmarkOptionClick: (Int?) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
