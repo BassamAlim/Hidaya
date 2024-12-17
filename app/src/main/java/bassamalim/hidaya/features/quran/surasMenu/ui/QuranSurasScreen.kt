@@ -190,7 +190,7 @@ private fun QuranSearchBar(
         inputField = {
             SearchBarDefaults.InputField(
                 state = state,
-                onSearch = { expanded = false },
+                onSearch = {},
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
                 placeholder = { MyText(stringResource(R.string.quran_search_hint)) },
@@ -216,7 +216,8 @@ private fun QuranSearchBar(
         onExpandedChange = {},
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 4.dp, bottom = 8.dp, start = 6.dp, end = 6.dp),
+            .padding(top = 4.dp, bottom = 6.dp)
+            .padding(horizontal = if (expanded) 0.dp else 6.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
         val suraAndPageMatches = searchSurasAndPages(state.text.toString()).take(3)

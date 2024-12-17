@@ -417,7 +417,9 @@ private fun PageContent(
 
         Column(
             modifier = columnModifier,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement =
+                if (pageIdx == 0 || pageIdx == 1) Arrangement.Top
+                else Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (viewType) {
