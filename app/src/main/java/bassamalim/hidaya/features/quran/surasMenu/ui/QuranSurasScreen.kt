@@ -112,6 +112,7 @@ fun QuranSurasScreen(
                     searchSurasAndPages = viewModel::searchSurasAndPages,
                     searchVerses = viewModel::searchVerses,
                     onSuraClick = viewModel::onSuraClick,
+                    onPageClick = viewModel::onPageClick,
                     onVerseClick = viewModel::onVerseClick
                 )
             }
@@ -178,9 +179,10 @@ private fun Tab(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun QuranSearchBar(
-    searchSurasAndPages: (String) -> List<Sura>,
-    searchVerses: (String, Color) -> List<QuranSearcherMatch>,
+    searchSurasAndPages: (String) -> List<SearchMatch>,
+    searchVerses: (String, Color) -> List<VerseMatch>,
     onSuraClick: (Int) -> Unit,
+    onPageClick: (String) -> Unit,
     onVerseClick: (Int) -> Unit
 ) {
     val state = rememberTextFieldState()
@@ -224,71 +226,127 @@ private fun QuranSearchBar(
         val highlightColor = MaterialTheme.colorScheme.primary
         val verseMatches = searchVerses(state.text.toString(), highlightColor).take(100)
 
-        MyText(
-            text = stringResource(R.string.suras_and_pages),
-            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start
+        SearchBarContent(
+            suraAndPageMatches = suraAndPageMatches,
+            verseMatches = verseMatches,
+            onSuraClick = onSuraClick,
+            onPageClick = onPageClick,
+            onVerseClick = onVerseClick
         )
+    }
+}
 
+@Composable
+private fun SearchBarContent(
+    suraAndPageMatches: List<SearchMatch>,
+    verseMatches: List<VerseMatch>,
+    onSuraClick: (Int) -> Unit,
+    onPageClick: (String) -> Unit,
+    onVerseClick: (Int) -> Unit
+) {
+    MyText(
+        text = stringResource(R.string.suras_and_pages),
+        modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 17.dp),
+        fontSize = 16.sp,
+        textAlign = TextAlign.Start
+    )
+
+    if (suraAndPageMatches.isNotEmpty()) {
         MyLazyColumn(
             state = rememberLazyListState(),
             lazyList = {
-                items(suraAndPageMatches) { sura ->
-                    ListItem(
-                        headlineContent = {
-                            MyText(
-                                text = "${stringResource(R.string.sura)} ${sura.decoratedName}",
-                                modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
-                                textAlign = TextAlign.Start
+                items(suraAndPageMatches) { match ->
+                    when (match) {
+                        is SuraMatch -> {
+                            ListItem(
+                                headlineContent = {
+                                    MyText(
+                                        text = "${stringResource(R.string.sura)} ${match.decoratedName}",
+                                        modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 16.dp),
+                                        textAlign = TextAlign.Start
+                                    )
+                                },
+                                modifier = Modifier.clickable { onSuraClick(match.id) }
                             )
-                        },
-                        modifier = Modifier.clickable { onSuraClick(sura.id) }
-                    )
-
-                    HorizontalDivider(thickness = 0.3.dp)
-                }
-            }
-        )
-
-        MyText(
-            text = stringResource(R.string.verses),
-            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start
-        )
-
-        MyLazyColumn(
-            state = rememberLazyListState(),
-            lazyList = {
-                items(verseMatches) { verse ->
-                    MatchItem(
-                        item = verse,
-                        onVerseClick = onVerseClick
-                    )
+                        }
+                        is PageMatch -> {
+                            ListItem(
+                                headlineContent = {
+                                    MyText(
+                                        text = "${stringResource(R.string.page)} ${match.num}",
+                                        modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 16.dp),
+                                        textAlign = TextAlign.Start
+                                    )
+                                },
+                                modifier = Modifier.clickable { onPageClick(match.num) },
+                                supportingContent = {
+                                    MyText(
+                                        text = match.suraName,
+                                        modifier = Modifier.padding(top = 6.dp, bottom = 6.dp, start = 16.dp),
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Start
+                                    )
+                                }
+                            )
+                        }
+                    }
 
                     HorizontalDivider(thickness = 0.3.dp)
                 }
             }
         )
     }
+    else {
+        MyText(
+            text = stringResource(R.string.no_matches),
+            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 16.dp),
+            textAlign = TextAlign.Start
+        )
+    }
+
+    MyText(
+        text = stringResource(R.string.verses),
+        modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 16.dp),
+        fontSize = 16.sp,
+        textAlign = TextAlign.Start
+    )
+
+    if (verseMatches.isNotEmpty()) {
+        MyLazyColumn(
+            state = rememberLazyListState(),
+            lazyList = {
+                items(verseMatches) { verse ->
+                    VerseMatchListItem(item = verse, onVerseClick = onVerseClick)
+
+                    HorizontalDivider(thickness = 0.3.dp)
+                }
+            }
+        )
+    }
+    else {
+        MyText(
+            text = stringResource(R.string.no_matches),
+            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
+            textAlign = TextAlign.Start
+        )
+    }
 }
 
 @Composable
-private fun MatchItem(item: QuranSearcherMatch, onVerseClick: (Int) -> Unit) {
+private fun VerseMatchListItem(item: VerseMatch, onVerseClick: (Int) -> Unit) {
     ListItem(
         headlineContent = {
             MyText(
                 text = "${stringResource(R.string.sura)} ${item.suraName}, " +
                         "${stringResource(R.string.verse_number)} ${item.verseNum}",
-                modifier = Modifier.padding(top = 6.dp)
+                modifier = Modifier.padding(top = 6.dp, start = 16.dp)
             )
         },
         modifier = Modifier.clickable { onVerseClick(item.id) },
         supportingContent = {
             MyText(
                 text = item.text,
-                modifier = Modifier.padding(vertical = 6.dp),
+                modifier = Modifier.padding(top = 6.dp, bottom = 6.dp, start = 16.dp),
                 fontSize = 16.sp,
                 textAlign = TextAlign.Start
             )

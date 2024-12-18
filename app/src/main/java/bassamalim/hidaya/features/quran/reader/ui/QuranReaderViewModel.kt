@@ -170,10 +170,6 @@ class QuranReaderViewModel @Inject constructor(
         }
     }
 
-    private fun goToPage(pageNum: Int) {
-        onPageChange(currentPageIdx = -1, pageIdx = pageNum-1)
-    }
-
     fun onBookmarksClick() {
         _uiState.update { it.copy(
             bookmarkOptionsExpanded = !it.bookmarkOptionsExpanded

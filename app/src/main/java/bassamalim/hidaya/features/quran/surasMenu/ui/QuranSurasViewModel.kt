@@ -2,9 +2,9 @@ package bassamalim.hidaya.features.quran.surasMenu.ui
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
@@ -13,7 +13,6 @@ import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import bassamalim.hidaya.features.quran.surasMenu.domain.QuranSurasDomain
@@ -86,6 +85,15 @@ class QuranSurasViewModel @Inject constructor(
         )
     }
 
+    fun onPageClick(pageNum: String) {
+        navigator.navigate(
+            Screen.QuranReader(
+                targetType = QuranTarget.PAGE.name,
+                targetValue = pageNum
+            )
+        )
+    }
+
     fun onBookmarksClick() {
         _uiState.update { it.copy(
             isBookmarksExpanded = !it.isBookmarksExpanded
@@ -118,25 +126,6 @@ class QuranSurasViewModel @Inject constructor(
         }
     }
 
-    fun onSearchSubmit(snackbarHostState: SnackbarHostState, message: String) {
-        try {
-//            val num = _uiState.value.searchText.toInt()
-//            if (num in 1..604) {
-//                navigator.navigate(
-//                    Screen.QuranReader(
-//                        targetType = QuranTarget.PAGE.name,
-//                        targetValue = num.toString()
-//                    )
-//                )
-//            }
-//            else {
-//                viewModelScope.launch {
-//                    snackbarHostState.showSnackbar(message)
-//                }
-//            }
-        } catch (_: NumberFormatException) {}
-    }
-
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
         _uiState.update { it.copy(
             isTutorialDialogShown = false
@@ -167,24 +156,41 @@ class QuranSurasViewModel @Inject constructor(
         }
     }
 
-    fun searchSurasAndPages(query: String): List<Sura> {
-        return allSuras.filter { sura ->
-            query.isEmpty() || sura.plainName.contains(query, true)
-        }.map { sura ->
-            Sura(
-                id = sura.id,
-                decoratedName = suraNames[sura.id],
-                plainName = sura.plainName,
-                revelation = sura.revelation,
-                isFavorite = sura.isFavorite
-            )
+    fun searchSurasAndPages(query: String): List<SearchMatch> {
+        return if (query.isNotEmpty() && query.isDigitsOnly()) {
+            val num = query.toInt()
+            if (num in 1..604) {
+                val pageSuraId = allVerses.first { verse -> verse.pageNum == num }.suraNum - 1
+                listOf(
+                    PageMatch(
+                        num = translateNums(
+                            string = query,
+                            numeralsLanguage = numeralsLanguage
+                        ),
+                        suraName = suraNames[pageSuraId]
+                    )
+                )
+            }
+            else emptyList()
+        }
+        else {
+            allSuras.filter { sura ->
+                query.isEmpty() || sura.plainName.contains(query, true)
+            }.map { sura ->
+                SuraMatch(
+                    id = sura.id,
+                    decoratedName = suraNames[sura.id],
+                    plainName = sura.plainName,
+                    isFavorite = sura.isFavorite
+                )
+            }
         }
     }
 
-    fun searchVerses(query: String, highlightColor: Color): List<QuranSearcherMatch> {
+    fun searchVerses(query: String, highlightColor: Color): List<VerseMatch> {
         this.highlightColor = highlightColor
 
-        val matches = mutableListOf<QuranSearcherMatch>()
+        val matches = mutableListOf<VerseMatch>()
         for (verse in allVerses) {
             val matcher = Pattern.compile(query).matcher(verse.plainText)
             if (matcher.find()) {
@@ -201,7 +207,7 @@ class QuranSurasViewModel @Inject constructor(
                 }
 
                 matches.add(
-                    QuranSearcherMatch(
+                    VerseMatch(
                         id = verse.id,
                         verseNum = translateNums(
                             string = verse.num.toString(),
@@ -223,30 +229,6 @@ class QuranSurasViewModel @Inject constructor(
                 targetValue = verseId.toString()
             )
         )
-    }
-
-    private fun annotateInterpretation(interpretation: String): AnnotatedString {
-        return buildAnnotatedString {
-            val regex = Regex("(<aya>(.*?)</aya>)")
-            var lastIndex = 0
-
-            regex.findAll(interpretation).forEach { matchResult ->
-                val ayaStartIndex = matchResult.range.first
-                val ayaEndIndex = matchResult.range.last + 1
-
-                append(interpretation.substring(lastIndex, ayaStartIndex))
-
-                pushStyle(SpanStyle(fontFamily = uthmanic_hafs))
-                append(matchResult.groups[2]?.value.orEmpty()) // Groups[2] contains the text within the tags
-                pop()
-
-                lastIndex = ayaEndIndex
-            }
-
-            if (lastIndex < interpretation.length) {
-                append(interpretation.substring(lastIndex))
-            }
-        }
     }
 
 }
