@@ -62,6 +62,7 @@ import bassamalim.hidaya.core.ui.theme.Bookmark1Color
 import bassamalim.hidaya.core.ui.theme.Bookmark2Color
 import bassamalim.hidaya.core.ui.theme.Bookmark3Color
 import bassamalim.hidaya.core.ui.theme.Bookmark4Color
+import bassamalim.hidaya.core.ui.theme.hafs_smart
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -348,7 +349,8 @@ private fun VerseMatchListItem(item: VerseMatch, onVerseClick: (Int) -> Unit) {
                 text = item.text,
                 modifier = Modifier.padding(top = 6.dp, bottom = 6.dp, start = 16.dp),
                 fontSize = 16.sp,
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
+                fontFamily = hafs_smart
             )
         }
     )
