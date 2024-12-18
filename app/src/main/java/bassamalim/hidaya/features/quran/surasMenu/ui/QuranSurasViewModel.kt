@@ -176,7 +176,7 @@ class QuranSurasViewModel @Inject constructor(
         else {
             allSuras.filter { sura ->
                 query.isEmpty() || sura.plainName.contains(query, true)
-            }.map { sura ->
+            }.take(3).map { sura ->
                 SuraMatch(
                     id = sura.id,
                     decoratedName = suraNames[sura.id],
@@ -217,6 +217,8 @@ class QuranSurasViewModel @Inject constructor(
                         text = annotatedString,
                     )
                 )
+
+                if (matches.size == 100) break
             }
         }
         return matches

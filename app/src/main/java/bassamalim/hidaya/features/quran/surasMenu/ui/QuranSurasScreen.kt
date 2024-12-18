@@ -222,9 +222,9 @@ private fun QuranSearchBar(
             .padding(horizontal = if (expanded) 0.dp else 6.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
-        val suraAndPageMatches = searchSurasAndPages(state.text.toString()).take(3)
+        val suraAndPageMatches = searchSurasAndPages(state.text.toString())
         val highlightColor = MaterialTheme.colorScheme.primary
-        val verseMatches = searchVerses(state.text.toString(), highlightColor).take(100)
+        val verseMatches = searchVerses(state.text.toString(), highlightColor)
 
         SearchBarContent(
             suraAndPageMatches = suraAndPageMatches,
