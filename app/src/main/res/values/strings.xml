@@ -1,22 +1,16 @@
 <resources>
     <string name="app_name">هِداية</string>
-
-    <!-- Tab Titles -->
     <string name="title_home">الرئيسية</string>
     <string name="title_prayers">الصلوات</string>
     <string name="title_quran">القرآن</string>
     <string name="title_remembrances">الأذكار</string>
     <string name="title_more">المزيد</string>
-
-    <!-- Preference Categories -->
     <string name="extra_notifications">الإشعارات الإضافية</string>
     <string name="page_preferences">إعدادات الصفحة</string>
     <string name="appearance">المظهر</string>
     <string name="theme">السمة</string>
     <string name="prayer_time_settings">إعدادات أوقات الصلاة</string>
     <string name="athan_settings">إعدادات الأذان</string>
-
-    <!-- Preference Titles -->
     <string name="language" translatable="false">Language | اللغة</string>
     <string name="morning_remembrance_title">إشعار أذكار الصباح</string>
     <string name="evening_remembrance_title">إشعار أذكار المساء</string>
@@ -29,12 +23,8 @@
     <string name="calculation_method_title">طريقة الحساب</string>
     <string name="juristic_method_title">الطريقة الفقهية</string>
     <string name="high_lat_adjustment_title">التعديل لخطوط العرض المرتفعة</string>
-
-    <!-- TextViews Text -->
     <string name="recitations_time_record_title">مدة الاستماع للتلاوات</string>
     <string name="quran_pages_record_title">عدد صفحات القرآن المقروءة \n(مع التكرار)</string>
-
-    <!-- Buttons Text -->
     <string name="contact">تواصل معي</string>
     <string name="day_and_night_remembrances">أذكار اليوم والليلة</string>
     <string name="prayers_remembrances">أذكار الصلاة</string>
@@ -55,8 +45,6 @@
     <string name="locate">حدد الموقع</string>
     <string name="choose_manually">اختر الموقع يدوياً</string>
     <string name="rejected">غير موافق\nاستخدام التطبيق بدون أوقات الصلاة والقِبلة</string>
-
-    <!-- Descriptions -->
     <string name="shuffle_description">تشغيل عشوائي</string>
     <string name="download_description">تحميل</string>
     <string name="repeat_description">تكرار</string>
@@ -75,22 +63,16 @@
     <string name="filter_search_description">تصفية البحث</string>
     <string name="source_btn_description">إظهار المرجع</string>
     <string name="already_read_description">تمت القراءة</string>
-
-    <!-- Tips -->
     <string name="prayers_tips">اضغط على اسم الصلاة لعرض اعدادات كل صلاة.\n\nاضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط على النص بين السهمين للعودة الى اليوم الحالي.</string>
     <string name="suras_reader_tips">اضغط ضغطة مطولة على الآية لإظهار معلوماتها.\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة.\n\nيمكنك تغيير القارئ اثناء التلاوة.</string>
     <string name="quran_menu_tips">يمكنك الضغط عل الزر في الزاوية السفلية من الشاشة للبحث عن نص في المصحف.</string>
     <string name="books_menu_tips">يمكنك الضغط على الزر في الزاوية السفلية من الشاشة للبحث عن نص في الكتب المحملة.</string>
-
-    <!-- Hints -->
-    <string name="quran_search_hint">ابحث عن اسم السورة أو رقم الصفحة</string>
+    <string name="quran_search_hint">ابحث عن اسم سورة أو الصفحة أو آية</string>
     <string name="remembrances_search_hint">ابحث عن الذِكر</string>
     <string name="reciters_search_hint">ابحث عن القارئ</string>
     <string name="suras_search_hint">ابحث عن السورة</string>
     <string name="countries_search_hint">ابحث عن اسم البلد</string>
     <string name="cities_search_hint">ابحث عن اسم المدينة</string>
-
-    <!-- Words -->
     <string name="settings">الإعدادات</string>
     <string name="all">الكل</string>
     <string name="favorite">المفضلة</string>
@@ -101,8 +83,6 @@
     <string name="search">ابحث</string>
     <string name="question">سؤال</string>
     <string name="jumuah">جمعة</string>
-
-    <!-- Formats -->
     <string name="passed">مرت: %1$s</string>
     <string name="remaining">متبقي: %1$s</string>
     <string name="settings_of">إعدادات %s</string>
@@ -110,8 +90,6 @@
     <string name="distance_to_kaaba">المسافة الى الكعبة: %s</string>
     <string name="reminder_before">%s بعد %s دقيقة</string>
     <string name="reminder_after">%s منذ %s دقيقة</string>
-
-    <!-- Toasts -->
     <string name="give_location_permission_toast">لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة</string>
     <string name="location_permission_for_qibla">يجب السماح بالوصول للموقع لحساب اتجاه القبلة</string>
     <string name="database_rebuilt">تمت إعادة بناء قاعدة البيانات</string>
@@ -122,14 +100,11 @@
     <string name="choose_allow_all_the_time">اختر \"السماح طوال الوقت\" لإبقاء أوقات الصلاة وإتجاه القبلة دقيقة</string>
     <string name="recitation_not_available">لا يتوفر تسجيل الآية لهذا القارئ</string>
     <string name="no_downloaded_books">لم يتم تحميل أي كتب بعد، حمل كتبا للبحث فيها</string>
-
-    <!-- Notification Channels -->
     <string name="prayer_notification_channel">إشعارات الصلاة</string>
     <string name="prayer_extra_notification_channel">تذكيرات الصلاة الإضافية</string>
     <string name="morning_and_evening_remembrances_notification_channel">أذكار الصباح والمساء</string>
     <string name="daily_werd_notification_channel">الورد اليومي</string>
     <string name="friday_kahf_notification_channel">سورة الكهف</string>
-
     <string name="athan_speaker">أذان</string>
     <string name="enable_notification">إشعار مسموع</string>
     <string name="silent_notification">إشعار صامت</string>
@@ -234,5 +209,4 @@
     <string name="hide">إخفاء</string>
     <string name="suras_and_pages">السور والصفحات</string>
     <string name="verses">الآيات</string>
-
 </resources>

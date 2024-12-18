@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Hidaya</string>
-
-    <!-- Tabs Titles -->
     <string name="title_home">Home</string>
     <string name="title_prayers">Prayers</string>
     <string name="title_quran">Quran</string>
     <string name="title_remembrances">Athkar</string>
     <string name="title_more">More</string>
-
-    <!-- Preference Categories -->
     <string name="extra_notifications">Extra reminders</string>
     <string name="page_preferences">Page preferences</string>
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
     <string name="prayer_time_settings">Prayer times settings</string>
     <string name="athan_settings">Athan Settings</string>
-
-    <!-- Preference Titles -->
     <string name="morning_remembrance_title">Morning remembrance reminder</string>
     <string name="evening_remembrance_title">Evening remembrance reminder</string>
     <string name="daily_werd_title">Daily werd reminder</string>
@@ -30,12 +23,8 @@
     <string name="calculation_method_title">Calculation method</string>
     <string name="juristic_method_title">Juristic method</string>
     <string name="high_lat_adjustment_title">High latitude adjustment</string>
-
-    <!-- TextViews Text -->
     <string name="recitations_time_record_title">Recitations Listening \nDuration</string>
     <string name="quran_pages_record_title">Read Quran Pages \n (with repetition)</string>
-
-    <!-- Buttons Text -->
     <string name="contact">Contact me</string>
     <string name="day_and_night_remembrances">Day and Night Remembrances</string>
     <string name="prayers_remembrances">Prayers Remembrances</string>
@@ -56,8 +45,6 @@
     <string name="locate">Locate</string>
     <string name="choose_manually">Choose location manually</string>
     <string name="rejected">Decline\nUse the app without prayer times and qibla direction</string>
-
-    <!-- Descriptions -->
     <string name="shuffle_description">Shuffle</string>
     <string name="download_description">Download</string>
     <string name="repeat_description">Repeat</string>
@@ -70,27 +57,21 @@
     <string name="rewind_btn_description">Rewind</string>
     <string name="play_pause_btn_description">Play/Pause</string>
     <string name="fast_forward_btn_description">Fast forward</string>
-    <string name="revelation_view_description">Sura nuzool location</string>
+    <string name="revelation_view_description">Sura revelation location</string>
     <string name="bookmark_verse_button_description">Save verse</string>
     <string name="filter_search_description">Filter search</string>
     <string name="source_btn_description">Show reference</string>
     <string name="already_read_description">Already read</string>
-
-    <!-- Tips -->
     <string name="prayers_tips">Click on the prayer name to edit prayer preferences.\n\n Click on the right and left arrows in the bottom of the screen to view other days prayer times .. Then click on the text between the arrows to return to the current day.</string>
     <string name="suras_reader_tips">Click and hold the verse to view its interpretation.\n\n Click on a verse then click on the play button in the bottom bar to start playing from that verse.\n\n You can change the reciter while recitation is playing.</string>
     <string name="quran_menu_tips">You can click on the button in the bottom corner of the screen to search in the quran.</string>
     <string name="books_menu_tips">You can click on the button in the bottom corner of the screen to search in the downloaded books.</string>
-
-    <!-- Search Hints -->
-    <string name="quran_search_hint">Search for sura name or page number</string>
-    <string name="remembrances_search_hint">Search for thikr</string>
+    <string name="quran_search_hint">Search for sura or page or verse</string>
+    <string name="remembrances_search_hint">Search for remembrance</string>
     <string name="reciters_search_hint">Search for reciter</string>
     <string name="suras_search_hint">Search for suar</string>
     <string name="countries_search_hint">Search for country name</string>
     <string name="cities_search_hint">Search for city name</string>
-
-    <!-- Words -->
     <string name="settings">Settings</string>
     <string name="all">All</string>
     <string name="favorite">Favorites</string>
@@ -101,8 +82,6 @@
     <string name="search">Search</string>
     <string name="question">Question</string>
     <string name="jumuah">Jumuah</string>
-
-    <!-- Formats -->
     <string name="passed">Passed: %1$s</string>
     <string name="remaining">Remaining: %1$s</string>
     <string name="settings_of">%s Settings</string>
@@ -110,8 +89,6 @@
     <string name="distance_to_kaaba">Distance to Kaaba: %s</string>
     <string name="reminder_before">%s in %s minutes</string>
     <string name="reminder_after">%s %s minutes ago</string>
-
-    <!-- Toasts -->
     <string name="give_location_permission_toast">Location can not be accessed, give the app location permission to calculate prayer times and qibla</string>
     <string name="location_permission_for_qibla">Location permission is needed to calculate qibla direction</string>
     <string name="database_rebuilt">Database rebuilt</string>
@@ -121,15 +98,12 @@
     <string name="playback_failed">Playback failed</string>
     <string name="choose_allow_all_the_time">Choose \"Allow all the time\" to keep the prayer times and qibla direction accurate</string>
     <string name="recitation_not_available">This verse\'s recitation is not available for the selected reciter</string>
-
-    <!-- Notification Channels -->
     <string name="no_downloaded_books">You have not downloaded any books yet, please download books to search in</string>
     <string name="prayer_notification_channel">Prayer Notifications</string>
     <string name="prayer_extra_notification_channel">Prayer Extra Reminders</string>
     <string name="morning_and_evening_remembrances_notification_channel">Morning and Evening Remembrances</string>
     <string name="daily_werd_notification_channel">Daily Werd</string>
     <string name="friday_kahf_notification_channel">Surat Al-Kahf</string>
-
     <string name="athan_speaker">Athan</string>
     <string name="enable_notification">Sound notification</string>
     <string name="silent_notification">Silent notification</string>
@@ -233,5 +207,4 @@
     <string name="hide">Hide</string>
     <string name="suras_and_pages">Suras and pages</string>
     <string name="verses">Verses</string>
-
 </resources>
