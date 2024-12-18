@@ -67,7 +67,7 @@
     <string name="suras_reader_tips">اضغط ضغطة مطولة على الآية لإظهار معلوماتها.\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة.\n\nيمكنك تغيير القارئ اثناء التلاوة.</string>
     <string name="quran_menu_tips">يمكنك الضغط عل الزر في الزاوية السفلية من الشاشة للبحث عن نص في المصحف.</string>
     <string name="books_menu_tips">يمكنك الضغط على الزر في الزاوية السفلية من الشاشة للبحث عن نص في الكتب المحملة.</string>
-    <string name="quran_search_hint">ابحث عن اسم سورة أو الصفحة أو آية</string>
+    <string name="quran_search_hint">ابحث عن سورة أو صفحة أو آية</string>
     <string name="remembrances_search_hint">ابحث عن الذِكر</string>
     <string name="reciters_search_hint">ابحث عن القارئ</string>
     <string name="suras_search_hint">ابحث عن السورة</string>
