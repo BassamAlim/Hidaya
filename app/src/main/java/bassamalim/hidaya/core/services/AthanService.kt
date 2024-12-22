@@ -52,20 +52,6 @@ class AthanService : Service() {
     override fun onBind(intent: Intent): IBinder? { return null }  // Not used
 
     @OptIn(DelicateCoroutinesApi::class)
-    override fun onCreate() {
-        super.onCreate()
-
-        GlobalScope.launch {
-            ActivityUtils.configure(
-                context = application,
-                applicationContext = applicationContext,
-                language = appSettingsRepository.getLanguage().first(),
-            )
-            createNotificationChannel()
-        }
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == StartAction.STOP_ATHAN.name) {
             onDestroy()
@@ -73,12 +59,19 @@ class AthanService : Service() {
         }
 
         val reminder = Reminder.getById(intent!!.getIntExtra("id", -1))
+        Log.i(Global.TAG, "In athan service for $reminder")
         notificationId = reminder.id
 
         GlobalScope.launch {
-            startForeground(243, build(reminder))
+            ActivityUtils.configure(
+                context = application,
+                applicationContext = applicationContext,
+                language = appSettingsRepository.getLanguage().first(),
+            )
 
-            Log.i(Global.TAG, "In athan service for $reminder")
+            createNotificationChannel()
+
+            startForeground(243, build(reminder))
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 (getSystemService(AUDIO_SERVICE) as AudioManager)

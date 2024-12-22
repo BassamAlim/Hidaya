@@ -109,6 +109,8 @@ class Activity : ComponentActivity() {
                 language = language
             )
 
+//            testAthan()
+
             if (isFirstLaunch) {
                 handleAction(intent.action)
 
@@ -121,6 +123,27 @@ class Activity : ComponentActivity() {
             else launchApp()
         }
     }
+
+//    private fun testAthan() {
+//        println("Test Athan")
+//
+//        val reminder = Reminder.Prayer.Fajr
+//        val time = System.currentTimeMillis() + 1000 * 60
+//
+//        val intent = Intent(this, NotificationReceiver::class.java).apply {
+//            action = "prayer"
+//            putExtra("id", reminder.id)
+//            putExtra("time", time)
+//        }
+//
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            this, reminder.id, intent,
+//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//        )
+//
+//        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+//    }
 
     private suspend fun testDb() {
         val shouldReviveDb = DbUtils.shouldReviveDb(
