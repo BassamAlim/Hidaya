@@ -11,11 +11,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.MenuType
+import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
 fun RemembrancesMenuScreen(viewModel: RemembrancesMenuViewModel) {
@@ -35,11 +35,11 @@ fun RemembrancesMenuScreen(viewModel: RemembrancesMenuViewModel) {
                 .fillMaxWidth()
                 .padding(padding)
         ) {
-            SearchComponent(
-                value = state.searchText,
+            CustomSearchBar(
+                query = state.searchText,
                 modifier = Modifier.fillMaxWidth(),
                 hint = stringResource(R.string.remembrances_search_hint),
-                onValueChange = viewModel::onSearchTextChange
+                onQueryChange = viewModel::onSearchTextChange
             )
 
             RemembrancesList(

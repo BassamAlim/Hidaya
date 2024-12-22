@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
@@ -37,7 +38,6 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import kotlinx.coroutines.flow.Flow
@@ -74,11 +74,11 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        SearchComponent(
-                            value = viewModel.searchText,
+                        CustomSearchBar(
+                            query = viewModel.searchText,
                             hint = stringResource(R.string.reciters_search_hint),
                             modifier = Modifier.weight(1F),
-                            onValueChange = viewModel::onSearchTextChange
+                            onQueryChange = viewModel::onSearchTextChange
                         )
 
                         MyIconButton(

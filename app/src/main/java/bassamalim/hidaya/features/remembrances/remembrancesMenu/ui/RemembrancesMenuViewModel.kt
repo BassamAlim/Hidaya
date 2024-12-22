@@ -40,7 +40,6 @@ class RemembrancesMenuViewModel @Inject constructor(
         domain.getRemembrances(menuType, categoryId)
     ) { state, remembrances ->
         if (state.isLoading) return@combine state
-
         state.copy(remembrances = getFilteredRemembrances(remembrances))
     }.onStart {
         initializeData()

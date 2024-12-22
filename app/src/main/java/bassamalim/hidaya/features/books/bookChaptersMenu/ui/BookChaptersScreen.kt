@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Book
+import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import kotlinx.coroutines.flow.Flow
 
@@ -38,11 +38,11 @@ fun BookChaptersScreen(viewModel: BookChaptersViewModel) {
             ),
             modifier = Modifier.padding(padding),
             searchComponent = {
-                SearchComponent(
-                    value = state.searchText,
+                CustomSearchBar(
+                    query = state.searchText,
                     modifier = Modifier.fillMaxWidth(),
                     hint = stringResource(R.string.search),
-                    onValueChange = viewModel::onSearchTextChange
+                    onQueryChange = viewModel::onSearchTextChange
                 )
             }
         ) { page ->

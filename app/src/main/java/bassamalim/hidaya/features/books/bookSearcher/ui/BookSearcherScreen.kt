@@ -23,13 +23,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyDropDownMenu
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
 fun BookSearcherScreen(viewModel: BookSearcherViewModel) {
@@ -87,14 +87,14 @@ private fun SearchArea(
             modifier = Modifier.padding(vertical = 6.dp)
         )
 
-        SearchComponent(
-            value = searchText,
-            hint = stringResource(R.string.search),
+        CustomSearchBar(
+            query = searchText,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp),
-            onValueChange = onSearchTextChange,
-            onSubmit = { onSearch(highlightColor) }
+            hint = stringResource(R.string.search),
+            onQueryChange = onSearchTextChange,
+            onSearch = { onSearch(highlightColor) }
         )
 
         BooksFilter(

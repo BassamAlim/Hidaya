@@ -16,13 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.ReciterSura
+import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import kotlinx.coroutines.flow.Flow
 
@@ -49,11 +49,11 @@ fun RecitationSurasMenuScreen(viewModel: RecitationSurasViewModel) {
             ),
             modifier = Modifier.padding(padding),
             searchComponent = {
-                SearchComponent(
-                    value = state.searchText,
+                CustomSearchBar(
+                    query = state.searchText,
                     hint = stringResource(R.string.suras_search_hint),
                     modifier = Modifier.fillMaxWidth(),
-                    onValueChange = viewModel::onSearchChange
+                    onQueryChange = viewModel::onSearchChange
                 )
             }
         ) { page ->

@@ -16,12 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyTopBar
-import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
 fun LocationPickerScreen(viewModel: LocationPickerViewModel) {
@@ -76,8 +75,8 @@ private fun SearchComp(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
 ) {
-    SearchComponent(
-        value = searchText,
+    CustomSearchBar(
+        query = searchText,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 10.dp),
@@ -87,7 +86,7 @@ private fun SearchComp(
                 LocationPickerMode.CITY -> R.string.cities_search_hint
             }
         ),
-        onValueChange = onSearchTextChange
+        onQueryChange = onSearchTextChange
     )
 }
 
