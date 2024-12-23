@@ -38,7 +38,7 @@ class QiblaDomain @Inject constructor(
     ) {
         location = locationRepository.getLocation().first()
 
-        bearing = calculateBearing()
+        if (location != null) bearing = calculateBearing()
 
         setupCompass(
             updateAccuracy = updateAccuracy,

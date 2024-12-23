@@ -217,14 +217,15 @@ class Activity : ComponentActivity() {
     }
 
     private fun onPermissionRequestResult(result: Map<String, Boolean>) {
-        if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) return
+        if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            || result.keys.contains(Manifest.permission.PACKAGE_USAGE_STATS))
+            return
 
         val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION]
         val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
         if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
             locate()
-
-            requestBackgroundLocationPermission()
+            requestExtraPermissions()
         }
         else {
             launchApp()
@@ -232,22 +233,35 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun requestBackgroundLocationPermission() {
+    private fun requestExtraPermissions() {
+        val permissions = mutableListOf<String>()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        }
+
+        if (permissions.isNotEmpty()) {
             Toast.makeText(
                 this,
                 getString(R.string.choose_allow_all_the_time),
                 Toast.LENGTH_LONG
             ).show()
 
-            permissionRequestLauncher.launch(
-                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            )
+            permissionRequestLauncher.launch(permissions.toTypedArray())
         }
     }
 
@@ -315,7 +329,7 @@ class Activity : ComponentActivity() {
                 postLaunch()
             }
 
-        requestBackgroundLocationPermission()
+        requestExtraPermissions()
     }
 
     private fun storeLocation(location: Location?) {
@@ -336,17 +350,18 @@ class Activity : ComponentActivity() {
     }
 
     private fun fetchAndActivateRemoteConfig() {
-        FirebaseRemoteConfig.getInstance().fetchAndActivate()
-            .addOnCompleteListener {
-                if (it.isSuccessful) Log.i(Global.TAG, "RemoteConfig update Success")
-                else Log.e(Global.TAG, "RemoteConfig update Failed")
-            }
+        FirebaseRemoteConfig.getInstance()
+            .fetchAndActivate()
+            .addOnSuccessListener { Log.i(Global.TAG, "RemoteConfig update Success") }
+            .addOnFailureListener { Log.e(Global.TAG, "RemoteConfig update Failed") }
     }
 
     private fun dailyUpdate() {
-        val intent = Intent(this, DailyUpdateReceiver::class.java)
-        intent.action = "daily"
-        sendBroadcast(intent)
+        sendBroadcast(
+            Intent(this, DailyUpdateReceiver::class.java).apply {
+                action = "daily"
+            }
+        )
     }
 
     private suspend fun setAlarms() {
