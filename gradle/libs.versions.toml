@@ -114,5 +114,4 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 ummalqura-calendar = { module = "com.github.msarhan:ummalqura-calendar", version.ref = "ummalquraCalendar" }
 
 [plugins]
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

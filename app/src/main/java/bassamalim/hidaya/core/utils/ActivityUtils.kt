@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.StartAction
+import bassamalim.hidaya.core.utils.LangUtils.getLocale
 import java.util.Locale
 
 object ActivityUtils {
@@ -20,20 +21,15 @@ object ActivityUtils {
     }
 
     fun onActivityCreateSetLocale(context: Context, language: Language) {
-        val locale = Locale(
-            when (language) {
-                Language.ARABIC -> "ar"
-                Language.ENGLISH -> "en"
-            }
-        )
+        val locale = getLocale(language)
         Locale.setDefault(locale)
-        val resources = context.resources
 
-        val configuration = resources.configuration
+        val configuration = context.resources.configuration
         configuration.setLocale(locale)
         configuration.setLayoutDirection(locale)
 
-        resources.updateConfiguration(configuration, resources.displayMetrics)
+        context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
+
     }
 
     fun restartActivity(activity: Activity) {
@@ -45,10 +41,11 @@ object ActivityUtils {
 
     fun restartApplication(activity: Activity) {
         val intent = activity.packageManager.getLaunchIntentForPackage(activity.packageName)
-        val componentName = intent?.component
-        val mainIntent = Intent.makeRestartActivityTask(componentName)
-        mainIntent.setAction(StartAction.RESET_DATABASE.name)
-        activity.startActivity(mainIntent)
+        activity.startActivity(
+            Intent.makeRestartActivityTask(intent?.component).apply {
+                action = StartAction.RESET_DATABASE.name
+            }
+        )
         Runtime.getRuntime().exit(0)
     }
 

@@ -26,7 +26,6 @@ class BookSearcherViewModel @Inject constructor(
 
     private var highlightColor: Color? = null
     private lateinit var language: Language
-    private lateinit var numeralsLanguage: Language
 
     private val _uiState = MutableStateFlow(BookSearcherUiState())
     val uiState = combine(
@@ -62,7 +61,6 @@ class BookSearcherViewModel @Inject constructor(
     private fun initializeData() {
         viewModelScope.launch {
             language = domain.getLanguage()
-            numeralsLanguage = domain.getNumeralsLanguage()
 
             _uiState.update { it.copy(
                 isLoading = false,

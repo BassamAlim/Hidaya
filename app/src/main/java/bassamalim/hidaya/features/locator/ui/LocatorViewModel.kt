@@ -21,7 +21,7 @@ class LocatorViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val isInitialLocation = savedStateHandle.get<Boolean>("is_initial") ?: false
+    private val isInitialLocation = savedStateHandle.get<Boolean>("is_initial") == true
 
     private val _uiState = MutableStateFlow(LocatorUiState(
         shouldShowSkipLocationButton = isInitialLocation

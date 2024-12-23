@@ -25,7 +25,7 @@ class ScreenTimeoutManager(private val activity: Activity) {
             PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
             "MyApp::ScreenLockTag"
         ).apply {
-            acquire()
+            acquire(10*60*1000L /*10 minutes*/)
         }
     }
 

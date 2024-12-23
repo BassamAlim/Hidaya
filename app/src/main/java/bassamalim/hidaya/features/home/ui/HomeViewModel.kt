@@ -86,7 +86,7 @@ class HomeViewModel @Inject constructor(
     }.combine(
         domain.isWerdDone()
     ) { state, isWerdDone ->
-        state.copy(isWerdDone = isWerdDone,)
+        state.copy(isWerdDone = isWerdDone)
     }.combine(
         domain.getLocalRecord()
     ) { state, localRecord ->

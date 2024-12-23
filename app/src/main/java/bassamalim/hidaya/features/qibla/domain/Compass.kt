@@ -8,9 +8,9 @@ import android.hardware.SensorManager
 
 class Compass(context: Context, private var listener: CompassListener) : SensorEventListener {
 
-    private val sensorManager: SensorManager
-    private val mSensor: Sensor?
-    private val aSensor: Sensor?
+    private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    private val mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+    private val aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
     private val aData = FloatArray(3)
     private val mData = FloatArray(3)
     private val myR = FloatArray(9)
@@ -19,12 +19,6 @@ class Compass(context: Context, private var listener: CompassListener) : SensorE
     interface CompassListener {
         fun onNewAzimuth(azimuth: Float)
         fun calibration(accuracy: Int)
-    }
-
-    init {
-        sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
     }
 
     /**

@@ -27,7 +27,7 @@ class LocationRepository @Inject constructor(
 
     fun getLocation() = userPreferencesDataSource.getLocation()
 
-    suspend fun setLocation(location: android.location.Location) {
+    fun setLocation(location: android.location.Location) {
         scope.launch {
             val closestCity = getClosestCity(
                 Coordinates(latitude = location.latitude, longitude = location.longitude)
@@ -45,7 +45,7 @@ class LocationRepository @Inject constructor(
         }
     }
 
-    suspend fun setLocation(countryId: Int, cityId: Int) {
+    fun setLocation(countryId: Int, cityId: Int) {
         scope.launch {
             val city = getCity(cityId)
 

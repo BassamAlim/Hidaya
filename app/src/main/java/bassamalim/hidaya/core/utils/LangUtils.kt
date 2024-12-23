@@ -1,6 +1,7 @@
 package bassamalim.hidaya.core.utils
 
 import bassamalim.hidaya.core.enums.Language
+import java.util.Locale
 
 object LangUtils {
 
@@ -103,6 +104,15 @@ object LangUtils {
             }
         }
         return str
+    }
+
+    fun getLocale(language: Language): Locale {
+        return Locale(
+            when (language) {
+                Language.ARABIC -> "ar"
+                Language.ENGLISH -> "en"
+            }
+        )
     }
 
 }

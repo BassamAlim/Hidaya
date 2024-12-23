@@ -172,14 +172,12 @@ object DomainModule {
         notificationsRepository: NotificationsRepository,
         appStateRepository: AppStateRepository,
         appSettingsRepository: AppSettingsRepository,
-        alarm: Alarm
     ) = PrayersBoardDomain(
         prayersRepository,
         locationRepository,
         notificationsRepository,
         appStateRepository,
         appSettingsRepository,
-        alarm
     )
 
     @Provides @Singleton
@@ -198,9 +196,8 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideQuizResultDomain(
-        quizRepository: QuizRepository,
         appSettingsRepository: AppSettingsRepository
-    ) = QuizResultDomain(quizRepository, appSettingsRepository)
+    ) = QuizResultDomain(appSettingsRepository)
 
     @Provides @Singleton
     fun provideQuizTestDomain(

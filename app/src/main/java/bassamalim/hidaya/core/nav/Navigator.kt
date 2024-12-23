@@ -37,10 +37,7 @@ class Navigator {
         navController?.popBackStack(destination.route, inclusive)
     }
 
-    fun navigateForResult(
-        destination: Screen,
-        onResult: (Bundle?) -> Unit
-    ) {
+    fun navigateForResult(destination: Screen, onResult: (Bundle?) -> Unit) {
         navController?.navigate(destination.route)
 
         callbacks.push(onResult)

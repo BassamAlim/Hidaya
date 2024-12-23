@@ -51,25 +51,25 @@ class SettingsDomain @Inject constructor(
 
     fun getLanguage() = appSettingsRepository.getLanguage()
 
-    suspend fun setLanguage(language: Language) {
+    fun setLanguage(language: Language) {
         appSettingsRepository.setLanguage(language)
     }
 
     fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
-    suspend fun setNumeralsLanguage(numeralsLanguage: Language) {
+    fun setNumeralsLanguage(numeralsLanguage: Language) {
         appSettingsRepository.setNumeralsLanguage(numeralsLanguage)
     }
 
     fun getTimeFormat() = appSettingsRepository.getTimeFormat()
 
-    suspend fun setTimeFormat(timeFormat: TimeFormat) {
+    fun setTimeFormat(timeFormat: TimeFormat) {
         appSettingsRepository.setTimeFormat(timeFormat)
     }
 
     fun getTheme() = appSettingsRepository.getTheme()
 
-    suspend fun setTheme(theme: Theme) {
+    fun setTheme(theme: Theme) {
         appSettingsRepository.setTheme(theme)
     }
 

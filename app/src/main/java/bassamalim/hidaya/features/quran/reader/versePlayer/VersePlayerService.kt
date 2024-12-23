@@ -324,13 +324,13 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
         wifiLock =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
                     .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
             else
-                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                (applicationContext.getSystemService(WIFI_SERVICE) as WifiManager)
                     .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
 
-        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
 
         val attrs = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)

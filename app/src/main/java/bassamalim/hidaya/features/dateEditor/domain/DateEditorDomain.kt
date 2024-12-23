@@ -24,7 +24,7 @@ class DateEditorDomain @Inject constructor(
         dateOffset--
     }
 
-    suspend fun saveDateOffset() {
+    fun saveDateOffset() {
         appSettingsRepository.setDateOffset(dateOffset)
     }
 

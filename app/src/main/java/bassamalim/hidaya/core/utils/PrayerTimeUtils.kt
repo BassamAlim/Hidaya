@@ -9,6 +9,7 @@ import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import java.util.Calendar
+import java.util.Locale
 import java.util.SortedMap
 import java.util.TimeZone
 
@@ -68,8 +69,8 @@ object PrayerTimeUtils {
 
         val formattedTime = when (timeFormat) {
             TimeFormat.TWENTY_FOUR -> {
-                val hour = String.format("%02d", time[Calendar.HOUR_OF_DAY])
-                val minute = String.format("%02d", time[Calendar.MINUTE])
+                val hour = String.format(Locale.ENGLISH, "%02d", time[Calendar.HOUR_OF_DAY])
+                val minute = String.format(Locale.ENGLISH, "%02d", time[Calendar.MINUTE])
                 "$hour:$minute"
             }
             TimeFormat.TWELVE -> {
@@ -81,7 +82,7 @@ object PrayerTimeUtils {
                 hour = (hour + 12 - 1) % 12 + 1
                 val minute = time[Calendar.MINUTE]
 
-                val formattedMinute = String.format("%02d", minute)
+                val formattedMinute = String.format(locale = Locale.ENGLISH, "%02d", minute)
                 "$hour:$formattedMinute $suffix"
             }
         }

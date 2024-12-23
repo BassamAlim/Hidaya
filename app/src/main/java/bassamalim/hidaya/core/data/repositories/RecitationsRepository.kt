@@ -90,39 +90,11 @@ class RecitationsRepository @Inject constructor(
             }
         }
 
-    suspend fun getAllSuraReciters(language: Language) = withContext(dispatcher) {
-        suraRecitersDao.getAll().map {
-            it.let {
-                Reciter(
-                    id = it.id,
-                    name = when (language) {
-                        Language.ARABIC -> it.nameAr
-                        Language.ENGLISH -> it.nameEn
-                    },
-                    isFavorite = it.isFavorite != 0
-                )
-            }
-        }
-    }
-
-    suspend fun getSuraReciter(id: Int, language: Language) = withContext(dispatcher) {
-        suraRecitersDao.getReciter(id).let {
-            Reciter(
-                id = it.id,
-                name = when (language) {
-                    Language.ARABIC -> it.nameAr
-                    Language.ENGLISH -> it.nameEn
-                },
-                isFavorite = it.isFavorite != 0
-            )
-        }
-    }
-
     private fun getReciterFavoriteStatuses() = suraRecitersDao.observeFavoriteStatuses().map {
         it.map { (id, isFavorite) -> id to (isFavorite == 1) }.toMap()
     }
 
-    suspend fun setReciterFavorite(reciterId: Int, isFavorite: Boolean) {
+    fun setReciterFavorite(reciterId: Int, isFavorite: Boolean) {
         scope.launch {
             withContext(dispatcher) {
                 suraRecitersDao.setFavoriteStatus(id = reciterId, value = if (isFavorite) 1 else 0)
@@ -131,7 +103,7 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    suspend fun setReciterFavorites(favorites: Map<Int, Boolean>) {
+    fun setReciterFavorites(favorites: Map<Int, Boolean>) {
         scope.launch {
             favorites.map { (id, isFavorite) ->
                 setReciterFavorite(id, isFavorite)
@@ -271,7 +243,7 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    suspend fun setLastPlayedMedia(lastPlayed: LastPlayedMedia?) {
+    fun setLastPlayedMedia(lastPlayed: LastPlayedMedia?) {
         scope.launch {
             recitationsPreferencesDataSource.updateLastPlayedMedia(lastPlayed)
         }
@@ -279,7 +251,7 @@ class RecitationsRepository @Inject constructor(
 
     fun getVerseReciterId() = recitationsPreferencesDataSource.getVerseReciterId()
 
-    suspend fun setVerseReciterId(verseReciterId: Int) {
+    fun setVerseReciterId(verseReciterId: Int) {
         scope.launch {
             recitationsPreferencesDataSource.updateVerseReciterId(verseReciterId)
         }
@@ -287,7 +259,7 @@ class RecitationsRepository @Inject constructor(
 
     fun getVerseRepeatMode() = recitationsPreferencesDataSource.getVerseRepeatMode()
 
-    suspend fun setVerseRepeatMode(verseRepeatMode: VerseRepeatMode) {
+    fun setVerseRepeatMode(verseRepeatMode: VerseRepeatMode) {
         scope.launch {
             recitationsPreferencesDataSource.updateVerseRepeatMode(verseRepeatMode)
         }
@@ -295,7 +267,7 @@ class RecitationsRepository @Inject constructor(
 
     fun getShouldStopOnSuraEnd() = recitationsPreferencesDataSource.getShouldStopOnSuraEnd()
 
-    suspend fun setShouldStopOnSuraEnd(shouldStopOnSuraEnd: Boolean) {
+    fun setShouldStopOnSuraEnd(shouldStopOnSuraEnd: Boolean) {
         scope.launch {
             recitationsPreferencesDataSource.updateShouldStopOnSuraEnd(shouldStopOnSuraEnd)
         }
@@ -303,7 +275,7 @@ class RecitationsRepository @Inject constructor(
 
     fun getShouldStopOnPageEnd() = recitationsPreferencesDataSource.getShouldStopOnPageEnd()
 
-    suspend fun setShouldStopOnPageEnd(shouldStopOnPageEnd: Boolean) {
+    fun setShouldStopOnPageEnd(shouldStopOnPageEnd: Boolean) {
         scope.launch {
             recitationsPreferencesDataSource.updateShouldStopOnPageEnd(shouldStopOnPageEnd)
         }
@@ -330,10 +302,6 @@ class RecitationsRepository @Inject constructor(
 
     suspend fun getAllVerseRecitations() = withContext(dispatcher) {
         verseRecitationsDao.getAll()
-    }
-
-    suspend fun getReciterVerseRecitations(reciterId: Int) = withContext(dispatcher) {
-        verseRecitationsDao.getReciterRecitations(reciterId)
     }
 
 }

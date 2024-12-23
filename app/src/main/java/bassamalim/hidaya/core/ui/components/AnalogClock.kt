@@ -88,12 +88,8 @@ private fun Draw(
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         shadowElevation = 10.dp
     ) {
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Canvas(
-                modifier = Modifier.size(maxWidth)
-            ) {
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            Canvas(Modifier.size(maxWidth)) {
                 val center = size.maxDimension / 2f
                 val fullRadius = size.maxDimension / 2f
 

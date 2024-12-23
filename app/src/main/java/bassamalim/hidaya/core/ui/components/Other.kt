@@ -40,24 +40,6 @@ fun MyFloatingActionButton(
 }
 
 @Composable
-fun MyFloatingActionButton(
-    imageVector: ImageVector,
-    description: String,
-    iconSize: Dp = 36.dp,
-    onClick: () -> Unit
-) {
-    FloatingActionButton(onClick = onClick) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = description,
-            modifier = Modifier
-                .size(iconSize)
-                .padding(6.dp)
-        )
-    }
-}
-
-@Composable
 fun MyHorizontalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = 1.dp,

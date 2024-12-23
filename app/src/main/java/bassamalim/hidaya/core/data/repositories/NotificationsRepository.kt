@@ -23,7 +23,7 @@ class NotificationsRepository @Inject constructor(
 
     fun getNotificationType(prayer: Reminder.Prayer) = getNotificationTypes().map { it[prayer]!! }
 
-    suspend fun setNotificationType(type: NotificationType, prayer: Reminder.Prayer) {
+    fun setNotificationType(type: NotificationType, prayer: Reminder.Prayer) {
         scope.launch {
             notificationsPreferencesDataSource.updateNotificationTypes(
                 notificationsPreferencesDataSource.getNotificationTypes().first().mutate {
@@ -38,7 +38,7 @@ class NotificationsRepository @Inject constructor(
             it.toMap()
         }
 
-    suspend fun setDevotionalReminderEnabled(enabled: Boolean, devotion: Reminder.Devotional) {
+    fun setDevotionalReminderEnabled(enabled: Boolean, devotion: Reminder.Devotional) {
         scope.launch {
             notificationsPreferencesDataSource.updateDevotionalReminderEnabledStatuses(
                 notificationsPreferencesDataSource.getDevotionalReminderEnabledStatuses().first()
@@ -52,7 +52,7 @@ class NotificationsRepository @Inject constructor(
             it.toMap()
         }
 
-    suspend fun setDevotionalReminderTimes(timeOfDay: TimeOfDay, devotion: Reminder.Devotional) {
+    fun setDevotionalReminderTimes(timeOfDay: TimeOfDay, devotion: Reminder.Devotional) {
         scope.launch {
             notificationsPreferencesDataSource.updateDevotionalReminderTimes(
                 notificationsPreferencesDataSource.getDevotionalReminderTimes().first().mutate {
@@ -67,7 +67,7 @@ class NotificationsRepository @Inject constructor(
             it.toMap()
         }
 
-    suspend fun setPrayerExtraReminderOffset(prayer: Reminder.PrayerExtra, offset: Int) {
+    fun setPrayerExtraReminderOffset(prayer: Reminder.PrayerExtra, offset: Int) {
         scope.launch {
             notificationsPreferencesDataSource.updatePrayerExtraReminderTimeOffsets(
                 notificationsPreferencesDataSource.getPrayerExtraReminderTimeOffsets().first()
@@ -81,7 +81,7 @@ class NotificationsRepository @Inject constructor(
     fun getLastNotificationDates() = notificationsPreferencesDataSource.getLastNotificationDates()
         .map { it.toMap() }
 
-    suspend fun setLastNotificationDate(reminder: Reminder, dayOfYear: Int) {
+    fun setLastNotificationDate(reminder: Reminder, dayOfYear: Int) {
         scope.launch {
             notificationsPreferencesDataSource.updateLastNotificationDates(
                 notificationsPreferencesDataSource.getLastNotificationDates().first().mutate {

@@ -22,7 +22,7 @@ class PrayersRepository @Inject constructor(
     fun getPrayerTimesCalculatorSettings() =
         prayersPreferencesDataSource.getPrayerTimeCalculatorSettings()
 
-    suspend fun setCalculationMethod(calculationMethod: PrayerTimeCalculationMethod) {
+    fun setCalculationMethod(calculationMethod: PrayerTimeCalculationMethod) {
         scope.launch {
             prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
                 getPrayerTimesCalculatorSettings().first().copy(
@@ -32,7 +32,7 @@ class PrayersRepository @Inject constructor(
         }
     }
 
-    suspend fun setJuristicMethod(juristicMethod: PrayerTimeJuristicMethod) {
+    fun setJuristicMethod(juristicMethod: PrayerTimeJuristicMethod) {
         scope.launch {
             prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
                 getPrayerTimesCalculatorSettings().first().copy(
@@ -42,7 +42,7 @@ class PrayersRepository @Inject constructor(
         }
     }
 
-    suspend fun setAdjustHighLatitudes(adjustmentMethod: HighLatitudesAdjustmentMethod) {
+    fun setAdjustHighLatitudes(adjustmentMethod: HighLatitudesAdjustmentMethod) {
         scope.launch {
             prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
                 getPrayerTimesCalculatorSettings().first().copy(
@@ -54,7 +54,7 @@ class PrayersRepository @Inject constructor(
 
     fun getAthanAudioId() = prayersPreferencesDataSource.getAthanAudioId()
 
-    suspend fun setAthanAudioId(audioId: Int) {
+    fun setAthanAudioId(audioId: Int) {
         scope.launch {
             prayersPreferencesDataSource.updateAthanAudioId(audioId)
         }
@@ -62,7 +62,7 @@ class PrayersRepository @Inject constructor(
 
     fun getShouldShowTutorial() = prayersPreferencesDataSource.getShouldShowTutorial()
 
-    suspend fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
+    fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
         scope.launch {
             prayersPreferencesDataSource.updateShouldShowTutorial(shouldShowTutorial)
         }

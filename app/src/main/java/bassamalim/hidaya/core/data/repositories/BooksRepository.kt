@@ -151,7 +151,7 @@ class BooksRepository @Inject constructor(
         }
     }
 
-    suspend fun setChapterFavorite(bookId: Int, chapterNum: Int, newValue: Boolean) {
+    fun setChapterFavorite(bookId: Int, chapterNum: Int, newValue: Boolean) {
         scope.launch {
             booksPreferencesDataSource.updateChapterFavorites(
                 booksPreferencesDataSource.getChapterFavorites().first().mutate { oldMap ->
@@ -191,7 +191,7 @@ class BooksRepository @Inject constructor(
 
     fun getShouldShowTutorial() = booksPreferencesDataSource.getShouldShowTutorial()
 
-    suspend fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
+    fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
         scope.launch {
             booksPreferencesDataSource.updateShouldShowTutorial(shouldShowTutorial)
         }

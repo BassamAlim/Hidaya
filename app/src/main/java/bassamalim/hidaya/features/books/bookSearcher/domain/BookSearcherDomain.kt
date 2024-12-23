@@ -75,8 +75,6 @@ class BookSearcherDomain @Inject constructor(
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
-
     fun getBookSelections() = booksRepository.getSearchSelections()
 
     fun getMaxMatches() = booksRepository.getSearchMaxMatches()

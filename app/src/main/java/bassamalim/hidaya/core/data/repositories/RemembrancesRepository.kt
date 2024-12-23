@@ -52,7 +52,7 @@ class RemembrancesRepository @Inject constructor(
         }
     }
 
-    suspend fun setFavorites(favorites: Map<Int, Boolean>) {
+    fun setFavorites(favorites: Map<Int, Boolean>) {
         scope.launch {
             withContext(dispatcher) {
                 favorites.forEach { (id, value) ->

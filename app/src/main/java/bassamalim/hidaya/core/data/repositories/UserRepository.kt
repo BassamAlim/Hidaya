@@ -26,25 +26,15 @@ class UserRepository @Inject constructor(
 
     fun getLocalRecord() = userPreferencesDataSource.getUserRecord()
 
-    suspend fun setLocalRecord(userRecord: UserRecord) {
+    fun setLocalRecord(userRecord: UserRecord) {
         scope.launch {
             userPreferencesDataSource.updateUserRecord(userRecord)
         }
     }
 
-    fun getQuranRecord() = getLocalRecord().map { it.quranPages }
-
-    suspend fun setQuranRecord(quranPages: Int) {
-        scope.launch {
-            userPreferencesDataSource.updateUserRecord(
-                getLocalRecord().first().copy(quranPages = quranPages)
-            )
-        }
-    }
-
     fun getRecitationsRecord() = getLocalRecord().map { it.recitationsTime }
 
-    suspend fun setRecitationsRecord(recitationsTime: Long) {
+    fun setRecitationsRecord(recitationsTime: Long) {
         scope.launch {
             userPreferencesDataSource.updateUserRecord(
                 getLocalRecord().first().copy(recitationsTime = recitationsTime)
@@ -73,7 +63,7 @@ class UserRepository @Inject constructor(
             }
     }
 
-    suspend fun setRemoteRecord(deviceId: String, record: UserRecord) {
+    fun setRemoteRecord(deviceId: String, record: UserRecord) {
         scope.launch {
             firestore.collection("Leaderboard")
                 .document(deviceId)
@@ -189,6 +179,7 @@ class UserRepository @Inject constructor(
             .await()
             .let { result ->
                 try {
+                    last = result.documents.last()
                     Response.Success(
                         result.documents.associate { document ->
                             document.data!!["user_id"].toString().toInt() to

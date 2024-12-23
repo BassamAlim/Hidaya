@@ -18,8 +18,6 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object BookmarkedPage : Preference("bookmarked_page", -1)
 
-    data object BookmarkedSura : Preference("bookmarked_sura", -1)
-
     data object CountryID : Preference("country_id", -1)
 
     data object CityID : Preference("city_id", -1)

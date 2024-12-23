@@ -170,12 +170,6 @@ class RecitationRecitersMenuDomain @Inject constructor(
         )
     }
 
-    suspend fun getReciterNarrations(reciterId: Int, language: Language) =
-        recitationsRepository.getReciterNarrations(reciterId, language)
-
-    suspend fun getAllNarrations(language: Language) =
-        recitationsRepository.getAllNarrations(language)
-
     suspend fun getNarration(reciterId: Int, narrationId: Int, language: Language) =
         recitationsRepository.getNarration(reciterId, narrationId, language)
 

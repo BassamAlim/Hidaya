@@ -38,8 +38,8 @@ class AlternatingPlayersManager(
     private val callback: PlayerCallback
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
 
-    private val NUM_OF_PLAYERS = 2
-    private val aps = Array(NUM_OF_PLAYERS) { AlternatePlayer(MediaPlayer()) }
+    private val numOfPlayers = 2
+    private val aps = Array(numOfPlayers) { AlternatePlayer(MediaPlayer()) }
     private var playerIdx = 0
     var verseIdx = -1
     private var isPaused = false
@@ -133,7 +133,7 @@ class AlternatingPlayersManager(
                     if (!isOtherPlayerPreparing()) {
                         prepare(
                             playerIdx = currentPlayerIdx,
-                            verseIdx = aps[currentPlayerIdx].verseIdx + NUM_OF_PLAYERS
+                            verseIdx = aps[currentPlayerIdx].verseIdx + numOfPlayers
                         )
                     }
                 }
@@ -303,7 +303,7 @@ class AlternatingPlayersManager(
         shouldStopOnPageEnd: Boolean,
         shouldStopOnSuraEnd: Boolean
     ): Boolean {
-        val targetVerse = currentVerse + NUM_OF_PLAYERS
+        val targetVerse = currentVerse + numOfPlayers
         return targetVerse >= allVerses.size
                 || (shouldStopOnSuraEnd
                 && allVerses[currentVerse].suraNum != allVerses[targetVerse].suraNum)
@@ -320,8 +320,8 @@ class AlternatingPlayersManager(
         return Uri.parse(uri)
     }
 
-    private fun prv(current: Int) = if (current == 0) NUM_OF_PLAYERS - 1 else current - 1
-    private fun nxt(current: Int) = (current + 1) % NUM_OF_PLAYERS
+    private fun prv(current: Int) = if (current == 0) numOfPlayers - 1 else current - 1
+    private fun nxt(current: Int) = (current + 1) % numOfPlayers
     private fun idx(mp: MediaPlayer) = aps.indexOf(aps.find { ap -> ap.mp == mp })
     private fun prvIdx(mp: MediaPlayer) = prv(idx(mp))
     private fun nxtIdx(mp: MediaPlayer) = nxt(idx(mp))

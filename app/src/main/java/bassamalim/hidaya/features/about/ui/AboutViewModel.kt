@@ -1,9 +1,8 @@
 package bassamalim.hidaya.features.about.ui
 
 import android.app.Activity
-import android.app.Application
 import androidx.compose.material3.SnackbarHostState
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.features.about.domain.AboutDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AboutViewModel @Inject constructor(
-    app: Application,
     private val domain: AboutDomain
-): AndroidViewModel(app) {
+): ViewModel() {
 
     private val _uiState = MutableStateFlow(AboutUiState(
         sources = domain.getSources()
