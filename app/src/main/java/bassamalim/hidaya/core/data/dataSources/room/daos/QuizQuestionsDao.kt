@@ -13,7 +13,13 @@ interface QuizQuestionsDao {
     @Query("SELECT id FROM quiz_questions")
     fun getAllIds(): List<Int>
 
+    @Query("SELECT id FROM quiz_questions WHERE type_ar = :category OR type_en = :category")
+    fun getCategoryIds(category: String): List<Int>
+
     @Query("SELECT * FROM quiz_questions WHERE id = :id")
     fun getQuestion(id: Int): QuizQuestion
+
+    @Query("SELECT DISTINCT type_ar FROM quiz_questions WHERE type_ar IS NOT NULL")
+    fun getTypes(): List<String>
 
 }

@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.quiz.test.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
@@ -20,12 +21,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuizTestViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val domain: QuizTestDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
+    private val category = savedStateHandle.get<String>("category") ?: "all"
+
     private lateinit var questions: List<QuizFullQuestion>
     private val chosenAs = IntArray(10) { -1 }
+    private lateinit var language: Language
     private lateinit var numeralsLanguage: Language
 
     private val _uiState = MutableStateFlow(QuizTestUiState())
@@ -39,8 +44,9 @@ class QuizTestViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
+            language = domain.getLanguage()
             numeralsLanguage = domain.getNumeralsLanguage()
-            questions = domain.getQuizQuestions()
+            questions = domain.getQuizQuestions(category = category, language = language)
 
             _uiState.update { it.copy(
                 isLoading = false
@@ -100,7 +106,7 @@ class QuizTestViewModel @Inject constructor(
                 chosenAnswers = chosenAs.toTypedArray().toIntArray().contentToString()
             )
         ) {
-            popUpTo(Screen.QuizTest.route) { inclusive = true }
+            popUpTo(Screen.QuizTest(category).route) { inclusive = true }
         }
     }
 

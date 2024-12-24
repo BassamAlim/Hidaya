@@ -57,7 +57,9 @@ sealed class Screen(val route: String) {
         val chosenAnswers: String
     ): Screen("quiz_result/$score/$questions/$chosenAnswers")
 
-    data object QuizTest: Screen("quiz_test")
+    data class QuizTest(
+        val category: String = "all"
+    ): Screen("quiz_test/$category")
 
     data class QuranReader(
         val targetType: String,

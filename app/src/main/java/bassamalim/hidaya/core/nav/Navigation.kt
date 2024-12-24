@@ -319,7 +319,10 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.QuizTest.route,
+            route = Screen.QuizTest("{category}").route,
+            arguments = listOf(
+                navArgument("category") { type = NavType.StringType }
+            ),
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,

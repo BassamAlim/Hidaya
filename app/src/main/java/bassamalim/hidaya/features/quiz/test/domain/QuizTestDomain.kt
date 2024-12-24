@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.quiz.test.domain
 
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuizRepository
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuizFullQuestion
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -14,27 +15,35 @@ class QuizTestDomain @Inject constructor(
     fun calculateScore(questions: List<QuizFullQuestion>, chosenAs: IntArray): Int {
         var score = 0
         questions.forEachIndexed { i, q ->
-            if (q.answers[chosenAs[i]].isCorrect)
-                score++
+            if (q.answers[chosenAs[i]].isCorrect) score++
         }
         return score
     }
 
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    suspend fun getQuizQuestions(): List<QuizFullQuestion> {
-        val ids = getRandomIds()
-        return getFullQuestions(ids)
+    suspend fun getQuizQuestions(category: String, language: Language): List<QuizFullQuestion> {
+        val ids = getRandomIds(category)
+        return getFullQuestions(ids = ids, language = language)
     }
 
-    private suspend fun getRandomIds(): List<Int> {
-        val allIds = quizRepository.getQuestionIds().toMutableList()
-        allIds.shuffle()
-        return allIds.subList(0, 10)
+    private suspend fun getRandomIds(category: String): List<Int> {
+        val ids = if (category == "all") quizRepository.getAllQuestionIds().toMutableList()
+        else quizRepository.getCategoryQuestionIds(category).toMutableList()
+        ids.shuffle()
+        return ids.subList(0, 10)
     }
 
-    private suspend fun getFullQuestions(ids: List<Int>): List<QuizFullQuestion> {
-        val questions = quizRepository.getFullQuestions(ids.toIntArray())
+    private suspend fun getFullQuestions(
+        ids: List<Int>,
+        language: Language
+    ): List<QuizFullQuestion> {
+        val questions = quizRepository.getFullQuestions(
+            questionIds = ids.toIntArray(),
+            language = language
+        )
         return questions.map { question ->
             question.copy(answers = question.answers.shuffled())
         }
