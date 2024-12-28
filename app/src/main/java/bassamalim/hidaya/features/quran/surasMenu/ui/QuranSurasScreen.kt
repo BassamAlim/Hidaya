@@ -245,92 +245,130 @@ private fun SearchBarContent(
     onPageClick: (String) -> Unit,
     onVerseClick: (Int) -> Unit
 ) {
+    if (suraAndPageMatches.isEmpty() && verseMatches.isEmpty()) {
+        NoMatchesSection(title = stringResource(R.string.suras_and_pages))
+
+        NoMatchesSection(title = stringResource(R.string.verses))
+    }
+    else {
+        if (suraAndPageMatches.isNotEmpty()) {
+            SuraAndPagesMatchesSection(
+                matches = suraAndPageMatches,
+                onSuraClick = onSuraClick,
+                onPageClick = onPageClick
+            )
+        }
+
+        if (verseMatches.isNotEmpty()) {
+            VerseMatchesSection(
+                verseMatches = verseMatches,
+                onVerseClick = onVerseClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun SearchSectionTitle(title: String) {
     MyText(
-        text = stringResource(R.string.suras_and_pages),
+        text = title,
         modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 17.dp),
         fontSize = 16.sp,
         textAlign = TextAlign.Start
     )
+}
 
-    if (suraAndPageMatches.isNotEmpty()) {
-        MyLazyColumn(
-            state = rememberLazyListState(),
-            lazyList = {
-                items(suraAndPageMatches) { match ->
-                    when (match) {
-                        is SuraMatch -> {
-                            ListItem(
-                                headlineContent = {
-                                    MyText(
-                                        text = "${stringResource(R.string.sura)} ${match.decoratedName}",
-                                        modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 16.dp),
-                                        textAlign = TextAlign.Start
-                                    )
-                                },
-                                modifier = Modifier.clickable { onSuraClick(match.id) }
-                            )
-                        }
-                        is PageMatch -> {
-                            ListItem(
-                                headlineContent = {
-                                    MyText(
-                                        text = "${stringResource(R.string.page)} ${match.num}",
-                                        modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 16.dp),
-                                        textAlign = TextAlign.Start
-                                    )
-                                },
-                                modifier = Modifier.clickable { onPageClick(match.num) },
-                                supportingContent = {
-                                    MyText(
-                                        text = match.suraName,
-                                        modifier = Modifier.padding(top = 6.dp, bottom = 6.dp, start = 16.dp),
-                                        fontSize = 16.sp,
-                                        textAlign = TextAlign.Start
-                                    )
-                                }
-                            )
-                        }
-                    }
-
-                    HorizontalDivider(thickness = 0.3.dp)
-                }
-            }
-        )
-    }
-    else {
-        MyText(
-            text = stringResource(R.string.no_matches),
-            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 16.dp),
-            textAlign = TextAlign.Start
-        )
-    }
+@Composable
+private fun NoMatchesSection(title: String) {
+    SearchSectionTitle(title = title)
 
     MyText(
-        text = stringResource(R.string.verses),
+        text = stringResource(R.string.no_matches),
         modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 16.dp),
-        fontSize = 16.sp,
         textAlign = TextAlign.Start
     )
+}
 
-    if (verseMatches.isNotEmpty()) {
-        MyLazyColumn(
-            state = rememberLazyListState(),
-            lazyList = {
-                items(verseMatches) { verse ->
-                    VerseMatchListItem(item = verse, onVerseClick = onVerseClick)
+@Composable
+private fun SuraAndPagesMatchesSection(
+    matches: List<SearchMatch>,
+    onSuraClick: (Int) -> Unit,
+    onPageClick: (String) -> Unit
+) {
+    SearchSectionTitle(title = stringResource(R.string.suras_and_pages))
 
-                    HorizontalDivider(thickness = 0.3.dp)
+    MyLazyColumn(
+        state = rememberLazyListState(),
+        lazyList = {
+            items(matches) { match ->
+                when (match) {
+                    is SuraMatch -> {
+                        ListItem(
+                            headlineContent = {
+                                MyText(
+                                    text = "${stringResource(R.string.sura)} " +
+                                            match.decoratedName,
+                                    modifier = Modifier.padding(
+                                        top = 12.dp,
+                                        bottom = 12.dp,
+                                        start = 16.dp
+                                    ),
+                                    textAlign = TextAlign.Start
+                                )
+                            },
+                            modifier = Modifier.clickable { onSuraClick(match.id) }
+                        )
+                    }
+                    is PageMatch -> {
+                        ListItem(
+                            headlineContent = {
+                                MyText(
+                                    text = "${stringResource(R.string.page)} ${match.num}",
+                                    modifier = Modifier.padding(
+                                        top = 12.dp,
+                                        bottom = 12.dp,
+                                        start = 16.dp
+                                    ),
+                                    textAlign = TextAlign.Start
+                                )
+                            },
+                            modifier = Modifier.clickable { onPageClick(match.num) },
+                            supportingContent = {
+                                MyText(
+                                    text = match.suraName,
+                                    modifier = Modifier.padding(
+                                        top = 6.dp,
+                                        bottom = 6.dp,
+                                        start = 16.dp
+                                    ),
+                                    fontSize = 16.sp,
+                                    textAlign = TextAlign.Start
+                                )
+                            }
+                        )
+                    }
                 }
+
+                HorizontalDivider(thickness = 0.3.dp)
             }
-        )
-    }
-    else {
-        MyText(
-            text = stringResource(R.string.no_matches),
-            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp),
-            textAlign = TextAlign.Start
-        )
-    }
+        }
+    )
+}
+
+@Composable
+private fun VerseMatchesSection(verseMatches: List<VerseMatch>, onVerseClick: (Int) -> Unit) {
+    SearchSectionTitle(title = stringResource(R.string.verses))
+
+    MyLazyColumn(
+        state = rememberLazyListState(),
+        lazyList = {
+            items(verseMatches) { verse ->
+                VerseMatchListItem(item = verse, onVerseClick = onVerseClick)
+
+                HorizontalDivider(thickness = 0.3.dp)
+            }
+        }
+    )
 }
 
 @Composable
