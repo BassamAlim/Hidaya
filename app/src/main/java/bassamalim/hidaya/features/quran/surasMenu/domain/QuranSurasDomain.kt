@@ -1,15 +1,28 @@
 package bassamalim.hidaya.features.quran.surasMenu.domain
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.helpers.Searcher
+import bassamalim.hidaya.core.models.Sura
+import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.quran.surasMenu.ui.SearchMatch
+import bassamalim.hidaya.features.quran.surasMenu.ui.SuraMatch
+import bassamalim.hidaya.features.quran.surasMenu.ui.VerseMatch
 import kotlinx.coroutines.flow.first
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 class QuranSurasDomain @Inject constructor(
     private val quranRepository: QuranRepository,
     private val appSettingsRepository: AppSettingsRepository
 ) {
+
+    val suraSearcher = Searcher<Sura>()
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
@@ -31,6 +44,62 @@ class QuranSurasDomain @Inject constructor(
 
     fun setDoNotShowTutorialAgain() {
         quranRepository.setShouldShowMenuTutorial(false)
+    }
+
+    fun searchSuras(query: String, items: List<Sura>, limit: Int): List<SearchMatch> =
+        suraSearcher.containsSearch(
+            items = items,
+            query = query,
+            keySelector = { it.plainName },
+            limit = limit
+        ).map { result ->
+            SuraMatch(
+                id = result.id,
+                decoratedName = result.decoratedName,
+                plainName = result.plainName,
+                isFavorite = result.isFavorite
+            )
+        }
+
+    fun searchVerses(
+        query: String,
+        items: List<Verse>,
+        suraNames: List<String>,
+        numeralsLanguage: Language,
+        highlightColor: Color
+    ): List<VerseMatch> {
+        val matches = mutableListOf<VerseMatch>()
+        for (verse in items) {
+            val matcher = Pattern.compile(query).matcher(verse.plainText)
+            if (matcher.find()) {
+                val annotatedString = buildAnnotatedString {
+                    append(verse.plainText)
+
+                    do {
+                        addStyle(
+                            style = SpanStyle(highlightColor),
+                            start = matcher.start(),
+                            end = matcher.end()
+                        )
+                    } while (matcher.find())
+                }
+
+                matches.add(
+                    VerseMatch(
+                        id = verse.id,
+                        verseNum = translateNums(
+                            string = verse.num.toString(),
+                            numeralsLanguage = numeralsLanguage
+                        ),
+                        suraName = suraNames[verse.suraNum-1],
+                        text = annotatedString,
+                    )
+                )
+
+                if (matches.size == 100) break
+            }
+        }
+        return matches
     }
 
 }

@@ -2,8 +2,6 @@ package bassamalim.hidaya.features.quran.surasMenu.ui
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,7 +26,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -157,7 +154,17 @@ class QuranSurasViewModel @Inject constructor(
     }
 
     fun searchSurasAndPages(query: String): List<SearchMatch> {
-        return if (query.isNotEmpty() && query.isDigitsOnly()) {
+        return if (query.isEmpty()) {
+            allSuras.take(3).map { sura ->
+                SuraMatch(
+                    id = sura.id,
+                    decoratedName = suraNames[sura.id],
+                    plainName = sura.plainName,
+                    isFavorite = sura.isFavorite
+                )
+            }
+        }
+        else if (query.isDigitsOnly()) {
             val num = query.toInt()
             if (num in 1..604) {
                 val pageSuraId = allVerses.first { verse -> verse.pageNum == num }.suraNum - 1
@@ -174,54 +181,24 @@ class QuranSurasViewModel @Inject constructor(
             else emptyList()
         }
         else {
-            allSuras.filter { sura ->
-                query.isEmpty() || sura.plainName.contains(query, true)
-            }.take(3).map { sura ->
-                SuraMatch(
-                    id = sura.id,
-                    decoratedName = suraNames[sura.id],
-                    plainName = sura.plainName,
-                    isFavorite = sura.isFavorite
-                )
-            }
+            domain.searchSuras(
+                query = query,
+                items = allSuras,
+                limit = 3
+            )
         }
     }
 
     fun searchVerses(query: String, highlightColor: Color): List<VerseMatch> {
         this.highlightColor = highlightColor
 
-        val matches = mutableListOf<VerseMatch>()
-        for (verse in allVerses) {
-            val matcher = Pattern.compile(query).matcher(verse.plainText)
-            if (matcher.find()) {
-                val annotatedString = buildAnnotatedString {
-                    append(verse.plainText)
-
-                    do {
-                        addStyle(
-                            style = SpanStyle(highlightColor),
-                            start = matcher.start(),
-                            end = matcher.end()
-                        )
-                    } while (matcher.find())
-                }
-
-                matches.add(
-                    VerseMatch(
-                        id = verse.id,
-                        verseNum = translateNums(
-                            string = verse.num.toString(),
-                            numeralsLanguage = numeralsLanguage
-                        ),
-                        suraName = suraNames[verse.suraNum-1],
-                        text = annotatedString,
-                    )
-                )
-
-                if (matches.size == 100) break
-            }
-        }
-        return matches
+        return domain.searchVerses(
+            query = query,
+            items = allVerses,
+            suraNames = suraNames,
+            numeralsLanguage = numeralsLanguage,
+            highlightColor = highlightColor
+        )
     }
 
     fun onVerseClick(verseId: Int) {
