@@ -606,6 +606,9 @@ private fun PageViewScreen(
             .pointerInput(Unit) {
                 onVersePointerInput(this, layoutResult, annotatedString)
             },
+        onTextLayout = { textLayoutResult ->
+            layoutResult = textLayoutResult
+        },
         style = TextStyle(
             fontFamily = hafs_smart,
             fontSize = textSize.sp,
@@ -697,6 +700,9 @@ private fun ListViewScreen(
             .pointerInput(Unit) {
                 onVersePointerInput(this, layoutResult, annotatedString)
             },
+        onTextLayout = { textLayoutResult ->
+            layoutResult = textLayoutResult
+        },
         style = TextStyle(
             fontFamily = hafs_smart,
             fontSize = textSize.sp,
