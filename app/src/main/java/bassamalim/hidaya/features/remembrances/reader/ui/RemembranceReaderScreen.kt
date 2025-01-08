@@ -1,25 +1,33 @@
 package bassamalim.hidaya.features.remembrances.reader.ui
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,7 +63,8 @@ fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
                     RemembrancePassageCard(
                         passage = item,
                         textSize = state.textSize,
-                        onInfoClick = viewModel::onInfoClick
+                        onInfoClick = viewModel::onInfoClick,
+                        onRepetitionClick = viewModel::onRepetitionClick
                     )
                 }
             }
@@ -75,49 +84,92 @@ fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
 private fun RemembrancePassageCard(
     passage: RemembrancePassage,
     textSize: Float,
-    onInfoClick: (String) -> Unit
+    onInfoClick: (String) -> Unit,
+    onRepetitionClick: (Int) -> Unit
 ) {
-    val textSizeMargin = 15
+    val textSizeMargin = 10
+    var expandedState by remember { mutableStateOf(false) }
+    val rotationState by animateFloatAsState(if (expandedState) 180f else 0f, label = "")
 
-    MySurface {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .height(IntrinsicSize.Max),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+    MySurface(
+        Modifier.animateContentSize(
+            animationSpec = TweenSpec(
+                durationMillis = 300,
+                easing = LinearOutSlowInEasing
+            )
+        )
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // title
-                if (passage.isTitleAvailable) {
-                    MyText(
-                        text = passage.title!!,
-                        modifier = Modifier.padding(10.dp),
-                        fontSize = (textSize + textSizeMargin).sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                // text
+            // title
+            if (passage.isTitleAvailable) {
                 MyText(
-                    text = passage.text,
+                    text = passage.title!!,
                     modifier = Modifier.padding(10.dp),
                     fontSize = (textSize + textSizeMargin).sp,
-                    textColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    fontWeight = FontWeight.Bold
                 )
+            }
 
-                // translation
-                if (passage.isTranslationAvailable) {
+            // text
+            MyText(
+                text = passage.text,
+                modifier = Modifier.padding(10.dp),
+                fontSize = (textSize + textSizeMargin).sp,
+                textColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            // translation
+            if (passage.isTranslationAvailable) {
+                MyText(
+                    text = passage.translation!!,
+                    modifier = Modifier.padding(10.dp),
+                    fontSize = (textSize + textSizeMargin).sp
+                )
+            }
+
+            HorizontalDivider()
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // repetition
+                FilledTonalButton(
+                    onClick = { onRepetitionClick(passage.id) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(6.dp)
+                ) {
                     MyText(
-                        text = passage.translation!!,
-                        modifier = Modifier.padding(10.dp),
-                        fontSize = (textSize + textSizeMargin).sp
+                        text = passage.repetitionText,
+                        fontSize = (textSize + textSizeMargin).sp,
+                        textColor =
+                            if (passage.repetitionTotal != null
+                                && passage.repetitionTotal != passage.repetitionCurrent)
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            else MaterialTheme.colorScheme.onSurface
                     )
                 }
 
+                FilledTonalIconButton(
+                    onClick = { expandedState = !expandedState },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(IntrinsicSize.Min)
+                        .padding(6.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = stringResource(R.string.title_more),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.rotate(rotationState)
+                    )
+                }
+            }
+
+            if (expandedState) {
                 // virtue
                 if (passage.isVirtueAvailable) {
                     HorizontalDivider()
@@ -143,25 +195,6 @@ private fun RemembrancePassageCard(
                         onClick = { onInfoClick(passage.reference!!) }
                     )
                 }
-            }
-
-            // repetition
-            if (passage.isRepetitionAvailable) {
-                HorizontalDivider(
-                    Modifier
-                        .fillMaxHeight()
-                        .width(1.dp)
-                )
-
-                MyText(
-                    text = passage.repetition,
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .widthIn(10.dp, 100.dp)
-                        .align(Alignment.CenterVertically),
-                    fontSize = (textSize + textSizeMargin).sp,
-                    textColor = MaterialTheme.colorScheme.primary
-                )
             }
         }
     }

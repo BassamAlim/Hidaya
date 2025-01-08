@@ -123,7 +123,7 @@ fun ExpandableCard(
     val rotationState by animateFloatAsState(if (expandedState) 180f else 0f, label = "")
 
     MyClickableSurface(
-        modifier.animateContentSize(
+        modifier = modifier.animateContentSize(
             animationSpec = TweenSpec(
                 durationMillis = 300,
                 easing = LinearOutSlowInEasing

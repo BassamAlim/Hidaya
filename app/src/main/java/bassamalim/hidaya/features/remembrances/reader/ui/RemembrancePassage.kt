@@ -7,10 +7,11 @@ data class RemembrancePassage(
     val translation: String? = null,
     val virtue: String?,
     val reference: String?,
-    val repetition: String,
+    val repetitionText: String,
+    val repetitionTotal: Int? = null,
+    val repetitionCurrent: Int? = null,
     val isTitleAvailable: Boolean,
     val isTranslationAvailable: Boolean = false,
     val isVirtueAvailable: Boolean,
     val isReferenceAvailable: Boolean,
-    val isRepetitionAvailable: Boolean
 )
