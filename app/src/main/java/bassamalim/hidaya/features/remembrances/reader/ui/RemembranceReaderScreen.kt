@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
@@ -34,8 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.InfoDialog
-import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
@@ -63,19 +59,10 @@ fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
                     RemembrancePassageCard(
                         passage = item,
                         textSize = state.textSize,
-                        onInfoClick = viewModel::onInfoClick,
                         onRepetitionClick = viewModel::onRepetitionClick
                     )
                 }
             }
-        )
-
-        // source dialog
-        InfoDialog(
-            title = stringResource(R.string.reference),
-            text = state.infoDialogText,
-            shown = state.isInfoDialogShown,
-            onDismiss = viewModel::onInfoDialogDismiss
         )
     }
 }
@@ -84,7 +71,6 @@ fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
 private fun RemembrancePassageCard(
     passage: RemembrancePassage,
     textSize: Float,
-    onInfoClick: (String) -> Unit,
     onRepetitionClick: (Int) -> Unit
 ) {
     val textSizeMargin = 10
@@ -175,10 +161,16 @@ private fun RemembrancePassageCard(
                     HorizontalDivider()
 
                     MyText(
-                        text = passage.virtue!!,
-                        modifier = Modifier.padding(10.dp),
+                        text = stringResource(R.string.virtue),
+                        modifier = Modifier.padding(top = 10.dp),
                         fontSize = (textSize + textSizeMargin - 8).sp,
-                        textColor = MaterialTheme.colorScheme.primary
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    MyText(
+                        text = passage.virtue!!,
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        fontSize = (textSize + textSizeMargin - 8).sp
                     )
                 }
 
@@ -186,13 +178,17 @@ private fun RemembrancePassageCard(
                 if (passage.isReferenceAvailable) {
                     HorizontalDivider()
 
-                    MyIconButton(
-                        imageVector = Icons.Default.Info,
-                        description = stringResource(R.string.source_btn_description),
-                        modifier = Modifier.padding(2.dp),
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        iconModifier = Modifier.size(26.dp),
-                        onClick = { onInfoClick(passage.reference!!) }
+                    MyText(
+                        text = stringResource(R.string.reference),
+                        modifier = Modifier.padding(top = 10.dp),
+                        fontSize = (textSize + textSizeMargin - 8).sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    MyText(
+                        text = passage.reference!!,
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        fontSize = (textSize + textSizeMargin - 8).sp
                     )
                 }
             }

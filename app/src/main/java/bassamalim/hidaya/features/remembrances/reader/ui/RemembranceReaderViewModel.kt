@@ -118,19 +118,6 @@ class RemembranceReaderViewModel @Inject constructor(
         }
     }
 
-    fun onInfoClick(text: String) {
-        _uiState.update { it.copy(
-            isInfoDialogShown = true,
-            infoDialogText = text
-        )}
-    }
-
-    fun onInfoDialogDismiss() {
-        _uiState.update { it.copy(
-            isInfoDialogShown = false
-        )}
-    }
-
     fun onRepetitionClick(passageId: Int) {
         val item = _uiState.value.items.first { it.id == passageId }
         if (item.repetitionTotal != null && item.repetitionCurrent != item.repetitionTotal) {
