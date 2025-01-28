@@ -163,11 +163,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         narration: Recitation.Narration,
         suraString: String
     ) {
-        println("in onDownloadNarrationClick reciterId: $reciterId, narration: $narration")
-
         viewModelScope.launch {
-            println(allRecitations.first())
-
             if (allRecitations.first()[reciterId]!!.narrations[narration.id]!!.downloadState
                 == DownloadState.NOT_DOWNLOADED) {
                 domain.downloadNarration(
