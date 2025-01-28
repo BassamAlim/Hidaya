@@ -10,6 +10,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -286,7 +287,7 @@ class QuranReaderViewModel @Inject constructor(
                 var isLongPressDetected = false
 
                 while (true) {
-                    val event = awaitPointerEvent()
+                    val event = awaitPointerEvent(pass = PointerEventPass.Initial)
                     val offset = event.changes[0].position
 
                     when (event.type) {
