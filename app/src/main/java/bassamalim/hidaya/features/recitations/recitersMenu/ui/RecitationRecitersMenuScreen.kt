@@ -181,10 +181,8 @@ private fun ReciterCard(
 
         MyHorizontalDivider(padding = PaddingValues(top = 5.dp))
 
-        Column(
-            Modifier.fillMaxWidth()
-        ) {
-            reciter.narrations.forEachIndexed { idx, narration ->
+        Column(Modifier.fillMaxWidth()) {
+            reciter.narrations.values.forEachIndexed { idx, narration ->
                 NarrationsCard(
                     idx = idx,
                     reciterId = reciter.reciterId,

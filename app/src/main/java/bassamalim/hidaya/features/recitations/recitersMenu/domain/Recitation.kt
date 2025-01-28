@@ -7,7 +7,7 @@ data class Recitation(
     val reciterId: Int,
     val reciterName: String,
     val isFavoriteReciter: Boolean,
-    val narrations: List<Narration>
+    val narrations: Map<Int, Narration>
 ) {
     data class Narration(
         val id: Int,

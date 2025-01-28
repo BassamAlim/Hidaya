@@ -35,7 +35,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 
     private lateinit var language: Language
     private var lastPlayedMediaId: String? = null
-    private lateinit var allRecitations: Flow<List<Recitation>>
+    private lateinit var allRecitations: Flow<Map<Int, Recitation>>
     private lateinit var suraNames: List<String>
     private lateinit var narrationSelections: Flow<Map<String, Boolean>>
     var searchText by mutableStateOf("")
@@ -102,26 +102,26 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         return combine(allRecitations, narrationSelections) { allRecitations, narrationSelections ->
             val items = when (menuType) {
                 MenuType.FAVORITES -> {
-                    allRecitations.filter { recitation -> recitation.isFavoriteReciter }
+                    allRecitations.filter { recitation -> recitation.value.isFavoriteReciter }
                 }
                 MenuType.DOWNLOADED -> {
                     val hasDownloaded = allRecitations.filter { recitation ->
-                        recitation.narrations.any { narration ->
-                            narration.downloadState == DownloadState.DOWNLOADED
+                        recitation.value.narrations.any { narration ->
+                            narration.value.downloadState == DownloadState.DOWNLOADED
                         }
                     }
                     hasDownloaded.map { recitation ->
-                        recitation.copy(narrations = recitation.narrations.filter { narration ->
-                            narration.downloadState == DownloadState.DOWNLOADED
+                        recitation.key to recitation.value.copy(narrations = recitation.value.narrations.filter { narration ->
+                            narration.value.downloadState == DownloadState.DOWNLOADED
                         })
-                    }
+                    }.toMap()
                 }
                 else -> allRecitations
             }
 
-            items.filter { recitation ->
+            items.values.filter { recitation ->
                 val isSelected = recitation.narrations.any { narration ->
-                    narrationSelections[narration.name]!!
+                    narrationSelections[narration.value.name]!!
                 }
                 val isSearched = _uiState.value.searchText.isEmpty() ||
                         recitation.reciterName.contains(_uiState.value.searchText, true)
@@ -130,7 +130,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
             }.map { recitation ->
                 recitation.copy(
                     narrations = recitation.narrations.filter { narration ->
-                        narrationSelections[narration.name]!!
+                        narrationSelections[narration.value.name]!!
                     }
                 )
             }.filter { recitation -> recitation.narrations.isNotEmpty() }
@@ -163,8 +163,12 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         narration: Recitation.Narration,
         suraString: String
     ) {
+        println("in onDownloadNarrationClick reciterId: $reciterId, narration: $narration")
+
         viewModelScope.launch {
-            if (allRecitations.first()[reciterId].narrations[narration.id].downloadState
+            println(allRecitations.first())
+
+            if (allRecitations.first()[reciterId]!!.narrations[narration.id]!!.downloadState
                 == DownloadState.NOT_DOWNLOADED) {
                 domain.downloadNarration(
                     reciterId = reciterId,

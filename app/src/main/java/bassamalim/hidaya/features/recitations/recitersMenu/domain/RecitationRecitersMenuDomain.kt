@@ -42,7 +42,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
         }
     )
 
-    suspend fun observeRecitersWithNarrations(language: Language): Flow<List<Recitation>> {
+    suspend fun observeRecitersWithNarrations(language: Language): Flow<Map<Int, Recitation>> {
         val allReciters = recitationsRepository.observeAllSuraReciters(language)
         val allNarrations = recitationsRepository.getAllNarrations(language)
         val downloadStates = recitationsRepository.getNarrationDownloadStates(
@@ -57,23 +57,23 @@ class RecitationRecitersMenuDomain @Inject constructor(
 
         return allReciters.map {
             it.map { reciter ->
-                Recitation(
+                reciter.id to Recitation(
                     reciterId = reciter.id,
                     reciterName = reciter.name,
                     isFavoriteReciter = reciter.isFavorite,
                     narrations = allNarrations.filter { narration ->
                         narration.reciterId == reciter.id
                     }.map { narration ->
-                        Recitation.Narration(
+                        narration.id to Recitation.Narration(
                             id = narration.id,
                             name = narration.name,
                             server = narration.server,
                             availableSuras = narration.availableSuras,
                             downloadState = downloadStates[reciter.id]?.get(narration.id)!!
                         )
-                    }
+                    }.toMap()
                 )
-            }
+            }.toMap()
         }
     }
 
@@ -143,7 +143,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    suspend fun setFavorite(reciterId: Int, value: Boolean) {
+    fun setFavorite(reciterId: Int, value: Boolean) {
         recitationsRepository.setReciterFavorite(
             reciterId = reciterId,
             isFavorite = value
