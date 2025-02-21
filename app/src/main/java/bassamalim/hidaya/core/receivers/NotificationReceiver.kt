@@ -204,7 +204,9 @@ class NotificationReceiver : BroadcastReceiver() {
                     if (reminder == Reminder.PrayerExtra.Dhuhr &&
                         Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                         ctx.resources.getString(R.string.jumuah)
-                    else ctx.resources.getStringArray(R.array.prayer_names)[reminder.id-1],
+                    else
+                        ctx.resources.getStringArray(R.array.prayer_names)
+                            [reminder.toPrayer().toReminder().id-1],
                 abs(offset) // to remove - sign
             )
         }

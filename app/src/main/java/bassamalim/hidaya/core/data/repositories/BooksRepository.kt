@@ -219,7 +219,7 @@ class BooksRepository @Inject constructor(
             try {
                 val num = n.toInt()
                 if (num == id) return true
-            } catch (ignored: NumberFormatException) {}
+            } catch (_: NumberFormatException) {}
         }
         return false
     }

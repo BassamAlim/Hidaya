@@ -16,7 +16,7 @@ class BookChaptersDomain @Inject constructor(
     suspend fun getBook(bookId: Int, language: Language): Flow<Book> =
         booksRepository.getFullBook(bookId, language)
 
-    suspend fun setFavoriteStatus(bookId: Int, chapterNum: Int, newValue: Boolean) {
+    fun setFavoriteStatus(bookId: Int, chapterNum: Int, newValue: Boolean) {
         booksRepository.setChapterFavorite(bookId, chapterNum, newValue)
     }
 
