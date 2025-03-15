@@ -7,6 +7,7 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.dataSources.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppStatePreferencesDataSource
@@ -44,7 +45,6 @@ import bassamalim.hidaya.core.data.dataSources.preferences.serializers.Recitatio
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.RemembrancesPreferencesSerializer
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.data.dataSources.room.AppDatabase
-import bassamalim.hidaya.core.other.Global
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.Module
@@ -210,7 +210,7 @@ object DataSourceModule {
         Room.databaseBuilder(
             context = context.applicationContext,
             klass = AppDatabase::class.java,
-            name = Global.DB_NAME
+            name = Globals.DB_NAME
         ).createFromAsset("databases/HidayaDB.db").build()
 
     @Provides

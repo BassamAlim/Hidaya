@@ -9,7 +9,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.features.radio.domain.RadioDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,14 +40,14 @@ class RadioClientViewModel @Inject constructor(
             }
 
             override fun onConnectionSuspended() {
-                Log.e(Global.TAG, "Connection suspended in RadioClient")
+                Log.e(Globals.TAG, "Connection suspended in RadioClient")
                 // The Service has crashed.
                 // Disable transport controls until it automatically reconnects
                 updatePbState(PlaybackStateCompat.STATE_NONE)
             }
 
             override fun onConnectionFailed() {
-                Log.e(Global.TAG, "Connection failed in RadioClient")
+                Log.e(Globals.TAG, "Connection failed in RadioClient")
                 // The Service has refused our connection
                 updatePbState(PlaybackStateCompat.STATE_NONE)
             }

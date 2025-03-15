@@ -28,7 +28,7 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.ThemeColor
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +59,7 @@ class AthanService : Service() {
         }
 
         val reminder = Reminder.getById(intent!!.getIntExtra("id", -1))
-        Log.i(Global.TAG, "In athan service for $reminder")
+        Log.i(Globals.TAG, "In athan service for $reminder")
         notificationId = reminder.id
 
         GlobalScope.launch {
@@ -167,7 +167,7 @@ class AthanService : Service() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun play(reminder: Reminder) {
-        Log.i(Global.TAG, "Playing Athan")
+        Log.i(Globals.TAG, "Playing Athan")
 
         GlobalScope.launch {
             val athanAudio = getAthanAudio()

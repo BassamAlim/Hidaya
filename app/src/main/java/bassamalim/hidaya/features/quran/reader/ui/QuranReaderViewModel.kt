@@ -27,7 +27,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.domain.QuranReaderDomain
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
@@ -481,7 +481,7 @@ class QuranReaderViewModel @Inject constructor(
             )
 
             counter++
-        } while (counter != Global.NUM_OF_QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
+        } while (counter != Globals.NUM_OF_QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
 
         if (tempVerses.isNotEmpty()) {
             sections.add(
@@ -553,7 +553,7 @@ class QuranReaderViewModel @Inject constructor(
             )
 
             counter++
-        } while (counter != Global.NUM_OF_QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
+        } while (counter != Globals.NUM_OF_QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
 
         return sections
     }

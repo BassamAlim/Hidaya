@@ -19,7 +19,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -110,7 +110,7 @@ fun YoutubeScreen(
                         error: PlayerConstants.PlayerError
                     ) {
                         super.onError(youTubePlayer, error)
-                        Log.e(Global.TAG, java.lang.String.valueOf(error))
+                        Log.e(Globals.TAG, java.lang.String.valueOf(error))
                         coroutineScope.launch {
                             snackbarHostState.showSnackbar(playbackFailedMessage)
                         }

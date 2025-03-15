@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,7 +58,7 @@ class MoreViewModel @Inject constructor(
     fun onContactClick(context: Context) {
         val contactIntent = Intent(
             Intent.ACTION_SENDTO,
-            Uri.fromParts("mailto", Global.CONTACT_EMAIL, null)
+            Uri.fromParts("mailto", Globals.CONTACT_EMAIL, null)
         ).apply {
             putExtra(Intent.EXTRA_SUBJECT, "Hidaya")
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -70,7 +70,7 @@ class MoreViewModel @Inject constructor(
         val sharingIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, "App Share")
-            putExtra(Intent.EXTRA_TEXT, Global.PLAY_STORE_URL)
+            putExtra(Intent.EXTRA_TEXT, Globals.PLAY_STORE_URL)
         }
         context.startActivity(Intent.createChooser(sharingIntent, "Share via"))
     }

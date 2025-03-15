@@ -36,7 +36,7 @@ import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -88,22 +88,22 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
                     AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                        Log.i(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService")
+                        Log.i(Globals.TAG, "In ACTION_BECOMING_NOISY of RadioService")
                         callback.onPause()
                     }
                     ACTION_PLAY_PAUSE -> {
                         if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-                            Log.i(Global.TAG, "In ACTION_PAUSE of RadioService")
+                            Log.i(Globals.TAG, "In ACTION_PAUSE of RadioService")
                             callback.onPause()
                         }
                         else if (controller.playbackState.state
                             == PlaybackStateCompat.STATE_PAUSED) {
-                            Log.i(Global.TAG, "In ACTION_PLAY of RadioService")
+                            Log.i(Globals.TAG, "In ACTION_PLAY of RadioService")
                             callback.onPlay()
                         }
                     }
                     ACTION_STOP -> {
-                        Log.i(Global.TAG, "In ACTION_STOP of RadioService")
+                        Log.i(Globals.TAG, "In ACTION_STOP of RadioService")
                         callback.onStop()
                     }
                 }
@@ -129,7 +129,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     @OptIn(DelicateCoroutinesApi::class)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
-            Log.i(Global.TAG, "In onPlayFromMediaId of RadioClient")
+            Log.i(Globals.TAG, "In onPlayFromMediaId of RadioClient")
             super.onPlayFromMediaId(mediaId, extras)
 
             if (staticUrl == null) {
@@ -169,7 +169,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
 
         override fun onStop() {
-            Log.i(Global.TAG, "In onStop of RadioClient")
+            Log.i(Globals.TAG, "In onStop of RadioClient")
             super.onStop()
 
             updatePbState(PlaybackStateCompat.STATE_STOPPED, player.currentPosition)
@@ -186,7 +186,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         override fun onPause() {
             super.onPause()
-            Log.i(Global.TAG, "In onPause of RadioClient")
+            Log.i(Globals.TAG, "In onPause of RadioClient")
 
             mediaSession.isActive = false
             player.stop()
@@ -392,7 +392,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
 
         player.setOnErrorListener { _: MediaPlayer?, what: Int, _: Int ->
-            Log.e(Global.TAG, "Error in RadioService player: $what")
+            Log.e(Globals.TAG, "Error in RadioService player: $what")
             true
         }
     }
@@ -435,11 +435,11 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             connection.instanceFollowRedirects = false
             val secondURL = URL(connection.getHeaderField("Location"))
             dynamicUrl = secondURL.toString().replaceFirst("http:".toRegex(), "https:")
-            Log.i(Global.TAG, "Dynamic Quran Radio URL: ${this.dynamicUrl}")
+            Log.i(Globals.TAG, "Dynamic Quran Radio URL: ${this.dynamicUrl}")
 
             updatePbState(PlaybackStateCompat.STATE_STOPPED, 0)
         } catch (e: IOException) {
-            Log.e(Global.TAG, "Problem in RadioService player")
+            Log.e(Globals.TAG, "Problem in RadioService player")
             e.printStackTrace()
         }
     }

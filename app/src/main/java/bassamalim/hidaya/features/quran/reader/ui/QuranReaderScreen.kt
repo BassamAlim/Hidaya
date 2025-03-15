@@ -72,10 +72,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.core.models.Verse
-import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
@@ -104,7 +104,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
 
     val pagerState = rememberPagerState(
         initialPage = viewModel.pageNum - 1,
-        pageCount = { Global.NUM_OF_QURAN_PAGES }
+        pageCount = { Globals.NUM_OF_QURAN_PAGES }
     )
 
     DisposableEffect(key1 = viewModel) {

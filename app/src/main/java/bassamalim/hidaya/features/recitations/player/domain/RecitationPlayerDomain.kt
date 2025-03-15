@@ -26,7 +26,7 @@ import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
@@ -98,7 +98,7 @@ class RecitationPlayerDomain @Inject constructor(
     }
 
     fun initializeController(controllerCallback: MediaControllerCompat.Callback) {
-        Log.d(Global.TAG, "in initializeController of RecitationPlayerDomain")
+        Log.d(Globals.TAG, "in initializeController of RecitationPlayerDomain")
 
         // Get the token for the MediaSession
         val token = mediaBrowser!!.sessionToken

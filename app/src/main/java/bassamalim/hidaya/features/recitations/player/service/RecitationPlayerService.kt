@@ -44,7 +44,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
@@ -124,27 +124,27 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
                     AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                        Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
+                        Log.i(Globals.TAG, "In ACTION_BECOMING_NOISY")
                         callback.onPause()
                     }
                     ACTION_PLAY -> {
-                        Log.i(Global.TAG, "In ACTION_PLAY")
+                        Log.i(Globals.TAG, "In ACTION_PLAY")
                         callback.onPlay()
                     }
                     ACTION_PAUSE -> {
-                        Log.i(Global.TAG, "In ACTION_PAUSE")
+                        Log.i(Globals.TAG, "In ACTION_PAUSE")
                         callback.onPause()
                     }
                     ACTION_NEXT -> {
-                        Log.i(Global.TAG, "In ACTION_NEXT")
+                        Log.i(Globals.TAG, "In ACTION_NEXT")
                         skipToNext()
                     }
                     ACTION_PREV -> {
-                        Log.i(Global.TAG, "In ACTION_PREV")
+                        Log.i(Globals.TAG, "In ACTION_PREV")
                         skipToPrevious()
                     }
                     ACTION_STOP -> {
-                        Log.i(Global.TAG, "In ACTION_STOP")
+                        Log.i(Globals.TAG, "In ACTION_STOP")
                         callback.onStop()
                     }
                 }
@@ -179,7 +179,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     @OptIn(DelicateCoroutinesApi::class)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
-            Log.i(Global.TAG, "In onPlayFromMediaId of RecitationsPlayerService")
+            Log.i(Globals.TAG, "In onPlayFromMediaId of RecitationsPlayerService")
 
             playType = extras.getString("play_type")!!
             if (givenMediaId != mediaId || playType == "continue") {
@@ -212,7 +212,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         }
 
         override fun onPlay() {
-            Log.i(Global.TAG, "In onPlay of RecitationsPlayerService")
+            Log.i(Globals.TAG, "In onPlay of RecitationsPlayerService")
 
             if (mediaId == null) return  // bandage for an error
 
@@ -251,7 +251,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         }
 
         override fun onPause() {
-            Log.i(Global.TAG, "In onPause of RecitationsPlayerService")
+            Log.i(Globals.TAG, "In onPause of RecitationsPlayerService")
 
             // Update metadata and state
             updatePbState(
@@ -274,7 +274,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         }
 
         override fun onStop() {
-            Log.i(Global.TAG, "In onStop of RecitationsPlayerService")
+            Log.i(Globals.TAG, "In onStop of RecitationsPlayerService")
 
             updatePbState(
                 PlaybackStateCompat.STATE_STOPPED,
@@ -346,16 +346,16 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp++
-            } while (temp < Global.NUM_OF_QURAN_SURAS && !narration.availableSuras.contains(temp+1))
+            } while (temp < Globals.NUM_OF_QURAN_SURAS && !narration.availableSuras.contains(temp+1))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
-                temp = random.nextInt(Global.NUM_OF_QURAN_SURAS)
+                temp = random.nextInt(Globals.NUM_OF_QURAN_SURAS)
             } while (!narration.availableSuras.contains(temp+1))
         }
 
-        if (temp < Global.NUM_OF_QURAN_SURAS) {
+        if (temp < Globals.NUM_OF_QURAN_SURAS) {
             suraIndex = temp
             updateMetadata(false)
             updateNotification(true)
@@ -377,7 +377,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
-                temp = random.nextInt(Global.NUM_OF_QURAN_SURAS)
+                temp = random.nextInt(Globals.NUM_OF_QURAN_SURAS)
             } while (!narration.availableSuras.contains(temp+1))
         }
 
@@ -722,7 +722,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         }
 
         player.setOnErrorListener { _, what, _ ->
-            Log.e(Global.TAG, "Error in RecitationsPlayerService player: $what")
+            Log.e(Globals.TAG, "Error in RecitationsPlayerService player: $what")
             true
         }
     }
@@ -739,7 +739,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             player.prepareAsync()
         } catch (e: IOException) {
             e.printStackTrace()
-            Log.e(Global.TAG, "Problem in RecitationsPlayerService player")
+            Log.e(Globals.TAG, "Problem in RecitationsPlayerService player")
         }
     }
 
@@ -750,14 +750,14 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         return try {
             player.setDataSource(path)
             player.prepare()
-            Log.i(Global.TAG, "Playing Offline")
+            Log.i(Globals.TAG, "Playing Offline")
             true
         } catch (f: FileNotFoundException) {
-            Log.i(Global.TAG, "Not available offline")
+            Log.i(Globals.TAG, "Not available offline")
             false
         } catch (e: IOException) {
             e.printStackTrace()
-            Log.e(Global.TAG, "Problem in RecitationsPlayerService player")
+            Log.e(Globals.TAG, "Problem in RecitationsPlayerService player")
             false
         }
     }
@@ -856,7 +856,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onUnbind(intent: Intent?): Boolean {
-        Log.i(Global.TAG, "In onUnbind of RecitationsPlayerService")
+        Log.i(Globals.TAG, "In onUnbind of RecitationsPlayerService")
         GlobalScope.launch {
             saveForLater(player.currentPosition)
             updateDurationRecord(updateRecordCounter)

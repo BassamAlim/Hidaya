@@ -39,7 +39,7 @@ import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -102,27 +102,27 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
                     AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                        Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
+                        Log.i(Globals.TAG, "In ACTION_BECOMING_NOISY")
                         callback.onPause()
                     }
                     ACTION_PLAY -> {
-                        Log.i(Global.TAG, "In ACTION_PLAY")
+                        Log.i(Globals.TAG, "In ACTION_PLAY")
                         callback.onPlay()
                     }
                     ACTION_PAUSE -> {
-                        Log.i(Global.TAG, "In ACTION_PAUSE")
+                        Log.i(Globals.TAG, "In ACTION_PAUSE")
                         callback.onPause()
                     }
                     ACTION_NEXT -> {
-                        Log.i(Global.TAG, "In ACTION_NEXT")
+                        Log.i(Globals.TAG, "In ACTION_NEXT")
                         apm.nextVerse()
                     }
                     ACTION_PREV -> {
-                        Log.i(Global.TAG, "In ACTION_PREV")
+                        Log.i(Globals.TAG, "In ACTION_PREV")
                         apm.previousVerse()
                     }
                     ACTION_STOP -> {
-                        Log.i(Global.TAG, "In ACTION_STOP")
+                        Log.i(Globals.TAG, "In ACTION_STOP")
                         callback.onStop()
                     }
                 }
@@ -161,7 +161,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     @OptIn(DelicateCoroutinesApi::class)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
-            Log.i(Global.TAG, "In onPlayFromMediaId of AyaPlayerService")
+            Log.i(Globals.TAG, "In onPlayFromMediaId of AyaPlayerService")
 
             val ayaId = mediaId.toInt()
 
@@ -197,7 +197,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
         // used as onResume
         override fun onPlay() {
-            Log.i(Global.TAG, "In onPlay of AyaPlayerService")
+            Log.i(Globals.TAG, "In onPlay of AyaPlayerService")
 
             if (apm.isNotInitialized()) {
                 // Start the service
@@ -230,7 +230,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         }
 
         override fun onPause() {
-            Log.i(Global.TAG, "In onPause of AyaPlayerService")
+            Log.i(Globals.TAG, "In onPause of AyaPlayerService")
 
             // Update metadata and state
             updatePbState(PlaybackStateCompat.STATE_PAUSED)
@@ -251,7 +251,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         }
 
         override fun onStop() {
-            Log.i(Global.TAG, "In onStop of AyaPlayerService")
+            Log.i(Globals.TAG, "In onStop of AyaPlayerService")
 
             updatePbState(PlaybackStateCompat.STATE_STOPPED)
 
@@ -669,7 +669,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onUnbind(intent: Intent?): Boolean {
-        Log.i(Global.TAG, "In onUnbind of AyaPlayerService")
+        Log.i(Globals.TAG, "In onUnbind of AyaPlayerService")
         GlobalScope.launch {
             updateDurationRecord(updateRecordCounter)
         }

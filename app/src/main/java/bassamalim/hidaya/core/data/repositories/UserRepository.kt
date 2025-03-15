@@ -5,7 +5,7 @@ import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPrefe
 import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -75,10 +75,10 @@ class UserRepository @Inject constructor(
                     )
                 )
                 .addOnSuccessListener {
-                    Log.i(Global.TAG, "DocumentSnapshot successfully updated!")
+                    Log.i(Globals.TAG, "DocumentSnapshot successfully updated!")
                 }
                 .addOnFailureListener { e ->
-                    Log.e(Global.TAG, "Error getting documents: $e")
+                    Log.e(Globals.TAG, "Error getting documents: $e")
                 }
                 .await()
         }
@@ -106,10 +106,10 @@ class UserRepository @Inject constructor(
                 )
             )
             .addOnSuccessListener {
-                Log.i(Global.TAG, "DocumentSnapshot successfully written!")
+                Log.i(Globals.TAG, "DocumentSnapshot successfully written!")
             }
             .addOnFailureListener { e ->
-                Log.e(Global.TAG, "Error writing document: $e")
+                Log.e(Globals.TAG, "Error writing document: $e")
             }
             .await()
 
@@ -124,10 +124,10 @@ class UserRepository @Inject constructor(
             .get()
             .addOnSuccessListener { result ->
                 id = result.data!!["last_id"].toString().toInt()
-                Log.i(Global.TAG, "Data retrieved successfully!")
+                Log.i(Globals.TAG, "Data retrieved successfully!")
             }
             .addOnFailureListener { exception ->
-                Log.e(Global.TAG, "Error getting documents: $exception")
+                Log.e(Globals.TAG, "Error getting documents: $exception")
             }
             .await()
 
@@ -157,7 +157,7 @@ class UserRepository @Inject constructor(
                         }
                     )
                 } catch (e: Exception) {
-                    Log.i(Global.TAG, "Error getting documents: ${e.message}")
+                    Log.i(Globals.TAG, "Error getting documents: ${e.message}")
                     Response.Error("Error fetching data")
                 }
             }
@@ -187,7 +187,7 @@ class UserRepository @Inject constructor(
                         }
                     )
                 } catch (e: Exception) {
-                    Log.i(Global.TAG, "Error getting documents: ${e.message}")
+                    Log.i(Globals.TAG, "Error getting documents: ${e.message}")
                     Response.Error("Error fetching data")
                 }
             }

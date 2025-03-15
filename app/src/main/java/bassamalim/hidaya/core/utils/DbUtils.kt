@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.room.Room
 import bassamalim.hidaya.core.data.dataSources.room.AppDatabase
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -16,34 +16,34 @@ object DbUtils {
         test: () -> List<Any>,
         dispatcher: CoroutineDispatcher
     ): Boolean {
-        if (Global.DB_VERSION > lastDbVersion) return true
+        if (Globals.DB_VERSION > lastDbVersion) return true
 
         return try {  // if there is a problem in the db it will cause an error
             withContext(dispatcher) {
                 test().isEmpty()
             }
         } catch (e: IllegalStateException) {
-            Log.e(Global.TAG, "DB Error: ${e.message}")
+            Log.e(Globals.TAG, "DB Error: ${e.message}")
             e.printStackTrace()
             true
         } catch (e: SQLiteException) {
-            Log.e(Global.TAG, "DB Error: ${e.message}")
+            Log.e(Globals.TAG, "DB Error: ${e.message}")
             e.printStackTrace()
             false
         }
     }
 
     fun resetDB(context: Context) {
-        context.deleteDatabase(Global.DB_NAME)
-        Log.i(Global.TAG, "Database Deleted")
+        context.deleteDatabase(Globals.DB_NAME)
+        Log.i(Globals.TAG, "Database Deleted")
 
         Room.databaseBuilder(
             context = context,
             klass = AppDatabase::class.java,
-            name = Global.DB_NAME
+            name = Globals.DB_NAME
         ).createFromAsset("databases/HidayaDB.db").build()
 
-        Log.i(Global.TAG, "Database Revived")
+        Log.i(Globals.TAG, "Database Revived")
     }
 
     suspend fun restoreDbData(

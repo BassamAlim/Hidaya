@@ -43,7 +43,6 @@ import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
@@ -157,10 +156,10 @@ class Activity : ComponentActivity() {
 
         if (shouldReviveDb) {
             DbUtils.resetDB(this)
-            appStateRepository.setLastDbVersion(Global.DB_VERSION)
+            appStateRepository.setLastDbVersion(Globals.DB_VERSION)
             ActivityUtils.restartApplication(this)
         }
-        else Log.d(Global.TAG, "Database is up to date")
+        else Log.d(Globals.TAG, "Database is up to date")
     }
 
     private suspend fun handleAction(action: String?) {
@@ -193,7 +192,7 @@ class Activity : ComponentActivity() {
             remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
             setRemembranceFavorites = remembrancesRepository::setFavorites,
         )
-        Log.d(Global.TAG, "Database data restored")
+        Log.d(Globals.TAG, "Database data restored")
     }
 
     private suspend fun getLocationAndLaunch() {
@@ -365,8 +364,8 @@ class Activity : ComponentActivity() {
     private fun fetchAndActivateRemoteConfig() {
         FirebaseRemoteConfig.getInstance()
             .fetchAndActivate()
-            .addOnSuccessListener { Log.i(Global.TAG, "RemoteConfig update Success") }
-            .addOnFailureListener { Log.e(Global.TAG, "RemoteConfig update Failed") }
+            .addOnSuccessListener { Log.i(Globals.TAG, "RemoteConfig update Success") }
+            .addOnFailureListener { Log.e(Globals.TAG, "RemoteConfig update Failed") }
     }
 
     private fun dailyUpdate() {

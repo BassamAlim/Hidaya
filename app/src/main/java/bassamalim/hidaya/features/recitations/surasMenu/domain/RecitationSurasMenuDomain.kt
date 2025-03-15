@@ -13,7 +13,7 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.models.ReciterSura
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -82,7 +82,7 @@ class RecitationSurasMenuDomain @Inject constructor(
     }
 
     fun getDownloadStates(reciterId: Int, narrationId: Int) =
-        (0..<Global.NUM_OF_QURAN_SURAS).associateWith { suraId ->
+        (0..<Globals.NUM_OF_QURAN_SURAS).associateWith { suraId ->
             getDownloadState(reciterId, narrationId, suraId)
         }
 

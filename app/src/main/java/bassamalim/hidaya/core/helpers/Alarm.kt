@@ -12,7 +12,7 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.Reminder
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
@@ -72,7 +72,7 @@ class Alarm(
     }
 
     private suspend fun setPrayerAlarms(prayerTimes: Map<Reminder.Prayer, Calendar?>) {
-        Log.i(Global.TAG, "in Alarm.setPrayerAlarms")
+        Log.i(Globals.TAG, "in Alarm.setPrayerAlarms")
 
         for ((prayer, time) in prayerTimes) {
             if (notificationsRepository.getNotificationType(prayer).first() != NotificationType.OFF)
@@ -81,7 +81,7 @@ class Alarm(
     }
 
     private fun setPrayerAlarm(reminder: Reminder.Prayer, time: Calendar) {
-        Log.i(Global.TAG, "in Alarm.setPrayerAlarm for: $reminder")
+        Log.i(Globals.TAG, "in Alarm.setPrayerAlarm for: $reminder")
 
         val millis = time.timeInMillis
         if (System.currentTimeMillis() <= millis) {
@@ -99,13 +99,13 @@ class Alarm(
             val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
-            Log.i(Global.TAG, "alarm $reminder set")
+            Log.i(Globals.TAG, "alarm $reminder set")
         }
-        else Log.i(Global.TAG, "$reminder Passed")
+        else Log.i(Globals.TAG, "$reminder Passed")
     }
 
     private suspend fun setPrayerExtraReminderAlarms(prayerTimes: Map<Reminder.Prayer, Calendar?>) {
-        Log.i(Global.TAG, "in Alarm.setPrayerExtraReminderAlarms")
+        Log.i(Globals.TAG, "in Alarm.setPrayerExtraReminderAlarms")
 
         val reminderOffsets = notificationsRepository.getPrayerExtraReminderTimeOffsets().first()
         for ((prayer, time) in prayerTimes) {
@@ -121,7 +121,7 @@ class Alarm(
         time: Calendar,
         offset: Int
     ) {
-        Log.i(Global.TAG, "in Alarm.setPrayerExtraReminderAlarm for: $reminder")
+        Log.i(Globals.TAG, "in Alarm.setPrayerExtraReminderAlarm for: $reminder")
 
         val millis = time.timeInMillis + offset * 1000
         if (System.currentTimeMillis() <= millis) {
@@ -139,13 +139,13 @@ class Alarm(
             val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
-            Log.i(Global.TAG, "prayer extra reminder $reminder set")
+            Log.i(Globals.TAG, "prayer extra reminder $reminder set")
         }
-        else Log.i(Global.TAG, "prayer extra reminder $reminder Passed")
+        else Log.i(Globals.TAG, "prayer extra reminder $reminder Passed")
     }
 
     private suspend fun setDevotionalAlarms() {
-        Log.i(Global.TAG, "in Alarm.setDevotionalAlarms")
+        Log.i(Globals.TAG, "in Alarm.setDevotionalAlarms")
 
         val today = Calendar.getInstance()
 
@@ -166,7 +166,7 @@ class Alarm(
     }
 
     private suspend fun setDevotionalAlarm(devotion: Reminder.Devotional) {
-        Log.i(Global.TAG, "in Alarm.setDevotionalAlarm")
+        Log.i(Globals.TAG, "in Alarm.setDevotionalAlarm")
 
         val timeOfDay = notificationsRepository.getDevotionalReminderTimes().first()[devotion]!!
 
@@ -195,7 +195,7 @@ class Alarm(
             pendingIntent
         )
 
-        Log.i(Global.TAG, "alarm $devotion set")
+        Log.i(Globals.TAG, "alarm $devotion set")
     }
 
     fun cancelAlarm(reminder: Reminder) {
@@ -207,7 +207,7 @@ class Alarm(
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
 
-        Log.i(Global.TAG, "Canceled $reminder Alarm")
+        Log.i(Globals.TAG, "Canceled $reminder Alarm")
     }
 
 }

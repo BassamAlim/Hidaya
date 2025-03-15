@@ -20,7 +20,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Verse
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.features.quran.reader.versePlayer.VersePlayerService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -104,7 +104,7 @@ class QuranReaderDomain @Inject constructor(
 
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
-            Log.i(Global.TAG, "In onServiceConnected")
+            Log.i(Globals.TAG, "In onServiceConnected")
 
             if (mediaBrowser == null) return
 
@@ -113,7 +113,7 @@ class QuranReaderDomain @Inject constructor(
                 // Create a MediaControllerCompat
                 mediaController = MediaControllerCompat(activity, mediaBrowser!!.sessionToken)
             } catch (e: IllegalStateException) {
-                Log.e(Global.TAG, "Error in QuranReader: ${e.message}")
+                Log.e(Globals.TAG, "Error in QuranReader: ${e.message}")
                 return
             }
 
@@ -131,12 +131,12 @@ class QuranReaderDomain @Inject constructor(
         }
 
         override fun onConnectionSuspended() {
-            Log.e(Global.TAG, "Connection suspended in QuranReader")
+            Log.e(Globals.TAG, "Connection suspended in QuranReader")
             // The Service has crashed.
         }
 
         override fun onConnectionFailed() {
-            Log.e(Global.TAG, "Connection failed in QuranReader")
+            Log.e(Globals.TAG, "Connection failed in QuranReader")
             // The Service has refused our connection
         }
     }

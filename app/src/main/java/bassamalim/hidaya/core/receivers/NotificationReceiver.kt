@@ -28,7 +28,7 @@ import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -57,7 +57,7 @@ class NotificationReceiver : BroadcastReceiver() {
         ctx = context.applicationContext
 
         val reminder = Reminder.getById(intent.getIntExtra("id", -1))
-        Log.d(Global.TAG, "notification receiver: received $reminder")
+        Log.d(Globals.TAG, "notification receiver: received $reminder")
         val time = intent.getLongExtra("time", 0L)
         notificationId = reminder.id
 
@@ -75,12 +75,12 @@ class NotificationReceiver : BroadcastReceiver() {
                     is Reminder.Devotional -> handleDevotionalReminder(reminder)
                 }
             }
-            else Log.i(Global.TAG, "notification receiver: not on time or already notified")
+            else Log.i(Globals.TAG, "notification receiver: not on time or already notified")
         }
     }
 
     private suspend fun handlePrayerReminder(reminder: Reminder.Prayer, time: Long) {
-        Log.i(Global.TAG, "in notification receiver for $reminder prayer")
+        Log.i(Globals.TAG, "in notification receiver for $reminder prayer")
 
         val notificationType = notificationsRepository.getNotificationType(reminder).first()
 
@@ -91,13 +91,13 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private suspend fun handlePrayerExtraReminder(reminder: Reminder.PrayerExtra) {
-        Log.i(Global.TAG, "in notification receiver for $reminder reminder")
+        Log.i(Globals.TAG, "in notification receiver for $reminder reminder")
 
         showNotification(reminder)
     }
 
     private suspend fun handleDevotionalReminder(reminder: Reminder.Devotional) {
-        Log.i(Global.TAG, "in notification receiver for $reminder extra")
+        Log.i(Globals.TAG, "in notification receiver for $reminder extra")
 
         showNotification(reminder)
     }
@@ -144,7 +144,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private suspend fun startService(reminder: Reminder.Prayer, time: Long) {
         val intent = Intent(ctx, AthanService::class.java).apply {
-            action = Global.PLAY_ATHAN
+            action = Globals.PLAY_ATHAN
             putExtra("id", reminder.id)
             putExtra("time", time)
         }

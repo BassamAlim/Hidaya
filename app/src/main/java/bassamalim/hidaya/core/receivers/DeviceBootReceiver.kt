@@ -4,12 +4,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 
 class DeviceBootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.i(Global.TAG, "in device boot receiver")
+        Log.i(Globals.TAG, "in device boot receiver")
 
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
             val intent1 = Intent(context, DailyUpdateReceiver::class.java)

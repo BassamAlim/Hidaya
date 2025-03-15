@@ -23,7 +23,7 @@ import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarm
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.widgets.PrayersWidget
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
@@ -55,7 +55,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
-        Log.i(Global.TAG, "in DailyUpdateReceiver")
+        Log.i(Globals.TAG, "in DailyUpdateReceiver")
 
         testDb(context)
         GlobalScope.launch {
@@ -76,7 +76,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
                 pickWerd()
             }
-            else Log.i(Global.TAG, "dead intent in daily update receiver")
+            else Log.i(Globals.TAG, "dead intent in daily update receiver")
 
             setTomorrow(context)
         }
@@ -92,7 +92,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             )
             if (shouldReviveDb) {
                 reviveDb(context)
-                appStateRepository.setLastDbVersion(Global.DB_VERSION)
+                appStateRepository.setLastDbVersion(Globals.DB_VERSION)
             }
         }
     }
@@ -142,7 +142,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
             val latestLocation = locationRepository.getLocation().first()
             if (latestLocation == null) {
-                Log.e(Global.TAG, "no available location in DailyUpdate")
+                Log.e(Globals.TAG, "no available location in DailyUpdate")
                 return@launch
             }
 
@@ -179,7 +179,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun pickWerd() {
-        val randomWerd = Random().nextInt(Global.NUM_OF_QURAN_PAGES)
+        val randomWerd = Random().nextInt(Globals.NUM_OF_QURAN_PAGES)
         quranRepository.setWerdPageNum(randomWerd)
         quranRepository.setWerdDone(false)
     }
@@ -190,8 +190,8 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
         val time = Calendar.getInstance()
         time[Calendar.DATE]++
-        time[Calendar.HOUR_OF_DAY] = Global.DAILY_UPDATE_HOUR
-        time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
+        time[Calendar.HOUR_OF_DAY] = Globals.DAILY_UPDATE_HOUR
+        time[Calendar.MINUTE] = Globals.DAILY_UPDATE_MINUTE
 
         val pendIntent = PendingIntent.getBroadcast(
             context.applicationContext, 1210, intent,

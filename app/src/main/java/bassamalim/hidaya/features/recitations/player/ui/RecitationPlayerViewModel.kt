@@ -25,7 +25,7 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.features.recitations.player.domain.RecitationPlayerDomain
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -95,7 +95,7 @@ class RecitationPlayerViewModel @Inject constructor(
 
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
-            Log.i(Global.TAG, "onConnected in RecitationsPlayerViewModel")
+            Log.i(Globals.TAG, "onConnected in RecitationsPlayerViewModel")
 
             domain.initializeController(controllerCallback)
 
@@ -117,21 +117,21 @@ class RecitationPlayerViewModel @Inject constructor(
         }
 
         override fun onConnectionSuspended() {
-            Log.e(Global.TAG, "Connection suspended in RecitationsPlayerViewModel")
+            Log.e(Globals.TAG, "Connection suspended in RecitationsPlayerViewModel")
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
             disableControls()
         }
 
         override fun onConnectionFailed() {
-            Log.e(Global.TAG, "Connection failed in RecitationsPlayerViewModel")
+            Log.e(Globals.TAG, "Connection failed in RecitationsPlayerViewModel")
             // The Service has refused our connection
             disableControls()
         }
     }
 
     fun onStart(activity: Activity) {
-        Log.i(Global.TAG, "in onStart of RecitationsPlayerViewModel")
+        Log.i(Globals.TAG, "in onStart of RecitationsPlayerViewModel")
 
         domain.connect(
             activity = activity,
@@ -145,7 +145,7 @@ class RecitationPlayerViewModel @Inject constructor(
     }
 
     fun onStop() {
-        Log.i(Global.TAG, "in onStop of RecitationsPlayerViewModel")
+        Log.i(Globals.TAG, "in onStop of RecitationsPlayerViewModel")
 
         domain.stopMediaBrowser(controllerCallback)
     }

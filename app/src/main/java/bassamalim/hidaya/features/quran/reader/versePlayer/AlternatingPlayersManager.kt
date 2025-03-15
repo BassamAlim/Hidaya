@@ -18,7 +18,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
 import bassamalim.hidaya.core.data.dataSources.room.entities.VerseRecitation
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -60,7 +60,7 @@ class AlternatingPlayersManager(
         val prvPlayerIdx = prvIdx(mp)
         val nxtPlayerIdx = nxtIdx(mp)
         Log.d(
-            Global.TAG,
+            Globals.TAG,
             "in onPrepared with playerIdx: $currentPlayerIdx " +
                     "and verseIdx: ${aps[currentPlayerIdx].verseIdx}"
         )
@@ -99,7 +99,7 @@ class AlternatingPlayersManager(
         val currentPlayerIdx = idx(mp)
         val nxtPlayerIdx = nxtIdx(mp)
         Log.d(
-            Global.TAG,
+            Globals.TAG,
             "in onCompletion with playerIdx: $currentPlayerIdx" +
                 " and verseIdx: ${aps[currentPlayerIdx].verseIdx}"
         )
@@ -142,7 +142,7 @@ class AlternatingPlayersManager(
     }
 
     override fun onError(mp: MediaPlayer, what: Int, extra: Int): Boolean {
-        Log.d(Global.TAG, "in onError")
+        Log.d(Globals.TAG, "in onError")
 
         Toast.makeText(
             context,
@@ -159,7 +159,7 @@ class AlternatingPlayersManager(
 
     fun playFromMediaId(verseIdx: Int) {
         Log.d(
-            Global.TAG,
+            Globals.TAG,
             "in playFromMediaId in AlternatingPlayersManager with verseIdx: $verseIdx"
         )
 
@@ -269,13 +269,13 @@ class AlternatingPlayersManager(
                 aps[playerIdx].mp.prepareAsync()
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e(Global.TAG, "Reciter not found in verse recitations")
+                Log.e(Globals.TAG, "Reciter not found in verse recitations")
             }
         }
     }
 
     private fun checkShouldRepeat(playerIdx: Int, repeatMode: VerseRepeatMode): Boolean {
-        Log.d(Global.TAG, "in shouldRepeat with playerIdx: $playerIdx, repeatMode: $repeatMode")
+        Log.d(Globals.TAG, "in shouldRepeat with playerIdx: $playerIdx, repeatMode: $repeatMode")
 
         return when (repeatMode) {
             VerseRepeatMode.NO_REPEAT -> false
@@ -312,7 +312,7 @@ class AlternatingPlayersManager(
     }
 
     private fun getUri(verse: Verse, recitation: VerseRecitation): Uri {
-        Log.d(Global.TAG, "In getUri with verse: $verse, recitation: $recitation")
+        Log.d(Globals.TAG, "In getUri with verse: $verse, recitation: $recitation")
 
         var uri = "https://www.everyayah.com/data/"
         uri += recitation.source

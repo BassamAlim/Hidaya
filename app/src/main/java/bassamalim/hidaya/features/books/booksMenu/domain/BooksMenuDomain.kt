@@ -5,7 +5,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.features.books.booksMenu.ui.Book
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -37,12 +37,12 @@ class BooksMenuDomain @Inject constructor(
     fun downloadBook(bookId: Int, onDownloadedCallback: () -> Unit) {
         booksRepository.download(bookId)
             .addOnSuccessListener {
-                Log.i(Global.TAG, "File download succeeded")
+                Log.i(Globals.TAG, "File download succeeded")
 
                 onDownloadedCallback()
             }
             .addOnFailureListener {
-                Log.e(Global.TAG, "File download failed")
+                Log.e(Globals.TAG, "File download failed")
             }
     }
 
