@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
@@ -28,7 +29,6 @@ import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -68,14 +68,16 @@ class NotificationReceiver : BroadcastReceiver() {
                 language = appSettingsRepository.getLanguage().first()
             )
 
-            if (isOnTime(time) || !isAlreadyNotified(reminder)) {
-                when (reminder) {
-                    is Reminder.Prayer -> handlePrayerReminder(reminder, time)
-                    is Reminder.PrayerExtra -> handlePrayerExtraReminder(reminder)
-                    is Reminder.Devotional -> handleDevotionalReminder(reminder)
-                }
+            if (!isOnTime(time) || isAlreadyNotified(reminder)) {
+                Log.i(Globals.TAG, "notification receiver: not on time or already notified")
+                return@launch
             }
-            else Log.i(Globals.TAG, "notification receiver: not on time or already notified")
+
+            when (reminder) {
+                is Reminder.Prayer -> handlePrayerReminder(reminder, time)
+                is Reminder.PrayerExtra -> handlePrayerExtraReminder(reminder)
+                is Reminder.Devotional -> handleDevotionalReminder(reminder)
+            }
         }
     }
 
@@ -108,7 +110,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private suspend fun isAlreadyNotified(reminder: Reminder): Boolean {
-        val lastDate = notificationsRepository.getLastNotificationDates().first()[reminder]!!
+        val lastDate = notificationsRepository.getLastNotificationDates().first()[reminder]
         return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
     }
 

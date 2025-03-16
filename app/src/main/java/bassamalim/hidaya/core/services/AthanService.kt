@@ -22,13 +22,13 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.ThemeColor
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,14 +55,20 @@ class AthanService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == StartAction.STOP_ATHAN.name) {
             onDestroy()
-            return START_NOT_STICKY
+            return START_STICKY
         }
 
         val reminder = Reminder.getById(intent!!.getIntExtra("id", -1))
+        val time = intent.getLongExtra("time", 0L)
         Log.i(Globals.TAG, "In athan service for $reminder")
         notificationId = reminder.id
 
         GlobalScope.launch {
+            if (!isOnTime(time) || isAlreadyNotified(reminder)) {
+                Log.i(Globals.TAG, "notification receiver: not on time or already notified")
+                return@launch
+            }
+
             ActivityUtils.configure(
                 context = application,
                 applicationContext = applicationContext,
@@ -89,7 +95,17 @@ class AthanService : Service() {
             play(reminder)
         }
 
-        return START_NOT_STICKY
+        return START_STICKY
+    }
+
+    private fun isOnTime(time: Long): Boolean {
+        val max = time + 120000
+        return System.currentTimeMillis() <= max
+    }
+
+    private suspend fun isAlreadyNotified(reminder: Reminder): Boolean {
+        val lastDate = notificationsRepository.getLastNotificationDates().first()[reminder]
+        return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
     }
 
     private suspend fun build(reminder: Reminder): Notification {
