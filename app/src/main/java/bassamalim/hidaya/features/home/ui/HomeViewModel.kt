@@ -61,8 +61,6 @@ class HomeViewModel @Inject constructor(
         this.werdPage = werdPage
         val previousPrayer = getPreviousPrayer()
         val nextPrayer = getNextPrayer()
-//        if (location != null)
-//            count()
 
         state.copy(
             previousPrayerName = prayerNames[previousPrayer]!!,
