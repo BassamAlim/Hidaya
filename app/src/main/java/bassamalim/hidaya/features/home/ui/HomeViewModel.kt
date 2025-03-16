@@ -46,6 +46,7 @@ class HomeViewModel @Inject constructor(
     private var previousPrayerWasYesterday = false
     private var nextPrayerIsTomorrow = false
     private var werdPage by Delegates.notNull<Int>()
+    private var shouldCount = false
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = combine(
@@ -60,8 +61,8 @@ class HomeViewModel @Inject constructor(
         this.werdPage = werdPage
         val previousPrayer = getPreviousPrayer()
         val nextPrayer = getNextPrayer()
-        if (location != null && timer == null)
-            count()
+//        if (location != null)
+//            count()
 
         state.copy(
             previousPrayerName = prayerNames[previousPrayer]!!,
@@ -121,6 +122,8 @@ class HomeViewModel @Inject constructor(
                 formattedTomorrowFajr = domain.getStrTomorrowFajr(location)
             }
 
+            shouldCount = location != null && times.isNotEmpty()
+
             val leaderboardConnected = domain.syncRecords()
 
             _uiState.update { it.copy(
@@ -131,7 +134,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onStart() {
-        timer?.start()
+        initializeData()
+
+        if (shouldCount)
+            count()
     }
 
     fun onStop() {
@@ -176,6 +182,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun count() {
+        if (timer != null) {
+            timer?.cancel()
+            timer = null
+        }
+
         val till =
             if (nextPrayerIsTomorrow) tomorrowFajr.timeInMillis
             else times[nextPrayer]!!.timeInMillis
@@ -236,7 +247,9 @@ class HomeViewModel @Inject constructor(
                 }
             }
 
-            override fun onFinish() {}
+            override fun onFinish() {
+                onStart()
+            }
         }.start()
     }
 
