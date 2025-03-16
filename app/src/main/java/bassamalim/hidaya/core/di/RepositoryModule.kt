@@ -168,9 +168,10 @@ object RepositoryModule {
 
     @Provides @Singleton
     fun provideUserRepository(
+        app: Application,
         userPreferencesDataSource: UserPreferencesDataSource,
         firestore: FirebaseFirestore,
         @ApplicationScope scope: CoroutineScope
-    ) = UserRepository(userPreferencesDataSource, firestore, scope)
+    ) = UserRepository(app, userPreferencesDataSource, firestore, scope)
 
 }

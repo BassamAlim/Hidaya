@@ -1,8 +1,6 @@
 package bassamalim.hidaya.features.home.domain
 
 import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
@@ -12,7 +10,7 @@ import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
-import bassamalim.hidaya.core.utils.OS.getDeviceId
+import bassamalim.hidaya.core.utils.OsUtils.getDeviceId
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
@@ -111,11 +109,11 @@ class HomeDomain @Inject constructor(
     fun getPrayerNames() = prayersRepository.getPrayerNames()
 
     suspend fun syncRecords(): Boolean {
-        if (!isInternetConnected(app)) return false
+        val remoteRecord = userRepository.getRemoteRecord(deviceId)
 
-        return when (
-            val response = userRepository.getRemoteRecord(deviceId).first()
-        ) {
+        if (remoteRecord == null) return false
+
+        return when (val response = remoteRecord.first()) {
             is Response.Success -> {
                 val remoteRecord = response.data!!
 
@@ -171,14 +169,5 @@ class HomeDomain @Inject constructor(
     }
 
     private suspend fun registerDevice(deviceId: String) = userRepository.registerDevice(deviceId)
-
-    private fun isInternetConnected(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return connectivityManager.activeNetwork != null &&
-                connectivityManager.getNetworkCapabilities(
-                    connectivityManager.activeNetwork
-                ) != null
-    }
 
 }

@@ -5,7 +5,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
-import bassamalim.hidaya.core.utils.OS.getDeviceId
+import bassamalim.hidaya.core.utils.OsUtils.getDeviceId
 import bassamalim.hidaya.features.leaderboard.ui.RankType
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.first
@@ -37,11 +37,16 @@ class LeaderboardDomain @Inject constructor(
         )
     }
 
-    suspend fun getUserRecord() = userRepository.getRemoteRecord(deviceId).first()
+    suspend fun getUserRecord() = userRepository.getRemoteRecord(deviceId)?.first()
 
-    suspend fun getRanks(): Map<RankType, Response<Map<Int, Long>>> {
-        val (readingRanks, lastReading) = userRepository.getReadingRanks()
-        val (listeningRanks, lastListening) = userRepository.getListeningRanks()
+    suspend fun getRanks(): Map<RankType, Response<Map<Int, Long>>>? {
+        val rawReadingRanks = userRepository.getReadingRanks()
+        val rawListeningRanks = userRepository.getListeningRanks()
+
+        if (rawReadingRanks == null || rawListeningRanks == null) return null
+
+        val (readingRanks, lastReading) = rawReadingRanks
+        val (listeningRanks, lastListening) = rawListeningRanks
 
         previousLastDocuments[RankType.BY_READING] = lastReading
         previousLastDocuments[RankType.BY_LISTENING] = lastListening
@@ -52,8 +57,17 @@ class LeaderboardDomain @Inject constructor(
         )
     }
 
-    suspend fun getMoreRanks(rankType: RankType): Response<Map<Int, Long>> {
-        val (ranks, last) = userRepository.getReadingRanks(previousLastDocuments[rankType])
+    suspend fun getMoreRanks(rankType: RankType): Response<Map<Int, Long>>? {
+        val rawRanks =  when (rankType) {
+            RankType.BY_READING -> {
+                userRepository.getReadingRanks(previousLastDocuments[rankType])
+            }
+            RankType.BY_LISTENING -> {
+                userRepository.getListeningRanks(previousLastDocuments[rankType])
+            }
+        }
+        if (rawRanks == null) return null
+        val (ranks, last) = rawRanks
 
         previousLastDocuments[rankType] = last
 

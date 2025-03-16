@@ -1,11 +1,13 @@
 package bassamalim.hidaya.core.data.repositories
 
+import android.app.Application
 import android.util.Log
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPreferencesDataSource
 import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
-import bassamalim.hidaya.core.Globals
+import bassamalim.hidaya.core.utils.OsUtils
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -19,6 +21,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
+    private val app: Application,
     private val userPreferencesDataSource: UserPreferencesDataSource,
     private val firestore: FirebaseFirestore,
     @ApplicationScope private val scope: CoroutineScope
@@ -42,7 +45,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getRemoteRecord(deviceId: String): Flow<Response<UserRecord>> {
+    fun getRemoteRecord(deviceId: String): Flow<Response<UserRecord>>? {
+        if (!OsUtils.isNetworkAvailable(app)) return null
+
         return firestore.collection("Leaderboard")
             .document(deviceId)
             .snapshots()
@@ -64,6 +69,8 @@ class UserRepository @Inject constructor(
     }
 
     fun setRemoteRecord(deviceId: String, record: UserRecord) {
+        if (!OsUtils.isNetworkAvailable(app)) return
+
         scope.launch {
             firestore.collection("Leaderboard")
                 .document(deviceId)
@@ -117,8 +124,9 @@ class UserRepository @Inject constructor(
     }
 
     private suspend fun getLastUserId(): Int? {
-        var id: Int? = null
+        if (!OsUtils.isNetworkAvailable(app)) return null
 
+        var id: Int? = null
         firestore.collection("Counters")
             .document("users")
             .get()
@@ -130,13 +138,14 @@ class UserRepository @Inject constructor(
                 Log.e(Globals.TAG, "Error getting documents: $exception")
             }
             .await()
-
         return id
     }
 
     suspend fun getReadingRanks(
         previousLast: DocumentSnapshot? = null
-    ): Pair<Response<Map<Int, Long>>, DocumentSnapshot?> {
+    ): Pair<Response<Map<Int, Long>>, DocumentSnapshot?>? {
+        if (!OsUtils.isNetworkAvailable(app)) return null
+
         var last: DocumentSnapshot? = null
 
         var query = firestore.collection("Leaderboard")
@@ -166,7 +175,9 @@ class UserRepository @Inject constructor(
 
     suspend fun getListeningRanks(
         previousLast: DocumentSnapshot? = null
-    ): Pair<Response<Map<Int, Long>>, DocumentSnapshot?> {
+    ): Pair<Response<Map<Int, Long>>, DocumentSnapshot?>? {
+        if (!OsUtils.isNetworkAvailable(app)) return null
+
         var last: DocumentSnapshot? = null
 
         var query = firestore.collection("Leaderboard")
