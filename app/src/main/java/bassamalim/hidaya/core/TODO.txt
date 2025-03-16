@@ -24,11 +24,6 @@ use lazy initialization for expensive object creation
 
 use database indexes
 
-Clean code:
-- don't pass more than 3 parameters to a function (if you do, consider using a data class)
-- don't use more than 3 levels of indentation
-- don't pass booleans as function arguments, they are probably used in an if statement, so split the function into two functions
-
 
 Avoid switch statements by using polymorphism
 because switch statements are not extensible, and they violate the open/closed principle.
