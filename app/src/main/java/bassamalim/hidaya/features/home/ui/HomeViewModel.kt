@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -56,25 +55,9 @@ class HomeViewModel @Inject constructor(
         domain.getLocation(),
         domain.getWerdPage()
     ) { state, language, numeralsLanguage, location, werdPage ->
-        if (state.isLoading) return@combine state
-
         this.werdPage = werdPage
-        val previousPrayer = getPreviousPrayer()
-        val nextPrayer = getNextPrayer()
 
         state.copy(
-            previousPrayerName = prayerNames[previousPrayer]!!,
-            previousPrayerTimeText = translateNums(
-                string = if (previousPrayerWasYesterday) formattedYesterdayIshaa
-                else formattedTimes[previousPrayer]!!,
-                numeralsLanguage = numeralsLanguage
-            ),
-            nextPrayerName = prayerNames[nextPrayer]!!,
-            nextPrayerTimeText = translateNums(
-                string = if (nextPrayerIsTomorrow) formattedTomorrowFajr
-                else formattedTimes[nextPrayer]!!,
-                numeralsLanguage = numeralsLanguage
-            ),
             werdPage = translateNums(
                 string = werdPage.toString(),
                 numeralsLanguage = numeralsLanguage
@@ -100,42 +83,55 @@ class HomeViewModel @Inject constructor(
                 numeralsLanguage = state.numeralsLanguage
             )
         )
-    }.onStart {
-        initializeData()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
         initialValue = HomeUiState()
     )
 
-    private fun initializeData() {
-        viewModelScope.launch {
-            val location = domain.getLocation().first()
-            if (location != null) {
-                times = domain.getPrayerTimeMap(location)
-                formattedTimes = domain.getStrPrayerTimeMap(location)
-                yesterdayIshaa = domain.getYesterdayIshaa(location)
-                formattedYesterdayIshaa = domain.getStrYesterdayIshaa(location)
-                tomorrowFajr = domain.getTomorrowFajr(location)
-                formattedTomorrowFajr = domain.getStrTomorrowFajr(location)
-            }
-
-            shouldCount = location != null && times.isNotEmpty()
-
-            val leaderboardConnected = domain.syncRecords()
-
-            _uiState.update { it.copy(
-                isLoading = false,
-                isLeaderboardEnabled = leaderboardConnected
-            )}
+    private suspend fun initializeData() {
+        val location = domain.getLocation().first()
+        if (location != null) {
+            times = domain.getPrayerTimeMap(location)
+            formattedTimes = domain.getStrPrayerTimeMap(location)
+            yesterdayIshaa = domain.getYesterdayIshaa(location)
+            formattedYesterdayIshaa = domain.getStrYesterdayIshaa(location)
+            tomorrowFajr = domain.getTomorrowFajr(location)
+            formattedTomorrowFajr = domain.getStrTomorrowFajr(location)
         }
+
+        val previousPrayer = getPreviousPrayer()
+        val nextPrayer = getNextPrayer()
+
+        shouldCount = location != null && times.isNotEmpty()
+
+        val leaderboardConnected = domain.syncRecords()
+
+        _uiState.update { it.copy(
+            isLoading = false,
+            isLeaderboardEnabled = leaderboardConnected,
+            previousPrayerName = prayerNames[previousPrayer]!!,
+            previousPrayerTimeText = translateNums(
+                string = if (previousPrayerWasYesterday) formattedYesterdayIshaa
+                else formattedTimes[previousPrayer]!!,
+                numeralsLanguage = it.numeralsLanguage
+            ),
+            nextPrayerName = prayerNames[nextPrayer]!!,
+            nextPrayerTimeText = translateNums(
+                string = if (nextPrayerIsTomorrow) formattedTomorrowFajr
+                else formattedTimes[nextPrayer]!!,
+                numeralsLanguage = it.numeralsLanguage
+            )
+        )}
     }
 
     fun onStart() {
-        initializeData()
+        viewModelScope.launch {
+            initializeData()
 
-        if (shouldCount)
-            count()
+            if (shouldCount)
+                count()
+        }
     }
 
     fun onStop() {
@@ -177,6 +173,42 @@ class HomeViewModel @Inject constructor(
         }
 
         return nextPrayer
+    }
+
+    private fun recount() {
+        viewModelScope.launch {
+            val location = domain.getLocation().first()
+            if (location != null) {
+                times = domain.getPrayerTimeMap(location)
+                formattedTimes = domain.getStrPrayerTimeMap(location)
+                yesterdayIshaa = domain.getYesterdayIshaa(location)
+                formattedYesterdayIshaa = domain.getStrYesterdayIshaa(location)
+                tomorrowFajr = domain.getTomorrowFajr(location)
+                formattedTomorrowFajr = domain.getStrTomorrowFajr(location)
+            }
+
+            shouldCount = location != null && times.isNotEmpty()
+
+            val previousPrayer = getPreviousPrayer()
+            val nextPrayer = getNextPrayer()
+
+            _uiState.update { it.copy(
+                previousPrayerName = prayerNames[previousPrayer]!!,
+                previousPrayerTimeText = translateNums(
+                    string = if (previousPrayerWasYesterday) formattedYesterdayIshaa
+                    else formattedTimes[previousPrayer]!!,
+                    numeralsLanguage = it.numeralsLanguage
+                ),
+                nextPrayerName = prayerNames[nextPrayer]!!,
+                nextPrayerTimeText = translateNums(
+                    string = if (nextPrayerIsTomorrow) formattedTomorrowFajr
+                    else formattedTimes[nextPrayer]!!,
+                    numeralsLanguage = it.numeralsLanguage
+                )
+            )}
+
+            count()
+        }
     }
 
     private fun count() {
@@ -246,7 +278,7 @@ class HomeViewModel @Inject constructor(
             }
 
             override fun onFinish() {
-                onStart()
+                recount()
             }
         }.start()
     }

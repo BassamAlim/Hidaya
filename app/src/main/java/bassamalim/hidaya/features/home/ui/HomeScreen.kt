@@ -46,12 +46,12 @@ import bassamalim.hidaya.core.ui.theme.Positive
 fun HomeScreen(viewModel: HomeViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (state.isLoading) return
-
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart()
         onDispose { viewModel.onStop() }
     }
+
+    if (state.isLoading) return
 
     ParentColumn {
         PrayerCard(
