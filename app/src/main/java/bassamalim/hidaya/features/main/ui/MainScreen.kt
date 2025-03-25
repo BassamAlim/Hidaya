@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.main.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -34,7 +37,6 @@ import bassamalim.hidaya.core.ui.TabEnter
 import bassamalim.hidaya.core.ui.TabExit
 import bassamalim.hidaya.core.ui.TabPopEnter
 import bassamalim.hidaya.core.ui.TabPopExit
-import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.home.ui.HomeScreen
@@ -49,8 +51,10 @@ fun MainScreen(viewModel: MainViewModel) {
     val bottomNavController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    MyScaffold(
-        title = stringResource(R.string.app_name),
+    Scaffold(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .safeDrawingPadding(),
         topBar = {
             TopBar(
                 hijriDate = state.hijriDate,
@@ -59,7 +63,7 @@ fun MainScreen(viewModel: MainViewModel) {
             )
         },
         bottomBar = { MyBottomNavigation(bottomNavController) },
-        snackBarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         NavigationGraph(
             bottomNavController = bottomNavController,

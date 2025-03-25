@@ -13,6 +13,7 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -89,14 +90,18 @@ class Activity : ComponentActivity() {
             theme = appSettingsRepository.getTheme()
             initialTheme = theme.first()
 
-            window.decorView.setBackgroundColor(
-                getThemeColor(
-                    color = ThemeColor.BACKGROUND,
-                    theme = theme.first()
-                ).toArgb()
+            enableEdgeToEdge(
+                statusBarStyle = SystemBarStyle.auto(
+                    getThemeColor(
+                        color = ThemeColor.SURFACE_CONTAINER,
+                        theme = theme.first()
+                    ).toArgb(),
+                    getThemeColor(
+                        color = ThemeColor.SURFACE_CONTAINER,
+                        theme = theme.first()
+                    ).toArgb(),
+                )
             )
-
-            enableEdgeToEdge()
 
             val isFirstLaunch = savedInstanceState == null
             startRoute = intent.getStringExtra("start_route")

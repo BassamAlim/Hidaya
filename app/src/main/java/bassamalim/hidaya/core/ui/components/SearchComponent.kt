@@ -1,5 +1,6 @@
 package bassamalim.hidaya.core.ui.components
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -108,10 +109,11 @@ fun CustomSearchBar(
                 }
             )
         },
-        onExpandedChange = {},
         expanded = false,
+        onExpandedChange = {},
         modifier = modifier.padding(top = 4.dp, bottom = 6.dp, start = 6.dp, end = 6.dp),
         shape = RoundedCornerShape(10.dp),
+        windowInsets = WindowInsets(0, 0, 0, 0),
         content = {}
     )
 }

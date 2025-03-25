@@ -1,12 +1,8 @@
 package bassamalim.hidaya.core.ui.theme
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
@@ -23,13 +19,7 @@ fun AppTheme(
         LocalLayoutDirection provides direction
     ) {
         MaterialTheme(colorScheme = getColorScheme(theme)) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-            ) {
-                content()
-            }
+            content()
         }
     }
 }
