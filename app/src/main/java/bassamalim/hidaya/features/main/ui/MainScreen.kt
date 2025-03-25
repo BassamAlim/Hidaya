@@ -3,11 +3,8 @@ package bassamalim.hidaya.features.main.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,7 +28,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.TabEnter
 import bassamalim.hidaya.core.ui.TabExit
 import bassamalim.hidaya.core.ui.TabPopEnter
@@ -82,46 +77,26 @@ private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> 
             .fillMaxWidth()
             .height(56.dp)
     ) {
-        Box(
-            Modifier.fillMaxSize()
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(onClick = onDateClick),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                // App name
-                MyText(stringResource(R.string.app_name))
+            // Hijri date
+            MyText(
+                text = hijriDate,
+                fontSize = 16.nsp,
+                fontWeight = FontWeight.Bold
+            )
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .clickable(onClick = onDateClick),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(horizontal = 10.dp),
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        // Hijri date
-                        MyText(
-                            text = hijriDate,
-                            fontSize = 16.nsp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        // Gregorian date
-                        MyText(
-                            text = gregorianDate,
-                            fontSize = 16.nsp
-                        )
-                    }
-                }
-            }
+            // Gregorian date
+            MyText(
+                text = gregorianDate,
+                fontSize = 16.nsp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
