@@ -100,18 +100,18 @@
     </string-array>
 
     <string-array name="numbered_hijri_months">
-        <item>(١) مُحَرَّم</item>
-        <item>(٢) صَفَر</item>
-        <item>(٣) ربيع الأول</item>
-        <item>(٤) ربيع الثاني</item>
-        <item>(٥) جُمادى الأول</item>
-        <item>(٦) جُمادى الآخر</item>
-        <item>(٧) رَجَب</item>
-        <item>(٨) شعبان</item>
-        <item>(٩) رَمَضان</item>
-        <item>(١٠) شَوَّال</item>
-        <item>(١١) ذو القِعْدة</item>
-        <item>(١٢) ذو الحِجَّة</item>
+        <item>مُحَرَّم (١)</item>
+        <item>صَفَر (٢)</item>
+        <item>ربيع الأول (٣)</item>
+        <item>ربيع الثاني (٤)</item>
+        <item>جُمادى الأول (٥)</item>
+        <item>جُمادى الآخر (٦)</item>
+        <item>رَجَب (٧)</item>
+        <item>شعبان (٨)</item>
+        <item>رَمَضان (٩)</item>
+        <item>شَوَّال (١٠)</item>
+        <item>ذو القِعْدة (١١)</item>
+        <item>ذو الحِجَّة (١٢)</item>
     </string-array>
 
     <string-array name="gregorian_months">
@@ -130,18 +130,18 @@
     </string-array>
 
     <string-array name="numbered_gregorian_months">
-        <item>(١) يناير</item>
-        <item>(٢) فبرابر</item>
-        <item>(٣) مارس</item>
-        <item>(٤) أبريل</item>
-        <item>(٥) مايو</item>
-        <item>(٦) يونيو</item>
-        <item>(٧) يوليو</item>
-        <item>(٨) أغسطس</item>
-        <item>(٩) سبتمبر</item>
-        <item>(١٠) أكتوبر</item>
-        <item>(١١) نوفمبر</item>
-        <item>(١٢) ديسمبر</item>
+        <item>يناير (١)</item>
+        <item>فبرابر (٢)</item>
+        <item>مارس (٣)</item>
+        <item>أبريل (٤)</item>
+        <item>مايو (٥)</item>
+        <item>يونيو (٦)</item>
+        <item>يوليو (٧)</item>
+        <item>أغسطس (٨)</item>
+        <item>سبتمبر (٩)</item>
+        <item>أكتوبر (١٠)</item>
+        <item>نوفمبر (١١)</item>
+        <item>ديسمبر (١٢)</item>
     </string-array>
 
     <string-array name="narrations">
