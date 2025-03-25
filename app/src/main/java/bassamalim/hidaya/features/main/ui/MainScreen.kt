@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -75,23 +74,19 @@ private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> 
         shadowElevation = 8.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(40.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(onClick = onDateClick),
+            modifier = Modifier.clickable(onClick = onDateClick),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            // Hijri date
             MyText(
                 text = hijriDate,
                 fontSize = 16.nsp,
                 fontWeight = FontWeight.Bold
             )
 
-            // Gregorian date
             MyText(
                 text = gregorianDate,
                 fontSize = 16.nsp,
