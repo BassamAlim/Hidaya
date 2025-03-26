@@ -111,22 +111,20 @@ class RecitationRecitersMenuViewModel @Inject constructor(
                         }
                     }
                     hasDownloaded.map { recitation ->
-                        recitation.key to recitation.value.copy(narrations = recitation.value.narrations.filter { narration ->
-                            narration.value.downloadState == DownloadState.DOWNLOADED
-                        })
+                        recitation.key to recitation.value.copy(
+                            narrations = recitation.value.narrations.filter { narration ->
+                                narration.value.downloadState == DownloadState.DOWNLOADED
+                            }
+                        )
                     }.toMap()
                 }
                 else -> allRecitations
             }
 
-            items.values.filter { recitation ->
-                val isSelected = recitation.narrations.any { narration ->
+            val selectedItems = items.values.filter { recitation ->
+                recitation.narrations.any { narration ->
                     narrationSelections[narration.value.name]!!
                 }
-                val isSearched = _uiState.value.searchText.isEmpty() ||
-                        recitation.reciterName.contains(_uiState.value.searchText, true)
-
-                isSelected && isSearched
             }.map { recitation ->
                 recitation.copy(
                     narrations = recitation.narrations.filter { narration ->
@@ -134,6 +132,8 @@ class RecitationRecitersMenuViewModel @Inject constructor(
                     }
                 )
             }.filter { recitation -> recitation.narrations.isNotEmpty() }
+
+            domain.getSearchResults(_uiState.value.searchText, selectedItems)
         }
     }
 

@@ -62,12 +62,17 @@ class RemembrancesMenuViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getFilteredRemembrances(remembrances: List<RemembrancesItem>) =
-        remembrances.filter {
-            !(language == Language.ENGLISH && !hasEn(it.id))
-                    && !(_uiState.value.searchText.isNotEmpty() &&
-                    !it.name.contains(_uiState.value.searchText, true))
+    private suspend fun getFilteredRemembrances(
+        remembrances: List<RemembrancesItem>
+    ): List<RemembrancesItem> {
+        val items = remembrances.filter { remembrance ->
+            !(language == Language.ENGLISH && !hasEn(remembrance.id))
         }
+        return domain.getSearchResults(
+            query = _uiState.value.searchText,
+            items = items
+        )
+    }
 
     private suspend fun hasEn(remembranceId: Int): Boolean {
         val remembrancePassages = domain.getRemembrancePassages(remembranceId)

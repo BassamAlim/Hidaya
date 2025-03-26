@@ -22,7 +22,7 @@ class QuranSurasDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    val suraSearcher = Searcher<Sura>()
+    private val suraSearcher = Searcher<Sura>()
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 

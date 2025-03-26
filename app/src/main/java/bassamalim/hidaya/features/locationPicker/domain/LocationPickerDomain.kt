@@ -13,7 +13,7 @@ class LocationPickerDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    val searcher = Searcher<LocationPickerItem>()
+    private val searcher = Searcher<LocationPickerItem>()
     private var countryId = -1
 
     fun setCountryId(id: Int) { countryId = id }

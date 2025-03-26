@@ -116,18 +116,18 @@ class RecitationSurasViewModel @Inject constructor(
         val availableSuar = narration.availableSuras
 
         return domain.observeSuras(reciterId, narrationId, language).map { suras ->
-            suras.filter { sura ->
+            val items = suras.filter { sura ->
                 val suraExists = availableSuar.contains(sura.id+1)
                 val isWanted = when (menuType) {
                     MenuType.FAVORITES -> sura.isFavorite
                     MenuType.DOWNLOADED -> sura.downloadState == DownloadState.DOWNLOADED
                     else -> true
                 }
-                val isSearched = _uiState.value.searchText.isEmpty()
-                        || sura.searchName.contains(_uiState.value.searchText, true)
 
-                suraExists && isWanted && isSearched
+                suraExists && isWanted
             }
+
+            domain.getSearchResults(query = _uiState.value.searchText, items = items)
         }
     }
 

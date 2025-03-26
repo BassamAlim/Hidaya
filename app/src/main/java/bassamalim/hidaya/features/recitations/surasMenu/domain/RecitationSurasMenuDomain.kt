@@ -6,14 +6,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
+import bassamalim.hidaya.core.helpers.Searcher
 import bassamalim.hidaya.core.models.ReciterSura
-import bassamalim.hidaya.core.Globals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -26,6 +27,7 @@ class RecitationSurasMenuDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
+    private val searcher = Searcher<ReciterSura>()
     private var reciterId by Delegates.notNull<Int>()
     private var narrationId by Delegates.notNull<Int>()
     private lateinit var setAsDownloaded: (suraId: Int) -> Unit
@@ -41,7 +43,7 @@ class RecitationSurasMenuDomain @Inject constructor(
                         intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                     val downloadedItem = popFromDownloading(downloadId)!!
                     setAsDownloaded(downloadedItem.suraId)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     setDownloadStates(getDownloadStates(reciterId, narrationId))
                 }
             }
@@ -121,4 +123,10 @@ class RecitationSurasMenuDomain @Inject constructor(
         quranRepository.setSuraFavoriteStatus(suraId, value)
     }
 
+    fun getSearchResults(query: String, items: List<ReciterSura>) =
+        searcher.containsSearch(
+            items = items,
+            query = query,
+            keySelector = { sura -> sura.searchName }
+        )
 }

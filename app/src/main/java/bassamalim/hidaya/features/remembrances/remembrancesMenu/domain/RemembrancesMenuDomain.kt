@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
+import bassamalim.hidaya.core.helpers.Searcher
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -13,6 +14,8 @@ class RemembrancesMenuDomain @Inject constructor(
     private val remembrancesRepository: RemembrancesRepository,
     private val appSettingsRepository: AppSettingsRepository
 ) {
+
+    private val searcher = Searcher<RemembrancesItem>()
 
     fun getLanguage() = appSettingsRepository.getLanguage()
 
@@ -50,5 +53,12 @@ class RemembrancesMenuDomain @Inject constructor(
     fun setFavoriteStatus(id: Int, value: Boolean) {
         remembrancesRepository.setFavorite(id, value)
     }
+
+    fun getSearchResults(query: String, items: List<RemembrancesItem>) =
+        searcher.containsSearch(
+            items = items,
+            query = query,
+            keySelector = { remembrance -> remembrance.name }
+        )
 
 }

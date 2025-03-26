@@ -13,6 +13,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
+import bassamalim.hidaya.core.helpers.Searcher
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.quran.surasMenu.ui.LastPlayedMedia
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +29,8 @@ class RecitationRecitersMenuDomain @Inject constructor(
     private val quranRepository: QuranRepository,
     private val appSettingsRepository: AppSettingsRepository
 ) {
+
+    private val searcher = Searcher<Recitation>()
 
     private val downloadReceiver = ReceiverWrapper(
         context = app,
@@ -182,5 +185,12 @@ class RecitationRecitersMenuDomain @Inject constructor(
         recitationsRepository.getNarrationSelections(language)
 
     fun getLastPlayed() = recitationsRepository.getLastPlayedMedia()
+
+    fun getSearchResults(searchText: String, recitations: List<Recitation>) =
+        searcher.containsSearch(
+            items = recitations,
+            query = searchText,
+            keySelector = { recitation -> recitation.reciterName }
+        )
 
 }
