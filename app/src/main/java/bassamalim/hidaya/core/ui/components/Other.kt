@@ -13,10 +13,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -46,11 +44,9 @@ fun MyHorizontalDivider(
     padding: PaddingValues = PaddingValues(vertical = 5.dp)
 ) {
     HorizontalDivider(
-        modifier = modifier
-            .alpha(0.6F)
-            .padding(padding),
+        modifier = modifier.padding(padding),
         thickness = thickness,
-        color = MaterialTheme.colorScheme.outlineVariant
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2F)
     )
 }
 

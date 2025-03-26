@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.NotificationsPaused
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -132,7 +133,7 @@ private fun ColumnScope.PrayersSpace(
     Column(
         modifier = Modifier
             .weight(1F)
-            .padding(vertical = 10.dp, horizontal = 6.dp)
+            .padding(vertical = 16.dp, horizontal = 6.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.SpaceAround
     ) {
@@ -146,7 +147,10 @@ private fun ColumnScope.PrayersSpace(
             )
 
             if (prayer != prayersData.lastKey())
-                HorizontalDivider(thickness = 0.5.dp)
+                HorizontalDivider(
+                    thickness = 0.5.dp,
+                    color = DividerDefaults.color.copy(alpha = 0.2f)
+                )
         }
     }
 }

@@ -114,12 +114,12 @@ class LocationPickerViewModel @Inject constructor(
             )
         }
 
-        val searchText = _uiState.value.searchText
         _uiState.update { it.copy(
-            items = if (searchText.isEmpty()) countries
-            else countries.filter { country ->
-                country.name.contains(searchText, ignoreCase = true)
-            }
+            items = if (_uiState.value.searchText.isEmpty()) countries
+            else domain.getSearchResults(
+                query = _uiState.value.searchText,
+                items = countries
+            )
         )}
     }
 
@@ -135,12 +135,12 @@ class LocationPickerViewModel @Inject constructor(
                 )
             }
 
-            val searchText = _uiState.value.searchText
             _uiState.update { it.copy(
-                items = if (searchText.isEmpty()) cities
-                else cities.filter { city ->
-                    city.name.contains(searchText, ignoreCase = true)
-                }
+                items = if (_uiState.value.searchText.isEmpty()) cities
+                else domain.getSearchResults(
+                    query = _uiState.value.searchText,
+                    items = cities
+                )
             )}
         }
     }

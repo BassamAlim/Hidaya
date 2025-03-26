@@ -19,11 +19,12 @@ class Searcher<T> {
     ): List<T> {
         if (query.isEmpty()) return items
 
-        val normalizedQuery = query.lowercase().trim()
+        val normalizedQuery = normalizeString(query)
 
         return items.mapNotNull { item ->
-            val key = keySelector(item).lowercase().trim()
-            val similarity = calculateSimilarity(key, normalizedQuery)
+            val key = keySelector(item)
+            val normalizedKey = normalizeString(key)
+            val similarity = calculateSimilarity(normalizedKey, normalizedQuery)
             if (similarity >= threshold) {
                 Pair(item, similarity)
             } else null
@@ -37,24 +38,23 @@ class Searcher<T> {
      * @param items List of items to search through
      * @param query Search query string
      * @param keySelector Function to extract the searchable string from an item
-     * @param ignoreCase Whether to ignore case when searching
      * @return List of matching items
      */
     fun containsSearch(
         items: List<T>,
         query: String,
         keySelector: (T) -> String,
-        limit: Int = Int.MAX_VALUE,
-        ignoreCase: Boolean = true
+        limit: Int = Int.MAX_VALUE
     ): List<T> {
         if (query.isEmpty()) return items.take(limit)
 
-        val normalizedQuery = query.let { if (ignoreCase) it.lowercase() else it }.trim()
+        val normalizedQuery = normalizeString(query)
         val results = mutableListOf<T>()
 
         for (item in items) {
-            val key = keySelector(item).let { if (ignoreCase) it.lowercase() else it }.trim()
-            if (key.contains(normalizedQuery)) {
+            val key = keySelector(item)
+            val normalizedKey = normalizeString(key)
+            if (normalizedKey.contains(normalizedQuery)) {
                 results.add(item)
                 if (results.size >= limit) break
             }
@@ -68,24 +68,23 @@ class Searcher<T> {
      * @param items List of items to search through
      * @param query Search query string
      * @param keySelector Function to extract the searchable string from an item
-     * @param ignoreCase Whether to ignore case when searching
      * @return List of matching items
      */
     fun prefixSearch(
         items: List<T>,
         query: String,
         keySelector: (T) -> String,
-        limit: Int = Int.MAX_VALUE,
-        ignoreCase: Boolean = true
+        limit: Int = Int.MAX_VALUE
     ): List<T> {
         if (query.isEmpty()) return items.take(limit)
 
-        val normalizedQuery = query.let { if (ignoreCase) it.lowercase() else it }.trim()
+        val normalizedQuery = normalizeString(query)
         val results = mutableListOf<T>()
 
         for (item in items) {
-            val key = keySelector(item).let { if (ignoreCase) it.lowercase() else it }.trim()
-            if (key.startsWith(normalizedQuery)) {
+            val key = keySelector(item)
+            val normalizedKey = normalizeString(key)
+            if (normalizedKey.startsWith(normalizedQuery)) {
                 results.add(item)
                 if (results.size >= limit) break
             }
@@ -124,27 +123,17 @@ class Searcher<T> {
         return if (maxLength == 0) 1f else 1f - (dp[str1.length][str2.length].toFloat() / maxLength)
     }
 
-    companion object {
-        /**
-         * Creates a weighted combination of multiple search results
-         * @param searchResults Map of search results to their weights
-         * @return Combined and sorted list of unique items
-         */
-        fun <T> combineSearchResults(
-            searchResults: Map<List<T>, Float>
-        ): List<T> {
-            val scoreMap = mutableMapOf<T, Float>()
-
-            searchResults.forEach { (results, weight) ->
-                results.forEachIndexed { index, item ->
-                    val score = weight * (1f - (index.toFloat() / results.size))
-                    scoreMap[item] = (scoreMap[item] ?: 0f) + score
-                }
-            }
-
-            return scoreMap.entries
-                .sortedByDescending { it.value }
-                .map { it.key }
-        }
+    private fun normalizeString(str: String): String {
+        return str
+            .trim()
+            .lowercase()
+            .replace("أ", "ا")
+            .replace("إ", "ا")
+            .replace("آ", "ا")
+            .replace("ة", "ه")
+            .replace("ؤ", "و")
+            .replace("ى", "ي")
+            .replace("ئ", "ي")
     }
+
 }

@@ -27,6 +27,7 @@ import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.ui.components.ExpandableCard
 import bassamalim.hidaya.core.ui.components.MyFatColumn
+import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.TimePickerDialog
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -144,6 +145,8 @@ fun AppearanceSettings(
             onSelection = onLanguageChange
         )
 
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
+
         // Numerals language
         MenuSetting(
             selection = selectedNumeralsLanguage,
@@ -153,6 +156,8 @@ fun AppearanceSettings(
             icon = R.drawable.ic_translation,
             onSelection = onNumeralsLanguageChange
         )
+
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
 
         // Time format
         MenuSetting(
@@ -165,6 +170,8 @@ fun AppearanceSettings(
             icon = R.drawable.ic_time_format,
             onSelection = onTimeFormatChange
         )
+
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
 
         // Theme
         MenuSetting(
@@ -201,6 +208,9 @@ private fun DevotionReminderSettings(
                 summary = devotionReminderSummaries[reminder]!!,
                 onSwitch = { onDevotionReminderSwitch(reminder, it) }
             )
+
+            if (reminder != titles.keys.last())
+                MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
         }
     }
 }
@@ -226,6 +236,8 @@ private fun PrayerTimesSettings(
             onSelection = onCalculationMethodChange
         )
 
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
+
         // Juristic method
         MenuSetting(
             selection = juristicMethod,
@@ -234,6 +246,8 @@ private fun PrayerTimesSettings(
             title = stringResource(R.string.juristic_method_title),
             onSelection = onJuristicMethodChange
         )
+
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
 
         // High latitude adjustment
         MenuSetting(

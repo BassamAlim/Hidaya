@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Leaderboard
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.VerticalDivider
@@ -144,7 +145,10 @@ private fun PrayerCard(
                     )
                 }
 
-                VerticalDivider(Modifier.padding(vertical = 20.dp))
+                VerticalDivider(
+                    modifier = Modifier.padding(vertical = 20.dp),
+                    color = DividerDefaults.color.copy(alpha = 0.2f)
+                )
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally

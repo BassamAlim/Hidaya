@@ -30,17 +30,12 @@ class BookSearcherDomain @Inject constructor(
             if (!bookSelections[bookId]!! || !booksRepository.isDownloaded(bookId))
                 continue
 
-            for (c in bookContent.chapters.indices) {
-                val chapter = bookContent.chapters[c]
-
-                for (d in chapter.doors.indices) {
-                    val door = chapter.doors[d]
-                    val doorText = door.text
-
-                    val matcher = Pattern.compile(searchText).matcher(doorText)
+            for ((c, chapter) in bookContent.chapters.withIndex()) {
+                for ((d, door) in chapter.doors.withIndex()) {
+                    val matcher = Pattern.compile(searchText).matcher(door.text)
                     if (matcher.find()) {
                         val annotatedString = buildAnnotatedString {
-                            append(doorText)
+                            append(door.text)
 
                             do {
                                 addStyle(
