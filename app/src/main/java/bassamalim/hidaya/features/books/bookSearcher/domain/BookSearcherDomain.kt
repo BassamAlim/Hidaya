@@ -6,6 +6,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.helpers.Searcher
+import bassamalim.hidaya.core.models.BookContent
 import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherMatch
 import kotlinx.coroutines.flow.first
 import java.util.regex.Pattern
@@ -16,8 +18,10 @@ class BookSearcherDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
+    private val searcher = Searcher<BookContent.Chapter.Door>()
+
     suspend fun search(
-        searchText: String,
+        query: String,
         bookSelections: Map<Int, Boolean>,
         maxMatches: Int,
         language: Language,
@@ -25,14 +29,25 @@ class BookSearcherDomain @Inject constructor(
     ): List<BookSearcherMatch> {
         val matches = mutableListOf<BookSearcherMatch>()
 
+        val normalizedQuery = searcher.normalizeString(query)
+        val normalizedQueryPattern = Pattern.compile(normalizedQuery)
+
         val bookContents = booksRepository.getBookContents(language)
         for ((bookId, bookContent) in bookContents) {
             if (!bookSelections[bookId]!! || !booksRepository.isDownloaded(bookId))
                 continue
 
             for ((c, chapter) in bookContent.chapters.withIndex()) {
-                for ((d, door) in chapter.doors.withIndex()) {
-                    val matcher = Pattern.compile(searchText).matcher(door.text)
+                val searchResults = searcher.containsSearch(
+                    items = chapter.doors.toList(),
+                    query = normalizedQuery,
+                    keySelector = { it.text },
+                    limit = maxMatches
+                )
+
+                for ((d, door) in searchResults.withIndex()) {
+                    val normalizedText = searcher.normalizeString(door.text, trim = false)
+                    val matcher = normalizedQueryPattern.matcher(normalizedText)
                     if (matcher.find()) {
                         val annotatedString = buildAnnotatedString {
                             append(door.text)

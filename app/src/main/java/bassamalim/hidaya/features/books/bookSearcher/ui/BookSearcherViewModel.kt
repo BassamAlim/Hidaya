@@ -35,7 +35,7 @@ class BookSearcherViewModel @Inject constructor(
     ) { state, bookSelections, maxMatches ->
         if (state.searched) state.copy(
             matches = domain.search(
-                searchText = state.searchText,
+                query = state.searchText,
                 bookSelections = bookSelections,
                 maxMatches = maxMatches,
                 language = language,
@@ -76,7 +76,7 @@ class BookSearcherViewModel @Inject constructor(
             _uiState.update { it.copy(
                 searched = true,
                 matches = domain.search(
-                    searchText = it.searchText,
+                    query = it.searchText,
                     bookSelections = bookSelections,
                     maxMatches = it.maxMatches,
                     language = language,

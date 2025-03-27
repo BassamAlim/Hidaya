@@ -123,9 +123,8 @@ class Searcher<T> {
         return if (maxLength == 0) 1f else 1f - (dp[str1.length][str2.length].toFloat() / maxLength)
     }
 
-    private fun normalizeString(str: String): String {
-        return str
-            .trim()
+    fun normalizeString(str: String, trim: Boolean = true): String {
+        val normalized = str
             .lowercase()
             .replace("أ", "ا")
             .replace("إ", "ا")
@@ -134,6 +133,8 @@ class Searcher<T> {
             .replace("ؤ", "و")
             .replace("ى", "ي")
             .replace("ئ", "ي")
+        if (trim) return normalized.trim()
+        return normalized
     }
 
 }

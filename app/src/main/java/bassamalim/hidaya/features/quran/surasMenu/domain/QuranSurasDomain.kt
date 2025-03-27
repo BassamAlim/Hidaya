@@ -23,6 +23,7 @@ class QuranSurasDomain @Inject constructor(
 ) {
 
     private val suraSearcher = Searcher<Sura>()
+    private val verseSearcher = Searcher<Verse>()
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
@@ -68,36 +69,41 @@ class QuranSurasDomain @Inject constructor(
         numeralsLanguage: Language,
         highlightColor: Color
     ): List<VerseMatch> {
+        val searchResults = verseSearcher.containsSearch(
+            items = items,
+            query = query,
+            keySelector = { it.plainText },
+            limit = 100
+        )
+
         val matches = mutableListOf<VerseMatch>()
-        for (verse in items) {
-            val matcher = Pattern.compile(query).matcher(verse.plainText)
-            if (matcher.find()) {
-                val annotatedString = buildAnnotatedString {
-                    append(verse.plainText)
+        val normalizedQueryPattern = Pattern.compile(verseSearcher.normalizeString(query))
+        for (verse in searchResults) {
+            val normalizedVerse = verseSearcher.normalizeString(verse.plainText, trim = false)
+            val matcher = normalizedQueryPattern.matcher(normalizedVerse)
+            val annotatedString = buildAnnotatedString {
+                append(verse.plainText)
 
-                    do {
-                        addStyle(
-                            style = SpanStyle(highlightColor),
-                            start = matcher.start(),
-                            end = matcher.end()
-                        )
-                    } while (matcher.find())
-                }
-
-                matches.add(
-                    VerseMatch(
-                        id = verse.id,
-                        verseNum = translateNums(
-                            string = verse.num.toString(),
-                            numeralsLanguage = numeralsLanguage
-                        ),
-                        suraName = suraNames[verse.suraNum-1],
-                        text = annotatedString,
+                do {
+                    addStyle(
+                        style = SpanStyle(highlightColor),
+                        start = matcher.start(),
+                        end = matcher.end()
                     )
-                )
-
-                if (matches.size == 100) break
+                } while (matcher.find())
             }
+
+            matches.add(
+                VerseMatch(
+                    id = verse.id,
+                    verseNum = translateNums(
+                        string = verse.num.toString(),
+                        numeralsLanguage = numeralsLanguage
+                    ),
+                    suraName = suraNames[verse.suraNum-2],
+                    text = annotatedString,
+                )
+            )
         }
         return matches
     }
