@@ -124,7 +124,7 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
             )
 
             SwitchSetting(
-                title = stringResource(R.string.stop_on_sura_end),
+                title = stringResource(R.string.stop_on_page_end),
                 isOn = state.shouldStopOnPageEnd,
                 onSwitch = viewModel::onShouldStopOnPageEndChange
             )
