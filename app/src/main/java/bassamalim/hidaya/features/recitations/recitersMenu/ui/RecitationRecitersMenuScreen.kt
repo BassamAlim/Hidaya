@@ -6,22 +6,31 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,10 +44,10 @@ import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
-import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.MyTopBar
 import bassamalim.hidaya.core.ui.components.TabLayout
+import bassamalim.hidaya.features.quran.surasMenu.ui.LastPlayedMedia
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import kotlinx.coroutines.flow.Flow
 
@@ -53,12 +62,16 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
         onDispose(viewModel::onStop)
     }
 
-    MyScaffold(
-        title = stringResource(R.string.recitations),
-        onBack = viewModel::onBackPressed
+    Scaffold(
+        topBar = {
+            MyTopBar(
+                title = stringResource(R.string.recitations),
+                onBack = viewModel::onBackPressed
+            )
+        }
     ) { padding ->
-        Column(
-            Modifier
+        Box(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(padding)
         ) {
@@ -68,7 +81,6 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                     stringResource(R.string.favorite),
                     stringResource(R.string.downloaded)
                 ),
-                modifier = Modifier.weight(1f),
                 searchComponent = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -102,23 +114,9 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                 )
             }
 
-            MyHorizontalDivider(thickness = 2.dp)
-
-            MyRectangleButton(
-                text =
-                    if (state.lastPlayedMedia != null) {
-                        "${stringResource(R.string.last_play)}: " +
-                                "${stringResource(R.string.sura)} ${state.lastPlayedMedia!!.suraName} " +
-                                stringResource(R.string.for_reciter) +
-                                " ${state.lastPlayedMedia!!.reciterName}" +
-                                stringResource(R.string.in_narration_of) +
-                                " ${state.lastPlayedMedia!!.narrationName}"
-                    }
-                    else stringResource(R.string.no_last_play),
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 18.sp,
-                innerPadding = PaddingValues(top = 2.dp, bottom = 6.dp),
-                onClick = viewModel::onContinueListeningClick
+            PlaybackBottomBar(
+                lastPlayedMedia = state.lastPlayedMedia,
+                onContinueListeningClick = viewModel::onContinueListeningClick
             )
         }
     }
@@ -143,6 +141,10 @@ private fun Tab(
                     onDownloadNarrationClick = onDownloadNarrationClick
                 )
             }
+
+            item {
+                Spacer(modifier = Modifier.height(80.dp))
+            }
         }
     )
 }
@@ -158,7 +160,10 @@ private fun ReciterCard(
         Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline), RoundedCornerShape(10.dp))
+            .border(
+                BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                RoundedCornerShape(10.dp)
+            )
     ) {
         Row(
             modifier = Modifier
@@ -237,6 +242,57 @@ private fun NarrationsCard(
                     iconSize = 28.dp,
                     onClick = { onDownloadClick(reciterId, narration, suraString) }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BoxScope.PlaybackBottomBar(
+    lastPlayedMedia: LastPlayedMedia?,
+    onContinueListeningClick: () -> Unit
+) {
+    if (lastPlayedMedia == null) return
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
+            .align(Alignment.BottomCenter)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest,)
+            .clickable(onClick = onContinueListeningClick)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Absolute.SpaceBetween
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 10.dp,
+                        bottomStart = 0.dp,
+                        bottomEnd = 10.dp
+                    )),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = null
+                )
+            }
+
+            Column(
+                modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp)
+            ) {
+                MyText("${stringResource(R.string.sura)} ${lastPlayedMedia.suraName}")
+
+                MyText("${stringResource(R.string.for_reciter)} ${lastPlayedMedia.reciterName}")
             }
         }
     }

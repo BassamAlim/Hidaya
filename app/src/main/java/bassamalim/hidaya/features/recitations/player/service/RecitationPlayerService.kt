@@ -36,6 +36,7 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
@@ -44,7 +45,6 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
@@ -86,7 +86,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     private lateinit var pauseAction: NotificationCompat.Action
     private lateinit var nextAction: NotificationCompat.Action
     private lateinit var prevAction: NotificationCompat.Action
-    private lateinit var mediaSession: MediaSessionCompat
+    private var mediaSession: MediaSessionCompat? = null
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private lateinit var controller: MediaControllerCompat
     private lateinit var mediaMetadata: MediaMetadataCompat
@@ -153,6 +153,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     )
 
     override fun onCreate() {
+        println("OnCreate")
         super.onCreate()
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -172,6 +173,9 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        println("OnStartCommand")
+//        if (mediaSession == null) initSession()
+
         MediaButtonReceiver.handleIntent(mediaSession, intent)
         return super.onStartCommand(intent, flags, startId)
     }
@@ -226,7 +230,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
                     // Start the service
                     startService(Intent(applicationContext, RecitationPlayerService::class.java))
                     // Set the session active  (and update metadata and state)
-                    mediaSession.isActive = true
+                    mediaSession?.isActive = true
 
                     receiver.register()
                     // Put the service in the foreground, post notification
@@ -247,7 +251,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
                     updateNotification(true)
                 }
             }
-
         }
 
         override fun onPause() {
@@ -294,7 +297,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             player.release()
 
             stopSelf()    // Stop the service
-            mediaSession.isActive = false    // Set the session inactive
+            mediaSession?.isActive = false    // Set the session inactive
             stopForeground()    // Take the service out of the foreground
         }
 
@@ -329,7 +332,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     }
 
     private fun playOther() {
-        mediaSession.isActive = true
+        mediaSession?.isActive = true
         // start the player
         startPlaying(suraIndex)
 
@@ -412,13 +415,14 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         stateBuilder = PlaybackStateCompat.Builder().setActions(
             PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
         )
-        mediaSession.setPlaybackState(stateBuilder.build())
+        mediaSession?.setPlaybackState(stateBuilder.build())
 
         // callback() has methods that handle callbacks from a media controller
-        mediaSession.setCallback(callback)
+        mediaSession?.setCallback(callback)
 
         // Set the session's token so that client activities can communicate with it.
-        sessionToken = mediaSession.sessionToken
+        if (sessionToken == null)
+            sessionToken = mediaSession?.sessionToken
     }
 
     private fun setupActions() {
@@ -478,11 +482,11 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
     private suspend fun buildNotification() {
         // Get the session's metadata
-        controller = mediaSession.controller
+        controller = mediaSession!!.controller
         mediaMetadata = controller.metadata
         val description = mediaMetadata.description
 
-        mediaSession.setSessionActivity(getContentIntent())
+        mediaSession?.setSessionActivity(getContentIntent())
 
         createNotificationChannel()
 
@@ -520,7 +524,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             // Take advantage of MediaStyle features
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSession.sessionToken)
+                    .setMediaSession(mediaSession!!.sessionToken)
                     .setShowActionsInCompactView(0, 1, 2)
                     // Add a cancel button
                     .setShowCancelButton(true)
@@ -537,7 +541,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     }
 
     private fun initMetadata() {
-        mediaSession.setMetadata(
+        mediaSession?.setMetadata(
             MediaMetadataCompat.Builder()
                 // TODO: Migrate to Compose
 //                .putBitmap(    //Notification icon in card
@@ -593,7 +597,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
             .build()
 
-        mediaSession.setMetadata(mediaMetadata)
+        mediaSession?.setMetadata(mediaMetadata)
     }
 
     private fun updatePbState(state: Int, buffered: Long) {
@@ -611,7 +615,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             )
             .setBufferedPosition(buffered)
 
-        mediaSession.setPlaybackState(stateBuilder.build())
+        mediaSession?.setPlaybackState(stateBuilder.build())
     }
 
     private val runnable = Runnable {
