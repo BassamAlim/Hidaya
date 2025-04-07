@@ -1,5 +1,9 @@
 package bassamalim.hidaya.features.recitations.recitersMenu.ui
 
+import android.app.Activity
+import android.os.Build
+import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,18 +53,20 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyTopBar
 import bassamalim.hidaya.core.ui.components.TabLayout
-import bassamalim.hidaya.features.quran.surasMenu.ui.LastPlayedMedia
+import bassamalim.hidaya.features.quran.surasMenu.ui.RecitationInfo
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import kotlinx.coroutines.flow.Flow
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val activity = LocalContext.current as Activity
 
     if (state.isLoading) return
 
     DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
+        viewModel.onStart(activity)
         onDispose(viewModel::onStop)
     }
 
@@ -114,9 +122,11 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                 )
             }
 
-            PlaybackBottomBar(
-                lastPlayedMedia = state.lastPlayedMedia,
-                onContinueListeningClick = viewModel::onContinueListeningClick
+            PlaybackBar(
+                recitationInfo = state.playbackRecitationInfo,
+                playbackState = state.playbackState,
+                onContinueListeningClick = viewModel::onContinueListeningClick,
+                onPlayPauseClick = viewModel::onPlayPauseClick
             )
         }
     }
@@ -248,52 +258,69 @@ private fun NarrationsCard(
 }
 
 @Composable
-private fun BoxScope.PlaybackBottomBar(
-    lastPlayedMedia: LastPlayedMedia?,
-    onContinueListeningClick: () -> Unit
+private fun BoxScope.PlaybackBar(
+    recitationInfo: RecitationInfo?,
+    playbackState: Int,
+    onContinueListeningClick: () -> Unit,
+    onPlayPauseClick: () -> Unit
 ) {
-    if (lastPlayedMedia == null) return
+    if (recitationInfo == null) return
 
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
             .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
             .align(Alignment.BottomCenter)
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest,)
-            .clickable(onClick = onContinueListeningClick)
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Absolute.SpaceBetween
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Absolute.SpaceBetween
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(
+                    topStart = 0.dp,
+                    topEnd = 10.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 10.dp
+                ))
+                .clickable(onClick = onPlayPauseClick),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 10.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 10.dp
-                    )),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null
-                )
-            }
+            Icon(
+                imageVector =
+                    if (playbackState == PlaybackStateCompat.STATE_PLAYING) Icons.Default.Pause
+                    else Icons.Default.PlayArrow,
+                contentDescription = stringResource(R.string.play_pause_btn_description),
+            )
+        }
 
-            Column(
-                modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp)
-            ) {
-                MyText("${stringResource(R.string.sura)} ${lastPlayedMedia.suraName}")
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .weight(1f)
+                .clip(RoundedCornerShape(
+                    topStart = 10.dp,
+                    topEnd = 0.dp,
+                    bottomStart = 10.dp,
+                    bottomEnd = 0.dp
+                ))
+                .clickable(onClick = onContinueListeningClick)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            MyText(
+                text = "${stringResource(R.string.sura)} ${recitationInfo.suraName}",
+                fontWeight = FontWeight.SemiBold
+            )
 
-                MyText("${stringResource(R.string.for_reciter)} ${lastPlayedMedia.reciterName}")
-            }
+            MyText(
+                text = "${stringResource(R.string.for_reciter)} ${recitationInfo.reciterName}",
+                fontSize = 16.sp
+            )
         }
     }
 }

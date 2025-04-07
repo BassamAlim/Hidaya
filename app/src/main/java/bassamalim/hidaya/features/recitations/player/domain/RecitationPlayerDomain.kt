@@ -20,13 +20,13 @@ import android.util.Log
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.media3.common.util.UnstableApi
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
@@ -48,7 +48,6 @@ class RecitationPlayerDomain @Inject constructor(
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
     private var path = ""
-
     private lateinit var downloadReceiver: ReceiverWrapper
 
     @RequiresApi(Build.VERSION_CODES.O)

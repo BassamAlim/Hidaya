@@ -1,14 +1,24 @@
 package bassamalim.hidaya.features.recitations.recitersMenu.ui
 
 import android.app.Activity
+import android.os.Build
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -17,24 +27,20 @@ import bassamalim.hidaya.features.recitations.recitersMenu.domain.RecitationReci
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class RecitationRecitersMenuViewModel @Inject constructor(
     private val domain: RecitationRecitersMenuDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
-    private lateinit var language: Language
-    private var lastPlayedMediaId: String? = null
     private lateinit var allRecitations: Flow<Map<Int, Recitation>>
     private lateinit var suraNames: List<String>
     private lateinit var narrationSelections: Flow<Map<String, Boolean>>
@@ -42,45 +48,39 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         private set
 
     private val _uiState = MutableStateFlow(RecitationRecitersMenuUiState())
-    val uiState = combine(
-        _uiState.asStateFlow(),
-        domain.getLastPlayed()
-    ) { state, lastPlayed ->
-        if (state.isLoading) return@combine state
+    val uiState = _uiState.asStateFlow()
 
-        lastPlayed?.let { lastPlayedMediaId = it.mediaId }
-
-        state.copy(
-            lastPlayedMedia = lastPlayed?.mediaId?.let { domain.getLastPlayedMedia(it) },
-            isFiltered = narrationSelections.first().values.any { bool -> !bool }
-        )
-    }.onStart {
-        initializeData()
-        domain.cleanFiles()
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-        initialValue = RecitationRecitersMenuUiState()
-    )
-
-    private fun initializeData() {
+    init {
         viewModelScope.launch {
-            language = domain.getLanguage()
+            val language = domain.getLanguage()
             suraNames = domain.getSuraNames(language)
             allRecitations = domain.observeRecitersWithNarrations(language)
             narrationSelections = domain.getNarrationSelections(language)
+            val lastPlayed = domain.getLastPlayed().first()
 
             _uiState.update { it.copy(
-                isLoading = false
+                isLoading = false,
+                playbackRecitationInfo = lastPlayed?.mediaId?.let { domain.getLastPlayedMedia(it) },
+                isFiltered = narrationSelections.first().values.any { bool -> !bool }
             )}
+
+            domain.cleanFiles()
         }
     }
 
-    fun onStart() {
+    fun onStart(activity: Activity) {
+        Log.i(Globals.TAG, "in onStart of RecitationsRecitersViewModel")
+
+        domain.connect(activity = activity, connectionCallbacks = connectionCallbacks)
+
         domain.registerDownloadReceiver()
     }
 
     fun onStop() {
+        Log.i(Globals.TAG, "in onStop of RecitationsRecitersViewModel")
+
+        domain.stopMediaBrowser(controllerCallback)
+
         domain.unregisterDownloadReceiver()
     }
 
@@ -94,6 +94,134 @@ class RecitationRecitersMenuViewModel @Inject constructor(
             }
         }
         else (context as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
+    }
+
+    fun onPlayPauseClick() {
+        if (_uiState.value.playbackState == STATE_NONE)
+            return
+
+        if (domain.getState() == STATE_PLAYING) {
+            domain.pause()
+            _uiState.update { it.copy(
+                playbackState = STATE_PAUSED
+            )}
+        }
+        else {
+            domain.resume()
+            _uiState.update { it.copy(
+                playbackState = STATE_PLAYING
+            )}
+        }
+    }
+
+    fun onContinueListeningClick() {
+        viewModelScope.launch {
+            val lastPlayed = domain.getLastPlayed().first()
+            if (lastPlayed == null) return@launch
+
+            navigator.navigate(
+                Screen.RecitationPlayer(
+                    action = "continue",
+                    mediaId = lastPlayed.mediaId.toString()
+                )
+            )
+        }
+    }
+
+    fun onFilterClick() {
+        navigator.navigate(Screen.RecitersMenuFilter)
+    }
+
+    fun onFavoriteClick(reciterId: Int, oldValue: Boolean) {
+        viewModelScope.launch {
+            domain.setFavorite(reciterId, !oldValue)
+        }
+    }
+
+    fun onDownloadNarrationClick(
+        reciterId: Int,
+        narration: Recitation.Narration,
+        suraString: String
+    ) {
+        viewModelScope.launch {
+            if (allRecitations.first()[reciterId]!!.narrations[narration.id]!!.downloadState
+                == DownloadState.NOT_DOWNLOADED) {
+                domain.downloadNarration(
+                    reciterId = reciterId,
+                    narration = narration,
+                    suraNames = suraNames,
+                    suraString = suraString
+                )
+            }
+            else domain.deleteNarration(reciterId, narration)
+        }
+    }
+
+    fun onNarrationClick(reciterId: Int, narrationId: Int) {
+        navigator.navigate(
+            Screen.RecitationSurasMenu(
+                reciterId = reciterId.toString(),
+                narrationId = narrationId.toString()
+            )
+        )
+    }
+
+    // TODO: find a better fix for this
+    fun onSearchTextChange(text: String) {
+        searchText = text
+        _uiState.update { it.copy(
+            searchText = text
+        )}
+    }
+
+    private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
+        override fun onConnected() {
+            Log.i(Globals.TAG, "onConnected in RecitationsPlayerViewModel")
+            domain.initializeController(controllerCallback)
+        }
+
+        override fun onConnectionSuspended() {
+            Log.e(Globals.TAG, "Connection suspended in RecitationsPlayerViewModel")
+            _uiState.update { it.copy(
+                playbackState = STATE_NONE
+            )}
+        }
+
+        override fun onConnectionFailed() {
+            Log.e(Globals.TAG, "Connection failed in RecitationsPlayerViewModel")
+            _uiState.update { it.copy(
+                playbackState = STATE_NONE
+            )}
+        }
+    }
+
+    private var controllerCallback = object : MediaControllerCompat.Callback() {
+        override fun onMetadataChanged(metadata: MediaMetadataCompat) {
+            updateMetadata(metadata)
+        }
+
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
+            updatePlaybackState(state)
+        }
+
+        override fun onSessionDestroyed() {
+            domain.disconnectMediaBrowser()
+        }
+    }
+
+    private fun updateMetadata(metadata: MediaMetadataCompat) {
+        val mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                playbackRecitationInfo = mediaId?.let { domain.getLastPlayedMedia(mediaId) }
+            )}
+        }
+    }
+
+    private fun updatePlaybackState(state: PlaybackStateCompat) {
+        _uiState.update { it.copy(
+            playbackState = state.state
+        )}
     }
 
     fun getItems(page: Int): Flow<List<Recitation>> {
@@ -135,64 +263,6 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 
             domain.getSearchResults(_uiState.value.searchText, selectedItems)
         }
-    }
-
-    fun onContinueListeningClick() {
-        if (lastPlayedMediaId != null) {
-            navigator.navigate(
-                Screen.RecitationPlayer(
-                    action = "continue",
-                    mediaId = lastPlayedMediaId.toString()
-                )
-            )
-        }
-    }
-
-    fun onFilterClick() {
-        navigator.navigate(Screen.RecitersMenuFilter)
-    }
-
-    fun onFavoriteClick(reciterId: Int, oldValue: Boolean) {
-        viewModelScope.launch {
-            domain.setFavorite(reciterId, !oldValue)
-        }
-    }
-
-    fun onDownloadNarrationClick(
-        reciterId: Int,
-        narration: Recitation.Narration,
-        suraString: String
-    ) {
-        viewModelScope.launch {
-            if (allRecitations.first()[reciterId]!!.narrations[narration.id]!!.downloadState
-                == DownloadState.NOT_DOWNLOADED) {
-                domain.downloadNarration(
-                    reciterId = reciterId,
-                    narration = narration,
-                    suraNames = suraNames,
-                    language = language,
-                    suraString = suraString
-                )
-            }
-            else domain.deleteNarration(reciterId, narration)
-        }
-    }
-
-    fun onNarrationClick(reciterId: Int, narrationId: Int) {
-        navigator.navigate(
-            Screen.RecitationSurasMenu(
-                reciterId = reciterId.toString(),
-                narrationId = narrationId.toString()
-            )
-        )
-    }
-
-    // TODO: find a better fix for this
-    fun onSearchTextChange(text: String) {
-        searchText = text
-        _uiState.update { it.copy(
-            searchText = text
-        )}
     }
 
 }

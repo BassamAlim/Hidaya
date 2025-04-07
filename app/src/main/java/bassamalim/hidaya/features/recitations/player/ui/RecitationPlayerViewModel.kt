@@ -21,11 +21,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.features.recitations.player.domain.RecitationPlayerDomain
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -93,6 +93,26 @@ class RecitationPlayerViewModel @Inject constructor(
         }
     }
 
+    fun onStart(activity: Activity) {
+        Log.i(Globals.TAG, "in onStart of RecitationsPlayerViewModel")
+
+        domain.connect(
+            activity = activity,
+            connectionCallbacks = connectionCallbacks,
+            updateDownloadStates = { newState ->
+                _uiState.update { it.copy(
+                    downloadState = newState
+                )}
+            }
+        )
+    }
+
+    fun onStop() {
+        Log.i(Globals.TAG, "in onStop of RecitationsPlayerViewModel")
+
+        domain.stopMediaBrowser(controllerCallback)
+    }
+
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             Log.i(Globals.TAG, "onConnected in RecitationsPlayerViewModel")
@@ -128,26 +148,6 @@ class RecitationPlayerViewModel @Inject constructor(
             // The Service has refused our connection
             disableControls()
         }
-    }
-
-    fun onStart(activity: Activity) {
-        Log.i(Globals.TAG, "in onStart of RecitationsPlayerViewModel")
-
-        domain.connect(
-            activity = activity,
-            connectionCallbacks = connectionCallbacks,
-            updateDownloadStates = { newState ->
-                _uiState.update { it.copy(
-                    downloadState = newState
-                )}
-            }
-        )
-    }
-
-    fun onStop() {
-        Log.i(Globals.TAG, "in onStop of RecitationsPlayerViewModel")
-
-        domain.stopMediaBrowser(controllerCallback)
     }
 
     private suspend fun updateTrackState() {
@@ -252,20 +252,22 @@ class RecitationPlayerViewModel @Inject constructor(
     }
 
     fun onPlayPauseClick() {
-        if (_uiState.value.btnState != STATE_NONE) {
-            if (domain.getState() == STATE_PLAYING) {
-                domain.pause()
-                _uiState.update { it.copy(
-                    btnState = STATE_PAUSED
-                )}
-            }
-            else {
-                domain.resume()
-                _uiState.update { it.copy(
-                    btnState = STATE_PLAYING
-                )}
-            }
+        if (_uiState.value.btnState == STATE_NONE)
+            return
+
+        if (domain.getState() == STATE_PLAYING) {
+            domain.pause()
+            _uiState.update { it.copy(
+                btnState = STATE_PAUSED
+            )}
         }
+        else {
+            domain.resume()
+            _uiState.update { it.copy(
+                btnState = STATE_PLAYING
+            )}
+        }
+
     }
 
     fun onPreviousTrackClick() {
