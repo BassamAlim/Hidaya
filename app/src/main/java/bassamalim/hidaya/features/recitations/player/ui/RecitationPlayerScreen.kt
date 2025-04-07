@@ -119,22 +119,22 @@ private fun InfoSpace(suraName: String, narrationName: String, reciterName: Stri
             MyText(
                 text = suraName,
                 modifier = Modifier.padding(vertical = 10.dp),
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            MyText(
-                text = narrationName,
-                modifier = Modifier.padding(vertical = 10.dp),
-                fontSize = 26.sp,
+                fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
             )
 
             MyText(
                 text = reciterName,
                 modifier = Modifier.padding(vertical = 10.dp),
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            MyText(
+                text = narrationName,
+                modifier = Modifier.padding(vertical = 10.dp),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Normal
             )
         }
     }

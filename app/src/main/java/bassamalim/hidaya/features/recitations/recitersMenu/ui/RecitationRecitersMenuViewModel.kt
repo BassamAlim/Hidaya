@@ -22,6 +22,7 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.quran.surasMenu.ui.RecitationInfo
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.RecitationRecitersMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,11 +57,13 @@ class RecitationRecitersMenuViewModel @Inject constructor(
             suraNames = domain.getSuraNames(language)
             allRecitations = domain.observeRecitersWithNarrations(language)
             narrationSelections = domain.getNarrationSelections(language)
-            val lastPlayed = domain.getLastPlayed().first()
 
+            val lastPlayed = domain.getLastPlayed().first()
             _uiState.update { it.copy(
                 isLoading = false,
-                playbackRecitationInfo = lastPlayed?.mediaId?.let { domain.getLastPlayedMedia(it) },
+                playbackRecitationInfo = lastPlayed?.let {
+                    domain.getLastPlayedMedia(lastPlayed.mediaId)
+                },
                 isFiltered = narrationSelections.first().values.any { bool -> !bool }
             )}
 
@@ -71,9 +74,11 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     fun onStart(activity: Activity) {
         Log.i(Globals.TAG, "in onStart of RecitationsRecitersViewModel")
 
-        domain.connect(activity = activity, connectionCallbacks = connectionCallbacks)
+        viewModelScope.launch {
+            domain.connect(activity = activity, connectionCallbacks = connectionCallbacks)
 
-        domain.registerDownloadReceiver()
+            domain.registerDownloadReceiver()
+        }
     }
 
     fun onStop() {
@@ -178,6 +183,8 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         override fun onConnected() {
             Log.i(Globals.TAG, "onConnected in RecitationsPlayerViewModel")
             domain.initializeController(controllerCallback)
+
+            updateMetadata(domain.getMetadata())
         }
 
         override fun onConnectionSuspended() {
@@ -210,12 +217,16 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     }
 
     private fun updateMetadata(metadata: MediaMetadataCompat) {
-        val mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
-        viewModelScope.launch {
-            _uiState.update { it.copy(
-                playbackRecitationInfo = mediaId?.let { domain.getLastPlayedMedia(mediaId) }
-            )}
-        }
+        if (metadata.getLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS) == 0L)
+            return
+
+        _uiState.update { it.copy(
+            playbackRecitationInfo = RecitationInfo(
+                reciterName = metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST) ?: "",
+                narrationName = metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM) ?: "",
+                suraName = metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE) ?: ""
+            )
+        )}
     }
 
     private fun updatePlaybackState(state: PlaybackStateCompat) {

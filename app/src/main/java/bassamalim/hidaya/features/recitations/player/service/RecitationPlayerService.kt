@@ -559,7 +559,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "")
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, "")
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "")
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, "")
+                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, "")
                 .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 0)
                 .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 0)
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
@@ -587,6 +587,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suraNames[suraIndex])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName!!)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName!!)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, narration.name)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, narration.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, suraIndex.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS,

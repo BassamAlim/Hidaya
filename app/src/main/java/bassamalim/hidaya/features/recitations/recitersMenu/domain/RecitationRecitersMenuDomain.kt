@@ -11,7 +11,6 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -229,6 +228,8 @@ class RecitationRecitersMenuDomain @Inject constructor(
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
+    fun isConnected() = mediaBrowser?.isConnected == true
+
     fun initializeController(controllerCallback: MediaControllerCompat.Callback) {
         Log.d(Globals.TAG, "in initializeController of RecitationPlayerDomain")
 
@@ -246,22 +247,6 @@ class RecitationRecitersMenuDomain @Inject constructor(
 
         // Register a Callback to stay in sync
         controller.registerCallback(controllerCallback)
-    }
-
-    fun sendPlayRequest(
-        mediaId: String,
-        playType: String,
-        reciterName: String,
-        narration: Recitation.Narration
-    ) {
-        // Pass media data
-        val bundle = Bundle()
-        bundle.putString("play_type", playType)
-        bundle.putString("reciter_name", reciterName)
-        bundle.putSerializable("narration", narration)
-
-        // Start Playback
-        tc.playFromMediaId(mediaId, bundle)
     }
 
     fun pause() = tc.pause()
