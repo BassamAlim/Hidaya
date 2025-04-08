@@ -70,14 +70,11 @@ class PrayersBoardDomain @Inject constructor(
 
     suspend fun getShouldShowTutorial() = prayersRepository.getShouldShowTutorial().first()
 
-    suspend fun setDoNotShowAgain() {
+    fun setDoNotShowAgain() {
         prayersRepository.setShouldShowTutorial(false)
     }
 
-    suspend fun getTimes(
-        location: Location,
-        date: Calendar
-    ): SortedMap<Prayer, String> {
+    suspend fun getTimes(location: Location, date: Calendar): SortedMap<Prayer, String> {
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),

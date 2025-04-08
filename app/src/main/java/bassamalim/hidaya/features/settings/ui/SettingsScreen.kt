@@ -70,9 +70,11 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     expandedContent = {
                         DevotionReminderSettings(
                             devotionReminderEnabledStatuses =
-                            state.devotionalReminderEnabledStatuses,
+                                state.devotionalReminderEnabledStatuses,
                             devotionReminderSummaries = state.devotionalReminderSummaries,
-                            onDevotionReminderSwitch = viewModel::onDevotionReminderSwitch
+                            onDevotionReminderSwitch = viewModel::onDevotionReminderSwitch,
+                            morningAndEveningRemembrancesEnabled =
+                                state.morningAndEveningRemembrancesEnabled
                         )
                     }
                 )
@@ -132,9 +134,7 @@ fun AppearanceSettings(
     onThemeChange: (Theme) -> Unit,
     numeralsLanguage: Language
 ) {
-    Column(
-        Modifier.padding(bottom = 10.dp)
-    ) {
+    Column(Modifier.padding(bottom = 10.dp)) {
         // Language
         MenuSetting(
             selection = selectedLanguage,
@@ -190,28 +190,44 @@ private fun DevotionReminderSettings(
     devotionReminderEnabledStatuses: Map<Reminder.Devotional, Boolean>,
     devotionReminderSummaries: Map<Reminder.Devotional, String>,
     onDevotionReminderSwitch: (Reminder.Devotional, Boolean) -> Unit,
+    morningAndEveningRemembrancesEnabled: Boolean
 ) {
-    val titles = linkedMapOf(  // Preserve order
-        Reminder.Devotional.MorningRemembrances to stringResource(R.string.morning_remembrance_title),
-        Reminder.Devotional.EveningRemembrances to stringResource(R.string.evening_remembrance_title),
-        Reminder.Devotional.DailyWerd to stringResource(R.string.daily_werd_title),
-        Reminder.Devotional.FridayKahf to stringResource(R.string.friday_kahf_title)
-    )
+    Column(Modifier.padding(bottom = 10.dp)) {
+        SwitchSetting(
+            value = devotionReminderEnabledStatuses[Reminder.Devotional.MorningRemembrances]!!,
+            title = stringResource(R.string.morning_remembrance_title),
+            summary = stringResource(R.string.thirty_minutes_after_fajr),
+            enabled = morningAndEveningRemembrancesEnabled,
+            onSwitch = { onDevotionReminderSwitch(Reminder.Devotional.MorningRemembrances, it) }
+        )
 
-    Column(
-        Modifier.padding(bottom = 10.dp)
-    ) {
-        titles.forEach { (reminder, title) ->
-            SwitchSetting(
-                value = devotionReminderEnabledStatuses[reminder]!!,
-                title = title,
-                summary = devotionReminderSummaries[reminder]!!,
-                onSwitch = { onDevotionReminderSwitch(reminder, it) }
-            )
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
 
-            if (reminder != titles.keys.last())
-                MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
-        }
+        SwitchSetting(
+            value = devotionReminderEnabledStatuses[Reminder.Devotional.EveningRemembrances]!!,
+            title = stringResource(R.string.evening_remembrance_title),
+            summary = stringResource(R.string.thirty_minutes_after_asr),
+            enabled = morningAndEveningRemembrancesEnabled,
+            onSwitch = { onDevotionReminderSwitch(Reminder.Devotional.EveningRemembrances, it) }
+        )
+
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
+
+        SwitchSetting(
+            value = devotionReminderEnabledStatuses[Reminder.Devotional.DailyWerd]!!,
+            title = stringResource(R.string.daily_werd_title),
+            summary = devotionReminderSummaries[Reminder.Devotional.DailyWerd]!!,
+            onSwitch = { onDevotionReminderSwitch(Reminder.Devotional.DailyWerd, it) }
+        )
+
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
+
+        SwitchSetting(
+            value = devotionReminderEnabledStatuses[Reminder.Devotional.FridayKahf]!!,
+            title = stringResource(R.string.friday_kahf_title),
+            summary = devotionReminderSummaries[Reminder.Devotional.FridayKahf]!!,
+            onSwitch = { onDevotionReminderSwitch(Reminder.Devotional.FridayKahf, it) }
+        )
     }
 }
 

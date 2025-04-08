@@ -7,6 +7,7 @@ import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.enums.Reminder
@@ -76,39 +77,64 @@ class SettingsDomain @Inject constructor(
     fun getDevotionReminderEnabledMap() =
         notificationsRepository.getDevotionalReminderEnabledMap()
 
-    suspend fun setDevotionReminderEnabled(enabled: Boolean, reminder: Reminder.Devotional) {
+    fun setDevotionReminderEnabled(enabled: Boolean, reminder: Reminder.Devotional) {
         notificationsRepository.setDevotionalReminderEnabled(enabled, reminder)
     }
 
     fun getDevotionReminderTimeOfDayMap() =
         notificationsRepository.getDevotionalReminderTimes()
 
-    suspend fun setDevotionReminderTimeOfDay(timeOfDay: TimeOfDay, reminder: Reminder.Devotional) {
+    fun setDevotionReminderTimeOfDay(timeOfDay: TimeOfDay, reminder: Reminder.Devotional) {
         notificationsRepository.setDevotionalReminderTimes(timeOfDay, reminder)
     }
 
     fun getPrayerTimesCalculatorSettings() = prayersRepository.getPrayerTimesCalculatorSettings()
 
-    suspend fun setPrayerTimeCalculationMethod(calculationMethod: PrayerTimeCalculationMethod) {
+    fun setPrayerTimeCalculationMethod(calculationMethod: PrayerTimeCalculationMethod) {
         prayersRepository.setCalculationMethod(calculationMethod)
     }
 
-    suspend fun setPrayerTimeJuristicMethod(juristicMethod: PrayerTimeJuristicMethod) {
+    fun setPrayerTimeJuristicMethod(juristicMethod: PrayerTimeJuristicMethod) {
         prayersRepository.setJuristicMethod(juristicMethod)
     }
 
-    suspend fun setHighLatitudesAdjustmentMethod(adjustmentMethod: HighLatitudesAdjustmentMethod) {
+    fun setHighLatitudesAdjustmentMethod(adjustmentMethod: HighLatitudesAdjustmentMethod) {
         prayersRepository.setAdjustHighLatitudes(adjustmentMethod)
     }
 
     fun getAthanAudioId() = prayersRepository.getAthanAudioId()
 
-    suspend fun setAthanAudioId(athanAudioId: Int) {
+    fun setAthanAudioId(athanAudioId: Int) {
         prayersRepository.setAthanAudioId(athanAudioId)
     }
 
     fun restartActivity(activity: Activity) {
         ActivityUtils.restartActivity(activity)
+    }
+
+    fun getLocation() = locationRepository.getLocation()
+
+    suspend fun getPrayerTime(prayer: Prayer): Calendar {
+        val location = locationRepository.getLocation().first()!!
+
+        var prayerTime = PrayerTimeUtils.getPrayerTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
+            calendar = Calendar.getInstance()
+        )[prayer]!!
+
+        // if prayer time passed
+        if (prayerTime.timeInMillis < System.currentTimeMillis()) {
+            prayerTime = PrayerTimeUtils.getPrayerTimes(
+                settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+                selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+                location = location,
+                calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, 1) }
+            )[prayer]!!
+        }
+
+        return prayerTime
     }
 
 }

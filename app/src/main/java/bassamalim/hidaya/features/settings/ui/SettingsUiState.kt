@@ -19,4 +19,5 @@ data class SettingsUiState(
     val prayerTimeCalculatorSettings: PrayerTimeCalculatorSettings =
         PrayerTimeCalculatorSettings(),
     val athanAudioId: Int = 0,
+    val morningAndEveningRemembrancesEnabled: Boolean = false,
 )

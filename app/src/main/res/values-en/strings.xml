@@ -210,4 +210,6 @@
     <string name="quiz_categories">Question categories</string>
     <string name="virtue">Virtue</string>
     <string name="interpretation_source">Tafseer Moyassar</string>
+    <string name="thirty_minutes_after_fajr">Thirty minutes after Fajr</string>
+    <string name="thirty_minutes_after_asr">Thirty minutes after Asr</string>
 </resources>

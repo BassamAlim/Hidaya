@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.enums.Reminder
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
@@ -29,7 +31,7 @@ class SettingsViewModel @Inject constructor(
     private val domain: SettingsDomain
 ): ViewModel() {
 
-    private var timePickerReminder: Reminder.Devotional? = null
+    private var targetReminder: Reminder.Devotional? = null
     var timePickerInitialHour: Int = 0
         private set
     var timePickerInitialMinute: Int = 0
@@ -49,13 +51,9 @@ class SettingsViewModel @Inject constructor(
             timeFormat = timeFormat,
             theme = theme
         )
-    }.combine(
-        domain.getDevotionReminderEnabledMap()
-    ) { state, devotionReminderEnabledMap ->
+    }.combine(domain.getDevotionReminderEnabledMap()) { state, devotionReminderEnabledMap ->
         state.copy(devotionalReminderEnabledStatuses = devotionReminderEnabledMap)
-    }.combine(
-        domain.getDevotionReminderTimeOfDayMap()
-    ) { state, devotionReminderTimeOfDayMap ->
+    }.combine(domain.getDevotionReminderTimeOfDayMap()) { state, devotionReminderTimeOfDayMap ->
         state.copy(
             devotionalReminderTimes = devotionReminderTimeOfDayMap,
             devotionalReminderSummaries = devotionReminderTimeOfDayMap.mapValues {
@@ -63,14 +61,12 @@ class SettingsViewModel @Inject constructor(
                 else formatTime(it.value, state.language, state.numeralsLanguage, state.timeFormat)
             }.toMutableMap()
         )
-    }.combine(
-        domain.getPrayerTimesCalculatorSettings()
-    ) { state, prayerTimesCalculatorSettings ->
+    }.combine(domain.getPrayerTimesCalculatorSettings()) { state, prayerTimesCalculatorSettings ->
         state.copy(prayerTimeCalculatorSettings = prayerTimesCalculatorSettings)
-    }.combine(
-        domain.getAthanAudioId()
-    ) { state, athanAudioId ->
+    }.combine(domain.getAthanAudioId()) { state, athanAudioId ->
         state.copy(athanAudioId = athanAudioId)
+    }.combine(domain.getLocation()) { state, location ->
+        state.copy(morningAndEveningRemembrancesEnabled = location != null)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
@@ -103,11 +99,29 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onDevotionReminderSwitch(devotion: Reminder.Devotional, isEnabled: Boolean) {
-        _uiState.update { it.copy(
-            isTimePickerShown = isEnabled
-        )}
+        if (devotion != Reminder.Devotional.EveningRemembrances
+            && devotion != Reminder.Devotional.MorningRemembrances) {
+            _uiState.update { it.copy(
+                isTimePickerShown = isEnabled
+            )}
+        }
 
-        if (isEnabled) timePickerReminder = devotion
+        if (isEnabled) {
+            targetReminder = devotion
+            if (devotion == Reminder.Devotional.EveningRemembrances
+                || devotion == Reminder.Devotional.MorningRemembrances) {
+                viewModelScope.launch {
+                    val prayer =
+                        if (devotion == Reminder.Devotional.MorningRemembrances) Prayer.FAJR
+                        else Prayer.ASR
+                    val prayerTime = domain.getPrayerTime(prayer)
+                    onTimePicked(
+                        hour = prayerTime.get(Calendar.HOUR_OF_DAY),
+                        minute = prayerTime.get(Calendar.MINUTE)
+                    )
+                }
+            }
+        }
         else {
             viewModelScope.launch {
                 domain.setDevotionReminderEnabled(false, devotion)
@@ -146,16 +160,15 @@ class SettingsViewModel @Inject constructor(
 
     fun onTimePicked(hour: Int, minute: Int) {
         viewModelScope.launch {
-            domain.setDevotionReminderEnabled(true, timePickerReminder!!)
+            domain.setDevotionReminderEnabled(true, targetReminder!!)
             domain.setDevotionReminderTimeOfDay(
                 timeOfDay = TimeOfDay(hour = hour, minute = minute),
-                reminder = timePickerReminder!!
+                reminder = targetReminder!!
             )
 
-            domain.setAlarm(timePickerReminder!!)
+            domain.setAlarm(targetReminder!!)
 
-            timePickerReminder = null
-
+            targetReminder = null
             _uiState.update { it.copy(
                 isTimePickerShown = false
             )}

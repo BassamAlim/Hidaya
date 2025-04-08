@@ -190,6 +190,7 @@ fun SwitchSetting(
     title: String,
     summary: String? = null,
     padding: PaddingValues = PaddingValues(vertical = 6.dp, horizontal = 16.dp),
+    enabled: Boolean = true,
     onSwitch: (Boolean) -> Unit = {}
 ) {
     Box(
@@ -216,7 +217,8 @@ fun SwitchSetting(
             Switch(
                 checked = value,
                 onCheckedChange = { onSwitch(!value) },
-                modifier = Modifier.height(10.dp)
+                modifier = Modifier.height(10.dp),
+                enabled = enabled
             )
         }
     }

@@ -212,4 +212,6 @@
     <string name="quiz_categories">تصنيفات الأسئلة</string>
     <string name="virtue">الفضل</string>
     <string name="interpretation_source">التفسير الميسر</string>
+    <string name="thirty_minutes_after_fajr">ثلاثون دقيقة بعد أذان الفجر</string>
+    <string name="thirty_minutes_after_asr">ثلاثون دقيقة بعد أذان العصر</string>
 </resources>
