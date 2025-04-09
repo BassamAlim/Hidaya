@@ -55,7 +55,7 @@ class AthanService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == StartAction.STOP_ATHAN.name) {
             onDestroy()
-            return START_STICKY
+            return START_NOT_STICKY
         }
 
         val reminder = Reminder.getById(intent!!.getIntExtra("id", -1))
@@ -95,7 +95,7 @@ class AthanService : Service() {
             play(reminder)
         }
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     private fun isOnTime(time: Long): Boolean {

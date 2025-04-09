@@ -304,7 +304,7 @@ class NotificationReceiver : BroadcastReceiver() {
         }
     }
 
-    private suspend fun markAsNotified(reminder: Reminder) {
+    private fun markAsNotified(reminder: Reminder) {
         notificationsRepository.setLastNotificationDate(
             reminder = reminder,
             dayOfYear = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
