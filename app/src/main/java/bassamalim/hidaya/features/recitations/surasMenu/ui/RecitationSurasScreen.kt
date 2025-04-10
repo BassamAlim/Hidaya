@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
@@ -59,6 +60,7 @@ fun RecitationSurasMenuScreen(viewModel: RecitationSurasViewModel) {
         ) { page ->
             Tab(
                 surasFlow = viewModel.getItems(page),
+                downloadStates = state.downloadStates,
                 onSuraClick = viewModel::onSuraClick,
                 onFavoriteClick = viewModel::onFavoriteClick,
                 onDownloadClick = viewModel::onDownloadClick
@@ -70,6 +72,7 @@ fun RecitationSurasMenuScreen(viewModel: RecitationSurasViewModel) {
 @Composable
 private fun Tab(
     surasFlow: Flow<List<ReciterSura>>,
+    downloadStates: Map<Int, DownloadState>,
     onSuraClick: (Int) -> Unit,
     onFavoriteClick: (ReciterSura) -> Unit,
     onDownloadClick: (ReciterSura) -> Unit
@@ -81,6 +84,7 @@ private fun Tab(
             items(suras) { sura ->
                 SuraCard(
                     sura = sura,
+                    downloadState = downloadStates[sura.id]!!,
                     onClick = onSuraClick,
                     onFavoriteClick = onFavoriteClick,
                     onDownloadClick = onDownloadClick
@@ -93,6 +97,7 @@ private fun Tab(
 @Composable
 private fun SuraCard(
     sura: ReciterSura,
+    downloadState: DownloadState,
     onClick: (Int) -> Unit,
     onFavoriteClick: (ReciterSura) -> Unit,
     onDownloadClick: (ReciterSura) -> Unit
@@ -123,7 +128,7 @@ private fun SuraCard(
             )
 
             MyDownloadButton(
-                state = sura.downloadState,
+                state = downloadState,
                 iconSize = 28.dp,
                 onClick = { onDownloadClick(sura) }
             )

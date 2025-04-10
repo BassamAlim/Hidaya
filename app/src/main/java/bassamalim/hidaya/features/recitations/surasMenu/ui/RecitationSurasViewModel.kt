@@ -120,7 +120,7 @@ class RecitationSurasViewModel @Inject constructor(
                 val suraExists = availableSuar.contains(sura.id+1)
                 val isWanted = when (menuType) {
                     MenuType.FAVORITES -> sura.isFavorite
-                    MenuType.DOWNLOADED -> sura.downloadState == DownloadState.DOWNLOADED
+                    MenuType.DOWNLOADED -> _uiState.value.downloadStates[sura.id] == DownloadState.DOWNLOADED
                     else -> true
                 }
 

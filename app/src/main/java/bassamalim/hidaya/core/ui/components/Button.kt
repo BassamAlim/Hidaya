@@ -305,18 +305,17 @@ fun MyDownloadButton(
     onClick: () -> Unit
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier.size(iconSize),
         contentAlignment = Alignment.Center
     ) {
         if (state == DownloadState.DOWNLOADING)
-            MyCircularProgressIndicator(Modifier.size(iconSize))
+            MyCircularProgressIndicator()
         else {
             MyIconButton(
                 imageVector =
                     if (state == DownloadState.DOWNLOADED) Icons.Default.DownloadDone
                     else Icons.Default.Download,
                 description = stringResource(R.string.download_description),
-                iconModifier = Modifier.size(iconSize),
                 onClick = onClick,
                 contentColor = contentColor
             )

@@ -57,8 +57,7 @@ class RecitationSurasMenuDomain @Inject constructor(
                     id = sura.id,
                     suraName = sura.decoratedName,
                     searchName = sura.plainName,
-                    isFavorite = sura.isFavorite,
-                    downloadState = getDownloadState(reciterId, narrationId, sura.id)
+                    isFavorite = sura.isFavorite
                 )
             }
         }

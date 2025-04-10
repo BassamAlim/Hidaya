@@ -122,13 +122,7 @@ class SettingsViewModel @Inject constructor(
                 }
             }
         }
-        else {
-            viewModelScope.launch {
-                domain.setDevotionReminderEnabled(false, devotion)
-            }
-
-            domain.cancelAlarm(devotion)
-        }
+        else domain.cancelDevotionalReminder(reminder = devotion)
     }
 
     fun onPrayerTimesCalculationMethodChange(newMethod: PrayerTimeCalculationMethod) {
@@ -160,13 +154,11 @@ class SettingsViewModel @Inject constructor(
 
     fun onTimePicked(hour: Int, minute: Int) {
         viewModelScope.launch {
-            domain.setDevotionReminderEnabled(true, targetReminder!!)
-            domain.setDevotionReminderTimeOfDay(
-                timeOfDay = TimeOfDay(hour = hour, minute = minute),
-                reminder = targetReminder!!
+            domain.setDevotionalReminder(
+                reminder = targetReminder!!,
+                hour = hour,
+                minute = minute
             )
-
-            domain.setAlarm(targetReminder!!)
 
             targetReminder = null
             _uiState.update { it.copy(

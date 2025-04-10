@@ -42,14 +42,6 @@ class SettingsDomain @Inject constructor(
         alarm.setAll(prayerTimes)
     }
 
-    suspend fun setAlarm(reminder: Reminder) {
-        alarm.setAlarm(reminder)
-    }
-
-    fun cancelAlarm(reminder: Reminder) {
-        alarm.cancelAlarm(reminder)
-    }
-
     fun getLanguage() = appSettingsRepository.getLanguage()
 
     fun setLanguage(language: Language) {
@@ -77,16 +69,8 @@ class SettingsDomain @Inject constructor(
     fun getDevotionReminderEnabledMap() =
         notificationsRepository.getDevotionalReminderEnabledMap()
 
-    fun setDevotionReminderEnabled(enabled: Boolean, reminder: Reminder.Devotional) {
-        notificationsRepository.setDevotionalReminderEnabled(enabled, reminder)
-    }
-
     fun getDevotionReminderTimeOfDayMap() =
         notificationsRepository.getDevotionalReminderTimes()
-
-    fun setDevotionReminderTimeOfDay(timeOfDay: TimeOfDay, reminder: Reminder.Devotional) {
-        notificationsRepository.setDevotionalReminderTimes(timeOfDay, reminder)
-    }
 
     fun getPrayerTimesCalculatorSettings() = prayersRepository.getPrayerTimesCalculatorSettings()
 
@@ -130,11 +114,54 @@ class SettingsDomain @Inject constructor(
                 settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
                 selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
                 location = location,
-                calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, 1) }
+                calendar = Calendar.getInstance().apply {
+                    add(Calendar.DAY_OF_MONTH, 1)
+                }
             )[prayer]!!
         }
 
         return prayerTime
+    }
+
+    suspend fun setDevotionalReminder(reminder: Reminder.Devotional, hour: Int, minute: Int) {
+        val adjustedTime = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+            add(Calendar.MINUTE, 30)
+        }
+
+        setDevotionReminderEnabled(reminder, true)
+        setDevotionReminderTimeOfDay(
+            reminder = reminder,
+            timeOfDay = TimeOfDay(
+                hour = adjustedTime.get(Calendar.HOUR_OF_DAY),
+                minute = adjustedTime.get(Calendar.MINUTE)
+            )
+        )
+
+        setAlarm(reminder)
+    }
+
+    fun cancelDevotionalReminder(reminder: Reminder.Devotional) {
+        setDevotionReminderEnabled(reminder, false)
+        cancelAlarm(reminder)
+    }
+
+    private fun setDevotionReminderEnabled(reminder: Reminder.Devotional, enabled: Boolean) {
+        notificationsRepository.setDevotionalReminderEnabled(enabled, reminder)
+    }
+
+    private fun setDevotionReminderTimeOfDay(reminder: Reminder.Devotional, timeOfDay: TimeOfDay) {
+        notificationsRepository.setDevotionalReminderTimes(timeOfDay, reminder)
+    }
+
+    private suspend fun setAlarm(reminder: Reminder) {
+        alarm.setAlarm(reminder)
+    }
+
+    private fun cancelAlarm(reminder: Reminder) {
+        alarm.cancelAlarm(reminder)
     }
 
 }
