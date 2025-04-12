@@ -121,7 +121,7 @@ class UserRepository @Inject constructor(
                     "user_id" to newUserId,
                     "reading_record" to localRecord.quranPages,
                     "listening_record" to localRecord.recitationsTime,
-                    "registration_date" to System.currentTimeMillis()
+                    "created_at" to System.currentTimeMillis()
                 ))
 
                 // Return the created user record
