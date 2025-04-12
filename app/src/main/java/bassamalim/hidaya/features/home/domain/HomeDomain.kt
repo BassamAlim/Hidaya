@@ -18,7 +18,7 @@ import javax.inject.Inject
 import kotlin.math.max
 
 class HomeDomain @Inject constructor(
-    private val app: Application,
+    app: Application,
     private val prayersRepository: PrayersRepository,
     private val locationRepository: LocationRepository,
     private val quranRepository: QuranRepository,

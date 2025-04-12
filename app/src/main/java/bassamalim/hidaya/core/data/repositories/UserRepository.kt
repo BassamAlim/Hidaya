@@ -10,6 +10,7 @@ import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OsUtils
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.CoroutineScope
@@ -92,53 +93,48 @@ class UserRepository @Inject constructor(
     }
 
     suspend fun registerDevice(deviceId: String): UserRecord? {
-        val localRecord = getLocalRecord().first()
-
-        val largestUserId = getLastUserId() ?: return null
-        val userId = largestUserId + 1
-
-        val remoteLeaderboardUserRecord = UserRecord(
-            userId = userId,
-            quranPages = localRecord.quranPages,
-            recitationsTime = localRecord.recitationsTime
-        )
-
-        firestore.collection("Leaderboard")
-            .document(deviceId)
-            .set(
-                mapOf(
-                    "user_id" to userId,
-                    "reading_record" to localRecord.quranPages,
-                    "listening_record" to localRecord.recitationsTime
-                )
-            )
-            .addOnSuccessListener {
-                Log.i(Globals.TAG, "DocumentSnapshot successfully written!")
-            }
-            .addOnFailureListener { e ->
-                Log.e(Globals.TAG, "Error writing document: $e")
-            }
-            .await()
-
-        return remoteLeaderboardUserRecord
-    }
-
-    private suspend fun getLastUserId(): Int? {
         if (!OsUtils.isNetworkAvailable(app)) return null
 
-        var id: Int? = null
-        firestore.collection("Counters")
-            .document("users")
-            .get()
-            .addOnSuccessListener { result ->
-                id = result.data!!["last_id"].toString().toInt()
-                Log.i(Globals.TAG, "Data retrieved successfully!")
-            }
-            .addOnFailureListener { exception ->
-                Log.e(Globals.TAG, "Error getting documents: $exception")
-            }
-            .await()
-        return id
+        val localRecord = getLocalRecord().first()
+
+        return try {
+            firestore.runTransaction { transaction ->
+                val counterDocRef = firestore.collection("Counters").document("users")
+                val counterSnapshot = transaction.get(counterDocRef)
+
+                if (!counterSnapshot.exists() || counterSnapshot.data == null) {
+                    throw FirebaseFirestoreException(
+                        "Counter document not found",
+                        FirebaseFirestoreException.Code.NOT_FOUND
+                    )
+                }
+
+                val lastId = counterSnapshot.data!!["last_id"].toString().toInt()
+                val newUserId = lastId + 1
+
+                // Update the counter document with the new last ID
+                transaction.update(counterDocRef, "last_id", newUserId)
+
+                // Create the new user record in Leaderboard collection
+                val leaderboardDocRef = firestore.collection("Leaderboard").document(deviceId)
+                transaction.set(leaderboardDocRef, mapOf(
+                    "user_id" to newUserId,
+                    "reading_record" to localRecord.quranPages,
+                    "listening_record" to localRecord.recitationsTime,
+                    "registration_date" to System.currentTimeMillis()
+                ))
+
+                // Return the created user record
+                UserRecord(
+                    userId = newUserId,
+                    quranPages = localRecord.quranPages,
+                    recitationsTime = localRecord.recitationsTime
+                )
+            }.await()
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Transaction failed: $e")
+            null
+        }
     }
 
     suspend fun getReadingRanks(

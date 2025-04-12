@@ -54,10 +54,8 @@ class AppStateRepository @Inject constructor(
 
     fun getLastDbVersion() = appStatePreferencesDataSource.getLastDBVersion()
 
-    fun setLastDbVersion(version: Int) {
-        scope.launch {
-            appStatePreferencesDataSource.updateLastDBVersion(version)
-        }
+    suspend fun setLastDbVersion(version: Int) {
+        appStatePreferencesDataSource.updateLastDBVersion(version)
     }
 
     fun getSources(): List<Source> {

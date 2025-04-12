@@ -87,10 +87,12 @@ class LeaderboardViewModel @Inject constructor(
             val newRanksMap = domain.getMoreRanks(rankType = rankType)?.data ?: emptyMap()
             val newRanks = when (rankType) {
                 RankType.BY_READING -> newRanksMap.map { (userId, value) ->
-                    userId.toString() to translateNums(value.toString(), numeralsLanguage)
+                    translateNums(userId.toString(), numeralsLanguage) to
+                            translateNums(value.toString(), numeralsLanguage)
                 }
                 RankType.BY_LISTENING -> newRanksMap.map { (userId, value) ->
-                    userId.toString() to formatRecitationsTime(value)
+                    translateNums(userId.toString(), numeralsLanguage) to
+                            formatRecitationsTime(value)
                 }
             }.toList()
 
