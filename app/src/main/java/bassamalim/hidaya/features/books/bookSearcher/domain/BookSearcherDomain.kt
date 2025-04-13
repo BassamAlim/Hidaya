@@ -48,34 +48,35 @@ class BookSearcherDomain @Inject constructor(
                 for ((d, door) in searchResults.withIndex()) {
                     val normalizedText = searcher.normalizeString(door.text, trim = false)
                     val matcher = normalizedQueryPattern.matcher(normalizedText)
-                    if (matcher.find()) {
-                        val annotatedString = buildAnnotatedString {
-                            append(door.text)
 
-                            do {
-                                addStyle(
-                                    style = SpanStyle(color = highlightColor),
-                                    start = matcher.start(),
-                                    end = matcher.end()
-                                )
-                            } while (matcher.find())
-                        }
+                    if (!matcher.find()) continue
 
-                        matches.add(
-                            BookSearcherMatch(
-                                bookId = bookId,
-                                bookTitle = bookContent.info.title,
-                                chapterId = c,
-                                chapterTitle = chapter.title,
-                                doorId = d,
-                                doorTitle = door.title,
-                                text = annotatedString
+                    val annotatedString = buildAnnotatedString {
+                        append(door.text)
+
+                        do {
+                            addStyle(
+                                style = SpanStyle(color = highlightColor),
+                                start = matcher.start(),
+                                end = matcher.end()
                             )
-                        )
-
-                        if (matches.size == maxMatches)
-                            return matches
+                        } while (matcher.find())
                     }
+
+                    matches.add(
+                        BookSearcherMatch(
+                            bookId = bookId,
+                            bookTitle = bookContent.info.title,
+                            chapterId = c,
+                            chapterTitle = chapter.title,
+                            doorId = d,
+                            doorTitle = door.title,
+                            text = annotatedString
+                        )
+                    )
+
+                    if (matches.size == maxMatches)
+                        return matches
                 }
             }
         }

@@ -78,9 +78,13 @@ class QuranSurasDomain @Inject constructor(
 
         val matches = mutableListOf<VerseMatch>()
         val normalizedQueryPattern = Pattern.compile(verseSearcher.normalizeString(query))
+
         for (verse in searchResults) {
             val normalizedVerse = verseSearcher.normalizeString(verse.plainText, trim = false)
             val matcher = normalizedQueryPattern.matcher(normalizedVerse)
+
+            if (!matcher.find()) continue
+
             val annotatedString = buildAnnotatedString {
                 append(verse.plainText)
 
@@ -100,8 +104,8 @@ class QuranSurasDomain @Inject constructor(
                         string = verse.num.toString(),
                         numeralsLanguage = numeralsLanguage
                     ),
-                    suraName = suraNames[verse.suraNum-2],
-                    text = annotatedString,
+                    suraName = suraNames[verse.suraNum-1],
+                    text = annotatedString
                 )
             )
         }
