@@ -88,7 +88,7 @@ class DateEditorViewModel @Inject constructor(
     private fun getDateText(): String {
         val cal = UmmalquraCalendar().apply {
             val millisInDay = 1000 * 60 * 60 * 24
-            timeInMillis = (domain.getDateOffset() * millisInDay).toLong()
+            timeInMillis += (domain.getDateOffset() * millisInDay).toLong()
         }
 
         return LangUtils.translateNums(

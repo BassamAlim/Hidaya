@@ -45,14 +45,12 @@ class MainViewModel @Inject constructor(
 
     private fun getHijriDate(dateOffset: Int, numeralsLanguage: Language): String {
         val hijri = domain.getHijriDateCalendar(dateOffset)
+        val hijriNoOffset = domain.getHijriDateCalendar(dateOffset = 0)
 
-        val hDayName = domain.getWeekDays()[hijri[Calendar.DAY_OF_WEEK] - 1]
+        val hDayName = domain.getWeekDays()[hijriNoOffset[Calendar.DAY_OF_WEEK] - 1]
         val hMonth = domain.getHijriMonths()[hijri[Calendar.MONTH]]
         val hijriStr = "$hDayName ${hijri[Calendar.DATE]} $hMonth ${hijri[Calendar.YEAR]}"
-        return translateNums(
-            numeralsLanguage = numeralsLanguage,
-            string = hijriStr
-        )
+        return translateNums(numeralsLanguage = numeralsLanguage, string = hijriStr)
     }
 
     private fun getGregorianDate(numeralsLanguage: Language): String {
