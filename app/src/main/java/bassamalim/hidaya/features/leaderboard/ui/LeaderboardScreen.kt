@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.leaderboard.ui
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +30,6 @@ import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.PaginatedLazyColumn
 import bassamalim.hidaya.core.ui.components.TabLayout
@@ -97,53 +98,55 @@ private fun UsersList(
 
 @Composable
 private fun UserRankCard(userId: String, userRank: String) {
-    MySurface(
-        Modifier.padding(top = 6.dp, bottom = 2.dp),
-        cornerRadius = 15.dp
+    MyRow(
+        Modifier
+            .padding(16.dp)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
+            .padding(vertical = 12.dp , horizontal = 16.dp),
     ) {
+        MyText(
+            text = "${stringResource(R.string.user)} $userId",
+            fontSize = 20.sp,
+            textColor = when (userRank) {
+                "1" -> bassamalim.hidaya.core.ui.theme.Gold
+                "2" -> bassamalim.hidaya.core.ui.theme.Silver
+                "3" -> bassamalim.hidaya.core.ui.theme.Bronze
+                else -> MaterialTheme.colorScheme.onSurface
+            },
+            modifier = Modifier.fillMaxWidth(0.4f)
+        )
+
         MyRow(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.fillMaxWidth(0.6f),
+            horizontalArrangement = Arrangement.Center
         ) {
             MyText(
-                text = "${stringResource(R.string.user)} $userId",
-                fontSize = 20.sp,
+                text = stringResource(R.string.your_position),
                 textColor = when (userRank) {
                     "1" -> bassamalim.hidaya.core.ui.theme.Gold
                     "2" -> bassamalim.hidaya.core.ui.theme.Silver
                     "3" -> bassamalim.hidaya.core.ui.theme.Bronze
                     else -> MaterialTheme.colorScheme.onSurface
-                },
-                modifier = Modifier.fillMaxWidth(0.4f)
+                }
             )
 
-            MyRow(
-                modifier = Modifier.fillMaxWidth(0.6f),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                MyText(
-                    stringResource(R.string.your_position),
-                    textColor = when (userRank) {
-                        "1" -> bassamalim.hidaya.core.ui.theme.Gold
-                        "2" -> bassamalim.hidaya.core.ui.theme.Silver
-                        "3" -> bassamalim.hidaya.core.ui.theme.Bronze
-                        else -> MaterialTheme.colorScheme.onSurface
-                    }
-                )
+            Spacer(Modifier.width(10.dp))
 
-                Spacer(Modifier.width(10.dp))
-
-                MyText(
-                    text = userRank,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textColor = when (userRank) {
-                        "1" -> bassamalim.hidaya.core.ui.theme.Gold
-                        "2" -> bassamalim.hidaya.core.ui.theme.Silver
-                        "3" -> bassamalim.hidaya.core.ui.theme.Bronze
-                        else -> MaterialTheme.colorScheme.onSurface
-                    }
-                )
-            }
+            MyText(
+                text = userRank,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textColor = when (userRank) {
+                    "1" -> bassamalim.hidaya.core.ui.theme.Gold
+                    "2" -> bassamalim.hidaya.core.ui.theme.Silver
+                    "3" -> bassamalim.hidaya.core.ui.theme.Bronze
+                    else -> MaterialTheme.colorScheme.onSurface
+                }
+            )
         }
     }
 }

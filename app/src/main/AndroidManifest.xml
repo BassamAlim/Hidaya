@@ -70,7 +70,8 @@
             android:name=".core.services.AthanService"
             android:excludeFromRecents="true"
             android:foregroundServiceType="mediaPlayback"
-            android:stopWithTask="false" />
+            android:stopWithTask="false"
+            android:exported="false" />
 
         <service
             android:name=".features.recitations.player.service.RecitationPlayerService"
