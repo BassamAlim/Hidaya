@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
-import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.onboarding.domain.OnboardingDomain
 import dagger.hilt.android.lifecycle.HiltViewModel

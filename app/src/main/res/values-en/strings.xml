@@ -212,4 +212,7 @@
     <string name="interpretation_source">Tafseer Moyassar</string>
     <string name="thirty_minutes_after_fajr">Thirty minutes after Fajr</string>
     <string name="thirty_minutes_after_asr">Thirty minutes after Asr</string>
+    <string name="reset">Reset</string>
+    <string name="add">Add</string>
+    <string name="misbaha">Misbaha</string>
 </resources>

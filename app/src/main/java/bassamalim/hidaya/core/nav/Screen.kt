@@ -37,6 +37,8 @@ sealed class Screen(val route: String) {
 
     data object Main: Screen("main")
 
+    data object Misbaha: Screen("misbaha")
+
     data object Onboarding: Screen("onboarding")
 
     data class PrayerExtraReminderSettings(

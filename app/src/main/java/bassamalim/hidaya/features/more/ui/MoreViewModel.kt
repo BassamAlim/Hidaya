@@ -7,9 +7,9 @@ import android.os.Build
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.Globals
+import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,6 +45,10 @@ class MoreViewModel @Inject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             navigator.navigate(Screen.Radio)
         else showUnsupported(snackBarHostState, message)
+    }
+
+    fun onMisbahaClick() {
+        navigator.navigate(Screen.Misbaha)
     }
 
     fun onDateConverterClick() {

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.models.Location
-import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.prayers.board.domain.PrayersBoardDomain

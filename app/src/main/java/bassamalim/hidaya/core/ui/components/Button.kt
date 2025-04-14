@@ -187,13 +187,18 @@ fun MyIconButton(
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
     description: String = "",
+    containerColor: Color = Color.Unspecified,
     contentColor: Color = LocalContentColor.current,
     isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
     IconButton(
         onClick = { if (isEnabled) onClick() },
-        modifier = modifier
+        modifier = modifier,
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        )
     ) {
         Icon(
             imageVector = imageVector,

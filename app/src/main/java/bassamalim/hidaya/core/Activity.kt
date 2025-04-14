@@ -42,7 +42,7 @@ import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.nav.Navigation
-import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver

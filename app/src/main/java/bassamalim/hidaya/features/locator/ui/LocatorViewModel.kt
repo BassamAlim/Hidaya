@@ -5,7 +5,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.locator.domain.LocatorDomain
 import dagger.hilt.android.lifecycle.HiltViewModel

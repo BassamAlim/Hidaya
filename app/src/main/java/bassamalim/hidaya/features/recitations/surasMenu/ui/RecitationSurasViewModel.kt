@@ -10,7 +10,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.ReciterSura
-import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.recitations.surasMenu.domain.RecitationSurasMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel

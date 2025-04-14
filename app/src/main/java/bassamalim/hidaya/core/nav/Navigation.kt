@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.ui.inFromBottom
 import bassamalim.hidaya.core.ui.inFromLeft
 import bassamalim.hidaya.core.ui.inFromRight
@@ -32,6 +33,7 @@ import bassamalim.hidaya.features.leaderboard.ui.LeaderboardScreen
 import bassamalim.hidaya.features.locationPicker.ui.LocationPickerScreen
 import bassamalim.hidaya.features.locator.ui.LocatorScreen
 import bassamalim.hidaya.features.main.ui.MainScreen
+import bassamalim.hidaya.features.misbaha.ui.MisbahaScreen
 import bassamalim.hidaya.features.onboarding.ui.OnboardingScreen
 import bassamalim.hidaya.features.prayers.extraReminderSettings.ui.PrayerExtraReminderSettingsDialog
 import bassamalim.hidaya.features.prayers.settings.ui.PrayerSettingsDialog
@@ -233,6 +235,18 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             MainScreen(
+                hiltViewModel()
+            )
+        }
+
+        composable(
+            route = Screen.Misbaha.route,
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            MisbahaScreen(
                 hiltViewModel()
             )
         }

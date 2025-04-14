@@ -1,8 +1,9 @@
-package bassamalim.hidaya.core.nav
+package bassamalim.hidaya.core.helpers
 
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
+import bassamalim.hidaya.core.nav.Screen
 import java.util.Stack
 
 class Navigator {

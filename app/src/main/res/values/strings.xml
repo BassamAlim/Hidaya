@@ -214,4 +214,7 @@
     <string name="interpretation_source">التفسير الميسر</string>
     <string name="thirty_minutes_after_fajr">ثلاثون دقيقة بعد أذان الفجر</string>
     <string name="thirty_minutes_after_asr">ثلاثون دقيقة بعد أذان العصر</string>
+    <string name="reset">إعادة تعيين</string>
+    <string name="add">إضافة</string>
+    <string name="misbaha">المسبحة</string>
 </resources>

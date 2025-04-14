@@ -20,7 +20,7 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.MenuType
-import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.quran.surasMenu.ui.RecitationInfo
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation

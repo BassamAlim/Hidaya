@@ -6,7 +6,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
 import bassamalim.hidaya.features.quran.verseInfo.domain.VerseInfoDomain
 import dagger.hilt.android.lifecycle.HiltViewModel

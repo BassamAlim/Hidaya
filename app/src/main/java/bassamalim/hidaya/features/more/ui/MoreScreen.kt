@@ -88,13 +88,23 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
 
         MyRow {
             MySquareButton(
+                text = stringResource(R.string.misbaha),
+                drawableId = R.drawable.ic_prayer_beads,
+                tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 56.dp,
+                onClick = viewModel::onMisbahaClick
+            )
+
+            MySquareButton(
                 text = stringResource(R.string.date_converter),
                 imageVector = Icons.Default.CalendarMonth,
                 tint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = viewModel::onDateConverterClick
             )
+        }
 
+        MyRow {
             MySquareButton(
                 text = stringResource(R.string.settings),
                 imageVector = Icons.Default.Settings,
@@ -102,9 +112,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
                 iconSize = 56.dp,
                 onClick = viewModel::onSettingsClick
             )
-        }
 
-        MyRow {
             MySquareButton(
                 text = stringResource(R.string.contact),
                 imageVector = Icons.Default.Mail,
@@ -112,7 +120,9 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
                 iconSize = 56.dp,
                 onClick = { viewModel.onContactClick(context) }
             )
+        }
 
+        MyRow {
             MySquareButton(
                 text = stringResource(R.string.share_app),
                 imageVector = Icons.Default.Share,
@@ -120,9 +130,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
                 iconSize = 56.dp,
                 onClick = { viewModel.onShareClick(context) }
             )
-        }
 
-        MyRow {
             MySquareButton(
                 text = stringResource(R.string.about),
                 imageVector = Icons.Default.Info,
