@@ -6,13 +6,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.Reminder
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
@@ -154,13 +154,11 @@ class Alarm(
 
         for ((devotion, enabled) in devotionAlarmEnabledMap) {
             if (enabled) {
-                when (devotion) {
-                    is Reminder.Devotional.FridayKahf -> {
-                        if (today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
-                            setDevotionalAlarm(devotion)
-                    }
-                    else -> setDevotionalAlarm(devotion)
+                if (devotion is Reminder.Devotional.FridayKahf) {
+                    if (today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+                        setDevotionalAlarm(devotion)
                 }
+                else setDevotionalAlarm(devotion)
             }
         }
     }
@@ -168,13 +166,7 @@ class Alarm(
     private suspend fun setDevotionalAlarm(devotion: Reminder.Devotional) {
         Log.i(Globals.TAG, "in Alarm.setDevotionalAlarm")
 
-        val timeOfDay = notificationsRepository.getDevotionalReminderTimes().first()[devotion]!!
-
-        val time = Calendar.getInstance()
-        time[Calendar.HOUR_OF_DAY] = timeOfDay.hour
-        time[Calendar.MINUTE] = timeOfDay.minute
-        time[Calendar.SECOND] = 0
-        time[Calendar.MILLISECOND] = 0
+        val time = getDevotionalReminderTime(devotion)
 
         val intent = Intent(app, NotificationReceiver::class.java).apply {
             action = "devotion"
@@ -198,6 +190,34 @@ class Alarm(
         Log.i(Globals.TAG, "alarm $devotion set")
     }
 
+    suspend fun getDevotionalReminderTime(devotion: Reminder.Devotional): Calendar {
+        val time = when (devotion) {
+            Reminder.Devotional.MorningRemembrances, Reminder.Devotional.EveningRemembrances -> {
+                val referencePrayer =
+                    if (devotion == Reminder.Devotional.MorningRemembrances) Prayer.FAJR
+                    else Prayer.ASR
+                val prayerTime = getPrayerTime(referencePrayer)
+                Calendar.getInstance().apply {
+                    timeInMillis = prayerTime.timeInMillis
+                    add(Calendar.MINUTE, 30)
+                }
+            }
+            Reminder.Devotional.DailyWerd, Reminder.Devotional.FridayKahf -> {
+                val timeOfDay =
+                    notificationsRepository.getDevotionalReminderTimes().first()[devotion]!!
+                Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, timeOfDay.hour)
+                    set(Calendar.MINUTE, timeOfDay.minute)
+                }
+            }
+        }
+
+        time[Calendar.SECOND] = 0
+        time[Calendar.MILLISECOND] = 0
+
+        return time
+    }
+
     fun cancelAlarm(reminder: Reminder) {
         val pendingIntent = PendingIntent.getBroadcast(
             app, reminder.id, Intent(),
@@ -208,6 +228,31 @@ class Alarm(
         alarmManager.cancel(pendingIntent)
 
         Log.i(Globals.TAG, "Canceled $reminder Alarm")
+    }
+
+    suspend fun getPrayerTime(prayer: Prayer): Calendar {
+        val location = locationRepository.getLocation().first()!!
+
+        var prayerTime = PrayerTimeUtils.getPrayerTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
+            calendar = Calendar.getInstance()
+        )[prayer]!!
+
+        // if prayer time passed
+        if (prayerTime.timeInMillis < System.currentTimeMillis()) {
+            prayerTime = PrayerTimeUtils.getPrayerTimes(
+                settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+                selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+                location = location,
+                calendar = Calendar.getInstance().apply {
+                    add(Calendar.DAY_OF_MONTH, 1)
+                }
+            )[prayer]!!
+        }
+
+        return prayerTime
     }
 
 }
