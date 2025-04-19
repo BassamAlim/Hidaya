@@ -30,7 +30,7 @@ import kotlin.math.min
 fun MisbahaScreen(viewModel: MisbahaViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(title = stringResource(R.string.quiz_title)) { padding ->
+    MyScaffold(title = stringResource(R.string.misbaha)) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
