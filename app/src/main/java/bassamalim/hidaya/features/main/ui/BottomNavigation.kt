@@ -53,8 +53,18 @@ fun MyBottomNavigation(navController: NavController) {
             val title = stringResource(item.titleRId)
 
             NavigationBarItem(
-                label = { Text(text = title, fontFamily = tajwal) },
-                alwaysShowLabel = true,
+                selected = currentRoute == item.route,
+                onClick = {
+                    navController.navigate(item.route) {
+                        navController.graph.startDestinationRoute?.let { screenRoute ->
+                            popUpTo(screenRoute) {
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true  // TODO: use anywhere where repeated clicks could open multiple instances
+                        restoreState = true
+                    }
+                },
                 icon = {
                     if (item.icon is ImageVector) {
                         Icon(
@@ -71,18 +81,8 @@ fun MyBottomNavigation(navController: NavController) {
                         )
                     }
                 },
-                selected = currentRoute == item.route,
-                onClick = {
-                    navController.navigate(item.route) {
-                        navController.graph.startDestinationRoute?.let { screenRoute ->
-                            popUpTo(screenRoute) {
-                                saveState = true
-                            }
-                        }
-                        launchSingleTop = true  // TODO: use anywhere where repeated clicks could open multiple instances
-                        restoreState = true
-                    }
-                }
+                label = { Text(text = title, fontFamily = tajwal) },
+                alwaysShowLabel = true
             )
         }
     }
