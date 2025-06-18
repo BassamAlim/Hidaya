@@ -7,9 +7,8 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Build
-import android.os.CountDownTimer
 import android.os.IBinder
-import androidx.compose.runtime.mutableStateOf
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
@@ -24,10 +23,17 @@ import bassamalim.hidaya.core.utils.LangUtils.translateTimeNums
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
+import java.util.SortedMap
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,290 +43,405 @@ class PrayerReminderService : Service() {
     @Inject lateinit var prayersRepository: PrayersRepository
     @Inject lateinit var locationRepository: LocationRepository
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
-    private val prayerNames = prayersRepository.getPrayerNames()
-    private var times: Map<Prayer, Calendar?> = emptyMap()
-    private lateinit var language: Language
-    private lateinit var numeralsLanguage: Language
-    private var formattedTimes: Map<Prayer, String> = emptyMap()
-    private var yesterdayIshaa: Calendar = Calendar.getInstance()
-    private var formattedYesterdayIshaa: String = ""
-    private var tomorrowFajr: Calendar = Calendar.getInstance()
-    private var formattedTomorrowFajr: String = ""
-    private var timer: CountDownTimer? = null
-    private var previousPrayer: Prayer? = null
-    private var nextPrayer: Prayer? = null
-    private var previousPrayerWasYesterday = false
-    private var nextPrayerIsTomorrow = false
-    private var shouldCount = false
-    private val prayerName = mutableStateOf("")
-    private val timing = mutableStateOf("")
-    private val isPassed = mutableStateOf(false)
+
+    // State management using StateFlow
+    private val _serviceState = MutableStateFlow(ServiceState())
+    val serviceState: StateFlow<ServiceState> = _serviceState.asStateFlow()
+
+    private var countdownJob: Job? = null
+    private var initializationJob: Job? = null
 
     companion object {
+        private const val TAG = "PrayerReminderService"
         private const val NOTIFICATION_ID = 247
         private const val CHANNEL_ID = "PrayerReminderServiceChannel"
+        private const val FIFTEEN_MINUTES_MS = 15 * 60 * 1000L
+        private const val COUNTDOWN_INTERVAL_MS = 1000L
+
+        @Volatile
         var isRunning = false
+            private set
     }
+
+    data class ServiceState(
+        val prayerName: String = "",
+        val timing: String = "",
+        val isPassed: Boolean = false,
+        val isInitialized: Boolean = false,
+        val error: String? = null
+    )
+
+    data class PrayerData(
+        val times: Map<Prayer, Calendar?>,
+        val formattedTimes: Map<Prayer, String>,
+        val yesterdayIshaa: Calendar,
+        val formattedYesterdayIshaa: String,
+        val tomorrowFajr: Calendar,
+        val formattedTomorrowFajr: String,
+        val previousPrayer: Prayer?,
+        val nextPrayer: Prayer?,
+        val previousPrayerWasYesterday: Boolean,
+        val nextPrayerIsTomorrow: Boolean
+    )
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "Service created")
         createNotificationChannel()
         isRunning = true
 
-        scope.launch {
-            initializeData()
-            if (shouldCount) count()
+        initializationJob = scope.launch {
+            try {
+                initializeService()
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to initialize service", e)
+                handleError("Initialization failed: ${e.message}")
+            }
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "Service started")
         startForeground(NOTIFICATION_ID, createNotification())
-
-        // Your background work here
-        performBackgroundTask()
-
-        return START_STICKY // Restart if killed by system
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private fun performBackgroundTask() {
-        // Implementation depends on your use case
-        // Consider using coroutines for long-running tasks
+    private suspend fun initializeService() {
+        try {
+            val location = locationRepository.getLocation().firstOrNull()
+            if (location == null) {
+                handleError("Location not available")
+                return
+            }
+
+            val prayerData = buildPrayerData(location)
+            _serviceState.value = _serviceState.value.copy(isInitialized = true, error = null)
+
+            startCountdown(prayerData)
+            Log.d(TAG, "Service initialized successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Service initialization failed", e)
+            handleError("Service initialization failed: ${e.message}")
+        }
+    }
+
+    private suspend fun buildPrayerData(location: Location): PrayerData {
+        val language = appSettingsRepository.getLanguage().first()
+        val numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first()
+
+        val times = getPrayerTimeMap(location)
+        val formattedTimes = getStrPrayerTimeMap(location, language, numeralsLanguage)
+        val yesterdayIshaa = getYesterdayIshaa(location)
+        val formattedYesterdayIshaa = getStrYesterdayIshaa(location, language, numeralsLanguage)
+        val tomorrowFajr = getTomorrowFajr(location)
+        val formattedTomorrowFajr = getStrTomorrowFajr(location, language, numeralsLanguage)
+
+        val (previousPrayer, previousPrayerWasYesterday) = getPreviousPrayer(times)
+        val (nextPrayer, nextPrayerIsTomorrow) = getNextPrayer(times)
+
+        return PrayerData(
+            times = times,
+            formattedTimes = formattedTimes,
+            yesterdayIshaa = yesterdayIshaa,
+            formattedYesterdayIshaa = formattedYesterdayIshaa,
+            tomorrowFajr = tomorrowFajr,
+            formattedTomorrowFajr = formattedTomorrowFajr,
+            previousPrayer = previousPrayer,
+            nextPrayer = nextPrayer,
+            previousPrayerWasYesterday = previousPrayerWasYesterday,
+            nextPrayerIsTomorrow = nextPrayerIsTomorrow
+        )
+    }
+
+    private fun startCountdown(prayerData: PrayerData) {
+        countdownJob?.cancel()
+        countdownJob = scope.launch {
+            try {
+                runCountdown(prayerData)
+            } catch (e: Exception) {
+                Log.e(TAG, "Countdown failed", e)
+                handleError("Countdown failed: ${e.message}")
+                // Retry after delay
+                delay(5000)
+                restartService()
+            }
+        }
+    }
+
+    private suspend fun runCountdown(prayerData: PrayerData) {
+        val prayerNames = prayersRepository.getPrayerNames()
+        val language = appSettingsRepository.getLanguage().first()
+        val numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first()
+
+        val nextPrayerTime = if (prayerData.nextPrayerIsTomorrow) {
+            prayerData.tomorrowFajr.timeInMillis
+        } else {
+            prayerData.times[prayerData.nextPrayer]?.timeInMillis ?: return
+        }
+
+        var remainingTime = nextPrayerTime - System.currentTimeMillis()
+
+        while (remainingTime > 0) {
+            val currentTime = System.currentTimeMillis()
+            val previousPrayerTime = if (prayerData.nextPrayer == Prayer.FAJR) {
+                prayerData.yesterdayIshaa.timeInMillis
+            } else {
+                prayerData.times[prayerData.previousPrayer]?.timeInMillis ?: continue
+            }
+
+            val timeFromPreviousPrayer = currentTime - previousPrayerTime
+            val fifteenMinutesPassed = timeFromPreviousPrayer >= FIFTEEN_MINUTES_MS
+
+            if (fifteenMinutesPassed) {
+                updateStateWithElapsedTime(
+                    timeFromPreviousPrayer,
+                    prayerNames[prayerData.previousPrayer] ?: "",
+                    language,
+                    numeralsLanguage
+                )
+            } else {
+                updateStateWithRemainingTime(
+                    remainingTime,
+                    prayerNames[prayerData.nextPrayer] ?: "",
+                    language,
+                    numeralsLanguage
+                )
+            }
+
+            delay(COUNTDOWN_INTERVAL_MS)
+            remainingTime = nextPrayerTime - System.currentTimeMillis()
+        }
+
+        // Time to restart for next prayer cycle
+        restartService()
+    }
+
+    private fun updateStateWithElapsedTime(
+        elapsedMs: Long,
+        prayerName: String,
+        language: Language,
+        numeralsLanguage: Language
+    ) {
+        val formattedTime = formatDuration(elapsedMs)
+        val translatedTime = translateTimeNums(formattedTime, language, numeralsLanguage)
+
+        _serviceState.value = _serviceState.value.copy(
+            prayerName = prayerName,
+            timing = translatedTime,
+            isPassed = true
+        )
+
+        updateNotification("$prayerName passed", translatedTime)
+    }
+
+    private fun updateStateWithRemainingTime(
+        remainingMs: Long,
+        prayerName: String,
+        language: Language,
+        numeralsLanguage: Language
+    ) {
+        val formattedTime = formatDuration(remainingMs)
+        val translatedTime = translateTimeNums(formattedTime, language, numeralsLanguage)
+
+        _serviceState.value = _serviceState.value.copy(
+            prayerName = prayerName,
+            timing = translatedTime,
+            isPassed = false
+        )
+
+        updateNotification("Next: $prayerName", "in $translatedTime")
+    }
+
+    private fun formatDuration(durationMs: Long): String {
+        val hours = (durationMs / (60 * 60 * 1000)) % 24
+        val minutes = (durationMs / (60 * 1000)) % 60
+        val seconds = (durationMs / 1000) % 60
+
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
+    private suspend fun restartService() {
+        try {
+            val location = locationRepository.getLocation().firstOrNull()
+            if (location != null) {
+                val prayerData = buildPrayerData(location)
+                startCountdown(prayerData)
+            } else {
+                handleError("Location not available for restart")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to restart service", e)
+            handleError("Restart failed: ${e.message}")
+        }
+    }
+
+    private fun handleError(message: String) {
+        Log.e(TAG, message)
+        _serviceState.value = _serviceState.value.copy(error = message)
+        updateNotification("Prayer Service Error", message)
+    }
+
+    private suspend fun getPrayerTimeMap(location: Location): Map<Prayer, Calendar?> {
+        return PrayerTimeUtils.getPrayerTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
+            calendar = Calendar.getInstance()
+        )
+    }
+
+    private suspend fun getStrPrayerTimeMap(
+        location: Location,
+        language: Language,
+        numeralsLanguage: Language
+    ): Map<Prayer, String> {
+        return PrayerTimeUtils.formatPrayerTimes(
+            prayerTimes = getPrayerTimeMap(location) as SortedMap<Prayer, Calendar?>,
+            timeFormat = appSettingsRepository.getTimeFormat().first(),
+            language = language,
+            numeralsLanguage = numeralsLanguage
+        )
+    }
+
+    private suspend fun getYesterdayIshaa(location: Location): Calendar {
+        val yesterdayCalendar = Calendar.getInstance().apply { add(Calendar.DATE, -1) }
+        return PrayerTimeUtils.getPrayerTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
+            calendar = yesterdayCalendar
+        )[Prayer.ISHAA] ?: Calendar.getInstance()
+    }
+
+    private suspend fun getStrYesterdayIshaa(
+        location: Location,
+        language: Language,
+        numeralsLanguage: Language
+    ): String {
+        return PrayerTimeUtils.formatPrayerTime(
+            time = getYesterdayIshaa(location),
+            language = language,
+            numeralsLanguage = numeralsLanguage,
+            timeFormat = appSettingsRepository.getTimeFormat().first()
+        )
+    }
+
+    private suspend fun getTomorrowFajr(location: Location): Calendar {
+        val tomorrowCalendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
+        return PrayerTimeUtils.getPrayerTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
+            calendar = tomorrowCalendar
+        )[Prayer.FAJR] ?: Calendar.getInstance()
+    }
+
+    private suspend fun getStrTomorrowFajr(
+        location: Location,
+        language: Language,
+        numeralsLanguage: Language
+    ): String {
+        return PrayerTimeUtils.formatPrayerTime(
+            time = getTomorrowFajr(location),
+            language = language,
+            numeralsLanguage = numeralsLanguage,
+            timeFormat = appSettingsRepository.getTimeFormat().first()
+        )
+    }
+
+    private fun getPreviousPrayer(times: Map<Prayer, Calendar?>): Pair<Prayer?, Boolean> {
+        val currentMillis = System.currentTimeMillis()
+        var previousPrayer: Prayer? = null
+
+        for ((prayer, time) in times.entries.reversed()) {
+            if (time != null && time.timeInMillis < currentMillis) {
+                previousPrayer = prayer
+                break
+            }
+        }
+
+        val wasYesterday = previousPrayer == null
+        if (wasYesterday) {
+            previousPrayer = Prayer.ISHAA
+        }
+
+        return Pair(previousPrayer, wasYesterday)
+    }
+
+    private fun getNextPrayer(times: Map<Prayer, Calendar?>): Pair<Prayer?, Boolean> {
+        val currentMillis = System.currentTimeMillis()
+        var nextPrayer: Prayer? = null
+
+        for ((prayer, time) in times.entries) {
+            if (time != null && time.timeInMillis > currentMillis) {
+                nextPrayer = prayer
+                break
+            }
+        }
+
+        val isTomorrow = nextPrayer == null
+        if (isTomorrow) {
+            nextPrayer = Prayer.FAJR
+        }
+
+        return Pair(nextPrayer, isTomorrow)
     }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Foreground Service Channel",
+                "Prayer Reminder Service",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Channel for foreground service notifications"
+                description = "Shows prayer countdown and notifications"
                 setShowBadge(false)
+                enableVibration(false)
+                setSound(null, null)
             }
 
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
+            getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
         }
     }
 
     private fun createNotification(): Notification {
+        return createNotificationBuilder("Prayer Service", "Initializing...").build()
+    }
+
+    private fun updateNotification(title: String, content: String) {
+        val notification = createNotificationBuilder(title, content).build()
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager?.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun createNotificationBuilder(title: String, content: String): NotificationCompat.Builder {
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
             Intent(this, Activity::class.java),
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Title")
-            .setContentText("Content")
+            .setContentTitle(title)
+            .setContentText(content)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
-            .setOngoing(true) // Makes notification persistent
+            .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
-            .build()
+            .setShowWhen(false)
+            .setOnlyAlertOnce(true)
     }
-
-    private suspend fun initializeData() {
-        language = appSettingsRepository.getLanguage().first()
-        numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first()
-
-        val location = locationRepository.getLocation().first()
-        if (location != null) {
-            times = getPrayerTimeMap(location)
-            formattedTimes = getStrPrayerTimeMap(location)
-            yesterdayIshaa = getYesterdayIshaa(location)
-            formattedYesterdayIshaa = getStrYesterdayIshaa(location)
-            tomorrowFajr = getTomorrowFajr(location)
-            formattedTomorrowFajr = getStrTomorrowFajr(location)
-        }
-
-        previousPrayer = getPreviousPrayer()
-        nextPrayer = getNextPrayer()
-
-        shouldCount = location != null && times.isNotEmpty()
-    }
-
-    private fun count() {
-        if (timer != null) {
-            timer?.cancel()
-            timer = null
-        }
-
-        val till =
-            if (nextPrayerIsTomorrow) tomorrowFajr.timeInMillis
-            else times[nextPrayer]!!.timeInMillis
-        timer = object : CountDownTimer(
-            /* millisInFuture = */ till - System.currentTimeMillis(),
-            /* countDownInterval = */ 1000
-        ) {
-            override fun onTick(millisUntilFinished: Long) {
-                val previousPrayerTime =
-                    if (nextPrayer == Prayer.FAJR) yesterdayIshaa
-                    else times[previousPrayer]!!
-                val timeFromPreviousPrayer =
-                    if (nextPrayer == Prayer.FAJR)
-                        System.currentTimeMillis() - previousPrayerTime.timeInMillis
-                    else
-                        System.currentTimeMillis() - times[previousPrayer]!!.timeInMillis
-
-                val fifteenMinutesPassed = timeFromPreviousPrayer >= 15 * 60 * 1000
-                if (fifteenMinutesPassed) {
-                    val timeFromPreviousPrayerHours = timeFromPreviousPrayer / (60 * 60 * 1000) % 24
-                    val timeFromPreviousPrayerMinutes = timeFromPreviousPrayer / (60 * 1000) % 60
-                    val timeFromPreviousPrayerSeconds = timeFromPreviousPrayer / 1000 % 60
-                    val timeFromPreviousPrayerHms = String.format(
-                        Locale.US,
-                        "%02d:%02d:%02d",
-                        timeFromPreviousPrayerHours,
-                        timeFromPreviousPrayerMinutes,
-                        timeFromPreviousPrayerSeconds
-                    )
-
-                    prayerName.value = prayerNames[previousPrayer]!!
-                    timing.value = translateTimeNums(
-                        string = timeFromPreviousPrayerHms,
-                        language = language,
-                        numeralsLanguage = numeralsLanguage
-                    )
-                    isPassed.value = true
-                }
-                else {
-                    val timeToNextPrayerHours = millisUntilFinished / (60 * 60 * 1000) % 24
-                    val timeToNextPrayerMinutes = millisUntilFinished / (60 * 1000) % 60
-                    val timeToNextPrayerSeconds = millisUntilFinished / 1000 % 60
-                    val timeToNextPrayerHms = String.format(
-                        Locale.US,
-                        "%02d:%02d:%02d",
-                        timeToNextPrayerHours,
-                        timeToNextPrayerMinutes,
-                        timeToNextPrayerSeconds
-                    )
-
-                    prayerName.value = prayerNames[nextPrayer]!!
-                    timing.value = translateTimeNums(
-                        string = timeToNextPrayerHms,
-                        language = language,
-                        numeralsLanguage = numeralsLanguage
-                    )
-                    isPassed.value = false
-                }
-            }
-
-            override fun onFinish() {
-                recount()
-            }
-        }.start()
-    }
-
-    private fun recount() {
-        scope.launch {
-            val location = getLocation().first()
-            if (location != null) {
-                times = getPrayerTimeMap(location)
-                formattedTimes = getStrPrayerTimeMap(location)
-                yesterdayIshaa = getYesterdayIshaa(location)
-                formattedYesterdayIshaa = getStrYesterdayIshaa(location)
-                tomorrowFajr = getTomorrowFajr(location)
-                formattedTomorrowFajr = getStrTomorrowFajr(location)
-            }
-
-            count()
-        }
-    }
-
-    suspend fun getPrayerTimeMap(location: Location) =
-        PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-            location = location,
-            calendar = Calendar.getInstance()
-        )
-
-    suspend fun getStrPrayerTimeMap(location: Location) =
-        PrayerTimeUtils.formatPrayerTimes(
-            prayerTimes = getPrayerTimeMap(location),
-            timeFormat = appSettingsRepository.getTimeFormat().first(),
-            language = appSettingsRepository.getLanguage().first(),
-            numeralsLanguage = numeralsLanguage
-        )
-
-    suspend fun getYesterdayIshaa(location: Location) =
-        PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-            location = location,
-            calendar = Calendar.getInstance().apply { add(Calendar.DATE, -1) }
-        )[Prayer.ISHAA]!!
-
-    suspend fun getStrYesterdayIshaa(location: Location) =
-        PrayerTimeUtils.formatPrayerTime(
-            time = getYesterdayIshaa(location),
-            language = appSettingsRepository.getLanguage().first(),
-            numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
-            timeFormat = appSettingsRepository.getTimeFormat().first()
-        )
-
-    suspend fun getTomorrowFajr(location: Location) =
-        PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-            location = location,
-            calendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
-        )[Prayer.FAJR]!!
-
-    suspend fun getStrTomorrowFajr(location: Location) =
-        PrayerTimeUtils.formatPrayerTime(
-            time = getTomorrowFajr(location),
-            language = appSettingsRepository.getLanguage().first(),
-            numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
-            timeFormat = appSettingsRepository.getTimeFormat().first()
-        )
-
-    private fun getPreviousPrayer(): Prayer? {
-        var previousPrayer: Prayer? = null
-        val currentMillis = System.currentTimeMillis()
-        for (prayer in times.entries.reversed()) {
-            val millis = prayer.value!!.timeInMillis
-            if (millis < currentMillis) previousPrayer = prayer.key
-        }
-
-        previousPrayerWasYesterday = false
-        if (previousPrayer == null) {
-            previousPrayerWasYesterday = true
-            previousPrayer = Prayer.ISHAA
-        }
-
-        return previousPrayer
-    }
-
-    private fun getNextPrayer(): Prayer? {
-        var nextPrayer: Prayer? = null
-        val currentMillis = System.currentTimeMillis()
-        for (prayer in times.entries) {
-            val millis = prayer.value!!.timeInMillis
-            if (millis > currentMillis) nextPrayer = prayer.key
-        }
-
-        nextPrayerIsTomorrow = false
-        if (nextPrayer == null) {
-            nextPrayerIsTomorrow = true
-            nextPrayer = Prayer.FAJR
-        }
-
-        return nextPrayer
-    }
-
-
-    fun getLocation() = locationRepository.getLocation()
 
     override fun onDestroy() {
         super.onDestroy()
-        timer?.cancel()
+        Log.d(TAG, "Service destroyed")
+
+        countdownJob?.cancel()
+        initializationJob?.cancel()
         isRunning = false
     }
-
 }

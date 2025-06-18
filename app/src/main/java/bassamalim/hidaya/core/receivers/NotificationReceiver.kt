@@ -144,7 +144,7 @@ class NotificationReceiver : BroadcastReceiver() {
         markAsNotified(reminder)
     }
 
-    private suspend fun startService(reminder: Reminder.Prayer, time: Long) {
+    private fun startService(reminder: Reminder.Prayer, time: Long) {
         val intent = Intent(ctx, AthanService::class.java).apply {
             action = Globals.PLAY_ATHAN
             putExtra("id", reminder.id)
