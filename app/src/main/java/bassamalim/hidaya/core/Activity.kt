@@ -41,12 +41,13 @@ import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.Alarm
-import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
+import bassamalim.hidaya.core.services.PrayerReminderService
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -323,6 +324,9 @@ class Activity : ComponentActivity() {
             setAlarms()  // because maybe location changed
 
             setupBootReceiver()
+
+            if (!PrayerReminderService.isRunning)
+                runPrayerReminderService()
         }
     }
 
@@ -400,6 +404,12 @@ class Activity : ComponentActivity() {
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP
         )
+    }
+
+    private fun runPrayerReminderService() {
+        val serviceIntent = Intent(this, PrayerReminderService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(serviceIntent)
+        else startService(serviceIntent)
     }
 
 }
