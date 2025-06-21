@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -204,9 +205,11 @@ fun SwitchSetting(
                 .fillMaxWidth()
                 .padding(padding),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column {
+            Column(
+                Modifier.weight(1f)
+            ) {
                 PreferenceTitle(title, Modifier.padding(end = 40.dp))
 
                 if (summary != null) {
@@ -217,7 +220,9 @@ fun SwitchSetting(
             Switch(
                 checked = value,
                 onCheckedChange = { onSwitch(!value) },
-                modifier = Modifier.height(10.dp),
+                modifier = Modifier
+                    .fillMaxHeight(0.2f)
+                    .height(10.dp),
                 enabled = enabled
             )
         }
@@ -278,7 +283,8 @@ fun PreferenceTitle(title: String, modifier: Modifier = Modifier) {
 private fun SummaryText(text: String) {
     MyText(
         text = text,
-        fontSize = 16.sp,
+        fontSize = 14.sp,
+        textAlign = TextAlign.Start,
         textColor = MaterialTheme.colorScheme.onSurface
     )
 }

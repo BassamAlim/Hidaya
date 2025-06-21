@@ -16,6 +16,7 @@ data class SettingsUiState(
     val devotionalReminderTimes: Map<Reminder.Devotional, TimeOfDay> = emptyMap(),
     val devotionalReminderSummaries: Map<Reminder.Devotional, String> = emptyMap(),
     val isTimePickerShown: Boolean = false,
+    val continuousPrayersNotificationEnabled: Boolean = false,
     val prayerTimeCalculatorSettings: PrayerTimeCalculatorSettings =
         PrayerTimeCalculatorSettings(),
     val athanAudioId: Int = 0,

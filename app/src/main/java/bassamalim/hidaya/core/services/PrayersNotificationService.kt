@@ -35,7 +35,7 @@ import java.util.SortedMap
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PrayerReminderService : Service() {
+class PrayersNotificationService : Service() {
 
     @Inject @ApplicationScope lateinit var scope: CoroutineScope
     @Inject lateinit var prayersRepository: PrayersRepository

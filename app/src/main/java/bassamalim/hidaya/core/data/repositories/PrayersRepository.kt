@@ -19,6 +19,15 @@ class PrayersRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope
 ) {
 
+    fun getContinuousPrayersNotificationEnabled() =
+        prayersPreferencesDataSource.getContinuousPrayersNotificationEnabled()
+
+    fun setContinuousPrayersNotificationEnabled(enabled: Boolean) {
+        scope.launch {
+            prayersPreferencesDataSource.updateContinuousPrayersNotificationEnabled(enabled)
+        }
+    }
+
     fun getPrayerTimesCalculatorSettings() =
         prayersPreferencesDataSource.getPrayerTimeCalculatorSettings()
 

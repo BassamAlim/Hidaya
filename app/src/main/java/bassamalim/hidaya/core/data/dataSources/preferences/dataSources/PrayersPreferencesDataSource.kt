@@ -18,6 +18,13 @@ class PrayersPreferencesDataSource(
             else throw exception
         }
 
+    fun getContinuousPrayersNotificationEnabled() = flow.map { it.continuousPrayersNotificationEnabled }
+    suspend fun updateContinuousPrayersNotificationEnabled(enabled: Boolean) {
+        dataStore.updateData { preferences ->
+            preferences.copy(continuousPrayersNotificationEnabled = enabled)
+        }
+    }
+
     fun getPrayerTimeCalculatorSettings() = flow.map { it.prayerTimeCalculatorSettings }
     suspend fun updatePrayerTimeCalculatorSettings(settings: PrayerTimeCalculatorSettings) {
         dataStore.updateData { preferences ->

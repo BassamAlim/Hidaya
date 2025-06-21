@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.settings.ui
 
 import android.app.Activity
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
@@ -61,6 +62,9 @@ class SettingsViewModel @Inject constructor(
                 else formatTime(it.value, state.language, state.numeralsLanguage, state.timeFormat)
             }.toMutableMap()
         )
+    }.combine(domain.getContinuousPrayersNotificationEnabled()) {
+            state, continuousPrayersNotificationEnabled ->
+        state.copy(continuousPrayersNotificationEnabled = continuousPrayersNotificationEnabled)
     }.combine(domain.getPrayerTimesCalculatorSettings()) { state, prayerTimesCalculatorSettings ->
         state.copy(prayerTimeCalculatorSettings = prayerTimesCalculatorSettings)
     }.combine(domain.getAthanAudioId()) { state, athanAudioId ->
@@ -123,6 +127,11 @@ class SettingsViewModel @Inject constructor(
             }
         }
         else domain.cancelDevotionalReminder(reminder = devotion)
+    }
+
+    fun onContinuousNotificationsSwitch(isEnabled: Boolean, context: Context) {
+        if (isEnabled) domain.enableContinuousPrayersNotification(context)
+        else domain.disableContinuousPrayersNotification(context)
     }
 
     fun onPrayerTimesCalculationMethodChange(newMethod: PrayerTimeCalculationMethod) {

@@ -1,6 +1,6 @@
 package bassamalim.hidaya.features.settings.ui
 
-import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,7 +34,7 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current!!
 
     MyScaffold(title = stringResource(R.string.settings)) { padding ->
         Box(
@@ -84,6 +83,14 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     modifier = Modifier.padding(vertical = 2.dp),
                     expandedContent = {
                         PrayerTimesSettings(
+                            continuousPrayersNotificationEnabled =
+                                state.continuousPrayersNotificationEnabled,
+                            onContinuousPrayersNotificationSwitch = { enabled ->
+                                viewModel.onContinuousNotificationsSwitch(
+                                    isEnabled = enabled,
+                                    context = activity
+                                )
+                            },
                             calculationMethod =
                             state.prayerTimeCalculatorSettings.calculationMethod,
                             onCalculationMethodChange =
@@ -233,6 +240,8 @@ private fun DevotionReminderSettings(
 
 @Composable
 private fun PrayerTimesSettings(
+    continuousPrayersNotificationEnabled: Boolean,
+    onContinuousPrayersNotificationSwitch: (Boolean) -> Unit,
     calculationMethod: PrayerTimeCalculationMethod,
     onCalculationMethodChange: (PrayerTimeCalculationMethod) -> Unit,
     juristicMethod: PrayerTimeJuristicMethod,
@@ -243,6 +252,16 @@ private fun PrayerTimesSettings(
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {
+        // Continuous Notification
+        SwitchSetting(
+            value = continuousPrayersNotificationEnabled,
+            title = stringResource(R.string.continuous_prayer_notification),
+            summary = stringResource(R.string.continuous_prayers_notification_summary),
+            onSwitch = onContinuousPrayersNotificationSwitch
+        )
+
+        MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
+
         // Calculation method
         MenuSetting(
             selection = calculationMethod,

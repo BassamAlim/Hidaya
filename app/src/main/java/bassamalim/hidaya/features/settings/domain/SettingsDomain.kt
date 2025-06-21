@@ -1,6 +1,9 @@
 package bassamalim.hidaya.features.settings.domain
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
@@ -15,6 +18,7 @@ import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.models.TimeOfDay
+import bassamalim.hidaya.core.services.PrayersNotificationService
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
@@ -71,6 +75,32 @@ class SettingsDomain @Inject constructor(
 
     fun getDevotionReminderTimeOfDayMap() =
         notificationsRepository.getDevotionalReminderTimes()
+
+    fun getContinuousPrayersNotificationEnabled() =
+        prayersRepository.getContinuousPrayersNotificationEnabled()
+
+    fun enableContinuousPrayersNotification(context: Context) {
+        prayersRepository.setContinuousPrayersNotificationEnabled(true)
+
+        val serviceIntent = Intent(context, PrayersNotificationService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent)
+        }
+        else {
+            context.startService(serviceIntent)
+        }
+    }
+
+    fun disableContinuousPrayersNotification(context: Context) {
+        prayersRepository.setContinuousPrayersNotificationEnabled(false)
+
+        context.stopService(
+            Intent(
+                context,
+                PrayersNotificationService::class.java
+            )
+        )
+    }
 
     fun getPrayerTimesCalculatorSettings() = prayersRepository.getPrayerTimesCalculatorSettings()
 

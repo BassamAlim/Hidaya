@@ -75,7 +75,7 @@
             android:exported="false" />
 
         <service
-            android:name=".core.services.PrayerReminderService"
+            android:name=".core.services.PrayersNotificationService"
             android:foregroundServiceType="specialUse"
             android:exported="false" />
 

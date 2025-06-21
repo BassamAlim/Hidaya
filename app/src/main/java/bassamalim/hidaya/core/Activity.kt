@@ -47,7 +47,7 @@ import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
-import bassamalim.hidaya.core.services.PrayerReminderService
+import bassamalim.hidaya.core.services.PrayersNotificationService
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -325,7 +325,7 @@ class Activity : ComponentActivity() {
 
             setupBootReceiver()
 
-            if (!PrayerReminderService.isRunning)
+            if (!PrayersNotificationService.isRunning)
                 runPrayerReminderService()
         }
     }
@@ -407,7 +407,7 @@ class Activity : ComponentActivity() {
     }
 
     private fun runPrayerReminderService() {
-        val serviceIntent = Intent(this, PrayerReminderService::class.java)
+        val serviceIntent = Intent(this, PrayersNotificationService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(serviceIntent)
         else startService(serviceIntent)
     }
