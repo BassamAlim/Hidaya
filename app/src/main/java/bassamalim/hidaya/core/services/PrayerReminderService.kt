@@ -41,10 +41,7 @@ class PrayerReminderService : Service() {
     @Inject lateinit var prayersRepository: PrayersRepository
     @Inject lateinit var locationRepository: LocationRepository
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
-
     private val _serviceState = MutableStateFlow(ServiceState())
-//    val serviceState: StateFlow<ServiceState> = _serviceState.asStateFlow()
-
     private var countdownJob: Job? = null
     private var initializationJob: Job? = null
 
