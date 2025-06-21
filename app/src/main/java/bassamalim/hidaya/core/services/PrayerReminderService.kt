@@ -201,7 +201,6 @@ class PrayerReminderService : Service() {
             remainingTime = nextPrayerTime - System.currentTimeMillis()
         }
 
-        // Time to restart for next prayer cycle
         restartService()
     }
 
@@ -430,8 +429,17 @@ class PrayerReminderService : Service() {
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setContentIntent(pendingIntent)
             .setContentTitle(title)
-            .setContentText(content)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+//            .setContentText(content)
+            .setSmallIcon(R.drawable.small_launcher_foreground)
+            .setStyle(
+                NotificationCompat
+                    .BigTextStyle()
+//                    .bigText(content)
+                    .setBigContentTitle(title)
+                    .setSummaryText(content)
+            )
+//            .setColorized(true)
+//            .setCustomContentView()
     }
 
     override fun onDestroy() {
