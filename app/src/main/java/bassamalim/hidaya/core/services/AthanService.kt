@@ -26,14 +26,15 @@ import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -42,14 +43,29 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class AthanService : Service() {
 
+    @Inject @ApplicationScope lateinit var scope: CoroutineScope
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var prayersRepository: PrayersRepository
     @Inject lateinit var notificationsRepository: NotificationsRepository
     private var notificationId = 0
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
+    private var athanAudio: Int? = null
 
-    override fun onBind(intent: Intent): IBinder? { return null }  // Not used
+    override fun onCreate() {
+        super.onCreate()
+        createNotificationChannel()
+
+        scope.launch {
+            ActivityUtils.configure(
+                context = application,
+                applicationContext = applicationContext,
+                language = appSettingsRepository.getLanguage().first(),
+            )
+
+            athanAudio = getAthanAudio()
+        }
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -63,21 +79,13 @@ class AthanService : Service() {
         Log.i(Globals.TAG, "In athan service for $reminder")
         notificationId = reminder.id
 
-        GlobalScope.launch {
+        scope.launch {
             if (!isOnTime(time) || isAlreadyNotified(reminder)) {
                 Log.i(Globals.TAG, "notification receiver: not on time or already notified")
                 return@launch
             }
 
-            ActivityUtils.configure(
-                context = application,
-                applicationContext = applicationContext,
-                language = appSettingsRepository.getLanguage().first(),
-            )
-
-            createNotificationChannel()
-
-            startForeground(243, build(reminder))
+            startForeground(notificationId, build(reminder))
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 (getSystemService(AUDIO_SERVICE) as AudioManager)
@@ -97,6 +105,8 @@ class AthanService : Service() {
 
         return START_NOT_STICKY
     }
+
+    override fun onBind(intent: Intent): IBinder? = null
 
     private fun isOnTime(time: Long): Boolean {
         val max = time + 120000
@@ -147,7 +157,8 @@ class AthanService : Service() {
 
     private fun getStopIntent(): PendingIntent {
         return PendingIntent.getService(
-            this, 11,
+            this,
+            11,
             Intent(this, AthanService::class.java)
                 .setAction(StartAction.STOP_ATHAN.name)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
@@ -185,20 +196,22 @@ class AthanService : Service() {
     private fun play(reminder: Reminder) {
         Log.i(Globals.TAG, "Playing Athan")
 
-        GlobalScope.launch {
-            val athanAudio = getAthanAudio()
-            mediaPlayer = MediaPlayer.create(this@AthanService, athanAudio).apply {
-                setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-                setAudioAttributes(
-                    AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
-                )
-                setOnPreparedListener { mediaPlayer?.start() }
-                setOnCompletionListener {
-                    GlobalScope.launch {
-                        showReminderNotification(reminder)
-                        onDestroy()
-                    }
+        if (athanAudio == null) {
+            Log.e(Globals.TAG, "Athan audio is null")
+            return
+        }
+
+        mediaPlayer = MediaPlayer.create(this@AthanService, athanAudio!!).apply {
+            setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+            setAudioAttributes(
+                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
+            )
+            setOnPreparedListener { mediaPlayer?.start() }
+            setOnCompletionListener {
+                scope.launch {
+                    showReminderNotification(reminder)
+                    onDestroy()
                 }
             }
         }
@@ -234,8 +247,11 @@ class AthanService : Service() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         } else true
-        if (havePermission)
-            NotificationManagerCompat.from(this).notify(notificationId, build(reminder))
+        if (havePermission) {
+            NotificationManagerCompat
+                .from(this)
+                .notify(notificationId, build(reminder))
+        }
     }
 
     override fun onDestroy() {

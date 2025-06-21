@@ -29,7 +29,6 @@ object ActivityUtils {
         configuration.setLayoutDirection(locale)
 
         context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
-
     }
 
     fun restartActivity(activity: Activity) {
