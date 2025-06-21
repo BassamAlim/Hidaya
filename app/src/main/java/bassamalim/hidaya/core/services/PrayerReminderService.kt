@@ -26,8 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -44,9 +42,8 @@ class PrayerReminderService : Service() {
     @Inject lateinit var locationRepository: LocationRepository
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
 
-    // State management using StateFlow
     private val _serviceState = MutableStateFlow(ServiceState())
-    val serviceState: StateFlow<ServiceState> = _serviceState.asStateFlow()
+//    val serviceState: StateFlow<ServiceState> = _serviceState.asStateFlow()
 
     private var countdownJob: Job? = null
     private var initializationJob: Job? = null
@@ -65,10 +62,10 @@ class PrayerReminderService : Service() {
 
     data class ServiceState(
         val prayerName: String = "",
+        val prayerTime: String = "",
         val timing: String = "",
         val isPassed: Boolean = false,
         val isInitialized: Boolean = false,
-        val error: String? = null
     )
 
     data class PrayerData(
@@ -94,7 +91,6 @@ class PrayerReminderService : Service() {
             try {
                 initializeService()
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to initialize service", e)
                 handleError("Initialization failed: ${e.message}")
             }
         }
@@ -117,12 +113,9 @@ class PrayerReminderService : Service() {
             }
 
             val prayerData = buildPrayerData(location)
-            _serviceState.value = _serviceState.value.copy(isInitialized = true, error = null)
-
             startCountdown(prayerData)
             Log.d(TAG, "Service initialized successfully")
         } catch (e: Exception) {
-            Log.e(TAG, "Service initialization failed", e)
             handleError("Service initialization failed: ${e.message}")
         }
     }
@@ -161,7 +154,6 @@ class PrayerReminderService : Service() {
             try {
                 runCountdown(prayerData)
             } catch (e: Exception) {
-                Log.e(TAG, "Countdown failed", e)
                 handleError("Countdown failed: ${e.message}")
                 // Retry after delay
                 delay(5000)
@@ -175,40 +167,35 @@ class PrayerReminderService : Service() {
         val language = appSettingsRepository.getLanguage().first()
         val numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first()
 
-        val nextPrayerTime = if (prayerData.nextPrayerIsTomorrow) {
-            prayerData.tomorrowFajr.timeInMillis
-        } else {
-            prayerData.times[prayerData.nextPrayer]?.timeInMillis ?: return
-        }
+        val nextPrayerTime =
+            if (prayerData.nextPrayerIsTomorrow)
+                prayerData.tomorrowFajr.timeInMillis
+            else
+                prayerData.times[prayerData.nextPrayer]?.timeInMillis ?: return
 
         var remainingTime = nextPrayerTime - System.currentTimeMillis()
 
         while (remainingTime > 0) {
             val currentTime = System.currentTimeMillis()
-            val previousPrayerTime = if (prayerData.nextPrayer == Prayer.FAJR) {
+            val previousPrayerTime = if (prayerData.nextPrayer == Prayer.FAJR)
                 prayerData.yesterdayIshaa.timeInMillis
-            } else {
-                prayerData.times[prayerData.previousPrayer]?.timeInMillis ?: continue
-            }
+            else prayerData.times[prayerData.previousPrayer]?.timeInMillis ?: continue
 
             val timeFromPreviousPrayer = currentTime - previousPrayerTime
-            val fifteenMinutesPassed = timeFromPreviousPrayer >= FIFTEEN_MINUTES_MS
-
-            if (fifteenMinutesPassed) {
-                updateStateWithElapsedTime(
-                    timeFromPreviousPrayer,
-                    prayerNames[prayerData.previousPrayer] ?: "",
-                    language,
-                    numeralsLanguage
-                )
-            } else {
-                updateStateWithRemainingTime(
-                    remainingTime,
-                    prayerNames[prayerData.nextPrayer] ?: "",
-                    language,
-                    numeralsLanguage
-                )
-            }
+            if (timeFromPreviousPrayer < FIFTEEN_MINUTES_MS) updateStateWithElapsedTime(
+                prayerName = prayerNames[prayerData.previousPrayer] ?: "",
+                prayerTime = prayerData.formattedTimes[prayerData.previousPrayer] ?: "",
+                elapsedMs = timeFromPreviousPrayer,
+                language = language,
+                numeralsLanguage = numeralsLanguage
+            )
+            else updateStateWithRemainingTime(
+                prayerName = prayerNames[prayerData.nextPrayer] ?: "",
+                prayerTime = prayerData.formattedTimes[prayerData.nextPrayer] ?: "",
+                remainingMs = remainingTime,
+                language = language,
+                numeralsLanguage = numeralsLanguage
+            )
 
             delay(COUNTDOWN_INTERVAL_MS)
             remainingTime = nextPrayerTime - System.currentTimeMillis()
@@ -219,8 +206,9 @@ class PrayerReminderService : Service() {
     }
 
     private fun updateStateWithElapsedTime(
-        elapsedMs: Long,
         prayerName: String,
+        prayerTime: String,
+        elapsedMs: Long,
         language: Language,
         numeralsLanguage: Language
     ) {
@@ -233,12 +221,16 @@ class PrayerReminderService : Service() {
             isPassed = true
         )
 
-        updateNotification("$prayerName passed", translatedTime)
+        updateNotification(
+            title = "$prayerName: $prayerTime",
+            content = String.format(resources.getString(R.string.passed), translatedTime)
+        )
     }
 
     private fun updateStateWithRemainingTime(
-        remainingMs: Long,
         prayerName: String,
+        prayerTime: String,
+        remainingMs: Long,
         language: Language,
         numeralsLanguage: Language
     ) {
@@ -251,8 +243,12 @@ class PrayerReminderService : Service() {
             isPassed = false
         )
 
-        updateNotification("Next: $prayerName", "in $translatedTime")
+        updateNotification(
+            title = "$prayerName: $prayerTime",
+            content = String.format(resources.getString(R.string.remaining), translatedTime)
+        )
     }
+
 
     private fun formatDuration(durationMs: Long): String {
         val hours = (durationMs / (60 * 60 * 1000)) % 24
@@ -268,7 +264,8 @@ class PrayerReminderService : Service() {
             if (location != null) {
                 val prayerData = buildPrayerData(location)
                 startCountdown(prayerData)
-            } else {
+            }
+            else {
                 handleError("Location not available for restart")
             }
         } catch (e: Exception) {
@@ -277,10 +274,12 @@ class PrayerReminderService : Service() {
         }
     }
 
-    private fun handleError(message: String) {
-        Log.e(TAG, message)
-        _serviceState.value = _serviceState.value.copy(error = message)
-        updateNotification("Prayer Service Error", message)
+    private fun handleError(message: String?) {
+        Log.e(TAG, "Failed to start service: ${message ?: "Unknown error"}")
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager?.cancel(NOTIFICATION_ID)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) stopForeground(STOP_FOREGROUND_REMOVE)
+        else stopForeground(true)
     }
 
     private suspend fun getPrayerTimeMap(location: Location): Map<Prayer, Calendar?> {
@@ -363,9 +362,7 @@ class PrayerReminderService : Service() {
         }
 
         val wasYesterday = previousPrayer == null
-        if (wasYesterday) {
-            previousPrayer = Prayer.ISHAA
-        }
+        if (wasYesterday) previousPrayer = Prayer.ISHAA
 
         return Pair(previousPrayer, wasYesterday)
     }
@@ -382,9 +379,7 @@ class PrayerReminderService : Service() {
         }
 
         val isTomorrow = nextPrayer == null
-        if (isTomorrow) {
-            nextPrayer = Prayer.FAJR
-        }
+        if (isTomorrow) nextPrayer = Prayer.FAJR
 
         return Pair(nextPrayer, isTomorrow)
     }
@@ -407,7 +402,10 @@ class PrayerReminderService : Service() {
     }
 
     private fun createNotification(): Notification {
-        return createNotificationBuilder("Prayer Service", "Initializing...").build()
+        return createNotificationBuilder(
+            resources.getString(R.string.prayer_alerts),
+            resources.getString(R.string.initializing)
+        ).build()
     }
 
     private fun updateNotification(title: String, content: String) {
@@ -425,15 +423,15 @@ class PrayerReminderService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setShowWhen(false)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setCategory(NotificationCompat.CATEGORY_STATUS)
+            .setContentIntent(pendingIntent)
             .setContentTitle(title)
             .setContentText(content)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentIntent(pendingIntent)
-            .setOngoing(true)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setCategory(NotificationCompat.CATEGORY_STATUS)
-            .setShowWhen(false)
-            .setOnlyAlertOnce(true)
     }
 
     override fun onDestroy() {

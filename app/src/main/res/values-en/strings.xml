@@ -215,4 +215,6 @@
     <string name="reset">Reset</string>
     <string name="add">Add</string>
     <string name="misbaha">Misbaha</string>
+    <string name="prayer_reminder">Prayer reminder</string>
+    <string name="initializing">Initializing</string>
 </resources>

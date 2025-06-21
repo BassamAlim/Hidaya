@@ -217,4 +217,6 @@
     <string name="reset">إعادة تعيين</string>
     <string name="add">إضافة</string>
     <string name="misbaha">المسبحة</string>
+    <string name="prayer_reminder">تذكير الصلاة</string>
+    <string name="initializing">جاري البدء</string>
 </resources>
