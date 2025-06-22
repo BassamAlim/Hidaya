@@ -117,6 +117,12 @@ class QuranRepository @Inject constructor(
         quranPreferencesDataSource.updateTextSize(textSize)
     }
 
+    fun getKeepScreenOn() = quranPreferencesDataSource.getKeepScreenOn()
+
+    suspend fun setKeepScreenOn(keepScreenOn: Boolean) {
+        quranPreferencesDataSource.updateKeepScreenOn(keepScreenOn)
+    }
+
     fun getBookmarks() = quranPreferencesDataSource.getBookmarks()
 
     fun setBookmark1VerseId(verseId: Int?) {

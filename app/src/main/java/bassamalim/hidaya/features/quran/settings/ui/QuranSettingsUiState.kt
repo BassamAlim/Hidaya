@@ -10,6 +10,7 @@ data class QuranSettingsUiState(
     val isFillPageEnabled: Boolean = true,
     val isTextSizeSliderEnabled: Boolean = true,
     val textSize: Float = 20f,
+    val keepScreenOn: Boolean = false,
     val reciterId: Int = 0,
     val repeatMode: VerseRepeatMode = VerseRepeatMode.NO_REPEAT,
     val shouldStopOnSuraEnd: Boolean = false,

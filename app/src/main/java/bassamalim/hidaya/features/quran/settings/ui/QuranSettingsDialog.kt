@@ -94,6 +94,23 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
                 onValueChange = viewModel::onTextSizeChange,
             )
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MyCheckbox(
+                    isChecked = state.keepScreenOn,
+                    onCheckedChange = viewModel::onKeepScreenOnChange
+                )
+
+                MyText(
+                    text = stringResource(R.string.keep_screen_on),
+                    textColor = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
             MyHorizontalDivider()
             CategoryTitle(stringResource(R.string.recitation_settings))
 

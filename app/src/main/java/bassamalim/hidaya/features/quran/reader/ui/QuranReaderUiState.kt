@@ -15,6 +15,7 @@ data class QuranReaderUiState(
     val viewType: QuranViewType = QuranViewType.PAGE,
     val fillPage: Boolean = false,
     val textSize: Float = 15f,
+    val keepScreenOn: Boolean = false,
     val playerState: Int = PlaybackStateCompat.STATE_STOPPED,
     val bookmarks: QuranBookmarks = QuranBookmarks(),
     val bookmarkOptionsExpanded: Boolean = false,

@@ -3,6 +3,8 @@ package bassamalim.hidaya.features.quran.reader.ui
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.view.WindowManager
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -56,7 +58,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -98,7 +99,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current!!
     val configuration = LocalConfiguration.current
     val noBookmarkMessage = stringResource(R.string.no_bookmarked_page)
 
@@ -115,6 +116,10 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     }
 
     EnforcePortrait(activity)
+
+    if (state.keepScreenOn) {
+        KeepScreenOn(activity)
+    }
 
     Scaffold(
         modifier = Modifier
@@ -788,6 +793,16 @@ private fun EnforcePortrait(activity: Activity) {
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         onDispose {
             activity.requestedOrientation = originalOrientation
+        }
+    }
+}
+
+@Composable
+private fun KeepScreenOn(activity: Activity) {
+    DisposableEffect(Unit) {
+        activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 }

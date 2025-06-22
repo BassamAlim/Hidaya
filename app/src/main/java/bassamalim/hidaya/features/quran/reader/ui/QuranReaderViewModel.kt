@@ -23,11 +23,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.Verse
-import bassamalim.hidaya.core.helpers.Navigator
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.Globals
+import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.models.Verse
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.domain.QuranReaderDomain
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
@@ -81,8 +81,8 @@ class QuranReaderViewModel @Inject constructor(
         domain.getViewType(),
         domain.getFillPage(),
         domain.getTextSize(),
-        domain.getBookmarks()
-    ) { state, viewType, fillPage, textSize, bookmarks ->
+        domain.getKeepScreenOn()
+    ) { state, viewType, fillPage, textSize, keepScreenOn ->
         if (state.isLoading) return@combine state
 
         state.copy(
@@ -93,8 +93,10 @@ class QuranReaderViewModel @Inject constructor(
             viewType = if (language == Language.ARABIC) viewType else QuranViewType.LIST,
             fillPage = fillPage,
             textSize = textSize,
-            bookmarks = bookmarks
+            keepScreenOn = keepScreenOn
         )
+    }.combine(domain.getBookmarks()) { state, bookmarks ->
+        state.copy(bookmarks = bookmarks)
     }.onStart {
         initializeData()
     }.stateIn(

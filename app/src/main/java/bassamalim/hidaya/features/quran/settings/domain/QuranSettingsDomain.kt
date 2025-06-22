@@ -36,23 +36,29 @@ class QuranSettingsDomain @Inject constructor(
         quranRepository.setTextSize(size)
     }
 
+    fun getKeepScreenOn() = quranRepository.getKeepScreenOn()
+
+    suspend fun setKeepScreenOn(keepScreenOn: Boolean) {
+        quranRepository.setKeepScreenOn(keepScreenOn)
+    }
+
     fun getReciterId() = recitationsRepository.getVerseReciterId()
 
-    suspend fun setReciterId(reciterId: Int) = recitationsRepository.setVerseReciterId(reciterId)
+    fun setReciterId(reciterId: Int) = recitationsRepository.setVerseReciterId(reciterId)
 
     fun getRepeatMode() = recitationsRepository.getVerseRepeatMode()
 
-    suspend fun setRepeatMode(repeatMode: VerseRepeatMode) =
+    fun setRepeatMode(repeatMode: VerseRepeatMode) =
         recitationsRepository.setVerseRepeatMode(repeatMode)
 
     fun getShouldStopOnSuraEnd() = recitationsRepository.getShouldStopOnSuraEnd()
 
-    suspend fun setShouldStopOnSuraEnd(shouldStop: Boolean) =
+    fun setShouldStopOnSuraEnd(shouldStop: Boolean) =
         recitationsRepository.setShouldStopOnSuraEnd(shouldStop)
 
     fun getShouldStopOnPageEnd() = recitationsRepository.getShouldStopOnPageEnd()
 
-    suspend fun setShouldStopOnPageEnd(shouldStop: Boolean) =
+    fun setShouldStopOnPageEnd(shouldStop: Boolean) =
         recitationsRepository.setShouldStopOnPageEnd(shouldStop)
 
 }

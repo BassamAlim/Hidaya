@@ -15,12 +15,12 @@ import android.util.Log
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.media3.common.util.UnstableApi
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Verse
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.features.quran.reader.versePlayer.VersePlayerService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -218,6 +218,8 @@ class QuranReaderDomain @Inject constructor(
     suspend fun getShouldShowTutorial() = quranRepository.getShouldShowReaderTutorial().first()
 
     fun getTextSize() = quranRepository.getTextSize()
+
+    fun getKeepScreenOn() = quranRepository.getKeepScreenOn()
 
     fun getBookmarks() = quranRepository.getBookmarks()
 

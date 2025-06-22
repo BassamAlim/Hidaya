@@ -48,6 +48,13 @@ class QuranPreferencesDataSource(
         }
     }
 
+    fun getKeepScreenOn() = flow.map { it.keepScreenOn }
+    suspend fun updateKeepScreenOn(keepScreenOn: Boolean) {
+        dataStore.updateData { preferences ->
+            preferences.copy(keepScreenOn = keepScreenOn)
+        }
+    }
+
     fun getBookmarks() = flow.map { it.bookmarks }
     suspend fun updateBookmarks(bookmarks: QuranBookmarks) {
         dataStore.updateData { preferences ->

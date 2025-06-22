@@ -14,6 +14,7 @@ data class QuranPreferences(
     val viewType: QuranViewType = QuranViewType.PAGE,
     val fillPage: Boolean = false,
     val textSize: Float = 30f,
+    val keepScreenOn: Boolean = false,
     val bookmarks: QuranBookmarks = QuranBookmarks(),
     val shouldShowMenuTutorial: Boolean = true,
     val shouldShowReaderTutorial: Boolean = true,

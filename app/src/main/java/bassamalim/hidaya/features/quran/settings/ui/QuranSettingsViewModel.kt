@@ -53,6 +53,7 @@ class QuranSettingsViewModel @Inject constructor(
                 isTextSizeSliderEnabled = !fillPage,
                 isFillPageEnabled = viewType == QuranViewType.PAGE,
                 textSize = domain.getTextSize().first(),
+                keepScreenOn = domain.getKeepScreenOn().first(),
                 reciterId = domain.getReciterId().first(),
                 repeatMode = domain.getRepeatMode().first(),
                 shouldStopOnSuraEnd = domain.getShouldStopOnSuraEnd().first(),
@@ -79,6 +80,12 @@ class QuranSettingsViewModel @Inject constructor(
     fun onTextSizeChange(size: Float) {
         _uiState.update { it.copy(
             textSize = size
+        )}
+    }
+
+    fun onKeepScreenOnChange(keepScreenOn: Boolean) {
+        _uiState.update { it.copy(
+            keepScreenOn = keepScreenOn
         )}
     }
 
@@ -115,6 +122,7 @@ class QuranSettingsViewModel @Inject constructor(
             domain.setViewType(uiState.value.viewType)
             domain.setFillPage(uiState.value.fillPage)
             domain.setTextSize(uiState.value.textSize)
+            domain.setKeepScreenOn(uiState.value.keepScreenOn)
             domain.setReciterId(uiState.value.reciterId)
             domain.setRepeatMode(uiState.value.repeatMode)
             domain.setShouldStopOnSuraEnd(uiState.value.shouldStopOnSuraEnd)

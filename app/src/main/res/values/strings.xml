@@ -221,4 +221,5 @@
     <string name="initializing">جاري البدء</string>
     <string name="continuous_prayer_notification">إشعار الصلاة المستمر</string>
     <string name="continuous_prayers_notification_summary">إشعار يظهر الصلاة الاقرب، يساعد على ضمان وصول تنبيهات الاذان</string>
+    <string name="keep_screen_on">إبقاء الشاشة مضاءة</string>
 </resources>

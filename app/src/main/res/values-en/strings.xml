@@ -219,4 +219,5 @@
     <string name="initializing">Initializing</string>
     <string name="continuous_prayer_notification">Continuous prayer notification</string>
     <string name="continuous_prayers_notification_summary">A notification showing close prayer, helps in athan alerts reliability</string>
+    <string name="keep_screen_on">Keep screen on</string>
 </resources>
