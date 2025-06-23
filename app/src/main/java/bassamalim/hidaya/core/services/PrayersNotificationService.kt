@@ -49,7 +49,7 @@ class PrayersNotificationService : Service() {
         private const val TAG = "PrayerReminderService"
         private const val NOTIFICATION_ID = 247
         private const val CHANNEL_ID = "PrayerReminderServiceChannel"
-        private const val FIFTEEN_MINUTES_MS = 15 * 60 * 1000L
+        private const val THIRTY_MINUTES_MS = 30 * 60 * 1000L
         private const val COUNTDOWN_INTERVAL_MS = 1000L
 
         @Volatile
@@ -179,7 +179,7 @@ class PrayersNotificationService : Service() {
             else prayerData.times[prayerData.previousPrayer]?.timeInMillis ?: continue
 
             val timeFromPreviousPrayer = currentTime - previousPrayerTime
-            if (timeFromPreviousPrayer < FIFTEEN_MINUTES_MS) updateStateWithElapsedTime(
+            if (timeFromPreviousPrayer < THIRTY_MINUTES_MS) updateStateWithElapsedTime(
                 prayerName = prayerNames[prayerData.previousPrayer] ?: "",
                 prayerTime = prayerData.formattedTimes[prayerData.previousPrayer] ?: "",
                 elapsedMs = timeFromPreviousPrayer,
