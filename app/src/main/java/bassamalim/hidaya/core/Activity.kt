@@ -325,7 +325,8 @@ class Activity : ComponentActivity() {
 
             setupBootReceiver()
 
-            if (!PrayersNotificationService.isRunning)
+            if (prayersRepository.getContinuousPrayersNotificationEnabled().first()
+                && !PrayersNotificationService.isRunning)
                 runPrayerReminderService()
         }
     }

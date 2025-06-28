@@ -173,10 +173,10 @@ class PrayersNotificationService : Service() {
         var remainingTime = nextPrayerTime - System.currentTimeMillis()
 
         while (remainingTime > 0) {
-            val currentTime = System.currentTimeMillis()
-            val previousPrayerTime = if (prayerData.nextPrayer == Prayer.FAJR)
+            val previousPrayerTime = if (prayerData.previousPrayerWasYesterday)
                 prayerData.yesterdayIshaa.timeInMillis
             else prayerData.times[prayerData.previousPrayer]?.timeInMillis ?: continue
+            val currentTime = System.currentTimeMillis()
 
             val timeFromPreviousPrayer = currentTime - previousPrayerTime
             if (timeFromPreviousPrayer < THIRTY_MINUTES_MS) updateStateWithElapsedTime(
