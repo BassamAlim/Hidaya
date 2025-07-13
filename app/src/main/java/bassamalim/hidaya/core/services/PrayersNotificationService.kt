@@ -245,7 +245,6 @@ class PrayersNotificationService : Service() {
         )
     }
 
-
     private fun formatDuration(durationMs: Long): String {
         val hours = (durationMs / (60 * 60 * 1000)) % 24
         val minutes = (durationMs / (60 * 1000)) % 60
@@ -410,7 +409,10 @@ class PrayersNotificationService : Service() {
         notificationManager?.notify(NOTIFICATION_ID, notification)
     }
 
-    private fun createNotificationBuilder(title: String, content: String): NotificationCompat.Builder {
+    private fun createNotificationBuilder(
+        title: String,
+        content: String
+    ): NotificationCompat.Builder {
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
