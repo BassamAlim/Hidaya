@@ -158,7 +158,6 @@ class SettingsDomain @Inject constructor(
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
-            add(Calendar.MINUTE, 30)
         }
 
         setDevotionReminderEnabled(reminder, true)

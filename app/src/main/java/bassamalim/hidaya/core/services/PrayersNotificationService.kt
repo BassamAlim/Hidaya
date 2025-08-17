@@ -14,11 +14,14 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
+import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.models.Location
+import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.utils.LangUtils.translateTimeNums
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,6 +44,7 @@ class PrayersNotificationService : Service() {
     @Inject lateinit var prayersRepository: PrayersRepository
     @Inject lateinit var locationRepository: LocationRepository
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
+    @Inject lateinit var notificationsRepository: NotificationsRepository
     private val _serviceState = MutableStateFlow(ServiceState())
     private var countdownJob: Job? = null
     private var initializationJob: Job? = null
@@ -75,7 +79,8 @@ class PrayersNotificationService : Service() {
         val previousPrayer: Prayer?,
         val nextPrayer: Prayer?,
         val previousPrayerWasYesterday: Boolean,
-        val nextPrayerIsTomorrow: Boolean
+        val nextPrayerIsTomorrow: Boolean,
+        val devotionalReminders: Map<Reminder.Devotional, Calendar>
     )
 
     override fun onCreate() {
@@ -141,8 +146,81 @@ class PrayersNotificationService : Service() {
             previousPrayer = previousPrayer,
             nextPrayer = nextPrayer,
             previousPrayerWasYesterday = previousPrayerWasYesterday,
-            nextPrayerIsTomorrow = nextPrayerIsTomorrow
+            nextPrayerIsTomorrow = nextPrayerIsTomorrow,
+            devotionalReminders = getDevotionalReminders()
         )
+    }
+
+    private suspend fun getDevotionalReminders(): Map<Reminder.Devotional, Calendar> {
+        val today = Calendar.getInstance()
+
+        val devotionAlarmEnabledMap =
+            notificationsRepository.getDevotionalReminderEnabledMap().first()
+
+        val devotionReminderTimes = mutableMapOf<Reminder.Devotional, Calendar>()
+        for ((devotion, enabled) in devotionAlarmEnabledMap) {
+            if (enabled) {
+                if (devotion is Reminder.Devotional.FridayKahf) {
+                    if (today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+                        devotionReminderTimes[devotion] = getDevotionalReminderTime(devotion)
+                }
+                else devotionReminderTimes[devotion] = getDevotionalReminderTime(devotion)
+            }
+        }
+        return devotionReminderTimes.toMap()
+    }
+
+    suspend fun getDevotionalReminderTime(devotion: Reminder.Devotional): Calendar {
+        val time = when (devotion) {
+            Reminder.Devotional.MorningRemembrances, Reminder.Devotional.EveningRemembrances -> {
+                val referencePrayer =
+                    if (devotion == Reminder.Devotional.MorningRemembrances) Prayer.FAJR
+                    else Prayer.ASR
+                val prayerTime = getPrayerTime(referencePrayer)
+                Calendar.getInstance().apply {
+                    timeInMillis = prayerTime.timeInMillis
+                    add(Calendar.MINUTE, 30)
+                }
+            }
+            Reminder.Devotional.DailyWerd, Reminder.Devotional.FridayKahf -> {
+                val timeOfDay =
+                    notificationsRepository.getDevotionalReminderTimes().first()[devotion]!!
+                Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, timeOfDay.hour)
+                    set(Calendar.MINUTE, timeOfDay.minute)
+                }
+            }
+        }
+
+        time[Calendar.SECOND] = 0
+        time[Calendar.MILLISECOND] = 0
+
+        return time
+    }
+
+    suspend fun getPrayerTime(prayer: Prayer): Calendar {
+        val location = locationRepository.getLocation().first()!!
+
+        var prayerTime = PrayerTimeUtils.getPrayerTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
+            calendar = Calendar.getInstance()
+        )[prayer]!!
+
+        // if prayer time passed
+        if (prayerTime.timeInMillis < System.currentTimeMillis()) {
+            prayerTime = PrayerTimeUtils.getPrayerTimes(
+                settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+                selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+                location = location,
+                calendar = Calendar.getInstance().apply {
+                    add(Calendar.DAY_OF_MONTH, 1)
+                }
+            )[prayer]!!
+        }
+
+        return prayerTime
     }
 
     private fun startCountdown(prayerData: PrayerData) {
@@ -172,6 +250,7 @@ class PrayersNotificationService : Service() {
 
         var remainingTime = nextPrayerTime - System.currentTimeMillis()
 
+        var lastDevotionalCheck = 0L
         while (remainingTime > 0) {
             val previousPrayerTime = if (prayerData.previousPrayerWasYesterday)
                 prayerData.yesterdayIshaa.timeInMillis
@@ -193,6 +272,26 @@ class PrayersNotificationService : Service() {
                 language = language,
                 numeralsLanguage = numeralsLanguage
             )
+
+            if (System.currentTimeMillis() - lastDevotionalCheck >= 60 * 1000) {
+                lastDevotionalCheck = System.currentTimeMillis()
+                Log.d(TAG, "Checking for devotional reminders...")
+                val now = Calendar.getInstance()
+                prayerData.devotionalReminders.forEach { (reminder, reminderTime) ->
+                    if (now.get(Calendar.HOUR_OF_DAY) == reminderTime.get(Calendar.HOUR_OF_DAY) &&
+                        now.get(Calendar.MINUTE) == reminderTime.get(Calendar.MINUTE)
+                    ) {
+                        Log.d(TAG, "Devotional reminder triggered: ${reminder.name}")
+                        sendBroadcast(
+                            Intent(this, NotificationReceiver::class.java).apply {
+                                action = "devotion"
+                                putExtra("id", reminder.id)
+                                putExtra("time", reminderTime.timeInMillis)
+                            }
+                        )
+                    }
+                }
+            }
 
             delay(COUNTDOWN_INTERVAL_MS)
             remainingTime = nextPrayerTime - System.currentTimeMillis()
