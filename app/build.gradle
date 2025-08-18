@@ -12,6 +12,12 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+def envFile = rootProject.file('.env')
+def envProperties = new Properties()
+if (envFile.exists()) {
+    envFile.withInputStream { envProperties.load(it) }
+}
+
 android {
     namespace "bassamalim.hidaya"
     compileSdk 35
@@ -28,16 +34,16 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file('C:\\MyFiles\\MySigning\\MySigning.jks')
-            storePassword 'BA-1G@h$o$s@t2@1!2'
-            keyAlias 'BassamAlim'
-            keyPassword 'BA-1G@h$o$s@t2@1!2'
+            storeFile = file(envProperties['KEYSTORE_PATH'] ?: "")
+            storePassword = envProperties['KEYSTORE_PASSWORD'] ?: ""
+            keyAlias = envProperties['KEY_ALIAS'] ?: ""
+            keyPassword = envProperties['KEY_PASSWORD'] ?: ""
         }
         release {
-            storeFile file('C:\\MyFiles\\MySigning\\MySigning.jks')
-            storePassword 'BA-1G@h$o$s@t2@1!2'
-            keyPassword 'BA-1G@h$o$s@t2@1!2'
-            keyAlias 'BassamAlim'
+            storeFile = file(envProperties['KEYSTORE_PATH'] ?: "")
+            storePassword = envProperties['KEYSTORE_PASSWORD'] ?: ""
+            keyAlias = envProperties['KEY_ALIAS'] ?: ""
+            keyPassword = envProperties['KEY_PASSWORD'] ?: ""
         }
     }
 
@@ -45,14 +51,14 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            debuggable false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+            debuggable true
             signingConfig signingConfigs.debug
         }
     }

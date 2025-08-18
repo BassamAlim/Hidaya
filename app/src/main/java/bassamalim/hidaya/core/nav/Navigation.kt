@@ -412,9 +412,11 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            RecitationRecitersMenuScreen(
-                hiltViewModel()
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                RecitationRecitersMenuScreen(
+                    hiltViewModel()
+                )
+            }
         }
 
         composable(

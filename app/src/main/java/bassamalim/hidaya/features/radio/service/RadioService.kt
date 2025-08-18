@@ -26,17 +26,16 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,9 +49,9 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @AndroidEntryPoint
-@RequiresApi(Build.VERSION_CODES.O)
 class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
@@ -175,7 +174,9 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updatePbState(PlaybackStateCompat.STATE_STOPPED, player.currentPosition)
 
             receiverWrapper.unregister()
-            audioManager.abandonAudioFocusRequest(audioFocusRequest)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                audioManager.abandonAudioFocusRequest(audioFocusRequest)
+            }
             if (wifiLock.isHeld) wifiLock.release()
             player.release()
 
@@ -420,7 +421,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun startPlaying() {
         player.reset()
-        player.setDataSource(applicationContext, Uri.parse(dynamicUrl))
+        player.setDataSource(applicationContext, dynamicUrl.toUri())
         player.prepareAsync()
     }
 

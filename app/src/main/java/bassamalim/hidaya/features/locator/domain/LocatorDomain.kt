@@ -82,7 +82,7 @@ class LocatorDomain @Inject constructor(
         else launch()
     }
 
-    private suspend fun setAutoLocation(location: Location) {
+    private fun setAutoLocation(location: Location) {
         locationRepository.setLocation(location)
     }
 

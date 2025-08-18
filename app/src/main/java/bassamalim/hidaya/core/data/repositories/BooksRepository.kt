@@ -85,11 +85,10 @@ class BooksRepository @Inject constructor(
         if (!File(dir).exists()) return emptyMap()
 
         return getBooksMenu(language)
-            .filter { bookInfo -> isDownloaded(bookInfo.id) }
-            .map { bookInfo ->
+            .filter { bookInfo -> isDownloaded(bookInfo.id) }.associate { bookInfo ->
                 val jsonStr = FileUtils.getJsonFromDownloads("${dir}${bookInfo.id}.json")
                 bookInfo.id to gson.fromJson(jsonStr, BookContent::class.java)
-            }.toMap()
+            }
     }
 
     suspend fun getFullBook(bookId: Int, language: Language): Flow<Book> {

@@ -1,8 +1,8 @@
 package bassamalim.hidaya.features.radio.ui
 
-import android.app.Activity
 import android.os.Build
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -24,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,7 +39,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 @Composable
 fun RadioClientScreen(viewModel: RadioClientViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current!!
 
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart(activity)

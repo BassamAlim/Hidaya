@@ -1,8 +1,8 @@
 package bassamalim.hidaya.features.recitations.recitersMenu.ui
 
-import android.app.Activity
 import android.os.Build
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -36,7 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,7 +60,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current!!
 
     if (state.isLoading) return
 

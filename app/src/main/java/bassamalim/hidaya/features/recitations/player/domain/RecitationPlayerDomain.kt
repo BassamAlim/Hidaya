@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.first
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 class RecitationPlayerDomain @Inject constructor(
     private val app: Application,
@@ -150,7 +151,7 @@ class RecitationPlayerDomain @Inject constructor(
     fun downloadRecitation(narration: Recitation.Narration, suraIdx: Int, suraName: String) {
         val server = narration.server
         val link = String.format(Locale.US, "%s/%03d.mp3", server, suraIdx+1)
-        val uri = Uri.parse(link)
+        val uri = link.toUri()
 
         val request = DownloadManager.Request(uri)
         request.setTitle(suraName)

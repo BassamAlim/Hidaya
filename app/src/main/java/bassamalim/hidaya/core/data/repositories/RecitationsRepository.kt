@@ -32,6 +32,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 class RecitationsRepository @Inject constructor(
     private val app: Application,
@@ -58,7 +59,7 @@ class RecitationsRepository @Inject constructor(
     ) {
         Thread {
             val link = String.format(Locale.US, "%s/%03d.mp3", server, suraId+1)
-            val uri = Uri.parse(link)
+            val uri = link.toUri()
 
             val request = DownloadManager.Request(uri)
             request.setTitle(suraSearchName)

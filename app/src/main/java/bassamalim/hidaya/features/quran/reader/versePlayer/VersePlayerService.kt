@@ -24,13 +24,13 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
 import bassamalim.hidaya.core.data.dataSources.room.entities.VerseRecitation
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
@@ -39,7 +39,6 @@ import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,7 +52,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 @UnstableApi
-@RequiresApi(api = Build.VERSION_CODES.O)
 class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, PlayerCallback {
 
     @Inject lateinit var quranRepository: QuranRepository
@@ -200,7 +198,6 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             Log.i(Globals.TAG, "In onPlay of AyaPlayerService")
 
             if (apm.isNotInitialized()) {
-                // Start the service
                 startService(Intent(applicationContext, VersePlayerService::class.java))
             }
 
@@ -209,7 +206,6 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             GlobalScope.launch {
                 buildNotification()
 
-                // Put the service in the foreground, post notification
                 startForeground(notificationId, notification)
 
                 wifiLock.acquire()
@@ -217,7 +213,6 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
                 updatePbState(PlaybackStateCompat.STATE_PLAYING)
                 updateNotification(true)
 
-                // Request audio focus for playback, this registers the afChangeListener
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                     && audioManager.requestAudioFocus(audioFocusRequest)
                     != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
@@ -232,11 +227,9 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         override fun onPause() {
             Log.i(Globals.TAG, "In onPause of AyaPlayerService")
 
-            // Update metadata and state
             updatePbState(PlaybackStateCompat.STATE_PAUSED)
             updateNotification(false)
 
-            // pause the player
             apm.pause()
 
             GlobalScope.launch {
@@ -246,7 +239,6 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             handler.removeCallbacks(runnable)
             abandonAudioFocus()
 
-            // Take the service out of the foreground, retain the notification
             stopForeground()
         }
 

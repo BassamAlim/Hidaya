@@ -52,7 +52,7 @@ class BooksMenuDomain @Inject constructor(
 
     fun getShowTutorial() = booksRepository.getShouldShowTutorial()
 
-    suspend fun handleTutorialDialogDismiss(doNotShowAgain: Boolean) {
+    fun handleTutorialDialogDismiss(doNotShowAgain: Boolean) {
         if (doNotShowAgain) booksRepository.setShouldShowTutorial(false)
     }
 

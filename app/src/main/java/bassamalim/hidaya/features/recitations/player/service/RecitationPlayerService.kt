@@ -28,7 +28,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
@@ -61,10 +60,10 @@ import java.io.IOException
 import java.util.Locale
 import java.util.Random
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @AndroidEntryPoint
 @UnstableApi
-@RequiresApi(api = Build.VERSION_CODES.O)
 class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     @Inject lateinit var quranRepository: QuranRepository
@@ -173,9 +172,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        println("OnStartCommand")
-//        if (mediaSession == null) initSession()
-
         MediaButtonReceiver.handleIntent(mediaSession, intent)
         return super.onStartCommand(intent, flags, startId)
     }
@@ -223,33 +219,33 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             GlobalScope.launch {
                 buildNotification()
 
-                // Request audio focus for playback, this registers the afChangeListener
-                val result = audioManager.requestAudioFocus(audioFocusRequest)
-
-                if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    // Start the service
-                    startService(Intent(applicationContext, RecitationPlayerService::class.java))
-                    // Set the session active  (and update metadata and state)
-                    mediaSession?.isActive = true
-
-                    receiver.register()
-                    // Put the service in the foreground, post notification
-                    startForeground(notificationId, notification)
-
-                    // start the player (custom call)
-                    if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
-                        || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED) {
-                        player.start()
-                        refresh()
-                    }
-                    else startPlaying(suraIndex)
-
-                    updatePbState(
-                        PlaybackStateCompat.STATE_PLAYING,
-                        controller.playbackState.bufferedPosition
-                    )
-                    updateNotification(true)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val result = audioManager.requestAudioFocus(audioFocusRequest)
+                    if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) return@launch
                 }
+
+                // Start the service
+                startService(Intent(applicationContext, RecitationPlayerService::class.java))
+                // Set the session active  (and update metadata and state)
+                mediaSession?.isActive = true
+
+                receiver.register()
+                // Put the service in the foreground, post notification
+                startForeground(notificationId, notification)
+
+                // start the player (custom call)
+                if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
+                    || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED) {
+                    player.start()
+                    refresh()
+                }
+                else startPlaying(suraIndex)
+
+                updatePbState(
+                    PlaybackStateCompat.STATE_PLAYING,
+                    controller.playbackState.bufferedPosition
+                )
+                updateNotification(true)
             }
         }
 
@@ -285,7 +281,9 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             )
 
             handler.removeCallbacks(runnable)
-            audioManager.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                audioManager.abandonAudioFocusRequest(audioFocusRequest)
+            }
             receiver.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
@@ -674,10 +672,12 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
         player.setAudioAttributes(attrs)
 
-        audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-            .setOnAudioFocusChangeListener(this)
-            .setAudioAttributes(attrs)
-            .build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setOnAudioFocusChangeListener(this)
+                .setAudioAttributes(attrs)
+                .build()
+        }
 
         player.setOnPreparedListener {
             if (playType == "continue") player.seekTo(continueFrom)
@@ -740,7 +740,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         val text = String.format(Locale.US, "%s/%03d.mp3", narration.server, sura + 1)
 
         try {
-            player.setDataSource(applicationContext, Uri.parse(text))
+            player.setDataSource(applicationContext, text.toUri())
             player.prepareAsync()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -768,15 +768,17 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     }
 
     private fun createNotificationChannel() {
-        val description = "Recitations Player Notification Channel"
-        channelId = "Recitations"
-        val name = getString(R.string.recitations)
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val notificationChannel = NotificationChannel(channelId, name, importance)
-        notificationChannel.description = description
-        notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-        notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(notificationChannel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val description = "Recitations Player Notification Channel"
+            channelId = "Recitations"
+            val name = getString(R.string.recitations)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val notificationChannel = NotificationChannel(channelId, name, importance)
+            notificationChannel.description = description
+            notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 
     private suspend fun getSuraNames(language: Language) {
@@ -834,7 +836,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         return true
     }
 
-    private suspend fun saveForLater(progress: Int) {
+    private fun saveForLater(progress: Int) {
         if (reciterName == null) return
 
         recitationsRepository.setLastPlayedMedia(

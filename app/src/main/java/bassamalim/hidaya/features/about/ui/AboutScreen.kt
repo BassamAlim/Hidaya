@@ -1,6 +1,6 @@
 package bassamalim.hidaya.features.about.ui
 
-import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.clickable
@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -43,7 +42,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 fun AboutScreen(viewModel: AboutViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current!!
 
     MyScaffold(
         title = stringResource(R.string.about),

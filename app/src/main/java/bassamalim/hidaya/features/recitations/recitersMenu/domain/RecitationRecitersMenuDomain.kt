@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Build
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -18,6 +17,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
@@ -75,14 +75,14 @@ class RecitationRecitersMenuDomain @Inject constructor(
         )
 
         return allReciters.map {
-            it.map { reciter ->
+            it.associate { reciter ->
                 reciter.id to Recitation(
                     reciterId = reciter.id,
                     reciterName = reciter.name,
                     isFavoriteReciter = reciter.isFavorite,
                     narrations = allNarrations.filter { narration ->
                         narration.reciterId == reciter.id
-                    }.map { narration ->
+                    }.associate { narration ->
                         narration.id to Recitation.Narration(
                             id = narration.id,
                             name = narration.name,
@@ -90,9 +90,9 @@ class RecitationRecitersMenuDomain @Inject constructor(
                             availableSuras = narration.availableSuras,
                             downloadState = downloadStates[reciter.id]?.get(narration.id)!!
                         )
-                    }.toMap()
+                    }
                 )
-            }.toMap()
+            }
         }
     }
 
@@ -129,7 +129,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
                         narration.server,
                         i + 1
                     )
-                    val uri = Uri.parse(link)
+                    val uri = link.toUri()
 
                     request = DownloadManager.Request(uri)
                     request.setTitle(

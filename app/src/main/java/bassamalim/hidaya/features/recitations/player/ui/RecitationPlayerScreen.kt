@@ -1,9 +1,9 @@
 package bassamalim.hidaya.features.recitations.player.ui
 
-import android.app.Activity
 import android.os.Build
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,7 +46,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 @Composable
 fun RecitationPlayerScreen(viewModel: RecitationPlayerViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current!!
 
     if (state.isLoading) return
 

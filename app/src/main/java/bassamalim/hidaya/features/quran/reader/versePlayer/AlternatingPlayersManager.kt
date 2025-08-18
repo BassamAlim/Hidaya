@@ -7,18 +7,17 @@ import android.media.MediaPlayer.OnCompletionListener
 import android.media.MediaPlayer.OnErrorListener
 import android.media.MediaPlayer.OnPreparedListener
 import android.net.Uri
-import android.os.Build
 import android.os.PowerManager
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
 import bassamalim.hidaya.core.data.dataSources.room.entities.VerseRecitation
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.core.Globals
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +26,6 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 @UnstableApi
-@RequiresApi(Build.VERSION_CODES.O)
 class AlternatingPlayersManager(
     private val context: Context,
     private val allVerses: List<Verse>,
@@ -317,7 +315,7 @@ class AlternatingPlayersManager(
         var uri = "https://www.everyayah.com/data/"
         uri += recitation.source
         uri += String.format(Locale.US, "%03d%03d.mp3", verse.suraNum, verse.num)
-        return Uri.parse(uri)
+        return uri.toUri()
     }
 
     private fun prv(current: Int) = if (current == 0) numOfPlayers - 1 else current - 1

@@ -19,7 +19,7 @@ class PrayerSettingsDomain @Inject constructor(
     suspend fun getNotificationType(prayer: Prayer) =
         notificationsRepository.getNotificationType(prayer.toReminder()).first()
 
-    suspend fun setNotificationType(type: NotificationType, prayer: Prayer) =
+    fun setNotificationType(type: NotificationType, prayer: Prayer) =
         notificationsRepository.setNotificationType(type, prayer.toReminder())
 
     fun getPrayerName(prayer: Prayer) = prayersRepository.getPrayerName(prayer)

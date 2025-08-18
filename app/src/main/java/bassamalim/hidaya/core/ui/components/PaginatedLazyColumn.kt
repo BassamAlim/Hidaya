@@ -23,9 +23,9 @@ fun <V> PaginatedLazyColumn(
     items: PersistentList<V>,
     loadMoreItems: () -> Unit,
     listState: LazyListState,
+    modifier: Modifier = Modifier,
     buffer: Int = 20,
     isLoading: Boolean,
-    modifier: Modifier = Modifier,
     itemComponent: @Composable (index: Int, item: V) -> Unit,
 ) {
     val shouldLoadMore = remember {

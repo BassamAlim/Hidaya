@@ -23,7 +23,7 @@ class PrayerExtraReminderSettingsDomain @Inject constructor(
         notificationsRepository.getPrayerExtraReminderTimeOffsets()
             .first()[prayer.toExtraReminder()]!!
 
-    suspend fun setOffset(prayer: Prayer, offset: Int) {
+    fun setOffset(prayer: Prayer, offset: Int) {
         notificationsRepository.setPrayerExtraReminderOffset(prayer.toExtraReminder(), offset)
     }
 
