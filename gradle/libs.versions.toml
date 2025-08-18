@@ -96,7 +96,7 @@ firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-inappmessaging-display = { module = "com.google.firebase:firebase-inappmessaging-display" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 firebase-perf = { module = "com.google.firebase:firebase-perf" }
-firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
+firebase-storage = { module = "com.google.firebase:firebase-storage" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

@@ -10,9 +10,9 @@ import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.models.BookContent
 import bassamalim.hidaya.core.models.BookInfo
 import bassamalim.hidaya.core.utils.FileUtils
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
 import com.google.firebase.storage.FileDownloadTask
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.storage
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
@@ -224,21 +224,17 @@ class BooksRepository @Inject constructor(
     }
 
     fun isDownloading(bookId: Int): Boolean {
-        val path = "$dir$bookId.json"
-        val jsonStr = FileUtils.getJsonFromDownloads(path)
+        val jsonStr = FileUtils.getJsonFromDownloads(path="$dir$bookId.json")
         return try {
             gson.fromJson(jsonStr, BookContent::class.java)
             false
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             true
         }
     }
 
     fun deleteBook(bookId: Int) {
-        FileUtils.deleteFile(
-            context = app,
-            path = "${prefix}$bookId.json"
-        )
+        FileUtils.deleteFile(context = app, path = "${prefix}$bookId.json")
     }
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()

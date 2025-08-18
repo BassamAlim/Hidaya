@@ -20,12 +20,12 @@ if (envFile.exists()) {
 
 android {
     namespace "bassamalim.hidaya"
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "bassamalim.hidaya"
         minSdk 23
-        targetSdk 35
+        targetSdk 36
         versionCode 253
         versionName '2.5.3'
 
@@ -128,7 +128,7 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.inappmessaging.display)
     implementation(libs.firebase.perf)
-    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.storage)
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
