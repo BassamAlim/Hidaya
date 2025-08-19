@@ -111,8 +111,13 @@ class Alarm(
         for ((prayer, time) in prayerTimes) {
             val prayerExtra = prayer.toPrayerExtra()
             val reminderOffset = reminderOffsets[prayerExtra]!!
-            if (reminderOffset != 0)
-                setPrayerExtraReminderAlarm(prayerExtra, time!!, reminderOffset)
+            if (reminderOffset != 0) {
+                setPrayerExtraReminderAlarm(
+                    reminder = prayerExtra,
+                    time = time!!,
+                    offset = reminderOffset
+                )
+            }
         }
     }
 
@@ -123,7 +128,7 @@ class Alarm(
     ) {
         Log.i(Globals.TAG, "in Alarm.setPrayerExtraReminderAlarm for: $reminder")
 
-        val millis = time.timeInMillis + offset * 1000
+        val millis = time.timeInMillis + offset * 1000 * 60
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(app, NotificationReceiver::class.java).apply {
                 action = "prayer_extra"

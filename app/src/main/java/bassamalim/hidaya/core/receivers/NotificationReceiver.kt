@@ -164,7 +164,7 @@ class NotificationReceiver : BroadcastReceiver() {
         notificationType: NotificationType
     ): Notification {
         return NotificationCompat.Builder(ctx, channelId).apply {
-            setSmallIcon(R.drawable.ic_athan)
+            setSmallIcon(R.drawable.small_launcher_foreground)
             setTicker(ctx.resources.getString(R.string.app_name))
 
             setContentTitle(getTitle(reminder))

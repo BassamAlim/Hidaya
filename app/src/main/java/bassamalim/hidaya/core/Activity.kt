@@ -3,6 +3,7 @@ package bassamalim.hidaya.core
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -37,6 +38,7 @@ import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.ThemeColor
@@ -46,6 +48,7 @@ import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
+import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.services.PrayersNotificationService
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -117,7 +120,7 @@ class Activity : ComponentActivity() {
                 language = language
             )
 
-//            testAthan()
+            testAthan()
 
             if (isFirstLaunch) {
                 handleAction(intent.action)
@@ -132,26 +135,26 @@ class Activity : ComponentActivity() {
         }
     }
 
-//    private fun testAthan() {
-//        println("Test Athan")
-//
-//        val reminder = Reminder.Prayer.Fajr
-//        val time = System.currentTimeMillis() + 1000 * 60
-//
-//        val intent = Intent(this, NotificationReceiver::class.java).apply {
-//            action = "prayer"
-//            putExtra("id", reminder.id)
-//            putExtra("time", time)
-//        }
-//
-//        val pendingIntent = PendingIntent.getBroadcast(
-//            this, reminder.id, intent,
-//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//        )
-//
-//        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
-//    }
+    private fun testAthan() {
+        println("Test Athan")
+
+        val reminder = Reminder.Prayer.Ishaa
+        val time = System.currentTimeMillis() + 1000 * 60
+
+        val intent = Intent(this, NotificationReceiver::class.java).apply {
+            action = "prayer"
+            putExtra("id", reminder.id)
+            putExtra("time", time)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, reminder.id, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+    }
 
     private suspend fun testDb() {
         val shouldReviveDb = DbUtils.shouldReviveDb(
@@ -319,9 +322,9 @@ class Activity : ComponentActivity() {
 
             fetchAndActivateRemoteConfig()
 
-            dailyUpdate()
+//            dailyUpdate()
 
-            setAlarms()  // because maybe location changed
+//            setAlarms()  // because maybe location changed
 
             setupBootReceiver()
 

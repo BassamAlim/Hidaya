@@ -120,7 +120,7 @@ class AthanService : Service() {
 
     private suspend fun build(reminder: Reminder): Notification {
         return NotificationCompat.Builder(this, channelId).apply {
-            setSmallIcon(R.drawable.ic_athan)
+            setSmallIcon(R.drawable.small_launcher_foreground)
             setTicker(resources.getString(R.string.app_name))
 
             setContentTitle(getTitle(reminder))
