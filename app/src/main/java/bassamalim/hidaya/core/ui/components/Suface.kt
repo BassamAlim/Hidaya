@@ -38,6 +38,7 @@ fun MySurface(
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(vertical = 6.dp, horizontal = 8.dp),
     cornerRadius: Dp = 10.dp,
+    elevation: Dp = 2.dp,
     content: @Composable () -> Unit
 ) {
     Surface(
@@ -46,7 +47,8 @@ fun MySurface(
             .padding(padding),
         shape = RoundedCornerShape(cornerRadius),
         color = MaterialTheme.colorScheme.surfaceContainerLow,
-        shadowElevation = 8.dp
+        shadowElevation = elevation,
+        tonalElevation = elevation
     ) {
         content()
     }
@@ -57,7 +59,7 @@ fun MyClickableSurface(
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(vertical = 3.dp, horizontal = 8.dp),
     cornerRadius: Dp = 10.dp,
-    elevation: Dp = 6.dp,
+    elevation: Dp = 2.dp,
     onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -66,6 +68,7 @@ fun MyClickableSurface(
         shape = RoundedCornerShape(cornerRadius),
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         shadowElevation = elevation,
+        tonalElevation = elevation
     ) {
         Box(
             modifier = Modifier.clickable { onClick() },
@@ -82,6 +85,7 @@ fun MyButtonSurface(
     modifier: Modifier = Modifier,
     innerVPadding: Dp = 10.dp,
     fontSize: TextUnit = 20.sp,
+    elevation: Dp = 2.dp,
     iconButton: @Composable () -> Unit,
     onClick: () -> Unit
 ) {
@@ -91,7 +95,8 @@ fun MyButtonSurface(
             .padding(vertical = 5.dp, horizontal = 8.dp),
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.surfaceContainerLow,
-        shadowElevation = 6.dp,
+        shadowElevation = elevation,
+        tonalElevation = elevation,
         onClick = onClick
     ) {
         Row(
@@ -133,12 +138,12 @@ fun ExpandableCard(
     ) {
         MyFatColumn {
             Row(
-                Modifier.padding(vertical = 25.dp, horizontal = 10.dp),
+                modifier = Modifier.padding(vertical = 25.dp, horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 MyText(
-                    title,
-                    Modifier.weight(6f),
+                    text = title,
+                    modifier = Modifier.weight(6f),
                     fontWeight = FontWeight.Bold
                 )
 
@@ -152,7 +157,9 @@ fun ExpandableCard(
                 )
             }
 
-            if (expandedState) expandedContent()
+            if (expandedState) {
+                expandedContent()
+            }
         }
     }
 }

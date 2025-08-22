@@ -70,6 +70,7 @@
         <item>Original</item>
         <item>White</item>
         <item>Black</item>
+        <item>New</item>
     </string-array>
 
     <string-array name="searcher_matches_entries">

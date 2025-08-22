@@ -104,7 +104,6 @@ private fun SuraCard(
 ) {
     MyClickableSurface(
         modifier = Modifier.padding(2.dp),
-        elevation = 6.dp,
         onClick = { onClick(sura.id) }
     ) {
         Row(

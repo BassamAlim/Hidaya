@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -24,7 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
+import bassamalim.hidaya.core.ui.components.MyHorizontalButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.nsp
 
@@ -66,12 +66,9 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Locate button
-                MyRectangleButton(
+                MyHorizontalButton(
                     text = stringResource(R.string.locate),
                     fontSize = 22.sp,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    ),
                     textColor = MaterialTheme.colorScheme.surface,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -80,7 +77,7 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
                 )
 
                 // Choose manually button
-                MyRectangleButton(
+                MySquareButton(
                     text = stringResource(R.string.choose_manually),
                     fontSize = 22.sp,
                     modifier = Modifier
@@ -91,7 +88,7 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
 
                 if (state.shouldShowSkipLocationButton) {
                     // Skip button
-                    MyRectangleButton(
+                    MySquareButton(
                         text = stringResource(R.string.rejected),
                         fontSize = 22.sp,
                         modifier = Modifier

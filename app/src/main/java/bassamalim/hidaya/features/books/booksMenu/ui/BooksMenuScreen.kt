@@ -101,7 +101,6 @@ private fun BookCard(
 ) {
     MyClickableSurface(
         modifier = Modifier.padding(2.dp),
-        elevation = 6.dp,
         onClick = { onItemClick(id, book) }
     ) {
         Row(

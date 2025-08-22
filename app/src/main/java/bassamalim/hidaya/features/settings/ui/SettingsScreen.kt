@@ -181,7 +181,7 @@ fun AppearanceSettings(
         MyHorizontalDivider(Modifier.padding(horizontal = 16.dp))
 
         // Theme
-        MenuSetting(
+        MenuSetting(  // TODO: should be a map instead of entries and items
             selection = selectedTheme,
             items = Theme.entries.toTypedArray(),
             entries = stringArrayResource(R.array.themes_entries),

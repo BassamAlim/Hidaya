@@ -71,7 +71,8 @@ fun MainScreen(viewModel: MainViewModel) {
 private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> Unit) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceContainer,
-        shadowElevation = 8.dp,
+        shadowElevation = 6.dp,
+        tonalElevation = 6.dp,
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp)

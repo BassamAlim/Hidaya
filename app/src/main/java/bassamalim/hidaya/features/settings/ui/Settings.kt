@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.settings.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -39,10 +36,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.MyValuedSlider
 
 @Composable
@@ -110,77 +106,84 @@ fun <V> MenuSetting(
         }
 
         if (isShown) {
-            Dialog(
-                onDismissRequest = { isShown = false }
-            ) {
-                Surface(
-                    color = Color.Transparent
-                ) {
-                    Box(
-                        Modifier.background(
-                            shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.surface
+            AlertDialog(
+                onDismissRequest = { isShown = false },
+                confirmButton = {},
+                dismissButton = {
+                    MyTextButton(
+                        text = stringResource(R.string.cancel),
+                        onClick = { isShown = false }
+                    )
+                },
+                icon = {
+                    if (icon is ImageVector) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = title,
+                            modifier = Modifier.size(40.dp)
                         )
+                    }
+                    else if (icon is Painter) {
+                        Icon(
+                            painter = icon,
+                            contentDescription = title,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                    else if (icon is Int) {
+                        Icon(
+                            painter = painterResource(icon),
+                            contentDescription = title,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                },
+                title = {
+                    MyText(
+                        text = title,
+                        modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
+                        textColor = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                text = {
+                    Column(
+                        Modifier
+                            .heightIn(1.dp, 400.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
-                        Column(
-                            Modifier.padding(vertical = 20.dp, horizontal = 10.dp)
-                        ) {
-                            MyText(
-                                text = title,
-                                modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
-                                textColor = MaterialTheme.colorScheme.onSurface
-                            )
-
-                            Column(
+                        entries.forEachIndexed { index, text ->
+                            Row(
                                 Modifier
-                                    .heightIn(1.dp, 400.dp)
-                                    .verticalScroll(rememberScrollState())
+                                    .clip(RoundedCornerShape(100.dp))
+                                    .fillMaxWidth()
+                                    .padding(6.dp)
+                                    .clickable {
+                                        onSelection(items[index])
+                                        isShown = false
+                                    },
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                entries.forEachIndexed { index, text ->
-                                    Row(
-                                        Modifier
-                                            .clip(RoundedCornerShape(100.dp))
-                                            .fillMaxWidth()
-                                            .padding(6.dp)
-                                            .clickable {
-                                                onSelection(items[index])
-                                                isShown = false
-                                            },
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        RadioButton(
-                                            selected = index == items.indexOf(selection),
-                                            onClick = {
-                                                onSelection(items[index])
-                                                isShown = false
-                                            },
-                                            colors = RadioButtonDefaults.colors(
-                                                selectedColor = MaterialTheme.colorScheme.primary,
-                                                unselectedColor = MaterialTheme.colorScheme.onSurface
-                                            )
-                                        )
+                                RadioButton(
+                                    selected = index == items.indexOf(selection),
+                                    onClick = {
+                                        onSelection(items[index])
+                                        isShown = false
+                                    },
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = MaterialTheme.colorScheme.primary,
+                                        unselectedColor = MaterialTheme.colorScheme.onSurface
+                                    )
+                                )
 
-                                        MyText(
-                                            text = text,
-                                            textColor = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-                                }
+                                MyText(
+                                    text = text,
+                                    textColor = MaterialTheme.colorScheme.onSurface
+                                )
                             }
-
-                            MyRectangleButton(
-                                text = stringResource(R.string.cancel),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                                ),
-                                elevation = 0,
-                                innerPadding = PaddingValues(0.dp),
-                                onClick = { isShown = !isShown }
-                            )
                         }
                     }
                 }
-            }
+            )
         }
     }
 }

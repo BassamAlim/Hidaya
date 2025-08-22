@@ -28,6 +28,7 @@ fun getColorScheme(theme: Theme) = when (theme) {
     Theme.ORIGINAL -> originalColorScheme
     Theme.WHITE -> whiteColorScheme
     Theme.BLACK -> blackColorScheme
+    Theme.NEW -> newColorScheme
 }
 
 fun getThemeColor(color: ThemeColor, theme: Theme): Color {

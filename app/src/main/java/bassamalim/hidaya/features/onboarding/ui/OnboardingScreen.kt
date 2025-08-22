@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.features.settings.ui.AppearanceSettings
 
@@ -54,7 +54,7 @@ fun OnboardingScreen(viewModel: OnboardingViewModel) {
                 numeralsLanguage = state.numeralsLanguage
             )
 
-            MyRectangleButton(
+            MySquareButton(
                 text = stringResource(R.string.save),
                 fontSize = 24.sp,
                 innerPadding = PaddingValues(vertical = 2.dp, horizontal = 25.dp),

@@ -5,7 +5,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +17,7 @@ import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,7 +35,6 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.TimeOfDay
 import bassamalim.hidaya.core.ui.components.AnalogClock
 import bassamalim.hidaya.core.ui.components.MyColumn
-import bassamalim.hidaya.core.ui.components.MyHorizontalButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
@@ -290,23 +289,25 @@ private fun RecordsCard(
                 )
             }
 
-            MyHorizontalButton(
-                text = stringResource(R.string.leaderboard),
-                textColor = MaterialTheme.colorScheme.primary,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Leaderboard,
-                        contentDescription = stringResource(R.string.leaderboard),
-                        tint =
-                            if (isLeaderboardEnabled) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.outline
-                    )
-                },
-                middlePadding = PaddingValues(vertical = 6.dp, horizontal = 8.dp),
-                elevation = 0,
-                enabled = isLeaderboardEnabled,
-                onClick = onLeaderboardClick
-            )
+            TextButton(
+                onClick = onLeaderboardClick,
+                enabled = isLeaderboardEnabled
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Leaderboard,
+                    contentDescription = stringResource(R.string.leaderboard),
+                    tint =
+                        if (isLeaderboardEnabled) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.outline
+                )
+
+                MyText(
+                    text = stringResource(R.string.leaderboard),
+                    modifier = Modifier.widthIn(1.dp, 280.dp),
+                    textAlign = TextAlign.Start,
+                    textColor = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

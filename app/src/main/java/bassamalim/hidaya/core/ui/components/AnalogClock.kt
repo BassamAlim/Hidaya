@@ -86,7 +86,8 @@ private fun Draw(
             .padding(10.dp),
         shape = CircleShape,
         color = MaterialTheme.colorScheme.surfaceContainerLow,
-        shadowElevation = 10.dp
+        shadowElevation = 6.dp,
+        tonalElevation = 6.dp
     ) {
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             Canvas(Modifier.size(maxWidth)) {

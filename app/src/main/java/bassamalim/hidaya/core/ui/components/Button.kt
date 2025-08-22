@@ -30,6 +30,7 @@ import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -59,39 +60,29 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.tajwal
 
 @Composable
-fun MyRectangleButton(
+fun MySquareButton(
     text: String,
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(3.dp),
-    colors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-    ),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
-    elevation: Int = 10,
     enabled: Boolean = true,
     innerPadding: PaddingValues = PaddingValues(6.dp),
-    image: @Composable () -> Unit = {},
+    icon: @Composable () -> Unit = {},
     onClick: () -> Unit
 ) {
-    Button(
+    ElevatedButton(
         onClick = onClick,
         modifier = modifier.padding(padding),
-        colors = colors,
         shape = RoundedCornerShape(10.dp),
-        elevation =  ButtonDefaults.buttonElevation(
-            defaultElevation = elevation.dp,
-            pressedElevation = (elevation + 5).dp,
-            disabledElevation = 0.dp
-        ),
         enabled = enabled
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            image()
+            icon()
 
             MyText(
                 text = text,
@@ -108,13 +99,10 @@ fun MyRectangleButton(
 fun MyHorizontalButton(
     text: String,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-    ),
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
-    elevation: Int = 10,
     enabled: Boolean = true,
     middlePadding: PaddingValues = PaddingValues(6.dp),
     icon: @Composable (() -> Unit)? = null,
@@ -123,13 +111,8 @@ fun MyHorizontalButton(
     Button(
         onClick = { if (enabled) onClick() },
         modifier = modifier.padding(3.dp),
-        colors = colors,
         shape = RoundedCornerShape(10.dp),
-        elevation =  ButtonDefaults.buttonElevation(
-            defaultElevation = elevation.dp,
-            pressedElevation = (elevation + 5).dp,
-            disabledElevation = 0.dp
-        )
+        colors = colors
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -166,10 +149,10 @@ fun MyIconButton(
     IconButton(
         onClick = { if (enabled) onClick() },
         modifier = modifier,
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = containerColor,
-            contentColor = contentColor
-        )
+//        colors = IconButtonDefaults.iconButtonColors(
+//            containerColor = containerColor,
+//            contentColor = contentColor
+//        )
     ) {
         Icon(
             painter = painterResource(iconId),
@@ -195,10 +178,10 @@ fun MyIconButton(
     IconButton(
         onClick = { if (isEnabled) onClick() },
         modifier = modifier,
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = containerColor,
-            contentColor = contentColor
-        )
+//        colors = IconButtonDefaults.iconButtonColors(
+//            containerColor = containerColor,
+//            contentColor = contentColor
+//        )
     ) {
         Icon(
             imageVector = imageVector,
@@ -230,13 +213,13 @@ fun MySquareButton(
     iconSize: Dp = Dp.Unspecified,
     onClick: () -> Unit
 ) {
-    MyRectangleButton(
+    MySquareButton(
         text = text,
         fontSize = 18.nsp,
         modifier = modifier
             .size(180.dp)
             .padding(vertical = 7.dp, horizontal = 7.dp),
-        image = {
+        icon = {
             Icon(
                 imageVector = imageVector,
                 contentDescription = text,
@@ -259,13 +242,13 @@ fun MySquareButton(
     iconSize: Dp = 70.dp,
     onClick: () -> Unit
 ) {
-    MyRectangleButton(
+    MySquareButton(
         text = text,
         fontSize = 18.nsp,
         modifier = modifier
             .size(180.dp)
             .padding(vertical = 7.dp, horizontal = 7.dp),
-        image = {
+        icon = {
             Icon(
                 painter = painterResource(drawableId),
                 contentDescription = text,

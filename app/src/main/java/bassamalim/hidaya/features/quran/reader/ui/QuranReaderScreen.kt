@@ -196,7 +196,8 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
             .fillMaxWidth()
             .height(36.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        shadowElevation = 8.dp
+        shadowElevation = 8.dp,
+        tonalElevation = 8.dp
     ) {
         Row(
             modifier = Modifier

@@ -3,7 +3,6 @@ package bassamalim.hidaya.core
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -20,6 +19,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
@@ -38,21 +38,17 @@ import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Theme
-import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
-import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.services.PrayersNotificationService
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -95,16 +91,13 @@ class Activity : ComponentActivity() {
             initialTheme = theme.first()
 
             enableEdgeToEdge(
-                statusBarStyle = SystemBarStyle.auto(
-                    getThemeColor(
-                        color = ThemeColor.SURFACE_CONTAINER,
-                        theme = theme.first()
-                    ).toArgb(),
-                    getThemeColor(
-                        color = ThemeColor.SURFACE_CONTAINER,
-                        theme = theme.first()
-                    ).toArgb(),
-                )
+                statusBarStyle =
+                    if (Theme.isDarkTheme(theme.first()))
+                        SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
+                    else SystemBarStyle.light(
+                        scrim = Color.Transparent.toArgb(),
+                        darkScrim = Color.White.toArgb()
+                    )
             )
 
             val isFirstLaunch = savedInstanceState == null
@@ -120,7 +113,7 @@ class Activity : ComponentActivity() {
                 language = language
             )
 
-            testAthan()
+//            testAthan()
 
             if (isFirstLaunch) {
                 handleAction(intent.action)
@@ -135,26 +128,26 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun testAthan() {
-        println("Test Athan")
-
-        val reminder = Reminder.Prayer.Ishaa
-        val time = System.currentTimeMillis() + 1000 * 60
-
-        val intent = Intent(this, NotificationReceiver::class.java).apply {
-            action = "prayer"
-            putExtra("id", reminder.id)
-            putExtra("time", time)
-        }
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            this, reminder.id, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
-    }
+//    private fun testAthan() {
+//        println("Test Athan")
+//
+//        val reminder = Reminder.Prayer.Ishaa
+//        val time = System.currentTimeMillis() + 1000 * 60
+//
+//        val intent = Intent(this, NotificationReceiver::class.java).apply {
+//            action = "prayer"
+//            putExtra("id", reminder.id)
+//            putExtra("time", time)
+//        }
+//
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            this, reminder.id, intent,
+//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//        )
+//
+//        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+//    }
 
     private suspend fun testDb() {
         val shouldReviveDb = DbUtils.shouldReviveDb(
@@ -293,6 +286,16 @@ class Activity : ComponentActivity() {
                 context = lifecycleScope.coroutineContext
             )
 
+            enableEdgeToEdge(
+                statusBarStyle =
+                    if (Theme.isDarkTheme(themeState))
+                        SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
+                    else SystemBarStyle.light(
+                        scrim = Color.Transparent.toArgb(),
+                        darkScrim = Color.White.toArgb()
+                    )
+            )
+
             ActivityUtils.onActivityCreateSetLocale(
                 context = LocalContext.current,
                 language = language
@@ -322,9 +325,9 @@ class Activity : ComponentActivity() {
 
             fetchAndActivateRemoteConfig()
 
-//            dailyUpdate()
+            dailyUpdate()
 
-//            setAlarms()  // because maybe location changed
+            setAlarms()  // because maybe location changed
 
             setupBootReceiver()
 

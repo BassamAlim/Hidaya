@@ -26,7 +26,7 @@ import bassamalim.hidaya.core.ui.components.FullScreenDialog
 import bassamalim.hidaya.core.ui.components.HorizontalRadioGroup
 import bassamalim.hidaya.core.ui.components.MyCheckbox
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.nsp
@@ -169,7 +169,7 @@ private fun RepeatRadioGroup(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             for (i in 1 until entries.lastIndex) {
-                MyRectangleButton(
+                MySquareButton(
                     text = entries[i],
                     fontSize = 16.nsp,
                     textColor =
@@ -198,7 +198,7 @@ private fun RepeatRadioGroup(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             // No repeat
-            MyRectangleButton(
+            MySquareButton(
                 text = entries[0],
                 fontSize = 18.nsp,
                 textColor =
@@ -218,7 +218,7 @@ private fun RepeatRadioGroup(
             )
 
             // Infinite repeat
-            MyRectangleButton(
+            MySquareButton(
                 text = entries.last(),
                 fontSize = 16.nsp,
                 textColor =
@@ -265,13 +265,13 @@ private fun BottomBar(onCancel: () -> Unit, onSave: () -> Unit) {
     MyRow(
         Modifier.padding(top = 10.dp)
     ) {
-        MyRectangleButton(
+        MySquareButton(
             text = stringResource(R.string.cancel),
             modifier = Modifier.weight(1f),
             onClick = onCancel
         )
 
-        MyRectangleButton(
+        MySquareButton(
             text = stringResource(R.string.save),
             modifier = Modifier.weight(1f),
             onClick = onSave

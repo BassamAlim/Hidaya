@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MySquareButton
 
 @Composable
@@ -128,7 +127,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
 
 @Composable
 private fun LargeButton(text: String, onClick: () -> Unit) {
-    MyRectangleButton(
+    MySquareButton(
         text = text,
         modifier = Modifier
             .fillMaxWidth()

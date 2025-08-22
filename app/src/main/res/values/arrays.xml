@@ -70,6 +70,7 @@
         <item>الأساسي</item>
         <item>الأبيض</item>
         <item>الأسود</item>
+        <item>الجديد</item>
     </string-array>
 
     <integer-array name="searcher_matches_items">
@@ -159,7 +160,7 @@
         <item>قراءة يعقوب الحضرمي بروايتي رويس وروح</item>
         <item>ابن ذكوان عن ابن عامر</item>
     </string-array>
-    
+
     <string-array name="language_entries" translatable="false">
         <item>العربية</item>
         <item>English</item>

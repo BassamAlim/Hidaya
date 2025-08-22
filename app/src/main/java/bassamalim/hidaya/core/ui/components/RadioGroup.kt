@@ -28,7 +28,7 @@ fun RadioGroup(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         options.forEachIndexed { index, text ->
-            MyRectangleButton(
+            MySquareButton(
                 text = text,
                 textColor =
                     if (index == selection) MaterialTheme.colorScheme.primary
@@ -81,7 +81,7 @@ fun <V> HorizontalRadioGroup(
                 shape = RoundedCornerShape(10.dp)
             )
 
-            MyRectangleButton(
+            MySquareButton(
                 text = text,
                 fontSize = 18.nsp,
                 textColor =
