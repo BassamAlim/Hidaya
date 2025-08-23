@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ParentColumn(
     modifier: Modifier = Modifier,
+    arrangement: Arrangement.Vertical = Arrangement.Top,
+    alignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     padding: PaddingValues = PaddingValues(0.dp),
     scroll: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
@@ -30,8 +32,8 @@ fun ParentColumn(
 
     Column(
         modifier = adjustedModifier,
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = arrangement,
+        horizontalAlignment = alignment
     ) {
         content()
     }

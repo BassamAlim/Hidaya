@@ -3,14 +3,16 @@ package bassamalim.hidaya.features.home.ui
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
-import bassamalim.hidaya.core.models.TimeOfDay
 import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.models.TimeOfDay
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.LangUtils.translateTimeNums
 import bassamalim.hidaya.features.home.domain.HomeDomain
+import bassamalim.hidaya.features.main.ui.BottomNavItem
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -138,7 +140,19 @@ class HomeViewModel @Inject constructor(
         timer?.cancel()
     }
 
-    fun onGotoTodayWerdClick() {
+    fun onPrayerCardClick(navController: NavHostController) {
+        navController.navigate(BottomNavItem.PrayersBoard.route) {
+            navController.graph.startDestinationRoute?.let { screenRoute ->
+                popUpTo(screenRoute) {
+                    saveState = true
+                }
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    fun onTodayWerdCardClick() {
         navigator.navigate(
             Screen.QuranReader(
                 targetType = QuranTarget.PAGE.name,

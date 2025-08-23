@@ -24,7 +24,7 @@
     <string name="juristic_method_title">الطريقة الفقهية</string>
     <string name="high_lat_adjustment_title">التعديل لخطوط العرض المرتفعة</string>
     <string name="recitations_time_record_title">مدة الاستماع للتلاوات</string>
-    <string name="quran_pages_record_title">عدد صفحات القرآن المقروءة \n(مع التكرار)</string>
+    <string name="quran_pages_record_title">عدد صفحات القرآن المقروءة</string>
     <string name="contact">تواصل معي</string>
     <string name="day_and_night_remembrances">أذكار اليوم والليلة</string>
     <string name="prayers_remembrances">أذكار الصلاة</string>

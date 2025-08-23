@@ -2,7 +2,9 @@ package bassamalim.hidaya.features.home.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -12,13 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.TimeOfDay
@@ -40,12 +41,11 @@ import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(viewModel: HomeViewModel, bottomNavController: NavHostController) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     DisposableEffect(key1 = viewModel) {
@@ -65,13 +65,14 @@ fun HomeScreen(viewModel: HomeViewModel) {
             remaining = state.remaining,
             previousPrayerTime = state.previousPrayerTime,
             nextPrayerTime = state.nextPrayerTime,
-            numeralsLanguage = state.numeralsLanguage
+            numeralsLanguage = state.numeralsLanguage,
+            onPrayerCardClick = { viewModel.onPrayerCardClick(bottomNavController) }
         )
 
         TodayWerdCard(
             werdPage = state.werdPage,
             isWerdDone = state.isWerdDone,
-            onGoToWerdClick = viewModel::onGotoTodayWerdClick
+            onTodayWerdClick = viewModel::onTodayWerdCardClick
         )
 
         RecordsCard(
@@ -93,11 +94,14 @@ private fun PrayerCard(
     remaining: String,
     previousPrayerTime: TimeOfDay?,
     nextPrayerTime: TimeOfDay?,
-    numeralsLanguage: Language
+    numeralsLanguage: Language,
+    onPrayerCardClick: () -> Unit
 ) {
-    MySurface(Modifier.padding(top = 3.dp)) {
+    MySurface {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onPrayerCardClick),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AnalogClock(
@@ -145,7 +149,6 @@ private fun PrayerCard(
                 )
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
                     MyText(
                         text = stringResource(R.string.next_prayer),
                         modifier = Modifier.padding(3.dp),
@@ -177,37 +180,29 @@ private fun PrayerCard(
 }
 
 @Composable
-private fun TodayWerdCard(werdPage: String, isWerdDone: Boolean, onGoToWerdClick: () -> Unit) {
-    MySurface(Modifier.padding(bottom = 3.dp)) {
-        Column(
+private fun TodayWerdCard(werdPage: String, isWerdDone: Boolean, onTodayWerdClick: () -> Unit) {
+    MySurface {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 14.dp, horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .clickable(onClick = onTodayWerdClick)
+                .padding(vertical = 16.dp, horizontal = 24.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                MyText(text = stringResource(R.string.today_werd), fontSize = 22.sp)
+            MyText(
+                text = stringResource(R.string.today_werd),
+                modifier = Modifier.padding(end = 16.dp),
+                fontSize = 20.sp
+            )
 
-                MyText(text = "${stringResource(R.string.page)} $werdPage", fontSize = 22.sp)
-            }
+            MyText(
+                text = "${stringResource(R.string.page)} $werdPage",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold
+            )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                MyTextButton(
-                    text = stringResource(R.string.read),
-                    textColor = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(top = 10.dp, bottom = 5.dp),
-                    onClick = onGoToWerdClick
-                )
-
+            if (isWerdDone) {
                 AnimatedVisibility(visible = isWerdDone, enter = scaleIn()) {
                     Icon(
                         imageVector = Icons.Default.Check,
@@ -217,6 +212,7 @@ private fun TodayWerdCard(werdPage: String, isWerdDone: Boolean, onGoToWerdClick
                     )
                 }
             }
+            else Box(Modifier.size(40.dp))
         }
     }
 }
@@ -238,10 +234,16 @@ private fun RecordsCard(
             ) {
                 MyText(
                     text = stringResource(R.string.recitations_time_record_title),
-                    modifier = Modifier.widthIn(1.dp, 200.dp)
+                    modifier = Modifier.weight(1f),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Start
                 )
 
-                MyText(text = recitationsRecord, fontSize = 30.sp)
+                MyText(
+                    text = recitationsRecord,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
 
             MyRow(
@@ -252,14 +254,23 @@ private fun RecordsCard(
             ) {
                 MyText(
                     text = stringResource(R.string.quran_pages_record_title),
-                    modifier = Modifier.widthIn(1.dp, 280.dp),
-                    textAlign = TextAlign.Start,
+                    modifier = Modifier.weight(1f),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Start
                 )
 
-                MyText(text = quranPagesRecord, fontSize = 30.sp)
+                MyText(
+                    text = quranPagesRecord,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
 
-            TextButton(onClick = onLeaderboardClick, enabled = isLeaderboardEnabled) {
+            TextButton(
+                onClick = onLeaderboardClick,
+                enabled = isLeaderboardEnabled,
+                modifier = Modifier.padding(top = 4.dp, bottom = 10.dp)
+            ) {
                 Icon(
                     imageVector = Icons.Default.Leaderboard,
                     contentDescription = stringResource(R.string.leaderboard)

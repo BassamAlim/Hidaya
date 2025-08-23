@@ -116,7 +116,8 @@ private fun NavigationGraph(
             popExitTransition = TabPopExit
         ) {
             HomeScreen(
-                hiltViewModel()
+                viewModel = hiltViewModel(),
+                bottomNavController = bottomNavController
             )
         }
 
