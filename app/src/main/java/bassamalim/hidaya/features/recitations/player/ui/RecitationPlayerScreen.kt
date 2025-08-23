@@ -204,7 +204,6 @@ private fun ProgressSpace(
                 modifier = Modifier.size(80.dp),
                 iconSize = 70.dp,
                 enabled = areControlsEnabled,
-                contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onPreviousTrackClick
             )
 
@@ -213,7 +212,6 @@ private fun ProgressSpace(
                 enabled = areControlsEnabled,
                 modifier = Modifier.size(100.dp),
                 iconSize = 90.dp,
-                tint = MaterialTheme.colorScheme.primary,
                 onClick = onPlayPauseClick
             )
 
@@ -223,7 +221,6 @@ private fun ProgressSpace(
                 enabled = areControlsEnabled,
                 modifier = Modifier.size(80.dp),
                 iconSize = 70.dp,
-                contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onNextTrackClick
             )
         }
@@ -251,7 +248,7 @@ private fun BottomBar(
                 description = stringResource(R.string.repeat_description),
                 onClick = { onRepeatClick(repeatMode) },
                 iconModifier = Modifier.size(30.dp),
-                contentColor =
+                iconColor =
                     if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE)
                         MaterialTheme.colorScheme.secondary
                     else
@@ -261,8 +258,7 @@ private fun BottomBar(
             MyDownloadButton(
                 state = downloadState,
                 onClick = onDownloadClick,
-                iconSize = 30.dp,
-                contentColor = MaterialTheme.colorScheme.onSurface
+                iconSize = 30.dp
             )
 
             MyIconButton(
@@ -270,7 +266,7 @@ private fun BottomBar(
                 description = stringResource(R.string.shuffle_description),
                 onClick = { onShuffleClick(shuffleMode) },
                 iconModifier = Modifier.size(30.dp),
-                contentColor =
+                iconColor =
                     if (shuffleMode == SHUFFLE_MODE_ALL) MaterialTheme.colorScheme.secondary
                     else MaterialTheme.colorScheme.onPrimary
             )

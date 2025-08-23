@@ -385,7 +385,7 @@ private fun BookmarkOptionButton(
             description = stringResource(R.string.bookmarked_verse),
             onClick = { onBookmarkOptionClick(verseId) },
             iconModifier = Modifier.size(32.dp),
-            contentColor = color
+            iconColor = color
         )
     }
 }

@@ -117,7 +117,7 @@
     <string name="start_quiz">ابدأ الاختبار</string>
     <string name="quiz_result">نتيجة الاختبار</string>
     <string name="cancel">إلغاء</string>
-    <string name="go_to_page">الانتقال إلى الصفحة</string>
+    <string name="read">قراءة</string>
     <string name="max_num_of_marches">اقصى عدد من النتائج</string>
     <string name="no_matches">لا توجد نتائج</string>
     <string name="books_no_matches">لا توجد نتائج. تأكد من تحميل الكتب</string>

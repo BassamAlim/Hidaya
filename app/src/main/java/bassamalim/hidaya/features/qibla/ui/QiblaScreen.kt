@@ -204,7 +204,7 @@ private fun DirectionAccuracyInfoArea(
                 MyIconButton(
                     imageVector = Icons.Outlined.Info,
                     description = stringResource(R.string.accuracy_indicator_description),
-                    contentColor = Negative,
+                    iconColor = Negative,
                     onClick = onAccuracyIndicatorClick
                 )
             }

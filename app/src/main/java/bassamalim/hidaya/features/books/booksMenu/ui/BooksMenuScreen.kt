@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.DownloadDone
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -139,7 +138,6 @@ private fun DownloadBtn(downloadState: DownloadState, onClick: () -> Unit) {
                     else Icons.Default.Download,
                 description = stringResource(R.string.download_description),
                 iconModifier = Modifier.size(32.dp),
-                contentColor = MaterialTheme.colorScheme.primary,
                 onClick = onClick
             )
         }

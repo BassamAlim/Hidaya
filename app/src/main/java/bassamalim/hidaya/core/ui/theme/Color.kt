@@ -4,11 +4,12 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
+
 val Positive = Color(0xFF1BA739)
 val Negative = Color(0xFFE2574C)
-val Gold = Color(0xFFFFD700)
-val Silver = Color(0xFFC0C0C0)
-val Bronze = Color(0xFFCD7F32)
+val Gold = Color(0xFFC5A600)
+val Silver = Color(0xFFA8A8A8)
+val Bronze = Color(0xFFB9732D)
 val Bookmark1Color = Color(0xFF2778FF)
 val Bookmark2Color = Color(0xFF35C0AD)
 val Bookmark3Color = Color(0xFF683DDE)
@@ -146,14 +147,14 @@ val newColorScheme = lightColorScheme(
     onTertiary = Color(0xFFF5FAFF),
     tertiaryContainer = Color(0xFF72C499),
     onTertiaryContainer = Color(0xFF318A5C),
-    background = Color(0xFFE9EDF2),
+    background = Color(0xFFDCE1E6),
     onBackground = Color(0xFF000000),
-    surface = Color(0xFFF5FAFF),
+    surface = Color(0xFFDCE1E6),
     onSurface = Color(0xFF000000),
-    surfaceVariant = Color(0xFFF5FAFF),  // used for quran background
+    surfaceVariant = Color(0xFFD7DCE1),  // used for quran background
     onSurfaceVariant = Color(0xFF000000),  // used for quran text
-    surfaceTint = Color(0xFFF5FAFF),
-    inverseSurface = Color(0xFFF5FAFF),
+    surfaceTint = Color(0xFFDCE1E6),
+    inverseSurface = Color(0xFF222223),
     inverseOnSurface = Color(0xFF000000),
     error = Color(0xFFB00020),
     onError = Color(0xFFBCC2C7),

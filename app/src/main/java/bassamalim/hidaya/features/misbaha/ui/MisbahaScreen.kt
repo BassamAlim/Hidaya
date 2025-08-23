@@ -58,9 +58,7 @@ fun MisbahaScreen(viewModel: MisbahaViewModel) {
                     onClick = viewModel::onResetClick,
                     modifier = Modifier
                         .size(64.dp)
-                        .align(Alignment.CenterStart),
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        .align(Alignment.CenterStart)
                 )
             }
 
@@ -78,9 +76,7 @@ fun MisbahaScreen(viewModel: MisbahaViewModel) {
                     modifier = Modifier
                         .size(buttonSize.dp)
                         .align(Alignment.Center),
-                    iconModifier = Modifier.size(buttonSize.dp * 0.4f),
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    iconModifier = Modifier.size(buttonSize.dp * 0.4f)
                 )
             }
         }

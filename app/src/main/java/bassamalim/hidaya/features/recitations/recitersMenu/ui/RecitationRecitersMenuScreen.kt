@@ -105,7 +105,7 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                             modifier = Modifier.padding(end = 10.dp),
                             description = stringResource(R.string.filter_search_description),
                             iconModifier = Modifier.size(32.dp),
-                            contentColor =
+                            iconColor =
                                 if (state.isFiltered) MaterialTheme.colorScheme.secondary
                                 else MaterialTheme.colorScheme.outline,
                             onClick = viewModel::onFilterClick

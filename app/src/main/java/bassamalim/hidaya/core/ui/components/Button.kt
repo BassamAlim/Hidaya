@@ -31,9 +31,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -140,8 +140,7 @@ fun MyIconButton(
     modifier: Modifier = Modifier,
     iconSize: Dp = 24.dp,
     description: String = "",
-    containerColor: Color = IconButtonDefaults.iconButtonColors().containerColor,
-    contentColor: Color = IconButtonDefaults.iconButtonColors().contentColor,
+    iconColor: Color = LocalContentColor.current,
     enabled: Boolean = true,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     onClick: () -> Unit
@@ -149,17 +148,15 @@ fun MyIconButton(
     IconButton(
         onClick = { if (enabled) onClick() },
         modifier = modifier,
-//        colors = IconButtonDefaults.iconButtonColors(
-//            containerColor = containerColor,
-//            contentColor = contentColor
-//        )
+        enabled = enabled
     ) {
         Icon(
             painter = painterResource(iconId),
             contentDescription = description,
             modifier = Modifier
                 .size(iconSize)
-                .padding(innerPadding)
+                .padding(innerPadding),
+            tint = iconColor
         )
     }
 }
@@ -170,24 +167,42 @@ fun MyIconButton(
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
     description: String = "",
-    containerColor: Color = Color.Unspecified,
-    contentColor: Color = LocalContentColor.current,
+    iconColor: Color = LocalContentColor.current,
     isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
     IconButton(
         onClick = { if (isEnabled) onClick() },
         modifier = modifier,
-//        colors = IconButtonDefaults.iconButtonColors(
-//            containerColor = containerColor,
-//            contentColor = contentColor
-//        )
+        enabled = isEnabled
     ) {
         Icon(
             imageVector = imageVector,
             contentDescription = description,
             modifier = iconModifier,
-            tint = contentColor
+            tint = iconColor
+        )
+    }
+}
+
+@Composable
+fun MyFilledTonalIconButton(
+    imageVector: ImageVector,
+    modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
+    description: String = "",
+    isEnabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    FilledTonalIconButton(
+        onClick = { if (isEnabled) onClick() },
+        modifier = modifier,
+        enabled = isEnabled
+    ) {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = description,
+            modifier = iconModifier
         )
     }
 }
@@ -198,7 +213,7 @@ fun MyBackButton(onClick: (() -> Unit)? = null) {
 
     MyIconButton(Icons.AutoMirrored.Default.ArrowBackIos) {
         if (onClick == null)
-                (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+            (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
         else
             onClick()
     }
@@ -289,7 +304,6 @@ fun MyDownloadButton(
     state: DownloadState,
     modifier: Modifier = Modifier,
     iconSize: Dp = 26.dp,
-    contentColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit
 ) {
     Box(
@@ -304,8 +318,7 @@ fun MyDownloadButton(
                     if (state == DownloadState.DOWNLOADED) Icons.Default.DownloadDone
                     else Icons.Default.Download,
                 description = stringResource(R.string.download_description),
-                onClick = onClick,
-                contentColor = contentColor
+                onClick = onClick
             )
         }
     }
@@ -341,7 +354,8 @@ fun MyIconPlayerButton(
                 Icon(
                     imageVector =
                         if (filled) {
-                            if (state == PlaybackStateCompat.STATE_PLAYING) Icons.Default.PauseCircleFilled
+                            if (state == PlaybackStateCompat.STATE_PLAYING)
+                                Icons.Default.PauseCircleFilled
                             else Icons.Default.PlayCircleFilled
                         }
                         else {
@@ -363,7 +377,6 @@ fun MyCloseButton(onClose: () -> Unit, modifier: Modifier = Modifier) {
         imageVector = Icons.Default.Close,
         modifier = modifier,
         description = stringResource(R.string.close),
-        contentColor = MaterialTheme.colorScheme.onPrimary,
         onClick = onClose
     )
 }
@@ -378,7 +391,7 @@ fun MyTextButton(
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Center,
     fontFamily: FontFamily = tajwal,
-    textModifier: Modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp),
+    textModifier: Modifier = Modifier,
 ) {
     TextButton(onClick = onClick, modifier = modifier) {
         Text(

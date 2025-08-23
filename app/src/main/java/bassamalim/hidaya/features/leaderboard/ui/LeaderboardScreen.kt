@@ -47,7 +47,8 @@ fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
                 .padding(padding)
         ) {
             if (state.isLoading) LoadingScreen()
-            else if (state.isError) ErrorScreen(message = stringResource(R.string.error_fetching_data))
+            else if (state.isError)
+                ErrorScreen(message = stringResource(R.string.error_fetching_data))
             else UsersList(
                 userId = state.userId,
                 userRankMap = state.userRanks,
@@ -161,7 +162,7 @@ private fun UsersList(
     numeralsLanguage: Language
 ) {
     PaginatedLazyColumn(
-        items = items.toPersistentList(),  // Convert the list to a PersistentList
+        items = items.toPersistentList(),
         loadMoreItems = loadMoreItems,
         listState = listState,
         isLoading = isLoading,

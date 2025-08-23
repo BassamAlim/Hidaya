@@ -188,7 +188,6 @@ private fun MonthSelector(
         MyIconButton(
             imageVector = Icons.AutoMirrored.Default.ArrowBackIos,
             iconModifier = Modifier.size(16.dp),
-            contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onPreviousMonthClick
         )
 
@@ -201,7 +200,6 @@ private fun MonthSelector(
         MyIconButton(
             imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
             iconModifier = Modifier.size(16.dp),
-            contentColor = MaterialTheme.colorScheme.onSurface,
             onClick = onNextMonthClick
         )
     }

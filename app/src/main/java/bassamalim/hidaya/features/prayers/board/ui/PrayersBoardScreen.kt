@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.prayers.board.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,12 +10,11 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AddAlert
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.MyLocation
@@ -26,6 +26,7 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -42,7 +43,6 @@ import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyRow
-import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.ParentColumn
@@ -56,7 +56,7 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
 
     if (state.isLoading) return LoadingScreen()
 
-    ParentColumn {
+    ParentColumn(Modifier.padding(vertical = 16.dp)) {
         LocationCard(
             isLocationAvailable = state.isLocationAvailable,
             locationName = state.locationName,
@@ -92,32 +92,28 @@ private fun LocationCard(
     locationName: String,
     onLocatorClick: () -> Unit
 ) {
-    MySurface(
-        Modifier.padding(top = 5.dp)
+    OutlinedCard(
+        Modifier
+            .fillMaxWidth(0.8f)
+            .clickable(onClick = onLocatorClick)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 2.dp),
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            Icon(
+                imageVector = Icons.Default.MyLocation,
+                contentDescription = stringResource(R.string.locate),
+                modifier = Modifier.size(26.dp)
+            )
+
             MyText(
                 text =
                     if (isLocationAvailable) locationName
                     else stringResource(R.string.click_to_locate),
-                modifier = Modifier
-                    .widthIn(1.dp, 300.dp)
-                    .padding(start = 15.dp)
-            )
-
-            MyIconButton(
-                imageVector = Icons.Default.MyLocation,
-                description = stringResource(R.string.locate),
-                modifier = Modifier.padding(end = 8.dp),
-                iconModifier = Modifier.size(32.dp),
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                onClick = onLocatorClick
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Start
             )
         }
     }
@@ -261,40 +257,35 @@ private fun DayCard(
     onPreviousDayClick: () -> Unit,
     onNextDayClick: () -> Unit,
 ) {
-    MySurface(
-        Modifier.padding(bottom = 8.dp)
-    ) {
+    OutlinedCard(Modifier.fillMaxWidth(0.8f)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 5.dp),
+                .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MyIconButton(
-                imageVector = Icons.AutoMirrored.Default.ArrowBackIos,
+                imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
                 description = stringResource(R.string.previous_day_button_description),
-                modifier = Modifier.padding(2.dp),
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                onClick = onPreviousDayClick
+                onClick = onPreviousDayClick,
+//                modifier = Modifier.background(Color.Blue)
             )
 
             MyTextButton(
                 text =
                     if (isNoDateOffset) stringResource(R.string.day)
                     else dateText,
-                fontSize = 24.sp,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                textModifier = Modifier.padding(vertical = 3.dp, horizontal = 15.dp),
-                onClick = onDateClick
+                fontSize = 20.sp,
+                onClick = onDateClick,
+//                modifier = Modifier.background(Color.Blue)
             )
 
             MyIconButton(
-                imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
+                imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
                 description = stringResource(R.string.next_day_button_description),
-                modifier = Modifier.padding(2.dp),
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                onClick = onNextDayClick
+                onClick = onNextDayClick,
+//                modifier = Modifier.background(Color.Blue)
             )
         }
     }

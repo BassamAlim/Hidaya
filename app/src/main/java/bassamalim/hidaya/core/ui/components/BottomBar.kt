@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,10 +35,7 @@ fun ReaderBottomBar(textSize: Float, onSeek: (Float) -> Unit) {
             MyIconButton(
                 imageVector = Icons.Default.FormatSize,
                 iconModifier = Modifier.size(30.dp),
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                onClick = {
-                    isSelected = !isSelected
-                }
+                onClick = { isSelected = !isSelected }
             )
 
             if (isSelected) {

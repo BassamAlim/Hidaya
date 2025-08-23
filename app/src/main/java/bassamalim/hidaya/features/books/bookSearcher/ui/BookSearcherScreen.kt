@@ -134,7 +134,7 @@ private fun BooksFilter(isFiltered: Boolean, onFilterClick: () -> Unit) {
             imageVector = Icons.Default.FilterAlt,
             description = stringResource(R.string.filter_search_description),
             iconModifier = Modifier.size(30.dp),
-            contentColor =
+            iconColor =
                 if (isFiltered) MaterialTheme.colorScheme.secondary
                 else MaterialTheme.colorScheme.outline,
             onClick = onFilterClick

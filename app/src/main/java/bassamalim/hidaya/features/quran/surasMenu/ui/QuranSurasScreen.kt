@@ -195,7 +195,9 @@ private fun QuranSearchBar(
                 onSearch = {},
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
-                placeholder = { MyText(stringResource(R.string.quran_search_hint)) },
+                placeholder = {
+                    MyText(stringResource(R.string.quran_search_hint))
+                },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,

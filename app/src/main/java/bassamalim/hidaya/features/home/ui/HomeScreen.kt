@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -93,11 +95,9 @@ private fun PrayerCard(
     nextPrayerTime: TimeOfDay?,
     numeralsLanguage: Language
 ) {
-    MySurface(
-        Modifier.padding(top = 3.dp)
-    ) {
+    MySurface(Modifier.padding(top = 3.dp)) {
         Column(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AnalogClock(
@@ -107,14 +107,12 @@ private fun PrayerCard(
             )
 
             Row(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     MyText(
                         text = stringResource(R.string.previous_prayer),
                         modifier = Modifier.padding(3.dp),
@@ -135,10 +133,7 @@ private fun PrayerCard(
                     )
 
                     MyText(
-                        text = String.format(
-                            stringResource(R.string.passed),
-                            passed
-                        ),
+                        text = String.format(stringResource(R.string.passed), passed),
                         modifier = Modifier.padding(top = 3.dp, bottom = 15.dp),
                         fontSize = 23.sp
                     )
@@ -149,9 +144,7 @@ private fun PrayerCard(
                     color = DividerDefaults.color.copy(alpha = 0.2f)
                 )
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                     MyText(
                         text = stringResource(R.string.next_prayer),
@@ -173,10 +166,7 @@ private fun PrayerCard(
                     )
 
                     MyText(
-                        text = String.format(
-                            stringResource(R.string.remaining),
-                            remaining
-                        ),
+                        text = String.format(stringResource(R.string.remaining), remaining),
                         modifier = Modifier.padding(top = 3.dp, bottom = 15.dp),
                         fontSize = 23.sp
                     )
@@ -187,52 +177,38 @@ private fun PrayerCard(
 }
 
 @Composable
-private fun TodayWerdCard(
-    werdPage: String,
-    isWerdDone: Boolean,
-    onGoToWerdClick: () -> Unit
-) {
-    MySurface(
-        Modifier.padding(bottom = 3.dp)
-    ) {
+private fun TodayWerdCard(werdPage: String, isWerdDone: Boolean, onGoToWerdClick: () -> Unit) {
+    MySurface(Modifier.padding(bottom = 3.dp)) {
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 14.dp, horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                MyText(
-                    stringResource(R.string.today_werd),
-                    fontSize = 22.sp
-                )
+                MyText(text = stringResource(R.string.today_werd), fontSize = 22.sp)
 
-                MyText(
-                    "${stringResource(R.string.page)} $werdPage",
-                    fontSize = 22.sp
-                )
+                MyText(text = "${stringResource(R.string.page)} $werdPage", fontSize = 22.sp)
             }
 
             Row(
-                Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 MyTextButton(
-                    text = stringResource(R.string.go_to_page),
+                    text = stringResource(R.string.read),
                     textColor = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 10.dp, bottom = 5.dp),
                     onClick = onGoToWerdClick
                 )
 
-                AnimatedVisibility(
-                    visible = isWerdDone,
-                    enter = scaleIn()
-                ) {
+                AnimatedVisibility(visible = isWerdDone, enter = scaleIn()) {
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = stringResource(R.string.already_read_description),
@@ -265,10 +241,7 @@ private fun RecordsCard(
                     modifier = Modifier.widthIn(1.dp, 200.dp)
                 )
 
-                MyText(
-                    text = recitationsRecord,
-                    fontSize = 30.sp
-                )
+                MyText(text = recitationsRecord, fontSize = 30.sp)
             }
 
             MyRow(
@@ -283,29 +256,20 @@ private fun RecordsCard(
                     textAlign = TextAlign.Start,
                 )
 
-                MyText(
-                    text = quranPagesRecord,
-                    fontSize = 30.sp
-                )
+                MyText(text = quranPagesRecord, fontSize = 30.sp)
             }
 
-            TextButton(
-                onClick = onLeaderboardClick,
-                enabled = isLeaderboardEnabled
-            ) {
+            TextButton(onClick = onLeaderboardClick, enabled = isLeaderboardEnabled) {
                 Icon(
                     imageVector = Icons.Default.Leaderboard,
-                    contentDescription = stringResource(R.string.leaderboard),
-                    tint =
-                        if (isLeaderboardEnabled) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.outline
+                    contentDescription = stringResource(R.string.leaderboard)
                 )
+
+                Spacer(Modifier.width(6.dp))
 
                 MyText(
                     text = stringResource(R.string.leaderboard),
-                    modifier = Modifier.widthIn(1.dp, 280.dp),
-                    textAlign = TextAlign.Start,
-                    textColor = MaterialTheme.colorScheme.primary
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
