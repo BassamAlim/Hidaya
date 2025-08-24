@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyIconButton
+import bassamalim.hidaya.core.ui.components.MyFilledTonalIconButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import kotlin.math.min
@@ -52,7 +52,7 @@ fun MisbahaScreen(viewModel: MisbahaViewModel) {
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
             ) {
-                MyIconButton(
+                MyFilledTonalIconButton(
                     imageVector = Icons.Default.Replay,
                     description = stringResource(R.string.reset),
                     onClick = viewModel::onResetClick,
@@ -69,7 +69,7 @@ fun MisbahaScreen(viewModel: MisbahaViewModel) {
             ) * 0.75f
 
             Box(Modifier.fillMaxWidth()) {
-                MyIconButton(
+                MyFilledTonalIconButton(
                     imageVector = Icons.Default.Add,
                     description = stringResource(R.string.add),
                     onClick = viewModel::onIncrementClick,

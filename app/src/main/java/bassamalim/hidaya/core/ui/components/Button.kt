@@ -138,8 +138,8 @@ fun MyHorizontalButton(
 fun MyIconButton(
     iconId: Int,
     modifier: Modifier = Modifier,
-    iconSize: Dp = 24.dp,
     description: String = "",
+    iconSize: Dp = 24.dp,
     iconColor: Color = LocalContentColor.current,
     enabled: Boolean = true,
     innerPadding: PaddingValues = PaddingValues(0.dp),
@@ -307,7 +307,7 @@ fun MyDownloadButton(
     onClick: () -> Unit
 ) {
     Box(
-        modifier = modifier.size(iconSize),
+//        modifier = modifier.size(iconSize),
         contentAlignment = Alignment.Center
     ) {
         if (state == DownloadState.DOWNLOADING)
@@ -318,6 +318,7 @@ fun MyDownloadButton(
                     if (state == DownloadState.DOWNLOADED) Icons.Default.DownloadDone
                     else Icons.Default.Download,
                 description = stringResource(R.string.download_description),
+                iconModifier = Modifier.size(iconSize),
                 onClick = onClick
             )
         }

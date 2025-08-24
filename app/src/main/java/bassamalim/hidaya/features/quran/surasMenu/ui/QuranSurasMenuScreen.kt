@@ -67,7 +67,7 @@ import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuranSurasScreen(
+fun QuranSurasMenuScreen(
     viewModel: QuranSurasViewModel,
     snackbarHostState: SnackbarHostState
 ) {

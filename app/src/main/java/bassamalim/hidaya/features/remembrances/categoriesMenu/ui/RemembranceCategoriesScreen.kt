@@ -23,7 +23,7 @@ import bassamalim.hidaya.core.ui.components.MySquareButton
 @Composable
 fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(top = 5.dp)
             .verticalScroll(rememberScrollState()),
@@ -43,7 +43,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
         )
 
         Row(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             // day and night recitations button
@@ -64,7 +64,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
         }
 
         Row(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             // quran recitations button
@@ -84,7 +84,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
         }
 
         Row(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             // events recitations button
@@ -104,7 +104,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
         }
 
         Row(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             // places recitations button
@@ -112,6 +112,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
                 text = stringResource(R.string.places_remembrances),
                 imageVector = Icons.AutoMirrored.Default.Logout,
                 tint = MaterialTheme.colorScheme.onSurface,
+                iconSize = 70.dp,
                 onClick = { viewModel.onCategoryClick(categoryId = 6) }
             )
             // more recitations button

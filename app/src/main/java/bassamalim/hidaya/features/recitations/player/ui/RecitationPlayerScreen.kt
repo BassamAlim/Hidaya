@@ -203,6 +203,7 @@ private fun ProgressSpace(
                 description = stringResource(R.string.previous_track_btn_description),
                 modifier = Modifier.size(80.dp),
                 iconSize = 70.dp,
+                iconColor = MaterialTheme.colorScheme.primary,
                 enabled = areControlsEnabled,
                 onClick = onPreviousTrackClick
             )
@@ -212,6 +213,7 @@ private fun ProgressSpace(
                 enabled = areControlsEnabled,
                 modifier = Modifier.size(100.dp),
                 iconSize = 90.dp,
+                tint = MaterialTheme.colorScheme.primary,
                 onClick = onPlayPauseClick
             )
 
@@ -221,6 +223,7 @@ private fun ProgressSpace(
                 enabled = areControlsEnabled,
                 modifier = Modifier.size(80.dp),
                 iconSize = 70.dp,
+                iconColor = MaterialTheme.colorScheme.primary,
                 onClick = onNextTrackClick
             )
         }
@@ -250,9 +253,9 @@ private fun BottomBar(
                 iconModifier = Modifier.size(30.dp),
                 iconColor =
                     if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE)
-                        MaterialTheme.colorScheme.secondary
+                        MaterialTheme.colorScheme.primary
                     else
-                        MaterialTheme.colorScheme.onPrimary
+                        MaterialTheme.colorScheme.onSurface
             )
 
             MyDownloadButton(
@@ -267,8 +270,8 @@ private fun BottomBar(
                 onClick = { onShuffleClick(shuffleMode) },
                 iconModifier = Modifier.size(30.dp),
                 iconColor =
-                    if (shuffleMode == SHUFFLE_MODE_ALL) MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.onPrimary
+                    if (shuffleMode == SHUFFLE_MODE_ALL) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurface
             )
         }
     }
