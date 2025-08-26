@@ -90,16 +90,6 @@ class Activity : ComponentActivity() {
             theme = appSettingsRepository.getTheme()
             initialTheme = theme.first()
 
-            enableEdgeToEdge(
-                statusBarStyle =
-                    if (Theme.isDarkTheme(theme.first()))
-                        SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
-                    else SystemBarStyle.light(
-                        scrim = Color.Transparent.toArgb(),
-                        darkScrim = Color.White.toArgb()
-                    )
-            )
-
             val isFirstLaunch = savedInstanceState == null
             startRoute = intent.getStringExtra("start_route")
             if (isFirstLaunch) testDb()
