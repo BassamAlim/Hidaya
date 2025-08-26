@@ -86,11 +86,10 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
                     imageVector = Icons.Default.Favorite,
                     isSpecial = true
                 ),
-                onClick = viewModel::onFavoriteRemembrancesClick
+                onClick = viewModel::onFavoriteRemembrancesClick,
+                modifier = Modifier.padding(bottom = 12.dp)
             )
         }
-
-        item {}
 
         items(
             items = categoryItems.chunked(2),
@@ -119,10 +118,14 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
 }
 
 @Composable
-private fun SpecialCategoryCard(item: CategoryItem, onClick: () -> Unit) {
+private fun SpecialCategoryCard(
+    item: CategoryItem,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(80.dp),
         colors = CardDefaults.cardColors(

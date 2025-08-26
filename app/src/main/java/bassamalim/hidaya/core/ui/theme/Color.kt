@@ -15,7 +15,6 @@ val Bookmark2Color = Color(0xFF35C0AD)
 val Bookmark3Color = Color(0xFF683DDE)
 val Bookmark4Color = Color(0xFFB2A133)
 
-
 val originalColorScheme = darkColorScheme(
     primary = Color(0xFF00ADB5),
     onPrimary = Color(0xFFD9DEE1),
