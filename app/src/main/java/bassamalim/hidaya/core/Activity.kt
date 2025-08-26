@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
@@ -49,6 +50,7 @@ import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.services.PrayersNotificationService
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import bassamalim.hidaya.core.ui.theme.getColorScheme
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -84,11 +86,27 @@ class Activity : ComponentActivity() {
     private lateinit var initialTheme: Theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
             theme = appSettingsRepository.getTheme()
             initialTheme = theme.first()
+
+            splashScreen.setKeepOnScreenCondition { false }
+
+            setWindowBackground(initialTheme)
+
+            enableEdgeToEdge(
+                statusBarStyle =
+                    if (Theme.isDarkTheme(initialTheme))
+                        SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
+                    else SystemBarStyle.light(
+                        scrim = Color.Transparent.toArgb(),
+                        darkScrim = Color.White.toArgb()
+                    )
+            )
 
             val isFirstLaunch = savedInstanceState == null
             startRoute = intent.getStringExtra("start_route")
@@ -276,16 +294,6 @@ class Activity : ComponentActivity() {
                 context = lifecycleScope.coroutineContext
             )
 
-            enableEdgeToEdge(
-                statusBarStyle =
-                    if (Theme.isDarkTheme(themeState))
-                        SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
-                    else SystemBarStyle.light(
-                        scrim = Color.Transparent.toArgb(),
-                        darkScrim = Color.White.toArgb()
-                    )
-            )
-
             ActivityUtils.onActivityCreateSetLocale(
                 context = LocalContext.current,
                 language = language
@@ -407,6 +415,11 @@ class Activity : ComponentActivity() {
         val serviceIntent = Intent(this, PrayersNotificationService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(serviceIntent)
         else startService(serviceIntent)
+    }
+
+    private fun setWindowBackground(theme: Theme) {
+        val colorScheme = getColorScheme(theme)
+        window.decorView.setBackgroundColor(colorScheme.surface.toArgb())
     }
 
 }
