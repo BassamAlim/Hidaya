@@ -1,12 +1,5 @@
 package bassamalim.hidaya.features.remembrances.categoriesMenu.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,11 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -47,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyText
-import kotlinx.coroutines.delay
 
 data class CategoryItem(
     val id: Int,
@@ -59,30 +46,6 @@ data class CategoryItem(
 
 @Composable
 fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
-    var screenVisible by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        delay(100)
-        screenVisible = true
-    }
-
-    val specialItems = listOf(
-        CategoryItem(
-            id = -1,
-            titleRes = R.string.all_remembrances,
-            iconRes = null,
-            imageVector = Icons.Default.ViewModule,
-            isSpecial = true
-        ),
-        CategoryItem(
-            id = -2,
-            titleRes = R.string.favorite_remembrances,
-            iconRes = null,
-            imageVector = Icons.Default.Favorite,
-            isSpecial = true
-        )
-    )
-
     val categoryItems = listOf(
         CategoryItem(0, R.string.day_and_night_remembrances, R.drawable.ic_day_and_night),
         CategoryItem(1, R.string.prayers_remembrances, R.drawable.ic_praying),
@@ -90,49 +53,49 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
         CategoryItem(3, R.string.actions_remembrances, R.drawable.ic_moving),
         CategoryItem(4, R.string.events_remembrances, R.drawable.ic_events),
         CategoryItem(5, R.string.emotion_remembrances, R.drawable.ic_emotions),
-        CategoryItem(
-            6,
-            R.string.places_remembrances,
-            imageVector = Icons.AutoMirrored.Default.Logout
-        ),
+        CategoryItem(6, R.string.places_remembrances,
+            imageVector = Icons.AutoMirrored.Default.Logout),
         CategoryItem(7, R.string.title_more, R.drawable.ic_duaa_light_hands)
     )
 
-    AnimatedVisibility(
-        visible = screenVisible,
-        enter = fadeIn() + scaleIn(initialScale = 0.9f),
-        exit = fadeOut() + scaleOut(targetScale = 0.9f)
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            specialItems.forEach { item ->
-                SpecialCategoryCard(
-                    item = item,
-                    onClick = {
-                        when (item.id) {
-                            -1 -> viewModel.onAllRemembrancesClick()
-                            -2 -> viewModel.onFavoriteRemembrancesClick()
-                        }
-                    }
-                )
-            }
+        SpecialCategoryCard(
+            item = CategoryItem(
+                id = -1,
+                titleRes = R.string.all_remembrances,
+                iconRes = null,
+                imageVector = Icons.Default.ViewModule,
+                isSpecial = true
+            ),
+            onClick = viewModel::onAllRemembrancesClick
+        )
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(categoryItems) { item ->
-                    CategoryCard(
-                        item = item,
-                        onClick = { viewModel.onCategoryClick(categoryId = item.id) }
-                    )
-                }
+        SpecialCategoryCard(
+            item = CategoryItem(
+                id = -2,
+                titleRes = R.string.favorite_remembrances,
+                iconRes = null,
+                imageVector = Icons.Default.Favorite,
+                isSpecial = true
+            ),
+            onClick = viewModel::onFavoriteRemembrancesClick
+        )
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(top = 24.dp, bottom = 16.dp, start = 6.dp, end = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(categoryItems) { item ->
+                CategoryCard(
+                    item = item,
+                    onClick = { viewModel.onCategoryClick(categoryId = item.id) }
+                )
             }
         }
     }
@@ -144,7 +107,8 @@ private fun SpecialCategoryCard(item: CategoryItem, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp),
+            .height(80.dp)
+            .padding(top = 16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -192,64 +156,56 @@ private fun SpecialCategoryCard(item: CategoryItem, onClick: () -> Unit) {
 
 @Composable
 private fun CategoryCard(item: CategoryItem, onClick: () -> Unit) {
-    AnimatedVisibility(
-        visible = true,
-        enter = scaleIn(
-            animationSpec = spring(dampingRatio = 0.6f, stiffness = 300f),
-            initialScale = 0.3f
-        ) + fadeIn(tween(400))
+    Card(
+        onClick = onClick,
+        modifier = Modifier.aspectRatio(1f),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp,
+            pressedElevation = 2.dp
+        )
     ) {
-        Card(
-            onClick = onClick,
-            modifier = Modifier.aspectRatio(1f),
-            shape = RoundedCornerShape(24.dp),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 6.dp,
-                pressedElevation = 2.dp
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            Surface(
+                modifier = Modifier.size(64.dp),
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
             ) {
-                Surface(
-                    modifier = Modifier.size(64.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        if (item.iconRes != null) {
-                            Icon(
-                                painter = painterResource(item.iconRes),
-                                contentDescription = null,
-                                modifier = Modifier.size(36.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        else if (item.imageVector != null) {
-                            Icon(
-                                imageVector = item.imageVector,
-                                contentDescription = null,
-                                modifier = Modifier.size(36.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                Box(contentAlignment = Alignment.Center) {
+                    if (item.iconRes != null) {
+                        Icon(
+                            painter = painterResource(item.iconRes),
+                            contentDescription = null,
+                            modifier = Modifier.size(36.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    else if (item.imageVector != null) {
+                        Icon(
+                            imageVector = item.imageVector,
+                            contentDescription = null,
+                            modifier = Modifier.size(36.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
-                
-                Spacer(Modifier.height(16.dp))
-                
-                MyText(
-                    text = stringResource(item.titleRes),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2
-                )
             }
+
+            Spacer(Modifier.height(16.dp))
+
+            MyText(
+                text = stringResource(item.titleRes),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2
+            )
         }
     }
 }
