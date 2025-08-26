@@ -12,9 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -58,44 +57,60 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
         CategoryItem(7, R.string.title_more, R.drawable.ic_duaa_light_hands)
     )
 
-    Column(
-        Modifier
+    LazyColumn(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
+        contentPadding = PaddingValues(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        SpecialCategoryCard(
-            item = CategoryItem(
-                id = -1,
-                titleRes = R.string.all_remembrances,
-                iconRes = null,
-                imageVector = Icons.Default.ViewModule,
-                isSpecial = true
-            ),
-            onClick = viewModel::onAllRemembrancesClick
-        )
+        item {
+            SpecialCategoryCard(
+                item = CategoryItem(
+                    id = -1,
+                    titleRes = R.string.all_remembrances,
+                    iconRes = null,
+                    imageVector = Icons.Default.ViewModule,
+                    isSpecial = true
+                ),
+                onClick = viewModel::onAllRemembrancesClick
+            )
+        }
 
-        SpecialCategoryCard(
-            item = CategoryItem(
-                id = -2,
-                titleRes = R.string.favorite_remembrances,
-                iconRes = null,
-                imageVector = Icons.Default.Favorite,
-                isSpecial = true
-            ),
-            onClick = viewModel::onFavoriteRemembrancesClick
-        )
+        item {
+            SpecialCategoryCard(
+                item = CategoryItem(
+                    id = -2,
+                    titleRes = R.string.favorite_remembrances,
+                    iconRes = null,
+                    imageVector = Icons.Default.Favorite,
+                    isSpecial = true
+                ),
+                onClick = viewModel::onFavoriteRemembrancesClick
+            )
+        }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(top = 24.dp, bottom = 16.dp, start = 6.dp, end = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(categoryItems) { item ->
-                CategoryCard(
-                    item = item,
-                    onClick = { viewModel.onCategoryClick(categoryId = item.id) }
-                )
+        items(
+            items = categoryItems.chunked(2),
+            key = { row -> row.map { it.id }.joinToString() }
+        ) { rowItems ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                rowItems.forEach { item ->
+                    CategoryCard(
+                        modifier = Modifier.weight(1f),
+                        item = item,
+                        onClick = { viewModel.onCategoryClick(categoryId = item.id) }
+                    )
+                }
+                // Fill remaining space if odd number of items
+                if (rowItems.size == 1) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
             }
         }
     }
@@ -107,8 +122,7 @@ private fun SpecialCategoryCard(item: CategoryItem, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
-            .padding(top = 16.dp),
+            .height(80.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -155,10 +169,10 @@ private fun SpecialCategoryCard(item: CategoryItem, onClick: () -> Unit) {
 }
 
 @Composable
-private fun CategoryCard(item: CategoryItem, onClick: () -> Unit) {
+private fun CategoryCard(item: CategoryItem, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Card(
         onClick = onClick,
-        modifier = Modifier.aspectRatio(1f),
+        modifier = modifier.aspectRatio(1f),
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp,
