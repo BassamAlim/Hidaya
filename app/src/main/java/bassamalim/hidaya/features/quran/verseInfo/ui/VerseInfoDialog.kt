@@ -133,7 +133,7 @@ private fun VerseTextSection(verseText: String) {
         text = verseText,
         fontFamily = hafs_smart,
         textAlign = TextAlign.Center,
-        textColor = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -144,7 +144,7 @@ private fun InterpretationSection(interpretation: AnnotatedString) {
             text = stringResource(R.string.interpretation),
             modifier = Modifier.padding(bottom = 6.dp),
             fontWeight = FontWeight.Bold,
-            textColor = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         MyText(
@@ -161,7 +161,7 @@ private fun InterpretationSection(interpretation: AnnotatedString) {
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Justify,
-            textColor = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

@@ -768,7 +768,7 @@ private fun SuraHeader(
         MyText(
             text = "${stringResource(R.string.sura)} $suraName",
             fontSize = (textSize * 0.9).sp,
-            textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontFamily = uthmanic_hafs
         )
     }

@@ -44,7 +44,7 @@ fun MisbahaScreen(viewModel: MisbahaViewModel) {
                     .fillMaxWidth()
                     .padding(vertical = 64.dp),
                 fontSize = 96.sp,
-                textColor = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary
             )
 
             Box(

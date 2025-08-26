@@ -142,7 +142,7 @@ fun <V> MenuSetting(
                     MyText(
                         text = title,
                         modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
-                        textColor = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 text = {
@@ -177,7 +177,7 @@ fun <V> MenuSetting(
 
                                 MyText(
                                     text = text,
-                                    textColor = MaterialTheme.colorScheme.onSurface
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         }
@@ -269,7 +269,7 @@ fun CategoryTitle(title: String) {
             .padding(top = 15.dp, bottom = 8.dp, start = 15.dp, end = 15.dp),
         fontSize = 16.sp,
         textAlign = TextAlign.Start,
-        textColor = MaterialTheme.colorScheme.primary
+        color = MaterialTheme.colorScheme.primary
     )
 }
 
@@ -278,7 +278,7 @@ fun PreferenceTitle(title: String, modifier: Modifier = Modifier) {
     MyText(
         text = title,
         modifier = modifier,
-        textColor = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -288,6 +288,6 @@ private fun SummaryText(text: String) {
         text = text,
         fontSize = 14.sp,
         textAlign = TextAlign.Start,
-        textColor = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface
     )
 }

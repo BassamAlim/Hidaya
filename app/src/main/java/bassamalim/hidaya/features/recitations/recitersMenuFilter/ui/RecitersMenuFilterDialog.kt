@@ -85,14 +85,14 @@ private fun DialogContent(
         ) {
             MyText(
                 text = stringResource(R.string.select_all),
-                textColor = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable(onClick = viewModel::onSelectAll)
             )
 
             MyText(
                 text = stringResource(R.string.unselect_all),
                 modifier = Modifier.clickable(onClick = viewModel::onUnselectAll),
-                textColor = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -120,7 +120,7 @@ private fun CheckboxListItem(
 
         MyText(
             text = title,
-            textColor = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

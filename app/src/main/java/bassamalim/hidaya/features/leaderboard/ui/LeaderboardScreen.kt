@@ -112,7 +112,7 @@ private fun UserRankCard(userId: String, userRank: String) {
         MyText(
             text = "${stringResource(R.string.user)} $userId",
             fontSize = 20.sp,
-            textColor = when (userRank) {
+            color = when (userRank) {
                 "1" -> bassamalim.hidaya.core.ui.theme.Gold
                 "2" -> bassamalim.hidaya.core.ui.theme.Silver
                 "3" -> bassamalim.hidaya.core.ui.theme.Bronze
@@ -127,7 +127,7 @@ private fun UserRankCard(userId: String, userRank: String) {
         ) {
             MyText(
                 text = stringResource(R.string.your_position),
-                textColor = when (userRank) {
+                color = when (userRank) {
                     "1" -> bassamalim.hidaya.core.ui.theme.Gold
                     "2" -> bassamalim.hidaya.core.ui.theme.Silver
                     "3" -> bassamalim.hidaya.core.ui.theme.Bronze
@@ -141,7 +141,7 @@ private fun UserRankCard(userId: String, userRank: String) {
                 text = userRank,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                textColor = when (userRank) {
+                color = when (userRank) {
                     "1" -> bassamalim.hidaya.core.ui.theme.Gold
                     "2" -> bassamalim.hidaya.core.ui.theme.Silver
                     "3" -> bassamalim.hidaya.core.ui.theme.Bronze
@@ -185,7 +185,7 @@ private fun ItemCard(
                     if (rank <= 3) FontWeight.Bold
                     else FontWeight.Normal,
                 fontSize = 20.sp,
-                textColor = when (rank) {
+                color = when (rank) {
                     1 -> bassamalim.hidaya.core.ui.theme.Gold
                     2 -> bassamalim.hidaya.core.ui.theme.Silver
                     3 -> bassamalim.hidaya.core.ui.theme.Bronze
@@ -200,7 +200,7 @@ private fun ItemCard(
                 text = translateNums("$rank.", numeralsLanguage),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
-                textColor = when (rank) {
+                color = when (rank) {
                     1 -> bassamalim.hidaya.core.ui.theme.Gold
                     2 -> bassamalim.hidaya.core.ui.theme.Silver
                     3 -> bassamalim.hidaya.core.ui.theme.Bronze
@@ -216,7 +216,7 @@ private fun ItemCard(
                 },
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                textColor = when (rank) {
+                color = when (rank) {
                     1 -> bassamalim.hidaya.core.ui.theme.Gold
                     2 -> bassamalim.hidaya.core.ui.theme.Silver
                     3 -> bassamalim.hidaya.core.ui.theme.Bronze

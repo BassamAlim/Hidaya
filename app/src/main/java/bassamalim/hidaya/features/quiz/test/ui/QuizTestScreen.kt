@@ -79,7 +79,7 @@ fun QuestionArea(question: String) {
         MyText(
             text = question,
             fontSize = 28.sp,
-            textColor = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
         )
     }

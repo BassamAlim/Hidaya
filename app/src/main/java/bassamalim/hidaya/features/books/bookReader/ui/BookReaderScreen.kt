@@ -69,7 +69,7 @@ private fun DoorCard(
                 text = door.text,
                 modifier = Modifier.padding(10.dp),
                 fontSize = (textSize + textSizeMargin).sp,
-                textColor = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

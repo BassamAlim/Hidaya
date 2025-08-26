@@ -136,7 +136,7 @@ private fun TopArea(
                 text = mainText,
                 fontSize = 22.nsp,
                 fontWeight = FontWeight.Bold,
-                textColor = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -194,7 +194,7 @@ private fun MonthSelector(
         MyText(
             text = displayedMonth,
             modifier = Modifier.width(150.dp),
-            textColor = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         MyIconButton(
@@ -225,7 +225,7 @@ private fun DaySelector(
                 text = it,
                 modifier = Modifier.size(40.dp),
                 fontSize = 16.sp,
-                textColor = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -311,7 +311,7 @@ private fun DaysGrid(
                                         else MaterialTheme.colorScheme.surface
                                     )
                                     .clickable { onDaySelected(x, y) },
-                                textColor =
+                                color =
                                     if (isSelected) MaterialTheme.colorScheme.onPrimary
                                     else if (cell.isToday) MaterialTheme.colorScheme.primary
                                     else MaterialTheme.colorScheme.onSurface

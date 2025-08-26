@@ -105,7 +105,7 @@ private fun RemembrancePassageCard(
                 text = passage.text,
                 modifier = Modifier.padding(10.dp),
                 fontSize = (textSize + textSizeMargin).sp,
-                textColor = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             // translation
@@ -134,7 +134,7 @@ private fun RemembrancePassageCard(
                     MyText(
                         text = passage.repetitionText,
                         fontSize = 22.sp,
-                        textColor =
+                        color =
                             if (passage.repetitionTotal != null
                                 && passage.repetitionTotal != passage.repetitionCurrent)
                                 MaterialTheme.colorScheme.onPrimaryContainer

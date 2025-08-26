@@ -57,7 +57,7 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
             MyText(
                 text = stringResource(R.string.display_method),
                 modifier = Modifier.padding(horizontal = 16.dp),
-                textColor = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             HorizontalRadioGroup(
@@ -81,7 +81,7 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
 
                 MyText(
                     text = stringResource(R.string.fill_page),
-                    textColor = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -107,7 +107,7 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
 
                 MyText(
                     text = stringResource(R.string.keep_screen_on),
-                    textColor = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 

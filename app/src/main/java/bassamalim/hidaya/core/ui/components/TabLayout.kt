@@ -57,7 +57,7 @@ fun Tabs(pagerState: PagerState, pageNames: List<String>) {
                     MyText(
                         text = pageNames[index],
                         fontSize = 18.sp,
-                        textColor =
+                        color =
                             if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface
                     )

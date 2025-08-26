@@ -141,7 +141,7 @@ private fun CalibrationDialog(
 
             MyText(
                 text = stringResource(R.string.qibla_warning),
-                textColor = Negative
+                color = Negative
             )
         }
     }

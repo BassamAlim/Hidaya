@@ -25,9 +25,10 @@ fun MyText(
     fontSize: TextUnit = 18.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Center,
-    textColor: Color = Color.Unspecified,
+    color: Color = Color.Unspecified,
     fontFamily: FontFamily = tajwal,
-    softWrap: Boolean = true
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE
 ) {
     Text(
         text = text,
@@ -35,13 +36,14 @@ fun MyText(
         fontSize = fontSize,
         style = TextStyle(
             fontFamily = fontFamily,
-            color = textColor,
+            color = color,
             fontWeight = fontWeight,
             textAlign = textAlign,
             lineHeight = fontSize * 1.4,
             platformStyle = PlatformTextStyle(includeFontPadding = true)
         ),
-        softWrap = softWrap
+        softWrap = softWrap,
+        maxLines = maxLines
     )
 }
 

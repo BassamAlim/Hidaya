@@ -144,7 +144,7 @@ private fun NotificationTypeOption(
         MyText(
             text = name,
             fontSize = 20.sp,
-            textColor =
+            color =
                 if (isSelected) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.onSurface
         )

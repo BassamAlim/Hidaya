@@ -60,7 +60,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
                     Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    textColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 

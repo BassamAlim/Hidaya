@@ -89,7 +89,7 @@ fun MySquareButton(
                 modifier = Modifier.padding(innerPadding),
                 fontSize = fontSize,
                 fontWeight = fontWeight,
-                textColor = textColor
+                color = textColor
             )
         }
     }
@@ -128,7 +128,7 @@ fun MyHorizontalButton(
                 text = text,
                 fontSize = fontSize,
                 fontWeight = fontWeight,
-                textColor = if (enabled) textColor else Color.Gray
+                color = if (enabled) textColor else Color.Gray
             )
         }
     }

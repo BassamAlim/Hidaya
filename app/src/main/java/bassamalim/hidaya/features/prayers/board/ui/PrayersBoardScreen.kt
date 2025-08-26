@@ -235,7 +235,7 @@ private fun ExtraReminderCard(
                     MyText(
                         text = reminderOffsetText,
                         modifier = Modifier.padding(end = 3.dp),
-                        textColor = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 

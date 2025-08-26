@@ -144,7 +144,7 @@ fun TutorialDialog(shown: Boolean, text: String, onDismissRequest: (Boolean) -> 
 
                     MyText(
                         text = stringResource(R.string.do_not_show_again),
-                        textColor = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
