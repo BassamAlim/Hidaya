@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.remembrances.categoriesMenu.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Favorite
@@ -28,6 +31,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyText
 import kotlinx.coroutines.delay
@@ -54,10 +59,11 @@ data class CategoryItem(
 
 @Composable
 fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
-    var isVisible by remember { mutableStateOf(false) }
-    
+    var screenVisible by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
-        isVisible = true
+        delay(100)
+        screenVisible = true
     }
 
     val specialItems = listOf(
@@ -84,46 +90,37 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
         CategoryItem(3, R.string.actions_remembrances, R.drawable.ic_moving),
         CategoryItem(4, R.string.events_remembrances, R.drawable.ic_events),
         CategoryItem(5, R.string.emotion_remembrances, R.drawable.ic_emotions),
-        CategoryItem(6, R.string.places_remembrances, imageVector = Icons.AutoMirrored.Default.Logout),
+        CategoryItem(
+            6,
+            R.string.places_remembrances,
+            imageVector = Icons.AutoMirrored.Default.Logout
+        ),
         CategoryItem(7, R.string.title_more, R.drawable.ic_duaa_light_hands)
     )
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+    AnimatedVisibility(
+        visible = screenVisible,
+        enter = fadeIn() + scaleIn(initialScale = 0.9f),
+        exit = fadeOut() + scaleOut(targetScale = 0.9f)
     ) {
-        AnimatedVisibility(
-            visible = isVisible,
-            enter = fadeIn() + scaleIn(initialScale = 0.9f),
-            exit = fadeOut() + scaleOut(targetScale = 0.9f)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                specialItems.forEach { item ->
-                    SpecialCategoryCard(
-                        item = item,
-                        onClick = {
-                            when (item.id) {
-                                -1 -> viewModel.onAllRemembrancesClick()
-                                -2 -> viewModel.onFavoriteRemembrancesClick()
-                            }
+            specialItems.forEach { item ->
+                SpecialCategoryCard(
+                    item = item,
+                    onClick = {
+                        when (item.id) {
+                            -1 -> viewModel.onAllRemembrancesClick()
+                            -2 -> viewModel.onFavoriteRemembrancesClick()
                         }
-                    )
-                }
+                    }
+                )
             }
-        }
 
-        Spacer(Modifier.height(16.dp))
-
-        AnimatedVisibility(
-            visible = isVisible,
-            enter = fadeIn(animationSpec = tween(durationMillis = 300, delayMillis = 200)) + 
-                    scaleIn(
-                        initialScale = 0.9f,
-                        animationSpec = tween(durationMillis = 300, delayMillis = 200)
-                    ),
-            exit = fadeOut() + scaleOut(targetScale = 0.9f)
-        ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(4.dp),
@@ -151,7 +148,10 @@ private fun SpecialCategoryCard(item: CategoryItem, onClick: () -> Unit) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp,
+            pressedElevation = 2.dp
+        )
     ) {
         Box(
             modifier = Modifier
@@ -179,7 +179,7 @@ private fun SpecialCategoryCard(item: CategoryItem, onClick: () -> Unit) {
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
-                
+
                 MyText(
                     text = stringResource(item.titleRes),
                     fontWeight = FontWeight.SemiBold,
@@ -192,61 +192,64 @@ private fun SpecialCategoryCard(item: CategoryItem, onClick: () -> Unit) {
 
 @Composable
 private fun CategoryCard(item: CategoryItem, onClick: () -> Unit) {
-    var isPressed by remember { mutableStateOf(false) }
-    
-    Card(
-        onClick = { 
-            isPressed = true
-            onClick()
-        },
-        modifier = Modifier.size(160.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isPressed) MaterialTheme.colorScheme.surfaceVariant 
-                           else MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 3.dp,
-            pressedElevation = 1.dp
-        )
+    AnimatedVisibility(
+        visible = true,
+        enter = scaleIn(
+            animationSpec = spring(dampingRatio = 0.6f, stiffness = 300f),
+            initialScale = 0.3f
+        ) + fadeIn(tween(400))
     ) {
-        LaunchedEffect(isPressed) {
-            if (isPressed) {
-                delay(150)
-                isPressed = false
-            }
-        }
-        
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            if (item.iconRes != null) {
-                Icon(
-                    painter = painterResource(item.iconRes),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            else if (item.imageVector != null) {
-                Icon(
-                    imageVector = item.imageVector,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            
-            Spacer(Modifier.height(12.dp))
-            
-            MyText(
-                text = stringResource(item.titleRes),
-                fontWeight = FontWeight.Medium,
-                maxLines = 2
+        Card(
+            onClick = onClick,
+            modifier = Modifier.aspectRatio(1f),
+            shape = RoundedCornerShape(24.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp,
+                pressedElevation = 2.dp
             )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Surface(
+                    modifier = Modifier.size(64.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        if (item.iconRes != null) {
+                            Icon(
+                                painter = painterResource(item.iconRes),
+                                contentDescription = null,
+                                modifier = Modifier.size(36.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        else if (item.imageVector != null) {
+                            Icon(
+                                imageVector = item.imageVector,
+                                contentDescription = null,
+                                modifier = Modifier.size(36.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
+                
+                Spacer(Modifier.height(16.dp))
+                
+                MyText(
+                    text = stringResource(item.titleRes),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2
+                )
+            }
         }
     }
 }
