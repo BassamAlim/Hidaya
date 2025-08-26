@@ -60,9 +60,9 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 24.dp),
         contentPadding = PaddingValues(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
             SpecialCategoryCard(
@@ -90,6 +90,8 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             )
         }
 
+        item {}
+
         items(
             items = categoryItems.chunked(2),
             key = { row -> row.map { it.id }.joinToString() }
@@ -98,7 +100,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 rowItems.forEach { item ->
                     CategoryCard(
@@ -109,7 +111,7 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
                 }
                 // Fill remaining space if odd number of items
                 if (rowItems.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(Modifier.weight(1f))
                 }
             }
         }
