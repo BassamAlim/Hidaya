@@ -300,16 +300,7 @@ class Activity : ComponentActivity() {
                 context = lifecycleScope.coroutineContext
             )
 
-            // Reactive status bar styling that updates when theme changes
-            enableEdgeToEdge(
-                statusBarStyle =
-                    if (Theme.isDarkTheme(themeState))
-                        SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
-                    else SystemBarStyle.light(
-                        scrim = Color.Transparent.toArgb(),
-                        darkScrim = Color.White.toArgb()
-                    )
-            )
+            applyTheme(themeState)
 
             ActivityUtils.onActivityCreateSetLocale(
                 context = LocalContext.current,
