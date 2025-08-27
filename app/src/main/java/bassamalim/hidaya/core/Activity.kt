@@ -87,6 +87,7 @@ class Activity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition { true }
         
         super.onCreate(savedInstanceState)
 
@@ -94,19 +95,9 @@ class Activity : ComponentActivity() {
             theme = appSettingsRepository.getTheme()
             initialTheme = theme.first()
 
+            applyTheme(initialTheme)
+
             splashScreen.setKeepOnScreenCondition { false }
-
-            setWindowBackground(initialTheme)
-
-            enableEdgeToEdge(
-                statusBarStyle =
-                    if (Theme.isDarkTheme(initialTheme))
-                        SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
-                    else SystemBarStyle.light(
-                        scrim = Color.Transparent.toArgb(),
-                        darkScrim = Color.White.toArgb()
-                    )
-            )
 
             val isFirstLaunch = savedInstanceState == null
             startRoute = intent.getStringExtra("start_route")
@@ -134,6 +125,21 @@ class Activity : ComponentActivity() {
             }
             else launchApp()
         }
+    }
+
+    private fun applyTheme(theme: Theme) {
+        val colorScheme = getColorScheme(theme)
+        window.decorView.setBackgroundColor(colorScheme.surface.toArgb())
+
+        enableEdgeToEdge(
+            statusBarStyle =
+                if (Theme.isDarkTheme(theme))
+                    SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
+                else SystemBarStyle.light(
+                    scrim = Color.Transparent.toArgb(),
+                    darkScrim = Color.White.toArgb()
+                )
+        )
     }
 
 //    private fun testAthan() {
@@ -294,15 +300,23 @@ class Activity : ComponentActivity() {
                 context = lifecycleScope.coroutineContext
             )
 
+            // Reactive status bar styling that updates when theme changes
+            enableEdgeToEdge(
+                statusBarStyle =
+                    if (Theme.isDarkTheme(themeState))
+                        SystemBarStyle.dark(scrim = Color.Transparent.toArgb())
+                    else SystemBarStyle.light(
+                        scrim = Color.Transparent.toArgb(),
+                        darkScrim = Color.White.toArgb()
+                    )
+            )
+
             ActivityUtils.onActivityCreateSetLocale(
                 context = LocalContext.current,
                 language = language
             )
 
-            AppTheme(
-                theme = themeState,
-                direction = getDirection(language)
-            ) {
+            AppTheme(theme = themeState, direction = getDirection(language)) {
                 Navigation(
                     navigator = navigator,
                     thenTo = startRoute,
@@ -415,11 +429,6 @@ class Activity : ComponentActivity() {
         val serviceIntent = Intent(this, PrayersNotificationService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(serviceIntent)
         else startService(serviceIntent)
-    }
-
-    private fun setWindowBackground(theme: Theme) {
-        val colorScheme = getColorScheme(theme)
-        window.decorView.setBackgroundColor(colorScheme.surface.toArgb())
     }
 
 }
