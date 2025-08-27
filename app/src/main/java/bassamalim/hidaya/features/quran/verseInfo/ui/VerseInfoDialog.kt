@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.BookmarkRemove
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -129,12 +128,7 @@ private fun BookmarkOptionsSection(
 
 @Composable
 private fun VerseTextSection(verseText: String) {
-    MyText(
-        text = verseText,
-        fontFamily = hafs_smart,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onSurface
-    )
+    MyText(text = verseText, fontFamily = hafs_smart, textAlign = TextAlign.Center)
 }
 
 @Composable
@@ -143,25 +137,19 @@ private fun InterpretationSection(interpretation: AnnotatedString) {
         MyText(
             text = stringResource(R.string.interpretation),
             modifier = Modifier.padding(bottom = 6.dp),
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            fontWeight = FontWeight.Bold
         )
 
         MyText(
             text = interpretation,
             modifier = Modifier.padding(bottom = 6.dp),
-            fontFamily = hafs_smart,
-            textAlign = TextAlign.Justify,
-            textColor = MaterialTheme.colorScheme.onSurface
+            textAlign = TextAlign.Justify
         )
 
         MyText(
-            text = stringResource(R.string.interpretation_source),
+            text = "- ${stringResource(R.string.interpretation_source)}",
             modifier = Modifier.padding(bottom = 6.dp),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Justify,
-            color = MaterialTheme.colorScheme.onSurface
+            fontSize = 14.sp
         )
     }
 }
