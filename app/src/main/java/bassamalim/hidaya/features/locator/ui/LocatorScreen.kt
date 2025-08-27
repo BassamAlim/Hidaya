@@ -23,8 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MyFilledTonalButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
-import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.core.ui.components.MyOutlinedButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.nsp
 
@@ -73,28 +74,28 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 30.dp),
-                    onClick = { viewModel.onLocateClick() }
+                    onClick = viewModel::onLocateClick,
                 )
 
                 // Choose manually button
-                MySquareButton(
+                MyFilledTonalButton(
                     text = stringResource(R.string.choose_manually),
                     fontSize = 22.sp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 30.dp),
-                    onClick = { viewModel.onSelectLocationClick() }
+                    onClick = viewModel::onSelectLocationClick
                 )
 
                 if (state.shouldShowSkipLocationButton) {
                     // Skip button
-                    MySquareButton(
+                    MyOutlinedButton(
                         text = stringResource(R.string.rejected),
                         fontSize = 22.sp,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 10.dp, horizontal = 30.dp),
-                        onClick = { viewModel.onSkipLocationClick() }
+                        onClick = viewModel::onSkipLocationClick
                     )
                 }
             }
