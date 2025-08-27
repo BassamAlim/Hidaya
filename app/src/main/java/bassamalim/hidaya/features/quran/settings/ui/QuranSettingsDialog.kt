@@ -26,8 +26,8 @@ import bassamalim.hidaya.core.ui.components.FullScreenDialog
 import bassamalim.hidaya.core.ui.components.HorizontalRadioGroup
 import bassamalim.hidaya.core.ui.components.MyCheckbox
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyRow
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
@@ -50,101 +50,106 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
             Modifier
                 .fillMaxWidth()
                 .padding(10.dp)
-                .verticalScroll(rememberScrollState())
         ) {
-            CategoryTitle(stringResource(R.string.page_preferences))
-
-            MyText(
-                text = stringResource(R.string.display_method),
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            HorizontalRadioGroup(
-                selection = state.viewType,
-                items = QuranViewType.entries,
-                entries = stringArrayResource(R.array.quran_view_type_entries),
-                onSelect = viewModel::onViewTypeChange,
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
-                MyCheckbox(
-                    isChecked = state.fillPage,
-                    onCheckedChange = viewModel::onFillPageChange,
-                    isEnabled = state.isFillPageEnabled
-                )
+                CategoryTitle(stringResource(R.string.page_preferences))
 
                 MyText(
-                    text = stringResource(R.string.fill_page),
+                    text = stringResource(R.string.display_method),
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     color = MaterialTheme.colorScheme.onSurface
                 )
-            }
 
-            SliderPref(
-                value = state.textSize,
-                title = stringResource(R.string.text_size_title),
-                valueRange = 20F..50F,
-                valueFormatter = viewModel::formatSliderValue,
-                enabled = state.isTextSizeSliderEnabled,
-                onValueChange = viewModel::onTextSizeChange,
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                MyCheckbox(
-                    isChecked = state.keepScreenOn,
-                    onCheckedChange = viewModel::onKeepScreenOnChange
+                HorizontalRadioGroup(
+                    selection = state.viewType,
+                    items = QuranViewType.entries,
+                    entries = stringArrayResource(R.array.quran_view_type_entries),
+                    onSelect = viewModel::onViewTypeChange
                 )
 
-                MyText(
-                    text = stringResource(R.string.keep_screen_on),
-                    color = MaterialTheme.colorScheme.onSurface
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    MyCheckbox(
+                        isChecked = state.fillPage,
+                        onCheckedChange = viewModel::onFillPageChange,
+                        isEnabled = state.isFillPageEnabled
+                    )
+
+                    MyText(
+                        text = stringResource(R.string.fill_page),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                SliderPref(
+                    value = state.textSize,
+                    title = stringResource(R.string.text_size_title),
+                    valueRange = 20F..50F,
+                    valueFormatter = viewModel::formatSliderValue,
+                    enabled = state.isTextSizeSliderEnabled,
+                    onValueChange = viewModel::onTextSizeChange
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    MyCheckbox(
+                        isChecked = state.keepScreenOn,
+                        onCheckedChange = viewModel::onKeepScreenOnChange
+                    )
+
+                    MyText(
+                        text = stringResource(R.string.keep_screen_on),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                MyHorizontalDivider()
+                CategoryTitle(stringResource(R.string.recitation_settings))
+
+                MenuSetting(
+                    selection = state.reciterId,
+                    items = viewModel.reciterIds,
+                    entries = viewModel.reciterNames.toTypedArray(),
+                    title = stringResource(R.string.reciter),
+                    onSelection = viewModel::onReciterChange
+                )
+
+                PreferenceTitle(
+                    title = stringResource(R.string.verse_repeat),
+                    modifier = Modifier.padding(top = 12.dp, bottom = 6.dp, start = 10.dp)
+                )
+
+                RepeatRadioGroup(
+                    selection = state.repeatMode,
+                    items = VerseRepeatMode.entries,
+                    entries = stringArrayResource(R.array.quran_repeat_mode_entries),
+                    onSelect = viewModel::onRepeatModeChange
+                )
+
+                SwitchSetting(
+                    title = stringResource(R.string.stop_on_sura_end),
+                    isOn = state.shouldStopOnSuraEnd,
+                    onSwitch = viewModel::onShouldStopOnSuraEndChange
+                )
+
+                SwitchSetting(
+                    title = stringResource(R.string.stop_on_page_end),
+                    isOn = state.shouldStopOnPageEnd,
+                    onSwitch = viewModel::onShouldStopOnPageEndChange
                 )
             }
-
-            MyHorizontalDivider()
-            CategoryTitle(stringResource(R.string.recitation_settings))
-
-            MenuSetting(
-                selection = state.reciterId,
-                items = viewModel.reciterIds,
-                entries = viewModel.reciterNames.toTypedArray(),
-                title = stringResource(R.string.reciter),
-                onSelection = viewModel::onReciterChange
-            )
-
-            PreferenceTitle(
-                title = stringResource(R.string.verse_repeat),
-                modifier = Modifier.padding(top = 12.dp, bottom = 6.dp, start = 10.dp)
-            )
-
-            RepeatRadioGroup(
-                selection = state.repeatMode,
-                items = VerseRepeatMode.entries,
-                entries = stringArrayResource(R.array.quran_repeat_mode_entries),
-                onSelect = viewModel::onRepeatModeChange
-            )
-
-            SwitchSetting(
-                title = stringResource(R.string.stop_on_sura_end),
-                isOn = state.shouldStopOnSuraEnd,
-                onSwitch = viewModel::onShouldStopOnSuraEndChange
-            )
-
-            SwitchSetting(
-                title = stringResource(R.string.stop_on_page_end),
-                isOn = state.shouldStopOnPageEnd,
-                onSwitch = viewModel::onShouldStopOnPageEndChange
-            )
 
             BottomBar(onCancel = viewModel::onDismiss, onSave = viewModel::onSave)
         }
@@ -158,9 +163,7 @@ private fun RepeatRadioGroup(
     entries: Array<String>,
     onSelect: (VerseRepeatMode) -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(bottom = 10.dp)
-    ) {
+    Column(Modifier.padding(bottom = 10.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

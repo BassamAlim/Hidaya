@@ -36,15 +36,13 @@ fun MyDialog(
 ) {
     if (shown) {
         Dialog(
-            onDismissRequest = { onDismiss() },
+            onDismissRequest = onDismiss,
             properties = DialogProperties(
                 dismissOnBackPress = true,
                 dismissOnClickOutside = true
             )
         ) {
-            Surface(
-                color = Color.Transparent
-            ) {
+            Surface(color = Color.Transparent) {
                 Box(
                     Modifier.background(
                         shape = RoundedCornerShape(16.dp),
@@ -66,11 +64,8 @@ fun FullScreenDialog(
 ) {
     if (shown) {
         Dialog(
-            onDismissRequest = { onDismiss() },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false,
-                decorFitsSystemWindows = false
-            )
+            onDismissRequest = onDismiss,
+            properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             Box(
                 Modifier
@@ -154,20 +149,13 @@ fun TutorialDialog(shown: Boolean, text: String, onDismissRequest: (Boolean) -> 
 
 @Composable
 fun DialogTitle(title: String) {
-    MyText(
-        text = title,
-        fontSize = 22.sp,
-        fontWeight = FontWeight.Bold
-    )
+    MyText(text = title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 }
 
 @Composable
 fun DialogSubmitButton(text: String = stringResource(R.string.select), onSubmit: () -> Unit) {
     TextButton(onClick = onSubmit) {
-        MyText(
-            text = text,
-            modifier = Modifier.padding(horizontal = 6.dp)
-        )
+        MyText(text = text, modifier = Modifier.padding(horizontal = 6.dp))
     }
 }
 
@@ -177,9 +165,6 @@ fun DialogDismissButton(
     onDismiss: () -> Unit
 ) {
     TextButton(onClick = onDismiss) {
-        MyText(
-            text = text,
-            modifier = Modifier.padding(horizontal = 6.dp)
-        )
+        MyText(text = text, modifier = Modifier.padding(horizontal = 6.dp))
     }
 }
