@@ -79,7 +79,7 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object TimeFormat : Preference("time_format_key", TimeFormats.TWELVE.name)
 
-    data object Theme : Preference("theme_key", Themes.ORIGINAL.name)
+    data object Theme : Preference("theme_key", Themes.LIGHT.name)
 
     data object WerdPage : Preference("werd_page", 25)
 

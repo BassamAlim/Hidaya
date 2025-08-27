@@ -67,10 +67,8 @@
     </string-array>
 
     <string-array name="themes_entries">
-        <item>Original</item>
-        <item>White</item>
-        <item>Black</item>
-        <item>New</item>
+        <item>Light</item>
+        <item>Dark</item>
     </string-array>
 
     <string-array name="searcher_matches_entries">

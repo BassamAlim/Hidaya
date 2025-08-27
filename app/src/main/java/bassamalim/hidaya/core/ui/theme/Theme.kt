@@ -11,7 +11,7 @@ import bassamalim.hidaya.core.enums.ThemeColor
 
 @Composable
 fun AppTheme(
-    theme: Theme = Theme.ORIGINAL,
+    theme: Theme = Theme.LIGHT,
     direction: LayoutDirection = LayoutDirection.Rtl,
     content: @Composable () -> Unit
 ) {
@@ -25,10 +25,8 @@ fun AppTheme(
 }
 
 fun getColorScheme(theme: Theme) = when (theme) {
-    Theme.ORIGINAL -> originalColorScheme
-    Theme.WHITE -> whiteColorScheme
-    Theme.BLACK -> blackColorScheme
-    Theme.NEW -> newColorScheme
+    Theme.LIGHT -> lightColorScheme
+    Theme.DARK -> darkColorScheme
 }
 
 fun getThemeColor(color: ThemeColor, theme: Theme): Color {
