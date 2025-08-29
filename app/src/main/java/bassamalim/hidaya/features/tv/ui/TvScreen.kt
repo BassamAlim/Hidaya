@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -88,36 +87,6 @@ fun TvScreen(viewModel: TvViewModel) {
 }
 
 @Composable
-private fun ChannelButton(
-    text: String,
-    painter: Painter,
-    description: String,
-    onClick: () -> Unit
-) {
-    ElevatedButton(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(0.7f),
-        shape = RoundedCornerShape(10.dp)
-    ) {
-        MyColumn(Modifier.padding(6.dp)) {
-            Image(
-                painter = painter,
-                contentDescription = description,
-                contentScale = ContentScale.None,
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface)
-            )
-
-            Spacer(Modifier.height(6.dp))
-
-            MyText(text = text, fontSize = 24.sp)
-        }
-    }
-}
-
-@Composable
 fun YoutubeScreen(
     language: Language,
     onInitializationSuccess: (YouTubePlayer) -> Unit,
@@ -156,6 +125,36 @@ fun YoutubeScreen(
             }
         }
     )
+}
+
+@Composable
+private fun ChannelButton(
+    text: String,
+    painter: Painter,
+    description: String,
+    onClick: () -> Unit
+) {
+    ElevatedButton(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(0.7f),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        MyColumn(Modifier.padding(6.dp)) {
+            Image(
+                painter = painter,
+                contentDescription = description,
+                contentScale = ContentScale.None,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surface)
+            )
+
+            Spacer(Modifier.height(6.dp))
+
+            MyText(text = text, fontSize = 24.sp)
+        }
+    }
 }
 
 @Composable
