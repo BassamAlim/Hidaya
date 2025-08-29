@@ -13,10 +13,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -112,6 +114,7 @@ private fun UserRankCard(userId: String, userRank: String) {
         MyText(
             text = "${stringResource(R.string.user)} $userId",
             fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
             color = when (userRank) {
                 "1" -> bassamalim.hidaya.core.ui.theme.Gold
                 "2" -> bassamalim.hidaya.core.ui.theme.Silver
@@ -223,7 +226,8 @@ private fun ItemCard(
                     else -> MaterialTheme.colorScheme.onSurface
                 }
             )
-        }
+        },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent)
     )
 
     HorizontalDivider(thickness = 0.3.dp)

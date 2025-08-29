@@ -28,15 +28,12 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
     val context = LocalContext.current
     val unsupportedMessage = stringResource(R.string.feature_not_supported)
 
-    MyColumn(
-        modifier = Modifier.padding(top = 5.dp),
-        scrollable = true
-    ) {
+    MyColumn(modifier = Modifier.padding(top = 5.dp), scrollable = true) {
         MyRow {
             MySquareButton(
                 text = stringResource(R.string.recitations),
                 imageVector = Icons.Default.Headphones,
-                tint = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = { viewModel.onRecitationsClick(snackBarHostState, unsupportedMessage) }
             )
@@ -54,7 +51,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
             MySquareButton(
                 text = stringResource(R.string.quiz_title),
                 imageVector = Icons.AutoMirrored.Default.FactCheck,
-                tint = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = viewModel::onQuizClick
             )
@@ -72,7 +69,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
             MySquareButton(
                 text = stringResource(R.string.tv_channels),
                 imageVector = Icons.Default.LiveTv,
-                tint = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = viewModel::onTvClick
             )
@@ -80,7 +77,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
             MySquareButton(
                 text = stringResource(R.string.quran_radio),
                 imageVector = Icons.Default.Radio,
-                tint = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = { viewModel.onRadioClick(snackBarHostState, unsupportedMessage) }
             )
@@ -98,7 +95,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
             MySquareButton(
                 text = stringResource(R.string.date_converter),
                 imageVector = Icons.Default.CalendarMonth,
-                tint = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = viewModel::onDateConverterClick
             )
@@ -108,7 +105,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
             MySquareButton(
                 text = stringResource(R.string.settings),
                 imageVector = Icons.Default.Settings,
-                tint = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = viewModel::onSettingsClick
             )
@@ -116,7 +113,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
             MySquareButton(
                 text = stringResource(R.string.contact),
                 imageVector = Icons.Default.Mail,
-                tint = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = { viewModel.onContactClick(context) }
             )
@@ -126,7 +123,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
             MySquareButton(
                 text = stringResource(R.string.share_app),
                 imageVector = Icons.Default.Share,
-                tint = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.onSurface,
                 iconSize = 56.dp,
                 onClick = { viewModel.onShareClick(context) }
             )
@@ -136,7 +133,7 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
                 imageVector = Icons.Default.Info,
                 onClick = viewModel::onAboutClick,
                 iconSize = 56.dp,
-                tint = MaterialTheme.colorScheme.onSurface
+                iconTint = MaterialTheme.colorScheme.onSurface
             )
         }
     }

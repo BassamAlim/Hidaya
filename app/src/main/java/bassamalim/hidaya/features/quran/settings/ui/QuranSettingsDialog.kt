@@ -208,14 +208,14 @@ private fun RepeatRadioGroup(
                     if (items[0] == selection) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface,
                 modifier =
-                if (items[0] == selection) Modifier
-                    .weight(1F)
-                    .border(
-                        width = 3.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                else Modifier.weight(1F),
+                    if (items[0] == selection) Modifier
+                        .weight(1F)
+                        .border(
+                            width = 3.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                    else Modifier.weight(1F),
                 padding = PaddingValues(horizontal = 5.dp),
                 onClick = { onSelect(items[0]) }
             )
@@ -225,17 +225,17 @@ private fun RepeatRadioGroup(
                 text = entries.last(),
                 fontSize = 16.nsp,
                 textColor =
-                if (items.last() == selection) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.onSurface,
+                    if (items.last() == selection) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurface,
                 modifier =
-                if (items.last() == selection) Modifier
-                    .weight(1F)
-                    .border(
-                        width = 3.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                else Modifier.weight(1F),
+                    if (items.last() == selection) Modifier
+                        .weight(1F)
+                        .border(
+                            width = 3.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                    else Modifier.weight(1F),
                 padding = PaddingValues(horizontal = 5.dp),
                 onClick = { onSelect(items.last()) }
             )
@@ -248,16 +248,13 @@ private fun RepeatRadioGroup(
 @Composable
 private fun SwitchSetting(title: String, isOn: Boolean, onSwitch: (Boolean) -> Unit) {
     Row(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        PreferenceTitle(
-            title = title,
-            modifier = Modifier.padding(end = 40.dp)
-        )
+        PreferenceTitle(title = title, modifier = Modifier.padding(end = 40.dp))
 
         Switch(checked = isOn, onCheckedChange = onSwitch)
     }
@@ -265,9 +262,7 @@ private fun SwitchSetting(title: String, isOn: Boolean, onSwitch: (Boolean) -> U
 
 @Composable
 private fun BottomBar(onCancel: () -> Unit, onSave: () -> Unit) {
-    MyRow(
-        Modifier.padding(top = 10.dp)
-    ) {
+    MyRow(Modifier.padding(top = 10.dp)) {
         MySquareButton(
             text = stringResource(R.string.cancel),
             modifier = Modifier.weight(1f),

@@ -70,7 +70,6 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
                 MyHorizontalButton(
                     text = stringResource(R.string.locate),
                     fontSize = 22.sp,
-                    textColor = MaterialTheme.colorScheme.surface,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 30.dp),

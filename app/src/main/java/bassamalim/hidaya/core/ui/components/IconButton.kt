@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
 fun MyIconButton(
@@ -125,37 +124,6 @@ fun MyBackButton(onClick: (() -> Unit)? = null) {
             onClick()
     }
 }
-
-@Composable
-fun MySquareButton(
-    text: String,
-    imageVector: ImageVector,
-    tint: Color,
-    modifier: Modifier = Modifier,
-    iconSize: Dp = Dp.Unspecified,
-    onClick: () -> Unit
-) {
-    MySquareButton(
-        text = text,
-        fontSize = 18.nsp,
-        modifier = modifier
-            .size(180.dp)
-            .padding(vertical = 7.dp, horizontal = 7.dp),
-        icon = {
-            Icon(
-                imageVector = imageVector,
-                contentDescription = text,
-                modifier =
-                    if (iconSize == Dp.Unspecified) Modifier
-                    else Modifier.size(iconSize),
-                tint = tint
-            )
-        },
-        onClick = onClick
-    )
-}
-
-
 
 @Composable
 fun MyFavoriteButton(

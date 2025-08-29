@@ -14,6 +14,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -146,6 +148,35 @@ fun MySquareButton(
             )
         }
     }
+}
+
+@Composable
+fun MySquareButton(
+    text: String,
+    imageVector: ImageVector,
+    modifier: Modifier = Modifier,
+    iconSize: Dp = Dp.Unspecified,
+    iconTint: Color = LocalContentColor.current,
+    onClick: () -> Unit
+) {
+    MySquareButton(
+        text = text,
+        fontSize = 18.nsp,
+        modifier = modifier
+            .size(180.dp)
+            .padding(vertical = 7.dp, horizontal = 7.dp),
+        icon = {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = text,
+                modifier =
+                    if (iconSize == Dp.Unspecified) Modifier
+                    else Modifier.size(iconSize),
+                tint = iconTint
+            )
+        },
+        onClick = onClick
+    )
 }
 
 @Composable

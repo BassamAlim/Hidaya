@@ -37,6 +37,7 @@ import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.utils.ActivityUtils
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
@@ -111,7 +112,7 @@ private fun ChannelButton(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(text = text, fontSize = 24.sp)
+            MyText(text = text, fontSize = 24.sp)
         }
     }
 }
