@@ -260,10 +260,7 @@ private fun SearchBarContent(
         }
 
         if (verseMatches.isNotEmpty()) {
-            VerseMatchesSection(
-                verseMatches = verseMatches,
-                onVerseClick = onVerseClick
-            )
+            VerseMatchesSection(verseMatches = verseMatches, onVerseClick = onVerseClick)
         }
     }
 }

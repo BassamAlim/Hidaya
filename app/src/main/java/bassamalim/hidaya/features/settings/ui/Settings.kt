@@ -19,7 +19,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -168,17 +167,10 @@ fun <V> MenuSetting(
                                     onClick = {
                                         onSelection(items[index])
                                         isShown = false
-                                    },
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = MaterialTheme.colorScheme.primary,
-                                        unselectedColor = MaterialTheme.colorScheme.onSurface
-                                    )
+                                    }
                                 )
 
-                                MyText(
-                                    text = text,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
+                                MyText(text = text, color = MaterialTheme.colorScheme.onSurface)
                             }
                         }
                     }

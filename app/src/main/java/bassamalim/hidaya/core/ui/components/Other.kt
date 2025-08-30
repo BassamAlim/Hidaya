@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -56,15 +55,7 @@ fun MyCheckbox(
     onCheckedChange: (Boolean) -> Unit = {},
     isEnabled: Boolean = true
 ) {
-    Checkbox(
-        checked = isChecked,
-        onCheckedChange = onCheckedChange,
-        enabled = isEnabled,
-        colors = CheckboxDefaults.colors(
-            checkedColor = MaterialTheme.colorScheme.primary,
-            uncheckedColor = MaterialTheme.colorScheme.onSurface
-        )
-    )
+    Checkbox(checked = isChecked, onCheckedChange = onCheckedChange, enabled = isEnabled)
 }
 
 @Composable
