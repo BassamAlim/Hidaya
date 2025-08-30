@@ -61,7 +61,6 @@ fun Tabs(pagerState: PagerState, pageNames: List<String>) {
 
 @Composable
 fun ColumnScope.TabsContent(pagerState: PagerState, content: @Composable (Int) -> Unit) {
-    // creating horizontal pager for our tab layout.
     HorizontalPager(
         state = pagerState,
         verticalAlignment = Alignment.Top,

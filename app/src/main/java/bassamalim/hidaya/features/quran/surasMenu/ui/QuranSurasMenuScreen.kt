@@ -95,7 +95,9 @@ fun QuranSurasMenuScreen(viewModel: QuranSurasViewModel, snackbarHostState: Snac
                 )
             }
         },
-        snackBarHost = { SnackbarHost(snackbarHostState) }
+        snackBarHost = {
+            SnackbarHost(snackbarHostState)
+        }
     ) { padding ->
         TabLayout(
             pageNames = listOf(
