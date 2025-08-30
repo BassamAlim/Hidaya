@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -49,8 +48,8 @@ import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.MyTopBar
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.features.quran.surasMenu.ui.RecitationInfo
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
@@ -69,13 +68,9 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
         onDispose(viewModel::onStop)
     }
 
-    Scaffold(
-        topBar = {
-            MyTopBar(
-                title = stringResource(R.string.recitations),
-                onBack = viewModel::onBackPressed
-            )
-        }
+    MyScaffold(
+        title = stringResource(R.string.recitations),
+        onBack = viewModel::onBackPressed
     ) { padding ->
         Box(
             modifier = Modifier
