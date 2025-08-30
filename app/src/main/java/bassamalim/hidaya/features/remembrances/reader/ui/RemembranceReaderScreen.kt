@@ -46,13 +46,9 @@ fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
     MyScaffold(
         title = state.title,
         bottomBar = {
-            ReaderBottomBar(
-                textSize = state.textSize,
-                onSeek = viewModel::onTextSizeSliderChange
-            )
+            ReaderBottomBar(textSize = state.textSize, onSeek = viewModel::onTextSizeSliderChange)
         }
     ) { padding ->
-        // remembrances list
         MyLazyColumn(
             modifier = Modifier.padding(padding),
             lazyList = {
@@ -80,10 +76,7 @@ private fun RemembrancePassageCard(
 
     MySurface(
         Modifier.animateContentSize(
-            animationSpec = TweenSpec(
-                durationMillis = 300,
-                easing = LinearOutSlowInEasing
-            )
+            animationSpec = TweenSpec(durationMillis = 300, easing = LinearOutSlowInEasing)
         )
     ) {
         Column(
@@ -137,7 +130,7 @@ private fun RemembrancePassageCard(
                         color =
                             if (passage.repetitionTotal != null
                                 && passage.repetitionTotal != passage.repetitionCurrent)
-                                MaterialTheme.colorScheme.onPrimaryContainer
+                                MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface
                     )
                 }
