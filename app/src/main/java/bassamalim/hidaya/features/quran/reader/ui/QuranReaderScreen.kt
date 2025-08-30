@@ -10,7 +10,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,11 +32,12 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.DisplaySettings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -122,9 +122,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     }
 
     Scaffold(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .safeDrawingPadding(),
+        modifier = Modifier.safeDrawingPadding(),
         topBar = {
             TopBar(
                 suraName = state.suraName,
@@ -189,47 +187,46 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
-    Surface(
+    CenterAlignedTopAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(36.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        shadowElevation = 8.dp,
-        tonalElevation = 8.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Sura name
-            MyText(
-                text = "${stringResource(R.string.sura)} $suraName",
-                fontSize = 18.nsp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Start
-            )
+        title = {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Sura name
+                MyText(
+                    text = "${stringResource(R.string.sura)} $suraName",
+                    fontSize = 18.nsp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Start
+                )
 
-            // Page number
-            MyText(
-                text = "${stringResource(R.string.page)} $pageNumText",
-                fontSize = 18.nsp,
-                fontWeight = FontWeight.Medium
-            )
+                // Page number
+                MyText(
+                    text = "${stringResource(R.string.page)} $pageNumText",
+                    fontSize = 18.nsp,
+                    fontWeight = FontWeight.Medium
+                )
 
-            // Juz number
-            MyText(
-                text = "${stringResource(R.string.juz)} $juzNumText",
-                fontSize = 18.nsp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.End
-            )
+                // Juz number
+                MyText(
+                    text = "${stringResource(R.string.juz)} $juzNumText",
+                    fontSize = 18.nsp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.End
+                )
+            }
         }
-    }
+    )
 }
 
 @Composable

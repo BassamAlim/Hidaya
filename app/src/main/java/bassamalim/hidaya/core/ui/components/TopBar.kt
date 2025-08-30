@@ -1,10 +1,10 @@
 package bassamalim.hidaya.core.ui.components
 
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 
@@ -13,17 +13,11 @@ import androidx.compose.ui.text.style.TextAlign
 fun MyTopBar(title: String = "", onBack: (() -> Unit)? = null) {
     CenterAlignedTopAppBar(
         title = {
-            MyText(
-                text = title,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
+            MyText(text = title, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
         },
+        modifier = Modifier.safeDrawingPadding(),
         navigationIcon = {
-            MyBackButton(onBack)
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+            MyBackButton(onClick = onBack)
+        }
     )
 }

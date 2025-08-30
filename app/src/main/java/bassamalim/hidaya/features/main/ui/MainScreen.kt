@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.main.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -46,9 +45,7 @@ fun MainScreen(viewModel: MainViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .safeDrawingPadding(),
+        modifier = Modifier.safeDrawingPadding(),
         topBar = {
             TopBar(
                 hijriDate = state.hijriDate,
@@ -67,34 +64,25 @@ fun MainScreen(viewModel: MainViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> Unit) {
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shadowElevation = 6.dp,
-        tonalElevation = 6.dp,
+    CenterAlignedTopAppBar(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp)
-    ) {
-        Row(
-            modifier = Modifier.clickable(onClick = onDateClick),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            MyText(
-                text = hijriDate,
-                fontSize = 16.nsp,
-                fontWeight = FontWeight.Bold
-            )
+            .height(40.dp),
+        title = {
+            Row(
+                modifier = Modifier.clickable(onClick = onDateClick),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                MyText(text = hijriDate, fontSize = 16.nsp, fontWeight = FontWeight.Bold)
 
-            MyText(
-                text = gregorianDate,
-                fontSize = 16.nsp,
-                fontWeight = FontWeight.Bold
-            )
+                MyText(text = gregorianDate, fontSize = 16.nsp, fontWeight = FontWeight.Bold)
+            }
         }
-    }
+    )
 }
 
 @Composable
