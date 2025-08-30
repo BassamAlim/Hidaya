@@ -100,7 +100,7 @@ private fun LocationCard(
         Row(
             modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.MyLocation,
@@ -221,16 +221,12 @@ private fun ExtraReminderCard(
     reminderOffsetText: String,
     onReminderCardClick: (Prayer) -> Unit
 ) {
-    Box(
-        Modifier.padding(horizontal = 6.dp)
-    ) {
+    Box(Modifier.padding(horizontal = 6.dp)) {
         FilledTonalIconButton(
             onClick = { onReminderCardClick(prayer) },
             modifier = Modifier.size(48.dp)
         ) {
-            MyRow(
-                horizontalArrangement = Arrangement.Center
-            ) {
+            MyRow(horizontalArrangement = Arrangement.Center) {
                 if (isReminderOffsetSpecified) {
                     MyText(
                         text = reminderOffsetText,
@@ -268,8 +264,7 @@ private fun DayCard(
             MyIconButton(
                 imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
                 description = stringResource(R.string.previous_day_button_description),
-                onClick = onPreviousDayClick,
-//                modifier = Modifier.background(Color.Blue)
+                onClick = onPreviousDayClick
             )
 
             MyTextButton(
@@ -277,15 +272,13 @@ private fun DayCard(
                     if (isNoDateOffset) stringResource(R.string.day)
                     else dateText,
                 fontSize = 20.sp,
-                onClick = onDateClick,
-//                modifier = Modifier.background(Color.Blue)
+                onClick = onDateClick
             )
 
             MyIconButton(
                 imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
                 description = stringResource(R.string.next_day_button_description),
-                onClick = onNextDayClick,
-//                modifier = Modifier.background(Color.Blue)
+                onClick = onNextDayClick
             )
         }
     }
