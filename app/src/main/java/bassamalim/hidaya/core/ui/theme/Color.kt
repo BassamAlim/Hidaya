@@ -84,11 +84,11 @@ val darkColorScheme = darkColorScheme(
     outline = Color(0xFF787C80),
     outlineVariant = Color(0xFF818588),
     scrim = Color(0xFF000000),
-    surfaceContainerHighest = Color(0xFF191E23),
-    surfaceContainerHigh = Color(0xFF171B1F),
-    surfaceContainer = Color(0xFF15181B),
-    surfaceContainerLow = Color(0xFF131619),
-    surfaceContainerLowest = Color(0xFF111417),
-    surfaceBright = Color(0xFF050A0F),
+    surfaceContainerHighest = Color(0xFF1E2328),
+    surfaceContainerHigh = Color(0xFF1B1F23),
+    surfaceContainer = Color(0xFF181B1E),
+    surfaceContainerLow = Color(0xFF15181B),
+    surfaceContainerLowest = Color(0xFF121518),
+    surfaceBright = Color(0xFFD6E1EA),
     surfaceDim = Color(0xFF00050A)
 )
