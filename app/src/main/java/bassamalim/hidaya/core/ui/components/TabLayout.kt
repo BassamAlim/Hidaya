@@ -6,15 +6,12 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
@@ -39,20 +36,10 @@ fun TabLayout(
 @Composable
 fun Tabs(pagerState: PagerState, pageNames: List<String>) {
     val scope = rememberCoroutineScope()
-    TabRow(
-        selectedTabIndex = pagerState.currentPage,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        indicator = { tabPositions ->
-
-            SecondaryIndicator(
-                modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                height = 2.dp,
-                color = MaterialTheme.colorScheme.secondary
-            )
-        }
-    ) {
+    PrimaryTabRow(selectedTabIndex = pagerState.currentPage) {
         pageNames.forEachIndexed { index, _ ->
             Tab(
+                selected = pagerState.currentPage == index,
                 text = {
                     MyText(
                         text = pageNames[index],
@@ -62,9 +49,7 @@ fun Tabs(pagerState: PagerState, pageNames: List<String>) {
                             else MaterialTheme.colorScheme.onSurface
                     )
                 },
-                selected = pagerState.currentPage == index,
                 onClick = {
-                    // specifying the scope.
                     scope.launch {
                         pagerState.animateScrollToPage(index)
                     }
@@ -74,7 +59,6 @@ fun Tabs(pagerState: PagerState, pageNames: List<String>) {
     }
 }
 
-// creating a tab content method in which we will be displaying the individual page of our tab.
 @Composable
 fun ColumnScope.TabsContent(pagerState: PagerState, content: @Composable (Int) -> Unit) {
     // creating horizontal pager for our tab layout.

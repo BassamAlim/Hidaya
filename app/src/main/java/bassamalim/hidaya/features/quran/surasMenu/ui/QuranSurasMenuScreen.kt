@@ -67,10 +67,7 @@ import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuranSurasMenuScreen(
-    viewModel: QuranSurasViewModel,
-    snackbarHostState: SnackbarHostState
-) {
+fun QuranSurasMenuScreen(viewModel: QuranSurasViewModel, snackbarHostState: SnackbarHostState) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
     val noBookmarkMessage = stringResource(R.string.no_bookmarked_page)
