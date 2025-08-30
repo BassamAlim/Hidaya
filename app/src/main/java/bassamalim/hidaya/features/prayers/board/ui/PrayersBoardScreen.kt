@@ -98,7 +98,7 @@ private fun LocationCard(
             .clickable(onClick = onLocatorClick)
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -177,7 +177,7 @@ private fun PrayerSpace(
                 onPrayerCardClick = onPrayerCardClick
             )
 
-            ExtraReminderCard(
+            ExtraReminderButton(
                 prayer = prayer,
                 isReminderOffsetSpecified = data.isExtraReminderOffsetSpecified,
                 reminderOffsetText = data.extraReminderOffset,
@@ -193,9 +193,7 @@ private fun RowScope.NotificationType(
     data: PrayerCardData,
     onPrayerCardClick: (Prayer) -> Unit
 ) {
-    Box(
-        Modifier.padding(horizontal = 6.dp)
-    ) {
+    Box(Modifier.padding(horizontal = 6.dp)) {
         FilledTonalIconButton(
             onClick = { onPrayerCardClick(prayer) },
             modifier = Modifier.size(48.dp)
@@ -215,7 +213,7 @@ private fun RowScope.NotificationType(
 }
 
 @Composable
-private fun ExtraReminderCard(
+private fun ExtraReminderButton(
     prayer: Prayer,
     isReminderOffsetSpecified: Boolean,
     reminderOffsetText: String,
@@ -231,6 +229,7 @@ private fun ExtraReminderCard(
                     MyText(
                         text = reminderOffsetText,
                         modifier = Modifier.padding(end = 3.dp),
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -271,8 +270,9 @@ private fun DayCard(
                 text =
                     if (isNoDateOffset) stringResource(R.string.day)
                     else dateText,
+                onClick = onDateClick,
                 fontSize = 20.sp,
-                onClick = onDateClick
+                textColor = MaterialTheme.colorScheme.onSurface
             )
 
             MyIconButton(

@@ -73,7 +73,9 @@ private fun TopBar(hijriDate: String, gregorianDate: String, onDateClick: () -> 
             .height(40.dp),
         title = {
             Row(
-                modifier = Modifier.clickable(onClick = onDateClick),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onDateClick),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {

@@ -66,11 +66,7 @@ private fun Tab(
     MyLazyColumn(
         lazyList = {
             items(chapters) { chapter ->
-                ItemContainer(
-                    chapter = chapter,
-                    onItemClick = onItemClick,
-                    onFavClick = onFavClick
-                )
+                ItemContainer(chapter = chapter, onItemClick = onItemClick, onFavClick = onFavClick)
             }
         }
     )
@@ -82,10 +78,7 @@ private fun ItemContainer(
     onItemClick: (Book.Chapter) -> Unit,
     onFavClick: (Int) -> Unit
 ) {
-    MyClickableSurface(
-        modifier = Modifier.padding(2.dp),
-        onClick = { onItemClick(chapter) }
-    ) {
+    MyClickableSurface(modifier = Modifier.padding(2.dp), onClick = { onItemClick(chapter) }) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,10 +94,7 @@ private fun ItemContainer(
                 textAlign = TextAlign.Start
             )
 
-            MyFavoriteButton(
-                isFavorite = chapter.isFavorite,
-                onClick = { onFavClick(chapter.id) }
-            )
+            MyFavoriteButton(isFavorite = chapter.isFavorite, onClick = { onFavClick(chapter.id) })
         }
     }
 }

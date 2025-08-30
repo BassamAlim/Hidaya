@@ -18,8 +18,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyTopBar
 
 @Composable
@@ -48,7 +48,7 @@ fun LocationPickerScreen(viewModel: LocationPickerViewModel) {
         }
     ) { padding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(padding)
                 .padding(horizontal = 5.dp),
