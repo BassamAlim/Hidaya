@@ -230,7 +230,7 @@ private fun ExtraReminderButton(
                         text = reminderOffsetText,
                         modifier = Modifier.padding(end = 3.dp),
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
 

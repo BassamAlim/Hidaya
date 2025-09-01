@@ -5,7 +5,6 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,9 +27,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 
 @Composable
@@ -75,45 +72,6 @@ fun MyClickableSurface(
             contentAlignment = Alignment.Center
         ) {
             content()
-        }
-    }
-}
-
-@Composable
-fun MyButtonSurface(
-    text: String,
-    modifier: Modifier = Modifier,
-    innerVPadding: Dp = 10.dp,
-    fontSize: TextUnit = 20.sp,
-    elevation: Dp = 2.dp,
-    iconButton: @Composable () -> Unit,
-    onClick: () -> Unit
-) {
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 5.dp, horizontal = 8.dp),
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        shadowElevation = elevation,
-        tonalElevation = elevation,
-        onClick = onClick
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(vertical = innerVPadding, horizontal = 10.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            MyText(
-                text = text,
-                fontSize = fontSize,
-                modifier = Modifier
-                    .weight(1F)
-                    .padding(10.dp)
-            )
-
-            iconButton()
         }
     }
 }

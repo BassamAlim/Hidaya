@@ -1,21 +1,30 @@
 package bassamalim.hidaya.features.remembrances.remembrancesMenu.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.ui.components.CustomSearchBar
-import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
 fun RemembrancesMenuScreen(viewModel: RemembrancesMenuViewModel) {
@@ -60,7 +69,7 @@ private fun RemembrancesList(
     MyLazyColumn(
         lazyList = {
             items(remembrances) { remembrance ->
-                MyButtonSurface(
+                RemembranceItem(
                     text = remembrance.name,
                     iconButton = {
                         MyFavoriteButton(
@@ -73,4 +82,38 @@ private fun RemembrancesList(
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun RemembranceItem(
+    text: String,
+    modifier: Modifier = Modifier,
+    iconButton: @Composable () -> Unit,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp, horizontal = 8.dp),
+        shape = RoundedCornerShape(10.dp),
+        onClick = onClick
+    ) {
+        Row(
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            MyText(
+                text = text,
+                modifier = Modifier
+                    .weight(1F)
+                    .padding(10.dp),
+                fontSize = 20.sp,
+                textAlign = TextAlign.Start
+            )
+
+            iconButton()
+        }
+    }
 }

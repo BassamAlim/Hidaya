@@ -84,7 +84,8 @@ fun QuizLobbyScreen(viewModel: QuizLobbyViewModel) {
 
                             MyTextButton(
                                 text = stringResource(R.string.start_quiz),
-                                onClick = { viewModel.onCategoryClick(type) }
+                                onClick = { viewModel.onCategoryClick(type) },
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
 

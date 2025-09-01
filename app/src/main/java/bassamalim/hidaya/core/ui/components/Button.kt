@@ -186,7 +186,6 @@ fun MyHorizontalButton(
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
     enabled: Boolean = true,
     middlePadding: PaddingValues = PaddingValues(6.dp),
     icon: @Composable (() -> Unit)? = null,
@@ -208,12 +207,7 @@ fun MyHorizontalButton(
                 Spacer(modifier = Modifier.padding(middlePadding))
             }
 
-            MyText(
-                text = text,
-                fontSize = fontSize,
-                fontWeight = fontWeight,
-                color = if (enabled) textColor else Color.Gray
-            )
+            MyText(text = text, fontSize = fontSize, fontWeight = fontWeight)
         }
     }
 }
