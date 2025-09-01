@@ -43,7 +43,6 @@ fun MyButton(
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -53,12 +52,7 @@ fun MyButton(
         shape = RoundedCornerShape(10.dp),
         colors = colors
     ) {
-        MyText(
-            text = text,
-            fontSize = fontSize,
-            fontWeight = fontWeight,
-            color = if (enabled) textColor else Color.Gray
-        )
+        MyText(text = text, fontSize = fontSize, fontWeight = fontWeight)
     }
 }
 
@@ -67,9 +61,9 @@ fun MyFilledTonalButton(
     text: String,
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(),
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -77,14 +71,10 @@ fun MyFilledTonalButton(
         onClick = { if (enabled) onClick() },
         modifier = modifier.padding(3.dp),
         shape = RoundedCornerShape(10.dp),
-        colors = colors
+        colors = colors,
+        contentPadding = contentPadding
     ) {
-        MyText(
-            text = text,
-            fontSize = fontSize,
-            fontWeight = fontWeight,
-            color = if (enabled) textColor else Color.Gray
-        )
+        MyText(text = text, fontSize = fontSize, fontWeight = fontWeight)
     }
 }
 
@@ -95,7 +85,6 @@ fun MyOutlinedButton(
     colors: ButtonColors = ButtonDefaults.outlinedButtonColors(),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -105,12 +94,7 @@ fun MyOutlinedButton(
         shape = RoundedCornerShape(10.dp),
         colors = colors
     ) {
-        MyText(
-            text = text,
-            fontSize = fontSize,
-            fontWeight = fontWeight,
-            color = if (enabled) textColor else Color.Gray
-        )
+        MyText(text = text, fontSize = fontSize, fontWeight = fontWeight)
     }
 }
 

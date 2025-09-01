@@ -43,7 +43,7 @@ fun LocationPickerScreen(viewModel: LocationPickerViewModel) {
                         LocationPickerMode.CITY -> R.string.select_city
                     }
                 ),
-                onBack = { viewModel.onBack() }
+                onBack = viewModel::onBack
             )
         }
     ) { padding ->
