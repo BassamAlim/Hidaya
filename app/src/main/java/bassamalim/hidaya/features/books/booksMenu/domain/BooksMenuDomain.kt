@@ -1,18 +1,21 @@
 package bassamalim.hidaya.features.books.booksMenu.domain
 
 import android.util.Log
+import bassamalim.hidaya.core.Globals
+import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.Globals
+import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.features.books.booksMenu.ui.Book
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class BooksMenuDomain @Inject constructor(
     private val booksRepository: BooksRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) {
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
@@ -54,6 +57,10 @@ class BooksMenuDomain @Inject constructor(
 
     fun handleTutorialDialogDismiss(doNotShowAgain: Boolean) {
         if (doNotShowAgain) booksRepository.setShouldShowTutorial(false)
+    }
+
+    fun trackBookOpened(bookId: Int) {
+        analyticsRepository.trackEvent(AnalyticsEvent.BookOpened(bookId))
     }
 
 }

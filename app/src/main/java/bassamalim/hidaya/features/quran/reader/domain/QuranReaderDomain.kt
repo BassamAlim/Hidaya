@@ -16,10 +16,12 @@ import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.Globals
+import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.features.quran.reader.versePlayer.VersePlayerService
 import kotlinx.coroutines.flow.first
@@ -32,7 +34,8 @@ class QuranReaderDomain @Inject constructor(
     private val app: Application,
     private val quranRepository: QuranRepository,
     private val appSettingsRepository: AppSettingsRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) {
 
     private lateinit var activity: Activity
@@ -63,8 +66,11 @@ class QuranReaderDomain @Inject constructor(
         val newRecord = getPagesRecord().first() + 1
         setPagesRecord(newRecord)
 
-        if (getPageNumCallback() == getWerdPage().first())
+        val pageNum = getPageNumCallback()
+        if (pageNum == getWerdPage().first())
             setWerdDone()
+
+        trackQuranPageRead(pageNum)
     }
 
     fun handlePageChange(pageNum: Int) {
@@ -246,5 +252,13 @@ class QuranReaderDomain @Inject constructor(
     }
 
     fun getScreenHeight() = app.resources.displayMetrics.heightPixels
+
+    fun trackPageViewed(pageNum: Int) {
+        analyticsRepository.trackEvent(AnalyticsEvent.QuranPageViewed(pageNum))
+    }
+
+    private fun trackQuranPageRead(pageNum: Int) {
+        analyticsRepository.trackEvent(AnalyticsEvent.QuranPageRead(pageNum))
+    }
 
 }

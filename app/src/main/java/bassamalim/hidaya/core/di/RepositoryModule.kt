@@ -28,6 +28,7 @@ import bassamalim.hidaya.core.data.dataSources.room.daos.VersesDao
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
+import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.LiveContentRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
@@ -37,7 +38,9 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.logger.Logger
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import dagger.Module
@@ -173,5 +176,10 @@ object RepositoryModule {
         firestore: FirebaseFirestore,
         @ApplicationScope scope: CoroutineScope
     ) = UserRepository(app, userPreferencesDataSource, firestore, scope)
+
+    @Provides @Singleton
+    fun provideFirebaseAnalyticsRepository(
+        firebaseAnalytics: FirebaseAnalytics,
+    ) = AnalyticsRepository(firebaseAnalytics)
 
 }

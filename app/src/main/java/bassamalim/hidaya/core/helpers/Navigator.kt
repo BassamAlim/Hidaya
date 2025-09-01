@@ -3,10 +3,15 @@ package bassamalim.hidaya.core.helpers
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
+import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
+import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.nav.Screen
 import java.util.Stack
+import javax.inject.Inject
 
-class Navigator {
+class Navigator @Inject constructor(
+    private val analyticsRepository: AnalyticsRepository
+) {
 
     private val callbacks = Stack<(Bundle?) -> Unit>()
     private var navController: NavController? = null
@@ -19,6 +24,8 @@ class Navigator {
         navController?.navigate(
             destination.route
         )
+
+        analyticsRepository.trackEvent(AnalyticsEvent.ScreenViewed(destination.route))
     }
 
     fun navigate(destination: Screen, builder: NavOptionsBuilder.() -> Unit) {
@@ -26,6 +33,8 @@ class Navigator {
             destination.route,
             builder
         )
+
+        analyticsRepository.trackEvent(AnalyticsEvent.ScreenViewed(destination.route))
     }
 
     fun popBackStack() {
@@ -42,6 +51,8 @@ class Navigator {
         navController?.navigate(destination.route)
 
         callbacks.push(onResult)
+
+        analyticsRepository.trackEvent(AnalyticsEvent.ScreenViewed(destination.route))
     }
 
     fun navigateBackWithResult(data: Bundle?) {

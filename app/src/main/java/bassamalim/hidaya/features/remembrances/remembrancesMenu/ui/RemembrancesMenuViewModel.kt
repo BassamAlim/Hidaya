@@ -87,6 +87,8 @@ class RemembrancesMenuViewModel @Inject constructor(
 
     fun onItemClick(item: RemembrancesItem) {
         navigator.navigate(Screen.RemembranceReader(id = item.id.toString()))
+
+        domain.trackRemembranceViewed(remembranceId = item.id, remembranceName = item.name)
     }
 
     fun onSearchTextChange(text: String) {

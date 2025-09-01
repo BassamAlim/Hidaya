@@ -170,6 +170,8 @@ class QuranReaderViewModel @Inject constructor(
             domain.handlePageChange(pageNum)
 
             scrollState?.let { this.scrollState = it }
+
+            domain.trackPageViewed(pageNum)
         }
     }
 

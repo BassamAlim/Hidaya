@@ -44,6 +44,8 @@ class QuizLobbyViewModel @Inject constructor(
 
     fun onCategoryClick(category: String) {
         navigator.navigate(Screen.QuizTest(category = category))
+
+        domain.trackQuizCategoryViewed(category)
     }
 
 }

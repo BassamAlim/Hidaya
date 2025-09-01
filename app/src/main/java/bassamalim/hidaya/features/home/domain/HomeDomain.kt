@@ -1,12 +1,14 @@
 package bassamalim.hidaya.features.home.domain
 
 import android.app.Application
+import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
@@ -23,7 +25,8 @@ class HomeDomain @Inject constructor(
     private val locationRepository: LocationRepository,
     private val quranRepository: QuranRepository,
     private val userRepository: UserRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) {
 
     private val deviceId = getDeviceId(app)
@@ -166,6 +169,10 @@ class HomeDomain @Inject constructor(
                 } else false
             }
         }
+    }
+
+    fun trackDailyWerdViewed() {
+        analyticsRepository.trackEvent(AnalyticsEvent.DailyWerdViewed)
     }
 
     private suspend fun registerDevice(deviceId: String) = userRepository.registerDevice(deviceId)

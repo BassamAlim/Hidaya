@@ -45,6 +45,7 @@ import bassamalim.hidaya.core.data.dataSources.preferences.serializers.Recitatio
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.RemembrancesPreferencesSerializer
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.data.dataSources.room.AppDatabase
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.Module
@@ -260,5 +261,9 @@ object DataSourceModule {
 
     @Provides @Singleton
     fun provideRemoteConfig() = FirebaseRemoteConfig.getInstance()
+
+    @Provides @Singleton
+    fun provideFirebaseAnalytics(@ApplicationContext context: Context) =
+        FirebaseAnalytics.getInstance(context)
 
 }

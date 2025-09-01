@@ -1,6 +1,7 @@
 package bassamalim.hidaya.core.di
 
 import android.app.Application
+import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
@@ -83,8 +84,9 @@ object DomainModule {
     @Provides @Singleton
     fun provideBooksMenuDomain(
         booksRepository: BooksRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = BooksMenuDomain(booksRepository, appSettingsRepository)
+        appSettingsRepository: AppSettingsRepository,
+        analyticsRepository: AnalyticsRepository
+    ) = BooksMenuDomain(booksRepository, appSettingsRepository, analyticsRepository)
 
     @Provides @Singleton
     fun provideDateConverterDomain(
@@ -110,14 +112,16 @@ object DomainModule {
         locationRepository: LocationRepository,
         quranRepository: QuranRepository,
         userRepository: UserRepository,
-        appSettingsRepository: AppSettingsRepository
+        appSettingsRepository: AppSettingsRepository,
+        analyticsRepository: AnalyticsRepository
     ) = HomeDomain(
         app,
         prayersRepository,
         locationRepository,
         quranRepository,
         userRepository,
-        appSettingsRepository
+        appSettingsRepository,
+        analyticsRepository
     )
 
     @Provides @Singleton
@@ -208,16 +212,24 @@ object DomainModule {
     @Provides @Singleton
     fun provideQuranMenu(
         quranRepository: QuranRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = QuranSurasDomain(quranRepository, appSettingsRepository)
+        appSettingsRepository: AppSettingsRepository,
+        analyticsRepository: AnalyticsRepository
+    ) = QuranSurasDomain(quranRepository, appSettingsRepository, analyticsRepository)
 
     @Provides @Singleton
     fun provideQuranReaderDomain(
         app: Application,
         quranRepository: QuranRepository,
         appSettingsRepository: AppSettingsRepository,
-        userRepository: UserRepository
-    ) = QuranReaderDomain(app, quranRepository, appSettingsRepository, userRepository)
+        userRepository: UserRepository,
+        analyticsRepository: AnalyticsRepository
+    ) = QuranReaderDomain(
+        app,
+        quranRepository,
+        appSettingsRepository,
+        userRepository,
+        analyticsRepository
+    )
 
     @Provides @Singleton
     fun provideQuranSettings(
@@ -257,12 +269,14 @@ object DomainModule {
         app: Application,
         recitationsRepository: RecitationsRepository,
         quranRepository: QuranRepository,
-        appSettingsRepository: AppSettingsRepository
+        appSettingsRepository: AppSettingsRepository,
+        analyticsRepository: AnalyticsRepository
     ) = RecitationSurasMenuDomain(
         app,
         recitationsRepository,
         quranRepository,
-        appSettingsRepository
+        appSettingsRepository,
+        analyticsRepository
     )
 
     @Provides @Singleton
@@ -274,8 +288,9 @@ object DomainModule {
     @Provides @Singleton
     fun provideRemembrancesMenuDomain(
         remembrancesRepository: RemembrancesRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = RemembrancesMenuDomain(remembrancesRepository, appSettingsRepository)
+        appSettingsRepository: AppSettingsRepository,
+        analyticsRepository: AnalyticsRepository
+    ) = RemembrancesMenuDomain(remembrancesRepository, appSettingsRepository, analyticsRepository)
 
     @Provides @Singleton
     fun provideSettingsDomain(
@@ -295,7 +310,8 @@ object DomainModule {
     @Provides @Singleton
     fun provideTvDomain(
         liveContentRepository: LiveContentRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = TvDomain(liveContentRepository, appSettingsRepository)
+        appSettingsRepository: AppSettingsRepository,
+        analyticsRepository: AnalyticsRepository
+    ) = TvDomain(liveContentRepository, appSettingsRepository, analyticsRepository)
 
 }

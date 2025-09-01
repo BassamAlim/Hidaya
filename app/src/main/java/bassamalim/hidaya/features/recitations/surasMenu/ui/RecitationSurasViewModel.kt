@@ -8,9 +8,9 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
+import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.ReciterSura
-import bassamalim.hidaya.core.helpers.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.recitations.surasMenu.domain.RecitationSurasMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -120,7 +120,8 @@ class RecitationSurasViewModel @Inject constructor(
                 val suraExists = availableSuar.contains(sura.id+1)
                 val isWanted = when (menuType) {
                     MenuType.FAVORITES -> sura.isFavorite
-                    MenuType.DOWNLOADED -> _uiState.value.downloadStates[sura.id] == DownloadState.DOWNLOADED
+                    MenuType.DOWNLOADED ->
+                        _uiState.value.downloadStates[sura.id] == DownloadState.DOWNLOADED
                     else -> true
                 }
 
@@ -138,6 +139,12 @@ class RecitationSurasViewModel @Inject constructor(
         val mediaId = formattedReciterId + formattedNarrationId + formattedSuraId
 
         navigator.navigate(Screen.RecitationPlayer(action = "start", mediaId = mediaId))
+
+        domain.trackRecitationPlayed(
+            reciterId = reciterId,
+            narrationId = narrationId,
+            suraName = plainSuraNames[suraId]
+        )
     }
 
     fun onFavoriteClick(sura: ReciterSura) {

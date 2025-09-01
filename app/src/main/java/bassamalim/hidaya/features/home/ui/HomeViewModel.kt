@@ -159,6 +159,8 @@ class HomeViewModel @Inject constructor(
                 targetValue = werdPage.toString()
             )
         )
+
+        domain.trackDailyWerdViewed()
     }
 
     fun onLeaderboardClick() {

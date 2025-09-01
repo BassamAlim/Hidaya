@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import bassamalim.hidaya.core.Globals
+import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
@@ -14,6 +15,7 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.helpers.Searcher
+import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.ReciterSura
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -24,7 +26,8 @@ class RecitationSurasMenuDomain @Inject constructor(
     app: Application,
     private val recitationsRepository: RecitationsRepository,
     private val quranRepository: QuranRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) {
 
     private val searcher = Searcher<ReciterSura>()
@@ -128,4 +131,14 @@ class RecitationSurasMenuDomain @Inject constructor(
             query = query,
             keySelector = { sura -> sura.searchName }
         )
+
+    fun trackRecitationPlayed(reciterId: Int, narrationId: Int, suraName: String) {
+        analyticsRepository.trackEvent(
+            AnalyticsEvent.RecitationPlayed(
+                reciterId = reciterId,
+                narrationId = narrationId,
+                suraName = suraName
+            )
+        )
+    }
 }

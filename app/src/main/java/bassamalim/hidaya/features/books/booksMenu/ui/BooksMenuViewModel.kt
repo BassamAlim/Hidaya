@@ -69,6 +69,8 @@ class BooksMenuViewModel @Inject constructor(
             }
             DownloadState.DOWNLOADED -> {
                 navigator.navigate(Screen.BookChaptersMenu(bookId = id.toString()))
+
+                domain.trackBookOpened(id)
             }
             DownloadState.DOWNLOADING -> {
                 _uiState.update { it.copy(

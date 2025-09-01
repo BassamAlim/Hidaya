@@ -4,10 +4,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
+import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.Searcher
+import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.surasMenu.ui.SearchMatch
@@ -19,7 +21,8 @@ import javax.inject.Inject
 
 class QuranSurasDomain @Inject constructor(
     private val quranRepository: QuranRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) {
 
     private val suraSearcher = Searcher<Sura>()
@@ -47,8 +50,10 @@ class QuranSurasDomain @Inject constructor(
         quranRepository.setShouldShowMenuTutorial(false)
     }
 
-    fun searchSuras(query: String, items: List<Sura>, limit: Int): List<SearchMatch> =
-        suraSearcher.containsSearch(
+    fun searchSuras(query: String, items: List<Sura>, limit: Int): List<SearchMatch> {
+        trackQuranSearchPerformed(query)
+
+        return suraSearcher.containsSearch(
             items = items,
             query = query,
             keySelector = { it.plainName },
@@ -61,6 +66,7 @@ class QuranSurasDomain @Inject constructor(
                 isFavorite = result.isFavorite
             )
         }
+    }
 
     fun searchVerses(
         query: String,
@@ -110,6 +116,14 @@ class QuranSurasDomain @Inject constructor(
             )
         }
         return matches
+    }
+
+    fun trackSuraViewed(suraName: String) {
+        analyticsRepository.trackEvent(AnalyticsEvent.QuranSuraViewed(suraName))
+    }
+
+    private fun trackQuranSearchPerformed(query: String) {
+        analyticsRepository.trackEvent(AnalyticsEvent.QuranSearchPerformed(query))
     }
 
 }
