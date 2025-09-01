@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,50 +55,42 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         FeatureItem(
             title = stringResource(R.string.recitations),
             icon = Icons.Default.Headphones,
-            onClick = { viewModel.onRecitationsClick(snackBarHostState, unsupportedMessage) },
-            color = Color(0xFF6B73FF)
+            onClick = { viewModel.onRecitationsClick(snackBarHostState, unsupportedMessage) }
         ),
         FeatureItem(
             title = stringResource(R.string.qibla),
             drawableId = R.drawable.ic_qibla_compass,
-            onClick = viewModel::onQiblaClick,
-            color = Color(0xFF00B894)
+            onClick = viewModel::onQiblaClick
         ),
         FeatureItem(
             title = stringResource(R.string.quiz_title),
             icon = Icons.AutoMirrored.Default.FactCheck,
-            onClick = viewModel::onQuizClick,
-            color = Color(0xFFE17055)
+            onClick = viewModel::onQuizClick
         ),
         FeatureItem(
             title = stringResource(R.string.hadeeth_books),
             drawableId = R.drawable.ic_books,
-            onClick = viewModel::onBooksClick,
-            color = Color(0xFF6C5CE7)
+            onClick = viewModel::onBooksClick
         ),
         FeatureItem(
             title = stringResource(R.string.tv_channels),
             icon = Icons.Default.LiveTv,
-            onClick = viewModel::onTvClick,
-            color = Color(0xFFFF7675)
+            onClick = viewModel::onTvClick
         ),
         FeatureItem(
             title = stringResource(R.string.quran_radio),
             icon = Icons.Default.Radio,
-            onClick = { viewModel.onRadioClick(snackBarHostState, unsupportedMessage) },
-            color = Color(0xFF74B9FF)
+            onClick = { viewModel.onRadioClick(snackBarHostState, unsupportedMessage) }
         ),
         FeatureItem(
             title = stringResource(R.string.misbaha),
             drawableId = R.drawable.ic_prayer_beads,
-            onClick = viewModel::onMisbahaClick,
-            color = Color(0xFF00CEC9)
+            onClick = viewModel::onMisbahaClick
         ),
         FeatureItem(
             title = stringResource(R.string.date_converter),
             icon = Icons.Default.CalendarMonth,
-            onClick = viewModel::onDateConverterClick,
-            color = Color(0xFFE84393)
+            onClick = viewModel::onDateConverterClick
         )
     )
 
@@ -107,26 +98,22 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         FeatureItem(
             title = stringResource(R.string.settings),
             icon = Icons.Default.Settings,
-            onClick = viewModel::onSettingsClick,
-            color = Color(0xFF636E72)
+            onClick = viewModel::onSettingsClick
         ),
         FeatureItem(
             title = stringResource(R.string.contact),
             icon = Icons.Default.Mail,
-            onClick = { viewModel.onContactClick(context) },
-            color = Color(0xFF00B894)
+            onClick = { viewModel.onContactClick(context) }
         ),
         FeatureItem(
             title = stringResource(R.string.share_app),
             icon = Icons.Default.Share,
-            onClick = { viewModel.onShareClick(context) },
-            color = Color(0xFF0984E3)
+            onClick = { viewModel.onShareClick(context) }
         ),
         FeatureItem(
             title = stringResource(R.string.about),
             icon = Icons.Default.Info,
-            onClick = viewModel::onAboutClick,
-            color = Color(0xFFA29BFE)
+            onClick = viewModel::onAboutClick
         )
     )
 
@@ -148,8 +135,6 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
         FeatureSection(title = stringResource(R.string.features), items = featuresItems)
         
         FeatureSection(title = stringResource(R.string.app_and_support), items = settingsItems)
-        
-        Spacer(Modifier.height(32.dp))
     }
 }
 
@@ -200,8 +185,8 @@ private fun FeatureCard(item: FeatureItem, modifier: Modifier = Modifier) {
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            (item.color ?: MaterialTheme.colorScheme.primary).copy(alpha = 0.05f),
-                            (item.color ?: MaterialTheme.colorScheme.primary).copy(alpha = 0.15f)
+                            (MaterialTheme.colorScheme.primary).copy(alpha = 0.05f),
+                            (MaterialTheme.colorScheme.primary).copy(alpha = 0.15f)
                         )
                     )
                 )
@@ -217,7 +202,7 @@ private fun FeatureCard(item: FeatureItem, modifier: Modifier = Modifier) {
                         .size(48.dp)
                         .clip(CircleShape)
                         .background(
-                            color = (item.color ?: MaterialTheme.colorScheme.primary)
+                            color = (MaterialTheme.colorScheme.primary)
                                 .copy(alpha = 0.2f)
                         ),
                     contentAlignment = Alignment.Center
@@ -228,7 +213,7 @@ private fun FeatureCard(item: FeatureItem, modifier: Modifier = Modifier) {
                                 imageVector = item.icon,
                                 contentDescription = item.title,
                                 modifier = Modifier.size(24.dp),
-                                tint = item.color ?: MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                         item.drawableId != null -> {
@@ -236,7 +221,7 @@ private fun FeatureCard(item: FeatureItem, modifier: Modifier = Modifier) {
                                 painter = painterResource(item.drawableId),
                                 contentDescription = item.title,
                                 modifier = Modifier.size(24.dp),
-                                tint = item.color ?: MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
