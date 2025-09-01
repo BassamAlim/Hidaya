@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,18 +30,17 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
@@ -148,57 +145,40 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        // Islamic Features Section
-        FeatureSection(
-            title = "Features",
-            items = featuresItems,
-            itemsPerRow = 2
-        )
+        FeatureSection(title = stringResource(R.string.features), items = featuresItems)
         
-        // App & Support Section
-        FeatureSection(
-            title = "App & Support",
-            items = settingsItems,
-            itemsPerRow = 2
-        )
+        FeatureSection(title = stringResource(R.string.app_and_support), items = settingsItems)
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(Modifier.height(32.dp))
     }
 }
 
-
 @Composable
-private fun FeatureSection(
-    title: String,
-    items: List<FeatureItem>,
-    itemsPerRow: Int = 2
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+private fun FeatureSection(title: String, items: List<FeatureItem>) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         MyText(
             text = title,
-            fontSize = 22.nsp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp),
+            fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 4.dp)
+            textAlign = TextAlign.Start
         )
         
-        // Group items into rows
-        items.chunked(itemsPerRow).forEach { rowItems ->
+        items.chunked(2).forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 rowItems.forEach { item ->
-                    ModernFeatureCard(
+                    FeatureCard(
                         item = item,
                         modifier = Modifier.weight(1f)
                     )
                 }
-                // Fill remaining space if row is not complete
-                repeat(itemsPerRow - rowItems.size) {
-                    Spacer(modifier = Modifier.weight(1f))
+                repeat(2 - rowItems.size) {
+                    Spacer(Modifier.weight(1f))
                 }
             }
         }
@@ -206,21 +186,13 @@ private fun FeatureSection(
 }
 
 @Composable
-private fun ModernFeatureCard(
-    item: FeatureItem,
-    modifier: Modifier = Modifier
-) {
+private fun FeatureCard(item: FeatureItem, modifier: Modifier = Modifier) {
     Card(
         onClick = item.onClick,
         modifier = modifier.height(120.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp,
-            pressedElevation = 8.dp
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp, pressedElevation = 8.dp)
     ) {
         Box(
             modifier = Modifier
@@ -240,13 +212,13 @@ private fun ModernFeatureCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Icon background with circular shape
                 Box(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
                         .background(
-                            color = (item.color ?: MaterialTheme.colorScheme.primary).copy(alpha = 0.2f)
+                            color = (item.color ?: MaterialTheme.colorScheme.primary)
+                                .copy(alpha = 0.2f)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
