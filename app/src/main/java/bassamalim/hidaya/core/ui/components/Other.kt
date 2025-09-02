@@ -62,6 +62,7 @@ fun MyCheckbox(
 fun MultiDrawableImage(
     drawables: List<Pair<Int, Color>>,
     modifier: Modifier = Modifier,
+    innerModifier: Modifier = Modifier,
     contentDescription: String? = ""
 ) {
     Box(modifier) {
@@ -69,6 +70,7 @@ fun MultiDrawableImage(
             Image(
                 painter = painterResource(resId),
                 contentDescription = contentDescription,
+                modifier = innerModifier,
                 colorFilter = ColorFilter.tint(color)
             )
         }
