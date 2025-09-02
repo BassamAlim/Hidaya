@@ -109,7 +109,7 @@ fun RemembranceItem(
                 modifier = Modifier
                     .weight(1F)
                     .padding(10.dp),
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 textAlign = TextAlign.Start
             )
 
