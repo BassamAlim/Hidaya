@@ -2,7 +2,7 @@ package bassamalim.hidaya.features.remembrances.categoriesMenu.ui
 
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.enums.MenuType
-import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

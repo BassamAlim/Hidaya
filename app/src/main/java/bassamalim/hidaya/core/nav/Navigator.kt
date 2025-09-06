@@ -1,11 +1,10 @@
-package bassamalim.hidaya.core.helpers
+package bassamalim.hidaya.core.nav
 
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.models.AnalyticsEvent
-import bassamalim.hidaya.core.nav.Screen
 import java.util.Stack
 import javax.inject.Inject
 
@@ -21,20 +20,15 @@ class Navigator @Inject constructor(
     }
 
     fun navigate(destination: Screen) {
-        navController?.navigate(
-            destination.route
-        )
+        navController?.navigate(destination.route)
 
-        analyticsRepository.trackEvent(AnalyticsEvent.ScreenViewed(destination.route))
+        analyticsRepository.trackEvent(AnalyticsEvent.ScreenView(destination.route))
     }
 
     fun navigate(destination: Screen, builder: NavOptionsBuilder.() -> Unit) {
-        navController?.navigate(
-            destination.route,
-            builder
-        )
+        navController?.navigate(route = destination.route, builder = builder)
 
-        analyticsRepository.trackEvent(AnalyticsEvent.ScreenViewed(destination.route))
+        analyticsRepository.trackEvent(AnalyticsEvent.ScreenView(destination.route))
     }
 
     fun popBackStack() {
@@ -44,7 +38,7 @@ class Navigator @Inject constructor(
     }
 
     fun popBackStack(destination: Screen, inclusive: Boolean = false) {
-        navController?.popBackStack(destination.route, inclusive)
+        navController?.popBackStack(route = destination.route, inclusive = inclusive)
     }
 
     fun navigateForResult(destination: Screen, onResult: (Bundle?) -> Unit) {
@@ -52,11 +46,13 @@ class Navigator @Inject constructor(
 
         callbacks.push(onResult)
 
-        analyticsRepository.trackEvent(AnalyticsEvent.ScreenViewed(destination.route))
+        analyticsRepository.trackEvent(AnalyticsEvent.ScreenView(destination.route))
     }
 
     fun navigateBackWithResult(data: Bundle?) {
-        if (!callbacks.isEmpty()) callbacks.pop()?.invoke(data)
+        if (!callbacks.isEmpty()) {
+            callbacks.pop()?.invoke(data)
+        }
 
         navController?.popBackStack()
     }

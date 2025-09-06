@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.books.booksMenuFilter.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.books.booksMenuFilter.domain.BooksMenuFilterDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

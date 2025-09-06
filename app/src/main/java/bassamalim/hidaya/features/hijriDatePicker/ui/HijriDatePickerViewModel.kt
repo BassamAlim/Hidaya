@@ -9,7 +9,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.hijriDatePicker.domain.HijriDatePickerDomain
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar

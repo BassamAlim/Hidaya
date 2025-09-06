@@ -1,13 +1,18 @@
 package bassamalim.hidaya.core.models
 
+import com.google.firebase.analytics.FirebaseAnalytics
+
 sealed class AnalyticsEvent(
     val name: String,
     val parameters: Map<String, Any> = emptyMap()
 ) {
 
-    data class ScreenViewed(val screenName: String) : AnalyticsEvent(
-        name = "screen_viewed",
-        parameters = mapOf("screen_name" to screenName)
+    data class ScreenView(val screenName: String) : AnalyticsEvent(
+        name = FirebaseAnalytics.Event.SCREEN_VIEW,
+        parameters = mapOf(
+            FirebaseAnalytics.Param.SCREEN_NAME to screenName,
+            FirebaseAnalytics.Param.SCREEN_CLASS to "BassamAlim.Hidaya"
+        )
     )
 
     data object DailyWerdViewed : AnalyticsEvent(name = "daily_werd_viewed")

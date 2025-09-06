@@ -24,7 +24,7 @@ import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.recitations.player.domain.RecitationPlayerDomain
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation

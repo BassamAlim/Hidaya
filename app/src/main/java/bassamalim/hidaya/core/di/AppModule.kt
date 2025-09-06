@@ -6,7 +6,7 @@ import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.helpers.Alarm
-import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.nav.Navigator
 import com.google.firebase.inappmessaging.internal.injection.qualifiers.Analytics
 import com.google.gson.Gson
 import dagger.Module

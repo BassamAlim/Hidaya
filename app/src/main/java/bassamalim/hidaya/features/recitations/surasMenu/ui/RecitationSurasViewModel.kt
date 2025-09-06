@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
-import bassamalim.hidaya.core.helpers.Navigator
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.nav.Screen
