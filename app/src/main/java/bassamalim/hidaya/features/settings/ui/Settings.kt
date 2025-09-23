@@ -270,7 +270,8 @@ fun PreferenceTitle(title: String, modifier: Modifier = Modifier) {
     MyText(
         text = title,
         modifier = modifier,
-        color = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface,
+        textAlign = TextAlign.Start
     )
 }
 

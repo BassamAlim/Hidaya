@@ -9,7 +9,7 @@ import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.prayers.board.domain.PrayersBoardDomain
-import bassamalim.hidaya.features.prayers.settings.ui.PrayerSettings
+import bassamalim.hidaya.features.prayers.notificationSettings.ui.PrayerNotificationSettings
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +35,7 @@ class PrayersBoardViewModel @Inject constructor(
     private lateinit var numeralsLanguage: Language
     private val location = domain.getLocation()
     private val prayerSettings = domain.getPrayerSettings()
+    private val prayerTimesCalculatorSettings = domain.getPrayerTimesCalculatorSettings()
     private val currentDate = Calendar.getInstance()
     private val viewedDate = Calendar.getInstance()
     private val prayerNames = domain.getPrayerNames()
@@ -43,18 +44,23 @@ class PrayersBoardViewModel @Inject constructor(
     val uiState = combine(
         _uiState.asStateFlow(),
         location,
-        prayerSettings
-    ) { state, location, prayerSettings ->
+        prayerSettings,
+        prayerTimesCalculatorSettings
+    ) { state, location, prayerSettings, prayerTimesCalculatorSettings ->
         if (location != null) {
-            val prayerTimeMap = domain.getTimes(location = location, date = viewedDate)
+            val prayerTimeMap = domain.getTimes(
+                location = location,
+                date = viewedDate,
+                prayerTimesCalculatorSettings = prayerTimesCalculatorSettings
+            )
             state.copy(
-                isLocationAvailable = true,
+                locationAvailable = true,
                 prayersData = getPrayersData(prayerTimeMap, prayerSettings),
                 locationName = getLocationName(location)
             )
         }
         else state.copy(
-            isLocationAvailable = false,
+            locationAvailable = false,
             locationName = ""
         )
     }.onStart {
@@ -71,15 +77,18 @@ class PrayersBoardViewModel @Inject constructor(
             numeralsLanguage = domain.getNumeralsLanguage()
 
             _uiState.update { it.copy(
-                isLoading = false,
-                dateText = getDateText(viewedDate),
-                isTutorialDialogShown = domain.getShouldShowTutorial()
+                loading = false,
+                dateText = getDateText(viewedDate)
             )}
         }
     }
 
     fun onLocatorClick() {
         navigator.navigate(Screen.Locator(isInitial = false.toString()))
+    }
+
+    fun onTimeCalculationSettingsClick() {
+        navigator.navigate(Screen.PrayerTimeCalculationSettings)
     }
 
     fun onPrayerCardClick(prayer: Prayer) {
@@ -109,33 +118,26 @@ class PrayersBoardViewModel @Inject constructor(
         viewModelScope.launch {
             val location = location.first() ?: return@launch
             val prayerSettings = prayerSettings.first()
+            val prayerTimesCalculatorSettings = prayerTimesCalculatorSettings.first()
 
-            val prayerTimeMap = domain.getTimes(location = location, date = viewedDate)
+            val prayerTimeMap = domain.getTimes(
+                location = location,
+                date = viewedDate,
+                prayerTimesCalculatorSettings = prayerTimesCalculatorSettings
+            )
             _uiState.update { it.copy(
                 dateText = getDateText(newDate),
                 prayersData = getPrayersData(prayerTimeMap, prayerSettings),
-                isNoDateOffset = newDate == currentDate
+                noDateOffset = newDate == currentDate
             )}
 
             viewedDate.time = newDate.time
         }
     }
 
-    fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
-        _uiState.update { it.copy(
-            isTutorialDialogShown = false
-        )}
-
-        if (doNotShowAgain) {
-            viewModelScope.launch {
-                domain.setDoNotShowAgain()
-            }
-        }
-    }
-
     private fun getPrayersData(
         prayerTimeMap: SortedMap<Prayer, String>,
-        prayerSettings: Map<Prayer, PrayerSettings>
+        prayerSettings: Map<Prayer, PrayerNotificationSettings>
     ) = sortedMapOf<Prayer, PrayerCardData>().apply {
         prayerNames.forEach { (prayer, name) ->
             this[prayer] = PrayerCardData(

@@ -31,7 +31,7 @@ import bassamalim.hidaya.features.main.domain.MainDomain
 import bassamalim.hidaya.features.onboarding.domain.OnboardingDomain
 import bassamalim.hidaya.features.prayers.board.domain.PrayersBoardDomain
 import bassamalim.hidaya.features.prayers.extraReminderSettings.domain.PrayerExtraReminderSettingsDomain
-import bassamalim.hidaya.features.prayers.settings.domain.PrayerSettingsDomain
+import bassamalim.hidaya.features.prayers.notificationSettings.domain.PrayerNotificationSettingsDomain
 import bassamalim.hidaya.features.qibla.domain.QiblaDomain
 import bassamalim.hidaya.features.quiz.result.domain.QuizResultDomain
 import bassamalim.hidaya.features.quiz.test.domain.QuizTestDomain
@@ -189,7 +189,7 @@ object DomainModule {
         prayersRepository: PrayersRepository,
         notificationsRepository: NotificationsRepository,
         appSettingsRepository: AppSettingsRepository
-    ) = PrayerSettingsDomain(prayersRepository, notificationsRepository, appSettingsRepository)
+    ) = PrayerNotificationSettingsDomain(prayersRepository, notificationsRepository, appSettingsRepository)
 
     @Provides @Singleton
     fun provideQiblaDomain(

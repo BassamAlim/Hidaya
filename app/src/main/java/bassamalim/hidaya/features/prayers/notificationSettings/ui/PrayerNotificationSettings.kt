@@ -1,10 +1,10 @@
-package bassamalim.hidaya.features.prayers.settings.ui
+package bassamalim.hidaya.features.prayers.notificationSettings.ui
 
 import android.os.Parcel
 import android.os.Parcelable
 import bassamalim.hidaya.core.enums.NotificationType
 
-data class PrayerSettings(
+data class PrayerNotificationSettings(
     val notificationType: NotificationType,
     val reminderOffset: Int = 0
 ): Parcelable {
@@ -23,12 +23,12 @@ data class PrayerSettings(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<PrayerSettings> {
-        override fun createFromParcel(parcel: Parcel): PrayerSettings {
-            return PrayerSettings(parcel)
+    companion object CREATOR : Parcelable.Creator<PrayerNotificationSettings> {
+        override fun createFromParcel(parcel: Parcel): PrayerNotificationSettings {
+            return PrayerNotificationSettings(parcel)
         }
 
-        override fun newArray(size: Int): Array<PrayerSettings?> {
+        override fun newArray(size: Int): Array<PrayerNotificationSettings?> {
             return arrayOfNulls(size)
         }
     }

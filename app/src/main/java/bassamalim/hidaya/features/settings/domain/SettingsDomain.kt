@@ -1,24 +1,17 @@
 package bassamalim.hidaya.features.settings.domain
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
-import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
-import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
-import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.models.TimeOfDay
-import bassamalim.hidaya.core.services.PrayersNotificationService
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
@@ -32,19 +25,6 @@ class SettingsDomain @Inject constructor(
     private val locationRepository: LocationRepository,
     private val alarm: Alarm
 ) {
-
-    suspend fun resetPrayerTimes() {
-        val location = locationRepository.getLocation().first() ?: return
-
-        val prayerTimes = PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-            location = location,
-            calendar = Calendar.getInstance()
-        )
-
-        alarm.setAll(prayerTimes)
-    }
 
     fun getLanguage() = appSettingsRepository.getLanguage()
 
@@ -75,39 +55,6 @@ class SettingsDomain @Inject constructor(
 
     fun getDevotionReminderTimeOfDayMap() =
         notificationsRepository.getDevotionalReminderTimes()
-
-    fun getContinuousPrayersNotificationEnabled() =
-        prayersRepository.getContinuousPrayersNotificationEnabled()
-
-    fun enableContinuousPrayersNotification(context: Context) {
-        prayersRepository.setContinuousPrayersNotificationEnabled(true)
-
-        val serviceIntent = Intent(context, PrayersNotificationService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            context.startForegroundService(serviceIntent)
-        else
-            context.startService(serviceIntent)
-    }
-
-    fun disableContinuousPrayersNotification(context: Context) {
-        prayersRepository.setContinuousPrayersNotificationEnabled(false)
-
-        context.stopService(Intent(context, PrayersNotificationService::class.java))
-    }
-
-    fun getPrayerTimesCalculatorSettings() = prayersRepository.getPrayerTimesCalculatorSettings()
-
-    fun setPrayerTimeCalculationMethod(calculationMethod: PrayerTimeCalculationMethod) {
-        prayersRepository.setCalculationMethod(calculationMethod)
-    }
-
-    fun setPrayerTimeJuristicMethod(juristicMethod: PrayerTimeJuristicMethod) {
-        prayersRepository.setJuristicMethod(juristicMethod)
-    }
-
-    fun setHighLatitudesAdjustmentMethod(adjustmentMethod: HighLatitudesAdjustmentMethod) {
-        prayersRepository.setAdjustHighLatitudes(adjustmentMethod)
-    }
 
     fun getAthanAudioId() = prayersRepository.getAthanAudioId()
 

@@ -1,14 +1,10 @@
 package bassamalim.hidaya.features.settings.ui
 
 import android.app.Activity
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
-import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
-import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
@@ -62,11 +58,6 @@ class SettingsViewModel @Inject constructor(
                 else formatTime(it.value, state.language, state.numeralsLanguage, state.timeFormat)
             }.toMutableMap()
         )
-    }.combine(domain.getContinuousPrayersNotificationEnabled()) {
-            state, continuousPrayersNotificationEnabled ->
-        state.copy(continuousPrayersNotificationEnabled = continuousPrayersNotificationEnabled)
-    }.combine(domain.getPrayerTimesCalculatorSettings()) { state, prayerTimesCalculatorSettings ->
-        state.copy(prayerTimeCalculatorSettings = prayerTimesCalculatorSettings)
     }.combine(domain.getAthanAudioId()) { state, athanAudioId ->
         state.copy(athanAudioId = athanAudioId)
     }.combine(domain.getLocation()) { state, location ->
@@ -127,32 +118,6 @@ class SettingsViewModel @Inject constructor(
             }
         }
         else domain.cancelDevotionalReminder(reminder = devotion)
-    }
-
-    fun onContinuousNotificationsSwitch(isEnabled: Boolean, context: Context) {
-        if (isEnabled) domain.enableContinuousPrayersNotification(context)
-        else domain.disableContinuousPrayersNotification(context)
-    }
-
-    fun onPrayerTimesCalculationMethodChange(newMethod: PrayerTimeCalculationMethod) {
-        viewModelScope.launch {
-            domain.setPrayerTimeCalculationMethod(newMethod)
-            domain.resetPrayerTimes()
-        }
-    }
-
-    fun onPrayerTimesJuristicMethodChange(newMethod: PrayerTimeJuristicMethod) {
-        viewModelScope.launch {
-            domain.setPrayerTimeJuristicMethod(newMethod)
-            domain.resetPrayerTimes()
-        }
-    }
-
-    fun onPrayerTimesHighLatitudesAdjustmentChange(newMethod: HighLatitudesAdjustmentMethod) {
-        viewModelScope.launch {
-            domain.setHighLatitudesAdjustmentMethod(newMethod)
-            domain.resetPrayerTimes()
-        }
     }
 
     fun onAthanAudioIdChange(newValue: Int) {

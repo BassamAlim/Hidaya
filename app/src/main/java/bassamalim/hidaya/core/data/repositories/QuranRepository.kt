@@ -161,14 +161,6 @@ class QuranRepository @Inject constructor(
         }
     }
 
-    fun getShouldShowMenuTutorial() = quranPreferencesDataSource.getShouldShowMenuTutorial()
-
-    fun setShouldShowMenuTutorial(shouldShowMenuTutorial: Boolean) {
-        scope.launch{
-            quranPreferencesDataSource.updateShouldShowMenuTutorial(shouldShowMenuTutorial)
-        }
-    }
-
     fun getShouldShowReaderTutorial() = quranPreferencesDataSource.getShouldShowReaderTutorial()
 
     fun setShouldShowReaderTutorial(shouldShowReaderTutorial: Boolean) {

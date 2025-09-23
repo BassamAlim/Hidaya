@@ -4,12 +4,9 @@ import android.content.res.Resources
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.PrayersPreferencesDataSource
 import bassamalim.hidaya.core.di.ApplicationScope
-import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Prayer
-import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
-import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
+import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,33 +28,9 @@ class PrayersRepository @Inject constructor(
     fun getPrayerTimesCalculatorSettings() =
         prayersPreferencesDataSource.getPrayerTimeCalculatorSettings()
 
-    fun setCalculationMethod(calculationMethod: PrayerTimeCalculationMethod) {
+    fun setPrayerTimesCalculatorSettings(settings: PrayerTimeCalculatorSettings) {
         scope.launch {
-            prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
-                getPrayerTimesCalculatorSettings().first().copy(
-                    calculationMethod = calculationMethod
-                )
-            )
-        }
-    }
-
-    fun setJuristicMethod(juristicMethod: PrayerTimeJuristicMethod) {
-        scope.launch {
-            prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
-                getPrayerTimesCalculatorSettings().first().copy(
-                    juristicMethod = juristicMethod
-                )
-            )
-        }
-    }
-
-    fun setAdjustHighLatitudes(adjustmentMethod: HighLatitudesAdjustmentMethod) {
-        scope.launch {
-            prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
-                getPrayerTimesCalculatorSettings().first().copy(
-                    highLatitudesAdjustmentMethod = adjustmentMethod
-                )
-            )
+            prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(settings)
         }
     }
 
@@ -66,14 +39,6 @@ class PrayersRepository @Inject constructor(
     fun setAthanAudioId(audioId: Int) {
         scope.launch {
             prayersPreferencesDataSource.updateAthanAudioId(audioId)
-        }
-    }
-
-    fun getShouldShowTutorial() = prayersPreferencesDataSource.getShouldShowTutorial()
-
-    fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
-        scope.launch {
-            prayersPreferencesDataSource.updateShouldShowTutorial(shouldShowTutorial)
         }
     }
 

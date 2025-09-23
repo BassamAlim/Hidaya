@@ -38,10 +38,6 @@ object QuranPreferencesMigration {
                     key = Preference.QuranTextSize.key,
                     defValue = Preference.QuranTextSize.default as Float
                 ),
-                shouldShowMenuTutorial = sharedPrefs.getBoolean(
-                    key = Preference.ShowQuranTutorial.key,
-                    defValue = Preference.ShowQuranTutorial.default as Boolean
-                ),
                 shouldShowReaderTutorial = sharedPrefs.getBoolean(
                     key = Preference.ShowQuranViewerTutorial.key,
                     defValue = Preference.ShowQuranViewerTutorial.default as Boolean
@@ -53,7 +49,7 @@ object QuranPreferencesMigration {
                 isWerdDone = sharedPrefs.getBoolean(
                     key = Preference.WerdDone.key,
                     defValue = Preference.WerdDone.default as Boolean
-                ),
+                )
             )
         }
 

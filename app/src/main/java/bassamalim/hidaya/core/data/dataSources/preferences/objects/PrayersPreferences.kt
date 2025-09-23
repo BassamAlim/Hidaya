@@ -8,5 +8,4 @@ data class PrayersPreferences(
     val continuousPrayersNotificationEnabled: Boolean = false,
     val prayerTimeCalculatorSettings: PrayerTimeCalculatorSettings = PrayerTimeCalculatorSettings(),
     val athanAudioId: Int = 1,
-    val shouldShowTutorial: Boolean = true,
 )

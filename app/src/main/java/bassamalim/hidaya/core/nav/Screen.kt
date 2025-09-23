@@ -49,6 +49,8 @@ sealed class Screen(val route: String) {
         val prayerName: String
     ): Screen("prayer_settings/$prayerName")
 
+    data object PrayerTimeCalculationSettings: Screen("prayer_time_calculation_settings")
+
     data object Qibla: Screen("qibla")
 
     data object QuizLobby: Screen("quiz_lobby")

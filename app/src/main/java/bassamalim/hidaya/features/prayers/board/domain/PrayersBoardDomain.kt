@@ -8,8 +8,9 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.models.Location
+import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
-import bassamalim.hidaya.features.prayers.settings.ui.PrayerSettings
+import bassamalim.hidaya.features.prayers.notificationSettings.ui.PrayerNotificationSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -34,20 +35,14 @@ class PrayersBoardDomain @Inject constructor(
     fun getHijriMonths() = appStateRepository.getHijriMonthNames()
 
     suspend fun getCountryName(countryId: Int, language: Language) =
-        locationRepository.getCountryName(
-            countryId = countryId,
-            language = language
-        )
+        locationRepository.getCountryName(countryId = countryId, language = language)
 
     suspend fun getCityName(cityId: Int, language: Language) =
-        locationRepository.getCityName(
-            cityId = cityId,
-            language = language
-        )
+        locationRepository.getCityName(cityId = cityId, language = language)
 
     fun getPrayerNames() = prayersRepository.getPrayerNames()
 
-    fun getPrayerSettings(): Flow<Map<Prayer, PrayerSettings>> {
+    fun getPrayerSettings(): Flow<Map<Prayer, PrayerNotificationSettings>> {
         return combine(
             getNotificationTypes(),
             getReminderOffsets()
@@ -56,7 +51,7 @@ class PrayersBoardDomain @Inject constructor(
                 Prayer.FAJR, Prayer.SUNRISE, Prayer.DHUHR, Prayer.ASR, Prayer.MAGHRIB, Prayer.ISHAA
             )
             prayers.associateWith { prayer ->
-                PrayerSettings(
+                PrayerNotificationSettings(
                     notificationType = notificationTypes[prayer.toReminder()]!!,
                     reminderOffset = reminderOffsets[prayer.toExtraReminder()]!!
                 )
@@ -68,15 +63,16 @@ class PrayersBoardDomain @Inject constructor(
 
     private fun getReminderOffsets() = notificationsRepository.getPrayerExtraReminderTimeOffsets()
 
-    suspend fun getShouldShowTutorial() = prayersRepository.getShouldShowTutorial().first()
+    fun getPrayerTimesCalculatorSettings() =
+        prayersRepository.getPrayerTimesCalculatorSettings()
 
-    fun setDoNotShowAgain() {
-        prayersRepository.setShouldShowTutorial(false)
-    }
-
-    suspend fun getTimes(location: Location, date: Calendar): SortedMap<Prayer, String> {
+    suspend fun getTimes(
+        location: Location,
+        date: Calendar,
+        prayerTimesCalculatorSettings: PrayerTimeCalculatorSettings
+    ): SortedMap<Prayer, String> {
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            settings = prayerTimesCalculatorSettings,
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = date

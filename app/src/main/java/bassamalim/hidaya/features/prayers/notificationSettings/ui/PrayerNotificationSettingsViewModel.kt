@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers.settings.ui
+package bassamalim.hidaya.features.prayers.notificationSettings.ui
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -7,7 +7,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.features.prayers.settings.domain.PrayerSettingsDomain
+import bassamalim.hidaya.features.prayers.notificationSettings.domain.PrayerNotificationSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,9 +18,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PrayerSettingsViewModel @Inject constructor(
+class PrayerNotificationSettingsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val domain: PrayerSettingsDomain,
+    private val domain: PrayerNotificationSettingsDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
@@ -28,7 +28,7 @@ class PrayerSettingsViewModel @Inject constructor(
 
     lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(PrayerSettingsUiState(
+    private val _uiState = MutableStateFlow(PrayerNotificationSettingsUiState(
         prayer = prayer,
         prayerName = domain.getPrayerName(prayer)
     ))
@@ -37,7 +37,7 @@ class PrayerSettingsViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-        initialValue = PrayerSettingsUiState()
+        initialValue = PrayerNotificationSettingsUiState()
     )
 
     private fun initializeData() {

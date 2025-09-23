@@ -31,8 +31,6 @@ class AboutDomain @Inject constructor(
 
     fun resetTutorials() {
         booksRepository.setShouldShowTutorial(true)
-        prayersRepository.setShouldShowTutorial(true)
-        quranRepository.setShouldShowMenuTutorial(true)
         quranRepository.setShouldShowReaderTutorial(true)
     }
 

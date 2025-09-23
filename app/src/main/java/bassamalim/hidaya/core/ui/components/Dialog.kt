@@ -82,33 +82,6 @@ fun FullScreenDialog(
 }
 
 @Composable
-fun InfoDialog(
-    title: String,
-    text: String,
-    shown: Boolean,
-    onDismiss: () -> Unit = {}
-) {
-    MyDialog(shown = shown, onDismiss = onDismiss) {
-        Column(Modifier.padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)) {
-            Box(Modifier.fillMaxWidth()) {
-                MyCloseButton(
-                    onClose = onDismiss,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                )
-
-                MyText(
-                    text = title,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-
-            MyText(text = text, modifier = Modifier.fillMaxWidth())
-        }
-    }
-}
-
-@Composable
 fun TutorialDialog(shown: Boolean, text: String, onDismissRequest: (Boolean) -> Unit) {
     if (!shown) return
 
@@ -160,10 +133,7 @@ fun DialogSubmitButton(text: String = stringResource(R.string.select), onSubmit:
 }
 
 @Composable
-fun DialogDismissButton(
-    text: String = stringResource(R.string.cancel),
-    onDismiss: () -> Unit
-) {
+fun DialogDismissButton(text: String = stringResource(R.string.cancel), onDismiss: () -> Unit) {
     TextButton(onClick = onDismiss) {
         MyText(text = text, modifier = Modifier.padding(horizontal = 6.dp))
     }

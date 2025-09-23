@@ -1,14 +1,12 @@
-package bassamalim.hidaya.core.models
+package bassamalim.hidaya.features.prayers.timeCalculationSettings.ui
 
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class PrayerTimeCalculatorSettings(
+data class PrayerTimeCalculationSettingsUiState(
+    val continuousPrayersNotificationEnabled: Boolean = false,
     val calculationMethod: PrayerTimeCalculationMethod = PrayerTimeCalculationMethod.MECCA,
     val juristicMethod: PrayerTimeJuristicMethod = PrayerTimeJuristicMethod.SHAFII,
-    val highLatitudesAdjustmentMethod: HighLatitudesAdjustmentMethod =
-        HighLatitudesAdjustmentMethod.NONE,
+    val highLatitudesAdjustment: HighLatitudesAdjustmentMethod = HighLatitudesAdjustmentMethod.NONE,
 )

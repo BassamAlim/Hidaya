@@ -42,11 +42,7 @@ object PrayersPreferencesMigration {
                 athanAudioId = sharedPrefs.getString(
                     key = Preference.AthanId.key,
                     defValue = Preference.AthanId.default as String
-                )!!.toInt(),
-                shouldShowTutorial = sharedPrefs.getBoolean(
-                    key = Preference.ShowPrayersTutorial.key,
-                    defValue = Preference.ShowPrayersTutorial.default as Boolean
-                ),
+                )!!.toInt()
             )
         }
 

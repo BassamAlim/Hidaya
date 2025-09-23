@@ -44,12 +44,6 @@ class QuranSurasDomain @Inject constructor(
         quranRepository.setSuraFavoriteStatus(suraId, fav)
     }
 
-    suspend fun getShouldShowTutorial() = quranRepository.getShouldShowMenuTutorial().first()
-
-    fun setDoNotShowTutorialAgain() {
-        quranRepository.setShouldShowMenuTutorial(false)
-    }
-
     fun searchSuras(query: String, items: List<Sura>, limit: Int): List<SearchMatch> {
         trackQuranSearchPerformed(query)
 

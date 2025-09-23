@@ -62,13 +62,6 @@ class QuranPreferencesDataSource(
         }
     }
 
-    fun getShouldShowMenuTutorial() = flow.map { it.shouldShowMenuTutorial }
-    suspend fun updateShouldShowMenuTutorial(shouldShow: Boolean) {
-        dataStore.updateData { preferences ->
-            preferences.copy(shouldShowMenuTutorial = shouldShow)
-        }
-    }
-
     fun getShouldShowReaderTutorial() = flow.map { it.shouldShowReaderTutorial }
     suspend fun updateShouldShowReaderTutorial(shouldShow: Boolean) {
         dataStore.updateData { preferences ->

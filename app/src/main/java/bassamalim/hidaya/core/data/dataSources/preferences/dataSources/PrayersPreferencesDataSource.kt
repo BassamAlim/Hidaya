@@ -18,7 +18,9 @@ class PrayersPreferencesDataSource(
             else throw exception
         }
 
-    fun getContinuousPrayersNotificationEnabled() = flow.map { it.continuousPrayersNotificationEnabled }
+    fun getContinuousPrayersNotificationEnabled() = flow.map {
+        it.continuousPrayersNotificationEnabled
+    }
     suspend fun updateContinuousPrayersNotificationEnabled(enabled: Boolean) {
         dataStore.updateData { preferences ->
             preferences.copy(continuousPrayersNotificationEnabled = enabled)
@@ -36,13 +38,6 @@ class PrayersPreferencesDataSource(
     suspend fun updateAthanAudioId(id: Int) {
         dataStore.updateData { preferences ->
             preferences.copy(athanAudioId = id)
-        }
-    }
-
-    fun getShouldShowTutorial() = flow.map { it.shouldShowTutorial }
-    suspend fun updateShouldShowTutorial(shouldShow: Boolean) {
-        dataStore.updateData { preferences ->
-            preferences.copy(shouldShowTutorial = shouldShow)
         }
     }
 

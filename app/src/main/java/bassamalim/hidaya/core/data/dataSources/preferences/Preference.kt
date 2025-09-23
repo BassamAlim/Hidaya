@@ -63,11 +63,7 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object ShowBooksTutorial : Preference("show_books_tutorial", true)
 
-    data object ShowQuranTutorial : Preference("show_quran_tutorial", true)
-
     data object ShowQuranViewerTutorial : Preference("show_quran_viewer_tutorial", true)
-
-    data object ShowPrayersTutorial : Preference("show_prayers_tutorial", true)
 
     data object StoredLocation : Preference("stored_location", "{}")
 

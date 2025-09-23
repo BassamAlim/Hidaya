@@ -5,9 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +26,7 @@ import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.NotificationsPaused
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
@@ -53,25 +59,36 @@ import java.util.SortedMap
 fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (state.isLoading) return LoadingScreen()
+    if (state.loading) return LoadingScreen()
 
     ParentColumn(Modifier.padding(vertical = 16.dp)) {
-        LocationCard(
-            isLocationAvailable = state.isLocationAvailable,
-            locationName = state.locationName,
-            onLocatorClick = viewModel::onLocatorClick
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LocationCard(
+                isLocationAvailable = state.locationAvailable,
+                locationName = state.locationName,
+                onLocatorClick = viewModel::onLocatorClick
+            )
+
+            SettingsCard(onClick = viewModel::onTimeCalculationSettingsClick)
+        }
 
         PrayersSpace(
             prayersData = state.prayersData,
-            isLocationAvailable = state.isLocationAvailable,
+            isLocationAvailable = state.locationAvailable,
             onPrayerCardClick = viewModel::onPrayerCardClick,
             onReminderCardClick = viewModel::onExtraReminderCardClick
         )
 
         DayCard(
             dateText = state.dateText,
-            isNoDateOffset = state.isNoDateOffset,
+            isNoDateOffset = state.noDateOffset,
             onDateClick = viewModel::onDateClick,
             onPreviousDayClick = viewModel::onPreviousDayClick,
             onNextDayClick = viewModel::onNextDayClick
@@ -80,18 +97,20 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
 }
 
 @Composable
-private fun LocationCard(
+private fun RowScope.LocationCard(
     isLocationAvailable: Boolean,
     locationName: String,
     onLocatorClick: () -> Unit
 ) {
     OutlinedCard(
         Modifier
-            .fillMaxWidth(0.8f)
-            .clickable(onClick = onLocatorClick)
+            .fillMaxHeight()
+            .weight(1f)
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp),
+            modifier = Modifier
+                .clickable(onClick = onLocatorClick)
+                .padding(vertical = 10.dp, horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -107,6 +126,29 @@ private fun LocationCard(
                     else stringResource(R.string.click_to_locate),
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Start
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowScope.SettingsCard(onClick: () -> Unit) {
+    OutlinedCard(
+        Modifier
+            .fillMaxHeight()
+            .aspectRatio(1f)
+    ) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .clickable(onClick = onClick)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = stringResource(R.string.prayer_time_settings),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp)
             )
         }
     }
@@ -135,11 +177,12 @@ private fun ColumnScope.PrayersSpace(
                 onReminderCardClick = onReminderCardClick
             )
 
-            if (prayer != prayersData.lastKey())
+            if (prayer != prayersData.lastKey()) {
                 HorizontalDivider(
                     thickness = 0.5.dp,
                     color = DividerDefaults.color.copy(alpha = 0.2f)
                 )
+            }
         }
     }
 }
@@ -164,11 +207,7 @@ private fun PrayerSpace(
         )
 
         if (isLocationAvailable) {
-            NotificationType(
-                prayer = prayer,
-                data = data,
-                onPrayerCardClick = onPrayerCardClick
-            )
+            NotificationType(prayer = prayer, data = data, onPrayerCardClick = onPrayerCardClick)
 
             ExtraReminderButton(
                 prayer = prayer,

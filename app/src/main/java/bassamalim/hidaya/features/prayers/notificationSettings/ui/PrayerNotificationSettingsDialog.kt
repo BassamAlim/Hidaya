@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers.settings.ui
+package bassamalim.hidaya.features.prayers.notificationSettings.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,7 +37,7 @@ import bassamalim.hidaya.core.ui.components.DialogTitle
 import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
-fun PrayerSettingsDialog(viewModel: PrayerSettingsViewModel) {
+fun PrayerNotificationSettingsDialog(viewModel: PrayerNotificationSettingsViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     AlertDialog(
@@ -54,7 +54,7 @@ fun PrayerSettingsDialog(viewModel: PrayerSettingsViewModel) {
 }
 
 @Composable
-private fun DialogContent(viewModel: PrayerSettingsViewModel, state: PrayerSettingsUiState) {
+private fun DialogContent(viewModel: PrayerNotificationSettingsViewModel, state: PrayerNotificationSettingsUiState) {
     NotificationTypesRadioGroup(
         prayer = state.prayer,
         selection = state.notificationType,
