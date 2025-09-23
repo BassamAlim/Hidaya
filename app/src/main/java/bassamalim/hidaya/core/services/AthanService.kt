@@ -37,6 +37,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -79,10 +80,10 @@ class AthanService : Service() {
         Log.i(Globals.TAG, "In athan service for $reminder")
         notificationId = reminder.id
 
-        scope.launch {
+        runBlocking {
             if (!isOnTime(time) || isAlreadyNotified(reminder)) {
                 Log.i(Globals.TAG, "notification receiver: not on time or already notified")
-                return@launch
+                return@runBlocking
             }
 
             startForeground(notificationId, build(reminder))

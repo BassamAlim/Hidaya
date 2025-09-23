@@ -140,7 +140,7 @@ fun MyFavoriteButton(
             imageVector =
                 if (isFavorite) Icons.Filled.Star
                 else Icons.Outlined.StarOutline,
-            contentDescription = stringResource(R.string.favorite),
+            contentDescription = stringResource(R.string.favorites),
             modifier = Modifier.size(size),
             tint = MaterialTheme.colorScheme.primary
         )

@@ -80,7 +80,7 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
             TabLayout(
                 pageNames = listOf(
                     stringResource(R.string.all),
-                    stringResource(R.string.favorite),
+                    stringResource(R.string.favorites),
                     stringResource(R.string.downloaded)
                 ),
                 searchComponent = {

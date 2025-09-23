@@ -58,9 +58,7 @@
     <string name="bookmark_verse_button_description">Save verse</string>
     <string name="filter_search_description">Filter search</string>
     <string name="already_read_description">Already read</string>
-    <string name="prayers_tips">Click on the prayer name to edit prayer preferences.\n\n Click on the right and left arrows in the bottom of the screen to view other days prayer times .. Then click on the text between the arrows to return to the current day.</string>
     <string name="suras_reader_tips">Click and hold the verse to view its interpretation.\n\n Click on a verse then click on the play button in the bottom bar to start playing from that verse.\n\n You can change the reciter while recitation is playing.</string>
-    <string name="quran_menu_tips">You can click on the button in the bottom corner of the screen to search in the quran.</string>
     <string name="books_menu_tips">You can click on the button in the bottom corner of the screen to search in the downloaded books.</string>
     <string name="quran_search_hint">Search for sura or page or verse</string>
     <string name="remembrances_search_hint">Search for remembrance</string>
@@ -70,7 +68,7 @@
     <string name="cities_search_hint">Search for city name</string>
     <string name="settings">Settings</string>
     <string name="all">All</string>
-    <string name="favorite">Favorites</string>
+    <string name="favorites">Favorites</string>
     <string name="downloaded">Downloaded</string>
     <string name="page">Page</string>
     <string name="sura">Sura</string>

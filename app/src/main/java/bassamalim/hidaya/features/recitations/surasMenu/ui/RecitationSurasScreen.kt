@@ -45,7 +45,7 @@ fun RecitationSurasMenuScreen(viewModel: RecitationSurasViewModel) {
         TabLayout(
             pageNames = listOf(
                 stringResource(R.string.all),
-                stringResource(R.string.favorite),
+                stringResource(R.string.favorites),
                 stringResource(R.string.downloaded)
             ),
             modifier = Modifier.padding(padding),

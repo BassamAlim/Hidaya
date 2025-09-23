@@ -59,9 +59,7 @@
     <string name="bookmark_verse_button_description">حفظ الآية</string>
     <string name="filter_search_description">تصفية البحث</string>
     <string name="already_read_description">تمت القراءة</string>
-    <string name="prayers_tips">اضغط على اسم الصلاة لعرض اعدادات كل صلاة.\n\nاضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط على النص بين السهمين للعودة الى اليوم الحالي.</string>
     <string name="suras_reader_tips">اضغط ضغطة مطولة على الآية لإظهار معلوماتها.\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة.\n\nيمكنك تغيير القارئ اثناء التلاوة.</string>
-    <string name="quran_menu_tips">يمكنك الضغط عل الزر في الزاوية السفلية من الشاشة للبحث عن نص في المصحف.</string>
     <string name="books_menu_tips">يمكنك الضغط على الزر في الزاوية السفلية من الشاشة للبحث عن نص في الكتب المحملة.</string>
     <string name="quran_search_hint">ابحث عن سورة أو صفحة أو آية</string>
     <string name="remembrances_search_hint">ابحث عن الذِكر</string>
@@ -71,7 +69,7 @@
     <string name="cities_search_hint">ابحث عن اسم المدينة</string>
     <string name="settings">الإعدادات</string>
     <string name="all">الكل</string>
-    <string name="favorite">المفضلة</string>
+    <string name="favorites">المفضلة</string>
     <string name="downloaded">المحملة</string>
     <string name="page">صفحة</string>
     <string name="sura">سُورَة</string>
@@ -204,4 +202,6 @@
     <string name="keep_screen_on">إبقاء الشاشة مضاءة</string>
     <string name="features">الميزات</string>
     <string name="app_and_support">التطبيق والدعم</string>
+
+    <string name="prayer_service_explanation" translatable="false">This service runs to show a foreground notification that allows users to track prayer times accurately, as prayers are time-sensitive religious obligations that cannot be delayed or missed.</string>
 </resources>

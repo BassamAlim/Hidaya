@@ -34,7 +34,7 @@ fun BookChaptersScreen(viewModel: BookChaptersViewModel) {
         TabLayout(
             pageNames = listOf(
                 stringResource(R.string.all),
-                stringResource(R.string.favorite)
+                stringResource(R.string.favorites)
             ),
             modifier = Modifier.padding(padding),
             searchComponent = {

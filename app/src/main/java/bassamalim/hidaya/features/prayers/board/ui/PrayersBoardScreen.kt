@@ -46,7 +46,6 @@ import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.ParentColumn
-import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.nsp
 import java.util.SortedMap
 
@@ -78,12 +77,6 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
             onNextDayClick = viewModel::onNextDayClick
         )
     }
-
-    TutorialDialog(
-        shown = state.isTutorialDialogShown,
-        text = stringResource(R.string.prayers_tips),
-        onDismissRequest = viewModel::onTutorialDialogDismiss
-    )
 }
 
 @Composable

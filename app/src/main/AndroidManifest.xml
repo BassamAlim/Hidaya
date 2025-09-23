@@ -50,6 +50,7 @@
 
         <receiver
             android:name=".core.receivers.DeviceBootReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -77,7 +78,16 @@
         <service
             android:name=".core.services.PrayersNotificationService"
             android:foregroundServiceType="specialUse"
-            android:exported="false" />
+            android:exported="false">
+
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="prayer_notifications" />
+
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_EXPLANATION"
+                android:resource="@string/prayer_service_explanation" />
+        </service>
 
         <service
             android:name=".features.recitations.player.service.RecitationPlayerService"

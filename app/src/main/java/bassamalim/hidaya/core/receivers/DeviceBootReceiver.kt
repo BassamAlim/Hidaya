@@ -3,16 +3,16 @@ package bassamalim.hidaya.core.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.di.ApplicationScope
-import bassamalim.hidaya.core.services.PrayersNotificationService
+import bassamalim.hidaya.core.helpers.BootWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,23 +24,25 @@ class DeviceBootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.i(Globals.TAG, "in device boot receiver")
 
-        if (intent.action == "android.intent.action.BOOT_COMPLETED") {
-            val intent1 = Intent(context, DailyUpdateReceiver::class.java)
-            intent1.action = "boot"
-            context.sendBroadcast(intent1)
+        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+            dailyUpdate(context)
 
-            scope.launch {
-                val prayersNotificationEnabled =
-                    prayersRepository.getContinuousPrayersNotificationEnabled().first()
-                if (prayersNotificationEnabled) {
-                    val serviceIntent = Intent(context, PrayersNotificationService::class.java)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        context.startForegroundService(serviceIntent)
-                    else
-                        context.startService(serviceIntent)
-                }
-            }
+            startPrayersNotificationService(context)
         }
+    }
+
+    private fun dailyUpdate(context: Context) {
+        val intent1 = Intent(context, DailyUpdateReceiver::class.java)
+        intent1.action = "boot"
+        context.sendBroadcast(intent1)
+    }
+
+    private fun startPrayersNotificationService(context: Context) {
+        val workRequest = OneTimeWorkRequestBuilder<BootWorker>()
+            .setInitialDelay(10, TimeUnit.SECONDS)
+            .build()
+
+        WorkManager.getInstance(context).enqueue(workRequest)
     }
 
 }

@@ -83,23 +83,16 @@ class SettingsDomain @Inject constructor(
         prayersRepository.setContinuousPrayersNotificationEnabled(true)
 
         val serviceIntent = Intent(context, PrayersNotificationService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             context.startForegroundService(serviceIntent)
-        }
-        else {
+        else
             context.startService(serviceIntent)
-        }
     }
 
     fun disableContinuousPrayersNotification(context: Context) {
         prayersRepository.setContinuousPrayersNotificationEnabled(false)
 
-        context.stopService(
-            Intent(
-                context,
-                PrayersNotificationService::class.java
-            )
-        )
+        context.stopService(Intent(context, PrayersNotificationService::class.java))
     }
 
     fun getPrayerTimesCalculatorSettings() = prayersRepository.getPrayerTimesCalculatorSettings()

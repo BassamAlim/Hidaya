@@ -57,7 +57,6 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TabLayout
-import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.Bookmark1Color
 import bassamalim.hidaya.core.ui.theme.Bookmark2Color
 import bassamalim.hidaya.core.ui.theme.Bookmark3Color
@@ -102,7 +101,7 @@ fun QuranSurasMenuScreen(viewModel: QuranSurasViewModel, snackbarHostState: Snac
         TabLayout(
             pageNames = listOf(
                 stringResource(R.string.all),
-                stringResource(R.string.favorite)
+                stringResource(R.string.favorites)
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -125,12 +124,6 @@ fun QuranSurasMenuScreen(viewModel: QuranSurasViewModel, snackbarHostState: Snac
             )
         }
     }
-
-    TutorialDialog(
-        shown = state.isTutorialDialogShown,
-        text = stringResource(R.string.quran_menu_tips),
-        onDismissRequest = viewModel::onTutorialDialogDismiss
-    )
 }
 
 @Composable
