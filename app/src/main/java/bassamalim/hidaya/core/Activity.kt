@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import bassamalim.hidaya.R
@@ -68,6 +69,11 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class Activity : ComponentActivity() {
 
+    companion object {
+        private const val FIREBASE_FETCH_INTERVAL = 3600 * 6L // 6 hours
+        private const val ACTION_DAILY = "daily"
+    }
+
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var appStateRepository: AppStateRepository
     @Inject lateinit var prayersRepository: PrayersRepository
@@ -86,46 +92,75 @@ class Activity : ComponentActivity() {
     private lateinit var initialTheme: Theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition { true }
-        
+        val splashScreen = setupSplashScreen()
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            theme = appSettingsRepository.getTheme()
-            initialTheme = theme.first()
-
-            applyTheme(initialTheme)
-
-            requestNotificationPermission()
-
-            splashScreen.setKeepOnScreenCondition { false }
-
-            val isFirstLaunch = savedInstanceState == null
-            startRoute = intent.getStringExtra("start_route")
-            if (isFirstLaunch) testDb()
-
-            shouldOnboard = !appStateRepository.isOnboardingCompleted().first()
-            language = appSettingsRepository.getLanguage().first()
-
-            ActivityUtils.configure(
-                context = this@Activity,
-                applicationContext = applicationContext,
-                language = language
-            )
-
-//            testAthan()
-
-            if (isFirstLaunch) {
-                handleAction(intent.action)
-
-                if (shouldOnboard) {
-                    launchApp()
-                    postLaunch()
-                }
-                else getLocationAndLaunch()
+            try {
+                initializeApp(splashScreen = splashScreen, savedInstanceState = savedInstanceState)
+            } catch (e: Exception) {
+                Log.e(Globals.TAG, "Error during app initialization", e)
+                // Fallback to basic app launch
+                launchApp()
             }
-            else launchApp()
+        }
+    }
+
+    private fun setupSplashScreen() = installSplashScreen().apply {
+        setKeepOnScreenCondition { true }
+    }
+
+    private suspend fun initializeApp(splashScreen: SplashScreen, savedInstanceState: Bundle?) {
+        initializeTheme()
+        requestNotificationPermission()
+        splashScreen.setKeepOnScreenCondition { false }
+
+        val isLaunch = savedInstanceState == null
+        startRoute = intent.getStringExtra("start_route")
+
+        if (isLaunch) testDb()
+
+        initializeUserSettings()
+        configureActivity()
+
+        if (isLaunch) handleStartupFlow()
+        else launchApp()
+    }
+
+    private suspend fun initializeTheme() {
+        theme = appSettingsRepository.getTheme()
+        initialTheme = theme.first()
+        applyTheme(initialTheme)
+    }
+
+    private suspend fun initializeUserSettings() {
+        shouldOnboard = !appStateRepository.isOnboardingCompleted().first()
+        language = appSettingsRepository.getLanguage().first()
+    }
+
+    private fun configureActivity() {
+        ActivityUtils.configure(
+            context = this@Activity,
+            applicationContext = applicationContext,
+            language = language
+        )
+    }
+
+    private suspend fun handleStartupFlow() {
+        try {
+            handleAction(intent.action)
+            
+            if (shouldOnboard) {
+                launchApp()
+                postLaunch()
+            }
+            else {
+                getLocationAndLaunch()
+            }
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Error in startup flow", e)
+            launchApp()
+            postLaunch()
         }
     }
 
@@ -144,73 +179,72 @@ class Activity : ComponentActivity() {
         )
     }
 
-//    private fun testAthan() {
-//        println("Test Athan")
-//
-//        val reminder = Reminder.Prayer.Ishaa
-//        val time = System.currentTimeMillis() + 1000 * 60
-//
-//        val intent = Intent(this, NotificationReceiver::class.java).apply {
-//            action = "prayer"
-//            putExtra("id", reminder.id)
-//            putExtra("time", time)
-//        }
-//
-//        val pendingIntent = PendingIntent.getBroadcast(
-//            this, reminder.id, intent,
-//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//        )
-//
-//        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
-//    }
-
     private suspend fun testDb() {
-        val shouldReviveDb = DbUtils.shouldReviveDb(
-            lastDbVersion = appStateRepository.getLastDbVersion().first(),
-            test = surasDao::getPlainNamesAr,
-            dispatcher = dispatcher
-        )
+        try {
+            val shouldReviveDb = DbUtils.shouldReviveDb(
+                lastDbVersion = appStateRepository.getLastDbVersion().first(),
+                test = surasDao::getPlainNamesAr,
+                dispatcher = dispatcher
+            )
 
-        if (shouldReviveDb) {
-            DbUtils.resetDB(this)
-            appStateRepository.setLastDbVersion(Globals.DB_VERSION)
-            ActivityUtils.restartApplication(this)
+            if (shouldReviveDb) {
+                Log.d(Globals.TAG, "Database needs revival, resetting...")
+                DbUtils.resetDB(this)
+                appStateRepository.setLastDbVersion(Globals.DB_VERSION)
+                ActivityUtils.restartApplication(this)
+            }
+            else {
+                Log.d(Globals.TAG, "Database is up to date")
+            }
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Error during database test", e)
         }
-        else Log.d(Globals.TAG, "Database is up to date")
     }
 
     private suspend fun handleAction(action: String?) {
-        if (action == null || action == "android.intent.action.MAIN") return
+        if (action == null || action == Intent.ACTION_MAIN) return
 
-        val startAction = StartAction.valueOf(action)
-        when (startAction) {
-            StartAction.STOP_ATHAN -> {
-                // stop athan if it is running
-                stopService(Intent(this, AthanService::class.java))
+        try {
+            val startAction = StartAction.valueOf(action)
+            when (startAction) {
+                StartAction.STOP_ATHAN -> {
+                    stopService(Intent(this, AthanService::class.java))
+                    Log.d(Globals.TAG, "Athan service stopped")
+                }
+                StartAction.GO_TO_RECITATION -> {
+                    val mediaId = intent.getStringExtra("media_id")
+                    if (mediaId != null) {
+                        startRoute = Screen.RecitationPlayer("back", mediaId).route
+                    }
+                    else {
+                        Log.w(Globals.TAG, "Media ID not found for recitation")
+                    }
+                }
+                StartAction.RESET_DATABASE -> {
+                    restoreDbData()
+                }
             }
-            StartAction.GO_TO_RECITATION -> {
-                startRoute = Screen.RecitationPlayer(
-                    "back",
-                    intent.getStringExtra("media_id")!!
-                ).route
-            }
-            StartAction.RESET_DATABASE -> {
-                restoreDbData()
-            }
+        } catch (e: IllegalArgumentException) {
+            Log.e(Globals.TAG, "Unknown start action: $action", e)
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Error handling action: $action", e)
         }
     }
 
     private suspend fun restoreDbData() {
-        DbUtils.restoreDbData(
-            suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
-            setSuraFavorites = quranRepository::setSuraFavorites,
-            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
-            setReciterFavorites = recitationsRepository::setReciterFavorites,
-            remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
-            setRemembranceFavorites = remembrancesRepository::setFavorites,
-        )
-        Log.d(Globals.TAG, "Database data restored")
+        try {
+            DbUtils.restoreDbData(
+                suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
+                setSuraFavorites = quranRepository::setSuraFavorites,
+                reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+                setReciterFavorites = recitationsRepository::setReciterFavorites,
+                remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+                setRemembranceFavorites = remembrancesRepository::setFavorites,
+            )
+            Log.d(Globals.TAG, "Database data restored successfully")
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Failed to restore database data", e)
+        }
     }
 
     private fun requestNotificationPermission() {
@@ -251,46 +285,45 @@ class Activity : ComponentActivity() {
     }
 
     private fun onLocationPermissionRequestResult(result: Map<String, Boolean>) {
-        if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            || result.keys.contains(Manifest.permission.PACKAGE_USAGE_STATS))
+        // Skip if this is a callback for background location or usage stats
+        if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION) ||
+            result.keys.contains(Manifest.permission.PACKAGE_USAGE_STATS)) {
             return
+        }
 
-        val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION]
-        val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
-        if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
+        val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        
+        if (fineLoc && coarseLoc) {
             locate()
             requestExtraPermissions()
         }
         else {
+            Log.w(Globals.TAG, "Location permissions denied")
             launchApp()
             postLaunch()
         }
     }
 
     private fun onNotificationPermissionRequestResult(result: Map<String, Boolean>) {
-        if (result.keys.contains(Manifest.permission.POST_NOTIFICATIONS)) {
-            launchApp()
-            postLaunch()
+        val notificationGranted = result[Manifest.permission.POST_NOTIFICATIONS] ?: false
+        if (notificationGranted) {
+            Log.d(Globals.TAG, "Notification permission granted")
         }
+        else {
+            Log.w(Globals.TAG, "Notification permission denied")
+        }
+        
+        launchApp()
+        postLaunch()
     }
 
     private fun requestExtraPermissions() {
         val permissions = mutableListOf<String>()
 
+        // Request background location permission for Android Q and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            !hasBackgroundLocationPermission()
         ) {
             permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         }
@@ -305,12 +338,25 @@ class Activity : ComponentActivity() {
             locationPermissionRequestLauncher.launch(permissions.toTypedArray())
         }
 
+        requestExactAlarmPermission()
+    }
+
+    private fun hasBackgroundLocationPermission(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestExactAlarmPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val alarmManager = ContextCompat.getSystemService(this, AlarmManager::class.java)
             if (alarmManager?.canScheduleExactAlarms() == false) {
-                Intent().also { intent ->
-                    intent.action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                try {
+                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                     startActivity(intent)
+                } catch (e: Exception) {
+                    Log.e(Globals.TAG, "Failed to request exact alarm permission", e)
                 }
             }
         }
@@ -347,19 +393,58 @@ class Activity : ComponentActivity() {
 
     private fun postLaunch() {
         lifecycleScope.launch {
-            initFirebase()
+            try {
+                initializeServices()
+                setupSystemComponents()
+                startPrayerServiceIfNeeded()
+            } catch (e: Exception) {
+                Log.e(Globals.TAG, "Error during post-launch initialization", e)
+            }
+        }
+    }
 
-            fetchAndActivateRemoteConfig()
+    private suspend fun initializeServices() {
+        initFirebase()
+        fetchAndActivateRemoteConfig()
+        dailyUpdate()
+        setAlarms()
+        // testAthan()
+    }
 
-            dailyUpdate()
+//    private fun testAthan() {
+//        println("Test Athan")
+//
+//        val reminder = Reminder.Prayer.Ishaa
+//        val time = System.currentTimeMillis() + 1000 * 60
+//
+//        val intent = Intent(this, NotificationReceiver::class.java).apply {
+//            action = "prayer"
+//            putExtra("id", reminder.id)
+//            putExtra("time", time)
+//        }
+//
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            this, reminder.id, intent,
+//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//        )
+//
+//        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+//    }
 
-            setAlarms()  // because maybe location changed
+    private fun setupSystemComponents() {
+        setupBootReceiver()
+    }
 
-            setupBootReceiver()
-
-            if (prayersRepository.getContinuousPrayersNotificationEnabled().first()
-                && !PrayersNotificationService.isRunning)
+    private suspend fun startPrayerServiceIfNeeded() {
+        try {
+            val isNotificationEnabled =
+                prayersRepository.getContinuousPrayersNotificationEnabled().first()
+            if (isNotificationEnabled && !PrayersNotificationService.isRunning) {
                 runPrayerReminderService()
+            }
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Failed to check prayer notification settings", e)
         }
     }
 
@@ -374,60 +459,102 @@ class Activity : ComponentActivity() {
 
     @SuppressLint("MissingPermission")
     private fun locate() {
-        LocationServices.getFusedLocationProviderClient(this)
-            .lastLocation.addOnSuccessListener { location: Location? ->
-                storeLocation(location)
-
-                launchApp()
-
-                postLaunch()
-            }
+        try {
+            LocationServices.getFusedLocationProviderClient(this)
+                .lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    storeLocation(location)
+                    launchApp()
+                    postLaunch()
+                }
+                .addOnFailureListener { e ->
+                    Log.e(Globals.TAG, "Failed to get location", e)
+                    launchApp()
+                    postLaunch()
+                }
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Error during location request", e)
+            launchApp()
+            postLaunch()
+        }
 
         requestExtraPermissions()
     }
 
     private fun storeLocation(location: Location?) {
-        if (location != null) {
+        location?.let { validLocation ->
             lifecycleScope.launch {
-                locationRepository.setLocation(location)
+                try {
+                    locationRepository.setLocation(validLocation)
+                    Log.d(Globals.TAG, "Location stored: lat=${validLocation.latitude}, " +
+                            "lng=${validLocation.longitude}")
+                } catch (e: Exception) {
+                    Log.e(Globals.TAG, "Failed to store location", e)
+                }
             }
-        }
+        } ?: Log.w(Globals.TAG, "Received null location, not storing")
     }
 
     private fun initFirebase() {
-        val remoteConfig = FirebaseRemoteConfig.getInstance()
-        val configSettings = FirebaseRemoteConfigSettings.Builder()
-            // update at most every six hours
-            .setMinimumFetchIntervalInSeconds(3600 * 6).build()
-        remoteConfig.setConfigSettingsAsync(configSettings)
-        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+        try {
+            val remoteConfig = FirebaseRemoteConfig.getInstance()
+            val configSettings = FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(FIREBASE_FETCH_INTERVAL)
+                .build()
+            remoteConfig.setConfigSettingsAsync(configSettings)
+            remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+            Log.d(Globals.TAG, "Firebase initialized successfully")
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Failed to initialize Firebase", e)
+        }
     }
 
     private fun fetchAndActivateRemoteConfig() {
-        FirebaseRemoteConfig.getInstance()
-            .fetchAndActivate()
-            .addOnSuccessListener { Log.i(Globals.TAG, "RemoteConfig update Success") }
-            .addOnFailureListener { Log.e(Globals.TAG, "RemoteConfig update Failed") }
+        try {
+            FirebaseRemoteConfig.getInstance()
+                .fetchAndActivate()
+                .addOnSuccessListener { 
+                    Log.i(Globals.TAG, "RemoteConfig update successful") 
+                }
+                .addOnFailureListener { e ->
+                    Log.e(Globals.TAG, "RemoteConfig update failed", e)
+                }
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Error fetching remote config", e)
+        }
     }
 
     private fun dailyUpdate() {
-        sendBroadcast(
-            Intent(this, DailyUpdateReceiver::class.java).apply {
-                action = "daily"
-            }
-        )
+        try {
+            sendBroadcast(
+                Intent(this, DailyUpdateReceiver::class.java).apply {
+                    action = ACTION_DAILY
+                }
+            )
+            Log.d(Globals.TAG, "Daily update broadcast sent")
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Failed to send daily update broadcast", e)
+        }
     }
 
     private suspend fun setAlarms() {
-        val location = locationRepository.getLocation().first()
-        if (location != null) {
-            val prayerTimes = PrayerTimeUtils.getPrayerTimes(
-                settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-                selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-                location = location,
-                calendar = Calendar.getInstance()
-            )
-            alarm.setAll(prayerTimes)
+        try {
+            val location = locationRepository.getLocation().first()
+            if (location != null) {
+                val prayerTimes = PrayerTimeUtils.getPrayerTimes(
+                    settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+                    selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+                    location = location,
+                    calendar = Calendar.getInstance()
+                )
+                alarm.setAll(prayerTimes)
+                Log.d(Globals.TAG, "Prayer alarms set successfully")
+            }
+            else {
+                Log.w(Globals.TAG, "Cannot set alarms - location is null")
+            }
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Failed to set prayer alarms", e)
         }
     }
 
@@ -440,9 +567,18 @@ class Activity : ComponentActivity() {
     }
 
     private fun runPrayerReminderService() {
-        val serviceIntent = Intent(this, PrayersNotificationService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(serviceIntent)
-        else startService(serviceIntent)
+        try {
+            val serviceIntent = Intent(this, PrayersNotificationService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent)
+            }
+            else {
+                startService(serviceIntent)
+            }
+            Log.d(Globals.TAG, "Prayer reminder service started")
+        } catch (e: Exception) {
+            Log.e(Globals.TAG, "Failed to start prayer reminder service", e)
+        }
     }
 
 }
