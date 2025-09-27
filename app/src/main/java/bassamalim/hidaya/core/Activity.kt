@@ -42,8 +42,8 @@ import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.helpers.Alarm
-import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Navigation
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
@@ -96,6 +96,8 @@ class Activity : ComponentActivity() {
             initialTheme = theme.first()
 
             applyTheme(initialTheme)
+
+            requestNotificationPermission()
 
             splashScreen.setKeepOnScreenCondition { false }
 
@@ -211,12 +213,20 @@ class Activity : ComponentActivity() {
         Log.d(Globals.TAG, "Database data restored")
     }
 
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            notificationPermissionRequestLauncher.launch(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+            )
+        }
+    }
+
     private suspend fun getLocationAndLaunch() {
         val location = locationRepository.getLocation().first()
         if (location != null && location.type == LocationType.AUTO) {
             if (granted()) locate()
             else {
-                permissionRequestLauncher.launch(arrayOf(
+                locationPermissionRequestLauncher.launch(arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ))
@@ -228,13 +238,19 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private val permissionRequestLauncher = registerForActivityResult(
+    private val locationPermissionRequestLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { result ->
-        onPermissionRequestResult(result)
+        onLocationPermissionRequestResult(result)
     }
 
-    private fun onPermissionRequestResult(result: Map<String, Boolean>) {
+    private val notificationPermissionRequestLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        onNotificationPermissionRequestResult(result)
+    }
+
+    private fun onLocationPermissionRequestResult(result: Map<String, Boolean>) {
         if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             || result.keys.contains(Manifest.permission.PACKAGE_USAGE_STATS))
             return
@@ -246,6 +262,13 @@ class Activity : ComponentActivity() {
             requestExtraPermissions()
         }
         else {
+            launchApp()
+            postLaunch()
+        }
+    }
+
+    private fun onNotificationPermissionRequestResult(result: Map<String, Boolean>) {
+        if (result.keys.contains(Manifest.permission.POST_NOTIFICATIONS)) {
             launchApp()
             postLaunch()
         }
@@ -279,7 +302,7 @@ class Activity : ComponentActivity() {
                 Toast.LENGTH_LONG
             ).show()
 
-            permissionRequestLauncher.launch(permissions.toTypedArray())
+            locationPermissionRequestLauncher.launch(permissions.toTypedArray())
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
