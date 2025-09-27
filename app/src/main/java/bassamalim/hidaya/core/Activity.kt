@@ -313,9 +313,6 @@ class Activity : ComponentActivity() {
         else {
             Log.w(Globals.TAG, "Notification permission denied")
         }
-        
-        launchApp()
-        postLaunch()
     }
 
     private fun requestExtraPermissions() {

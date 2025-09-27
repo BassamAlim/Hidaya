@@ -49,7 +49,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.PointerInputScope
@@ -61,14 +60,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineBreak
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,7 +87,6 @@ import bassamalim.hidaya.core.ui.theme.Bookmark4Color
 import bassamalim.hidaya.core.ui.theme.hafs_smart
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
-import kotlin.math.pow
 
 @Composable
 fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
@@ -492,56 +486,78 @@ private fun PageItems(
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
     for (section in sections) {
-        if (fillPage) {
-            when (section) {
-                is SuraHeaderSection -> {
-                    SuraHeader(
-                        suraNum = section.suraNum,
-                        suraName = section.suraName,
-                        isCurrentPage = isCurrentPage,
-                        textSize = textSize,
-                        height = lineHeight,
-                        onGloballyPositioned = onSuraHeaderGloballyPositioned
-                    )
-                }
-                is BasmalahSection -> {
-                    Basmalah(textSize = textSize, height = lineHeight)
-                }
-                is VersesSection -> {
-                    FilledPageViewScreen(
-                        annotatedString = section.annotatedString,
-                        numOfLines =
-                            if (section.suraNum == 1) section.numOfLines-1
-                            else section.numOfLines,
-                        lineHeight = lineHeight,
-                        onVersePointerInput = onVersePointerInput
-                    )
-                }
+        when (section) {
+            is SuraHeaderSection -> {
+                SuraHeader(
+                    suraNum = section.suraNum,
+                    suraName = section.suraName,
+                    isCurrentPage = isCurrentPage,
+                    textSize = textSize,
+                    onGloballyPositioned = onSuraHeaderGloballyPositioned
+                )
+            }
+            is BasmalahSection -> {
+                Basmalah(textSize)
+            }
+            is VersesSection -> {
+                PageViewScreen(
+                    annotatedString = section.annotatedString,
+                    textSize = textSize,
+                    onVersePointerInput = onVersePointerInput
+                )
             }
         }
-        else {
-            when (section) {
-                is SuraHeaderSection -> {
-                    SuraHeader(
-                        suraNum = section.suraNum,
-                        suraName = section.suraName,
-                        isCurrentPage = isCurrentPage,
-                        textSize = textSize,
-                        onGloballyPositioned = onSuraHeaderGloballyPositioned
-                    )
-                }
-                is BasmalahSection -> {
-                    Basmalah(textSize)
-                }
-                is VersesSection -> {
-                    PageViewScreen(
-                        annotatedString = section.annotatedString,
-                        textSize = textSize,
-                        onVersePointerInput = onVersePointerInput
-                    )
-                }
-            }
-        }
+
+//        if (fillPage) {
+//            when (section) {
+//                is SuraHeaderSection -> {
+//                    SuraHeader(
+//                        suraNum = section.suraNum,
+//                        suraName = section.suraName,
+//                        isCurrentPage = isCurrentPage,
+//                        textSize = textSize,
+//                        height = lineHeight,
+//                        onGloballyPositioned = onSuraHeaderGloballyPositioned
+//                    )
+//                }
+//                is BasmalahSection -> {
+//                    Basmalah(textSize = textSize, height = lineHeight)
+//                }
+//                is VersesSection -> {
+//                    FilledPageViewScreen(
+//                        annotatedString = section.annotatedString,
+//                        numOfLines =
+//                            if (section.suraNum == 1) section.numOfLines-1
+//                            else section.numOfLines,
+//                        lineHeight = lineHeight,
+//                        onVersePointerInput = onVersePointerInput
+//                    )
+//                }
+//            }
+//        }
+//        else {
+//            when (section) {
+//                is SuraHeaderSection -> {
+//                    SuraHeader(
+//                        suraNum = section.suraNum,
+//                        suraName = section.suraName,
+//                        isCurrentPage = isCurrentPage,
+//                        textSize = textSize,
+//                        onGloballyPositioned = onSuraHeaderGloballyPositioned
+//                    )
+//                }
+//                is BasmalahSection -> {
+//                    Basmalah(textSize)
+//                }
+//                is VersesSection -> {
+//                    PageViewScreen(
+//                        annotatedString = section.annotatedString,
+//                        textSize = textSize,
+//                        onVersePointerInput = onVersePointerInput
+//                    )
+//                }
+//            }
+//        }
     }
 }
 
@@ -626,64 +642,83 @@ private fun PageViewScreen(
     )
 }
 
-@Composable
-private fun FilledPageViewScreen(
-    annotatedString: AnnotatedString,
-    numOfLines: Int,
-    lineHeight: Dp,
-    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
-) {
-    var fontSize by remember { mutableStateOf(25.sp) }
-    var ready by remember { mutableStateOf(false) }
-    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-    val t1 = remember { System.currentTimeMillis() }
-
-    Text(
-        text = annotatedString,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height((lineHeight.value * numOfLines).dp)
-            .padding(horizontal = 6.dp)
-            .pointerInput(Unit) {
-                onVersePointerInput(this, layoutResult, annotatedString)
-            }
-            .drawWithContent {
-                if (ready) {
-                    drawContent()
-                    println("Took ${System.currentTimeMillis() - t1} ms to draw content")
-                }
-            },
-        fontSize = fontSize,
-        style = TextStyle(
-            fontFamily = hafs_smart,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            lineHeight = (lineHeight.value - (33f / fontSize.value).pow(2.2f)).sp,
-            lineHeightStyle = LineHeightStyle(
-                alignment = LineHeightStyle.Alignment.Center,
-                trim = LineHeightStyle.Trim.None
-            ),
-            textAlign = TextAlign.Justify,
-            platformStyle = PlatformTextStyle(includeFontPadding = false),
-            lineBreak = LineBreak(
-                strategy = LineBreak.Strategy.Balanced,
-                strictness = LineBreak.Strictness.Strict,
-                wordBreak = LineBreak.WordBreak.Default
-            )
-        ),
-        overflow = TextOverflow.Visible,
-        onTextLayout = { textLayoutResult ->
-            layoutResult = textLayoutResult
-
-            if (!ready) {
-                when {
-                    textLayoutResult.lineCount > numOfLines -> fontSize = (fontSize.value - 0.5f).sp
-                    textLayoutResult.lineCount < numOfLines -> fontSize = (fontSize.value + 0.5f).sp
-                    else -> ready = true
-                }
-            }
-        }
-    )
-}
+//@Composable
+//private fun FilledPageViewScreen(
+//    annotatedString: AnnotatedString,
+//    numOfLines: Int,
+//    lineHeight: Dp,
+//    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
+//) {
+//    BoxWithConstraints(
+//        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 6.dp).background(Color.Black)
+//    ) {
+//        val availableHeight = maxHeight
+//        val usableHeight = availableHeight
+//
+//        val calculatedLineHeight = usableHeight / numOfLines * 0.95f
+//
+//        var fontSize by remember(annotatedString) { mutableStateOf(25.sp) }
+//        var ready by remember(annotatedString) { mutableStateOf(false) }
+//        var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+//        var adjustmentCount by remember(annotatedString) { mutableIntStateOf(0) }
+//        val t1 = remember { System.currentTimeMillis() }
+//
+//        Text(
+//            text = annotatedString,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 6.dp, horizontal = 6.dp)
+//                .pointerInput(annotatedString) {
+//                    onVersePointerInput(this, layoutResult, annotatedString)
+//                }
+//                .drawWithContent {
+//                    if (ready) {
+//                        drawContent()
+//                        println("Took ${System.currentTimeMillis() - t1} ms to draw content")
+//                    }
+//                },
+//            style = TextStyle(
+//                fontFamily = hafs_smart,
+//                fontSize = fontSize,
+//                color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                lineHeight = calculatedLineHeight.value.sp,
+//                lineHeightStyle = LineHeightStyle(
+//                    alignment = LineHeightStyle.Alignment.Center,
+//                    trim = LineHeightStyle.Trim.None
+//                ),
+//                textAlign = TextAlign.Justify,
+//                lineBreak = LineBreak(
+//                    strategy = LineBreak.Strategy.Balanced,
+//                    strictness = LineBreak.Strictness.Strict,
+//                    wordBreak = LineBreak.WordBreak.Default
+//                ),
+//                platformStyle = PlatformTextStyle(includeFontPadding = false)
+//            ),
+//            overflow = TextOverflow.Visible,
+//            onTextLayout = { textLayoutResult ->
+//                layoutResult = textLayoutResult
+//
+//                if (!ready && adjustmentCount < 50) {
+//                    val lineCount = textLayoutResult.lineCount
+//
+//                    when {
+//                        lineCount > numOfLines -> {
+//                            fontSize = (fontSize.value - 0.2f).sp
+//                            adjustmentCount++
+//                        }
+//                        lineCount < numOfLines -> {
+//                            fontSize = (fontSize.value + 0.2f).sp
+//                            adjustmentCount++
+//                        }
+//                        else -> {
+//                            ready = true
+//                        }
+//                    }
+//                }
+//            }
+//        )
+//    }
+//}
 
 @Composable
 private fun ListViewScreen(

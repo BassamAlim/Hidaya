@@ -71,30 +71,30 @@ fun QuranSettingsDialog(viewModel: QuranSettingsViewModel) {
                     onSelect = viewModel::onViewTypeChange
                 )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    MyCheckbox(
-                        isChecked = state.fillPage,
-                        onCheckedChange = viewModel::onFillPageChange,
-                        isEnabled = state.isFillPageEnabled
-                    )
-
-                    MyText(
-                        text = stringResource(R.string.fill_page),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 5.dp),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    MyCheckbox(
+//                        isChecked = state.fillPage,
+//                        onCheckedChange = viewModel::onFillPageChange,
+//                        isEnabled = state.isFillPageEnabled
+//                    )
+//
+//                    MyText(
+//                        text = stringResource(R.string.fill_page),
+//                        color = MaterialTheme.colorScheme.onSurface
+//                    )
+//                }
 
                 SliderPref(
                     value = state.textSize,
                     title = stringResource(R.string.text_size_title),
                     valueRange = 20F..50F,
                     valueFormatter = viewModel::formatSliderValue,
-                    enabled = state.isTextSizeSliderEnabled,
+//                    enabled = state.isTextSizeSliderEnabled,
                     onValueChange = viewModel::onTextSizeChange
                 )
 
