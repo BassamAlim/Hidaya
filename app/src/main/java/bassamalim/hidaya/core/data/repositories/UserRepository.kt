@@ -154,7 +154,9 @@ class UserRepository @Inject constructor(
             .await()
             .let { result ->
                 try {
-                    last = result.documents.last()
+                    if (result.documents.isNotEmpty()) {
+                        last = result.documents.last()
+                    }
                     Response.Success(
                         result.documents.associate { document ->
                             document.data!!["user_id"].toString().toInt() to
@@ -186,7 +188,9 @@ class UserRepository @Inject constructor(
             .await()
             .let { result ->
                 try {
-                    last = result.documents.last()
+                    if (result.documents.isNotEmpty()) {
+                        last = result.documents.last()
+                    }
                     Response.Success(
                         result.documents.associate { document ->
                             document.data!!["user_id"].toString().toInt() to
@@ -199,6 +203,46 @@ class UserRepository @Inject constructor(
                 }
             }
         return Pair(results, last)
+    }
+
+    suspend fun getUserReadingRank(userId: Int): Int? {
+        if (!OsUtils.isNetworkAvailable(app)) return null
+
+        return try {
+            val query = firestore.collection("Leaderboard")
+                .orderBy("reading_record", Query.Direction.DESCENDING)
+                .get()
+                .await()
+
+            val userIndex = query.documents.indexOfFirst { document ->
+                document.getLong("user_id")?.toInt() == userId
+            }
+
+            if (userIndex != -1) userIndex + 1 else null
+        } catch (e: Exception) {
+            Log.i(Globals.TAG, "Error getting documents: ${e.message}")
+            null
+        }
+    }
+
+    suspend fun getUserListeningRank(userId: Int): Int? {
+        if (!OsUtils.isNetworkAvailable(app)) return null
+
+        return try {
+            val query = firestore.collection("Leaderboard")
+                .orderBy("listening_record", Query.Direction.DESCENDING)
+                .get()
+                .await()
+
+            val userIndex = query.documents.indexOfFirst { document ->
+                document.getLong("user_id")?.toInt() == userId
+            }
+
+            if (userIndex != -1) userIndex + 1 else null
+        } catch (e: Exception) {
+            Log.i(Globals.TAG, "Error getting documents: ${e.message}")
+            null
+        }
     }
 
 }

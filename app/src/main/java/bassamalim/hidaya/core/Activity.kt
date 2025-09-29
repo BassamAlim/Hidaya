@@ -37,12 +37,14 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
+import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.helpers.Alarm
+import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -54,6 +56,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.getColorScheme
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
+import bassamalim.hidaya.core.utils.OsUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -81,6 +84,7 @@ class Activity : ComponentActivity() {
     @Inject lateinit var recitationsRepository: RecitationsRepository
     @Inject lateinit var remembrancesRepository: RemembrancesRepository
     @Inject lateinit var locationRepository: LocationRepository
+    @Inject lateinit var userRepository: UserRepository
     @Inject lateinit var surasDao: SurasDao
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var alarm: Alarm
@@ -394,6 +398,7 @@ class Activity : ComponentActivity() {
                 initializeServices()
                 setupSystemComponents()
                 startPrayerServiceIfNeeded()
+                registerLeaderboardUser()
             } catch (e: Exception) {
                 Log.e(Globals.TAG, "Error during post-launch initialization", e)
             }
@@ -575,6 +580,18 @@ class Activity : ComponentActivity() {
             Log.d(Globals.TAG, "Prayer reminder service started")
         } catch (e: Exception) {
             Log.e(Globals.TAG, "Failed to start prayer reminder service", e)
+        }
+    }
+
+    suspend fun registerLeaderboardUser() {
+        val deviceId = OsUtils.getDeviceId(this.application)
+        val remoteRecord = userRepository.getRemoteRecord(deviceId)?.first()
+
+        if (remoteRecord is Response.Error && remoteRecord.message == "Device not registered") {
+            val newRecord = userRepository.registerDevice(deviceId)
+            if (newRecord != null) {
+                userRepository.setLocalRecord(newRecord)
+            }
         }
     }
 

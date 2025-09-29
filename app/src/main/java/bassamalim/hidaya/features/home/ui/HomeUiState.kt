@@ -5,6 +5,7 @@ import bassamalim.hidaya.core.models.TimeOfDay
 
 data class HomeUiState(
     val isLoading: Boolean = true,
+    val pendingPermissions: List<PendingPermission> = emptyList(),
     val previousPrayerName: String = "",
     val previousPrayerTimeText: String = "",
     val passed: String = "",

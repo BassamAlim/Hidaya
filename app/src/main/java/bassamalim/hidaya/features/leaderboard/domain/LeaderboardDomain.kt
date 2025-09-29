@@ -4,7 +4,6 @@ import android.app.Application
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.models.Response
-import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OsUtils.getDeviceId
 import bassamalim.hidaya.features.leaderboard.ui.RankType
 import com.google.firebase.firestore.DocumentSnapshot
@@ -23,17 +22,12 @@ class LeaderboardDomain @Inject constructor(
         RankType.BY_LISTENING to null
     )
 
-    fun getUserRank(
-        userRecord: UserRecord,
-        ranks: Map<RankType, Response<Map<Int, Long>>>
-    ): Map<RankType, Int?> {
+    suspend fun getUserRank(userId: Int): Map<RankType, Int> {
+        val readingRank = userRepository.getUserReadingRank(userId) ?: -1
+        val listeningRank = userRepository.getUserListeningRank(userId) ?: -1
         return mapOf(
-            RankType.BY_READING to ranks[RankType.BY_READING].let { response ->
-                response?.data?.keys!!.indexOfFirst { userId -> userId == userRecord.userId }
-            },
-            RankType.BY_LISTENING to ranks[RankType.BY_LISTENING].let { response ->
-                response?.data?.keys!!.indexOfFirst { userId -> userId == userRecord.userId }
-            }
+            RankType.BY_READING to readingRank,
+            RankType.BY_LISTENING to listeningRank
         )
     }
 

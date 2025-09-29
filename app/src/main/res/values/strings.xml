@@ -202,6 +202,9 @@
     <string name="keep_screen_on">إبقاء الشاشة مضاءة</string>
     <string name="features">الميزات</string>
     <string name="app_and_support">التطبيق والدعم</string>
-
+    <string name="pending_location_permission_message">يتطلب التطبيق إذن الموقع لتحديث أوقات الصلاة تلقائيًا وحساب اتجاه القبلة. يرجى تفعيل إذن الموقع.</string>
+    <string name="pending_background_location_permission_message">يتطلب التطبيق إذن الموقع في الخلفية لتحديث أوقات الصلاة تلقائيًا حتى عند إغلاق التطبيق. يرجى تفعيل إذن الموقع في الخلفية.</string>
+    <string name="pending_notification_permission_message">يتطلب التطبيق إذن الإشعارات لإرسال تذكيرات الصلاة في الوقت المحدد. يرجى تفعيل الإشعارات.</string>
     <string name="prayer_service_explanation" translatable="false">This service runs to show a foreground notification that allows users to track prayer times accurately, as prayers are time-sensitive religious obligations that cannot be delayed or missed.</string>
+    <string name="give_permission">السماح بالإذن</string>
 </resources>

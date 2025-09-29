@@ -1,5 +1,9 @@
 package bassamalim.hidaya.features.home.ui
 
+import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.clickable
@@ -41,21 +45,34 @@ import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel, bottomNavController: NavHostController) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val activity = LocalActivity.current!!
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { viewModel.onPermissionResult(activity) }
+    )
 
     DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
+        viewModel.onStart(activity = activity)
         onDispose { viewModel.onStop() }
     }
 
     if (state.isLoading) return
 
     ParentColumn {
+        if (state.pendingPermissions.isNotEmpty()) {
+            PendingPermissionsCard(
+                pendingPermissions = state.pendingPermissions,
+                permissionLauncher = permissionLauncher
+            )
+        }
+
         PrayerCard(
             previousPrayerName = state.previousPrayerName,
             previousPrayerTimeText = state.previousPrayerTimeText,
@@ -81,6 +98,40 @@ fun HomeScreen(viewModel: HomeViewModel, bottomNavController: NavHostController)
             isLeaderboardEnabled = state.isLeaderboardEnabled,
             onLeaderboardClick = viewModel::onLeaderboardClick
         )
+    }
+}
+
+@Composable
+private fun PendingPermissionsCard(
+    pendingPermissions: List<PendingPermission>,
+    permissionLauncher: ActivityResultLauncher<String>
+) {
+    MySurface {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp, horizontal = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            pendingPermissions.forEachIndexed { index, permission ->
+                MyText(
+                    text = stringResource(permission.messageResId),
+                    modifier = Modifier.padding(top = 4.dp),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                MyTextButton(
+                    text = stringResource(R.string.give_permission),
+                    onClick = { permissionLauncher.launch(permission.permission) }
+                )
+
+                if (index != pendingPermissions.lastIndex) {
+                    Spacer(Modifier.height(10.dp))
+                }
+            }
+        }
     }
 }
 

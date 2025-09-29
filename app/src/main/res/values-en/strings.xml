@@ -200,4 +200,8 @@
     <string name="keep_screen_on">Keep screen on</string>
     <string name="features">Features</string>
     <string name="app_and_support">App &amp; Support</string>
+    <string name="pending_location_permission_message">Location permission is required to automatically update prayer times and determine the Qibla. Please enable location access.</string>
+    <string name="pending_background_location_permission_message">Background location permission is required to automatically update prayer times, even when the app is not open. Please enable background location access.</string>
+    <string name="pending_notification_permission_message">Notification permission is required to send you prayer reminders on time. Please enable notifications.</string>
+    <string name="give_permission">Give permission</string>
 </resources>

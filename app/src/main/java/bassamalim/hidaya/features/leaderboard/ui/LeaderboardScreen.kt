@@ -79,8 +79,8 @@ private fun UsersList(
         )
     ) { page ->
         val rankBy = RankType.entries[page]
-        val userRank = userRankMap[rankBy]!!
-        val ranks = ranksMap[rankBy]!!
+        val userRank = userRankMap[rankBy] ?: "--"
+        val ranks = ranksMap[rankBy] ?: emptyList()
 
         MyColumn {
             UserRankCard(userId = userId, userRank = userRank)
@@ -92,7 +92,7 @@ private fun UsersList(
                 rankType = rankBy,
                 listState = rememberLazyListState(),
                 loadMoreItems = { loadMoreItems(rankBy) },
-                isLoading = isLoadingItems[rankBy]!!,
+                isLoading = isLoadingItems[rankBy] ?: false,
                 numeralsLanguage = numeralsLanguage
             )
         }

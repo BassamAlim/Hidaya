@@ -49,20 +49,23 @@ class LeaderboardViewModel @Inject constructor(
                 return@launch
             }
 
-            val userRank = userRecord.let { domain.getUserRank(it, ranks) }
-                .mapValues { (_, rank) -> translateNums(rank.toString(), numeralsLanguage) }
+            val userRank = domain.getUserRank(userRecord.userId)
+                .mapValues { (_, rank) -> 
+                    if (rank == -1) translateNums("--", numeralsLanguage)
+                    else translateNums(rank.toString(), numeralsLanguage)
+                }
 
             val ranksList = mapOf(
-                RankType.BY_READING to ranks[RankType.BY_READING]!!.data!!
+                RankType.BY_READING to (ranks[RankType.BY_READING]?.data ?: emptyMap())
                     .map { (userId, value) ->
                         translateNums(userId.toString(), numeralsLanguage) to
                                 translateNums(value.toString(), numeralsLanguage)
-                    }.toList(),
-                RankType.BY_LISTENING to ranks[RankType.BY_LISTENING]!!.data!!
+                    },
+                RankType.BY_LISTENING to (ranks[RankType.BY_LISTENING]?.data ?: emptyMap())
                     .map { (userId, value) ->
                         translateNums(userId.toString(), numeralsLanguage) to
                                 formatRecitationsTime(value)
-                    }.toList()
+                    }
             )
 
             _uiState.update { it.copy(
@@ -94,14 +97,14 @@ class LeaderboardViewModel @Inject constructor(
                     translateNums(userId.toString(), numeralsLanguage) to
                             formatRecitationsTime(value)
                 }
-            }.toList()
+            }
 
             _uiState.update { it.copy(
                 isLoadingItems = it.isLoadingItems.toMutableMap().also { map ->
                     map[rankType] = false
                 },
                 ranks = it.ranks.toMutableMap().also { map ->
-                    map[rankType] = it.ranks[rankType]!! + newRanks
+                    map[rankType] = (it.ranks[rankType] ?: emptyList()) + newRanks
                 }
             )}
         }

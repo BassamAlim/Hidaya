@@ -1,13 +1,19 @@
 package bassamalim.hidaya.features.home.ui
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.CountDownTimer
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
-import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.models.TimeOfDay
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.LangUtils.translateTimeNums
@@ -91,7 +97,9 @@ class HomeViewModel @Inject constructor(
         initialValue = HomeUiState()
     )
 
-    private suspend fun initializeData() {
+    private suspend fun initializeData(activity: Activity) {
+        val pendingPermissions = getPendingPermissions(activity)
+
         val location = domain.getLocation().first()
         if (location != null) {
             times = domain.getPrayerTimeMap(location)
@@ -111,6 +119,7 @@ class HomeViewModel @Inject constructor(
 
         _uiState.update { it.copy(
             isLoading = false,
+            pendingPermissions = pendingPermissions,
             isLeaderboardEnabled = leaderboardConnected,
             previousPrayerName = prayerNames[previousPrayer]!!,
             previousPrayerTimeText = translateNums(
@@ -127,9 +136,9 @@ class HomeViewModel @Inject constructor(
         )}
     }
 
-    fun onStart() {
+    fun onStart(activity: Activity) {
         viewModelScope.launch {
-            initializeData()
+            initializeData(activity)
 
             if (shouldCount)
                 count()
@@ -138,6 +147,12 @@ class HomeViewModel @Inject constructor(
 
     fun onStop() {
         timer?.cancel()
+    }
+
+    fun onPermissionResult(activity: Activity) {
+        _uiState.update { it.copy(
+            pendingPermissions = getPendingPermissions(activity)
+        )}
     }
 
     fun onPrayerCardClick(navController: NavHostController) {
@@ -177,6 +192,61 @@ class HomeViewModel @Inject constructor(
         }
 
         return previousPrayer
+    }
+
+    private fun getPendingPermissions(activity: Activity): List<PendingPermission> {
+        val pendingPermissions = mutableListOf<PendingPermission>()
+
+        val fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION
+        if (ContextCompat.checkSelfPermission(activity.application, fineLocationPermission)
+            != PackageManager.PERMISSION_GRANTED) {
+            pendingPermissions.add(
+                PendingPermission(
+                    messageResId = R.string.pending_location_permission_message,
+                    permission = fineLocationPermission
+                )
+            )
+        }
+
+        val coarseLocationPermission = Manifest.permission.ACCESS_COARSE_LOCATION
+        if (ContextCompat.checkSelfPermission(activity.application, coarseLocationPermission)
+            != PackageManager.PERMISSION_GRANTED) {
+            pendingPermissions.add(
+                PendingPermission(
+                    messageResId = R.string.pending_location_permission_message,
+                    permission = coarseLocationPermission
+                )
+            )
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val backgroundLocationPermission = Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            if (ContextCompat
+                .checkSelfPermission(activity.application, backgroundLocationPermission)
+                != PackageManager.PERMISSION_GRANTED) {
+                pendingPermissions.add(
+                    PendingPermission(
+                        messageResId = R.string.pending_background_location_permission_message,
+                        permission = backgroundLocationPermission
+                    )
+                )
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val notificationPermission = Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(activity.application, notificationPermission)
+                != PackageManager.PERMISSION_GRANTED) {
+                pendingPermissions.add(
+                    PendingPermission(
+                        messageResId = R.string.pending_notification_permission_message,
+                        permission = notificationPermission
+                    )
+                )
+            }
+        }
+
+        return pendingPermissions
     }
 
     private fun getNextPrayer(): Prayer? {
