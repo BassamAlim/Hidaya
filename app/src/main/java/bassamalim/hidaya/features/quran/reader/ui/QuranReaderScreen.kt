@@ -414,8 +414,8 @@ private fun PageContent(
         onPageChange(pagerState.currentPage, pageIdx, scrollState)
 
         var columnModifier = Modifier.fillMaxSize()
-        if (!(viewType == QuranViewType.PAGE && fillPage))
-            columnModifier = columnModifier.verticalScroll(scrollState)
+//        if (!(viewType == QuranViewType.PAGE && fillPage))
+        columnModifier = columnModifier.verticalScroll(scrollState)
 
         Column(
             modifier = columnModifier,

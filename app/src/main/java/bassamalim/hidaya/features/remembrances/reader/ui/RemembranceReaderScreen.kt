@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -80,14 +80,16 @@ private fun RemembrancePassageCard(
         )
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 12.dp, horizontal = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             // title
             if (passage.isTitleAvailable) {
                 MyText(
                     text = passage.title!!,
-                    modifier = Modifier.padding(10.dp),
                     fontSize = (textSize + textSizeMargin).sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -96,7 +98,6 @@ private fun RemembrancePassageCard(
             // text
             MyText(
                 text = passage.text,
-                modifier = Modifier.padding(10.dp),
                 fontSize = (textSize + textSizeMargin).sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -105,16 +106,14 @@ private fun RemembrancePassageCard(
             if (passage.isTranslationAvailable) {
                 MyText(
                     text = passage.translation!!,
-                    modifier = Modifier.padding(10.dp),
                     fontSize = (textSize + textSizeMargin).sp
                 )
             }
 
-            HorizontalDivider()
-
             Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.height(IntrinsicSize.Min)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 // repetition
                 FilledTonalButton(
@@ -122,7 +121,6 @@ private fun RemembrancePassageCard(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
-                        .padding(6.dp)
                 ) {
                     MyText(
                         text = passage.repetitionText,
@@ -135,55 +133,48 @@ private fun RemembrancePassageCard(
                     )
                 }
 
-                OutlinedButton(
-                    onClick = { expandedState = !expandedState },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .padding(6.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = stringResource(R.string.title_more),
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.rotate(rotationState)
-                    )
+                if (passage.isVirtueAvailable || passage.isReferenceAvailable) {
+                    OutlinedButton(
+                        onClick = { expandedState = !expandedState },
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = stringResource(R.string.title_more),
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.rotate(rotationState)
+                        )
+                    }
                 }
             }
 
             if (expandedState) {
                 // virtue
                 if (passage.isVirtueAvailable) {
-                    HorizontalDivider()
-
                     MyText(
                         text = stringResource(R.string.virtue),
-                        modifier = Modifier.padding(top = 10.dp),
                         fontSize = (textSize + textSizeMargin - 8).sp,
                         fontWeight = FontWeight.Bold
                     )
 
                     MyText(
                         text = passage.virtue!!,
-                        modifier = Modifier.padding(bottom = 10.dp),
                         fontSize = (textSize + textSizeMargin - 8).sp
                     )
                 }
 
                 // reference
                 if (passage.isReferenceAvailable) {
-                    HorizontalDivider()
-
                     MyText(
                         text = stringResource(R.string.reference),
-                        modifier = Modifier.padding(top = 10.dp),
                         fontSize = (textSize + textSizeMargin - 8).sp,
                         fontWeight = FontWeight.Bold
                     )
 
                     MyText(
                         text = passage.reference!!,
-                        modifier = Modifier.padding(bottom = 10.dp),
                         fontSize = (textSize + textSizeMargin - 8).sp
                     )
                 }
