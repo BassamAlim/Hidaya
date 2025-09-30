@@ -52,7 +52,7 @@ private fun DialogContent(
     viewModel: PrayerSettingsViewModel,
     state: PrayerTimeCalculationSettingsUiState
 ) {
-    Column(Modifier.padding(bottom = 10.dp)) {
+    Column {
         // Continuous Notification
         SwitchSetting(
             value = state.continuousPrayersNotificationEnabled,
