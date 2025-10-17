@@ -2,6 +2,7 @@ package bassamalim.hidaya.core.helpers
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -25,7 +26,12 @@ class BootWorker @AssistedInject constructor(
 
         if (prayersNotificationEnabled) {
             val serviceIntent = Intent(applicationContext, PrayersNotificationService::class.java)
-            ContextCompat.startForegroundService(applicationContext, serviceIntent)
+            try {
+                ContextCompat.startForegroundService(applicationContext, serviceIntent)
+            } catch (e: SecurityException) {
+                Log.w("BootWorker", "Cannot start foreground service from background: ${e.message}")
+                // Service will handle the ForegroundServiceStartNotAllowedException internally
+            }
         }
 
         return Result.success()

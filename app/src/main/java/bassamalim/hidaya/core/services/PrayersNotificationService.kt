@@ -100,7 +100,19 @@ class PrayersNotificationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "Service started")
-        startForeground(NOTIFICATION_ID, createNotification())
+        try {
+            startForeground(NOTIFICATION_ID, createNotification())
+        } catch (e: Exception) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                e.javaClass.simpleName == "ForegroundServiceStartNotAllowedException") {
+                Log.w(TAG, "Cannot start foreground service from background, stopping service", e)
+                stopSelf()
+                return START_NOT_STICKY
+            } else {
+                Log.e(TAG, "Failed to start foreground service", e)
+                throw e
+            }
+        }
         return START_STICKY
     }
 

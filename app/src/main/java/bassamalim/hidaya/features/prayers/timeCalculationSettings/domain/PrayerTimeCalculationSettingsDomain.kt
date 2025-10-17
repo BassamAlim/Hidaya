@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.prayers.timeCalculationSettings.domain
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
@@ -30,10 +31,15 @@ class PrayerTimeCalculationSettingsDomain @Inject constructor(
 
         if (enabled) {
             val serviceIntent = Intent(context, PrayersNotificationService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                context.startForegroundService(serviceIntent)
-            else
-                context.startService(serviceIntent)
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    context.startForegroundService(serviceIntent)
+                else
+                    context.startService(serviceIntent)
+            } catch (e: SecurityException) {
+                Log.w("PrayerSettings", "Cannot start foreground service from background: ${e.message}")
+                // Service will handle the ForegroundServiceStartNotAllowedException internally
+            }
         }
         else {
             context.stopService(Intent(context, PrayersNotificationService::class.java))
