@@ -37,7 +37,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -80,28 +79,39 @@ class AthanService : Service() {
         Log.i(Globals.TAG, "In athan service for $reminder")
         notificationId = reminder.id
 
-        runBlocking {
-            if (!isOnTime(time) || isAlreadyNotified(reminder)) {
-                Log.i(Globals.TAG, "notification receiver: not on time or already notified")
-                return@runBlocking
+        val basicNotification = createBasicNotification(reminder)
+        startForeground(notificationId, basicNotification)
+
+        scope.launch {
+            try {
+                if (!isOnTime(time) || isAlreadyNotified(reminder)) {
+                    Log.i(Globals.TAG, "notification receiver: not on time or already notified")
+                    stopSelf()
+                    return@launch
+                }
+
+                val fullNotification = createFullNotification(reminder)
+                val notificationManager = getSystemService(NotificationManager::class.java)
+                notificationManager.notify(notificationId, fullNotification)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    (getSystemService(AUDIO_SERVICE) as AudioManager)
+                        .requestAudioFocus(
+                            AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                                .setAudioAttributes(
+                                    AudioAttributes.Builder()
+                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                        .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                                        .build()
+                                ).build()
+                        )
+                }
+
+                play(reminder)
+            } catch (e: Exception) {
+                Log.e(Globals.TAG, "Error in AthanService", e)
+                stopSelf()
             }
-
-            startForeground(notificationId, build(reminder))
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                (getSystemService(AUDIO_SERVICE) as AudioManager)
-                    .requestAudioFocus(
-                        AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                            .setAudioAttributes(
-                                AudioAttributes.Builder()
-                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                                    .build()
-                            ).build()
-                    )
-            }
-
-            play(reminder)
         }
 
         return START_NOT_STICKY
@@ -119,7 +129,7 @@ class AthanService : Service() {
         return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
     }
 
-    private suspend fun build(reminder: Reminder): Notification {
+    private suspend fun createFullNotification(reminder: Reminder): Notification {
         return NotificationCompat.Builder(this, channelId).apply {
             setSmallIcon(R.drawable.small_launcher_foreground)
             setTicker(resources.getString(R.string.app_name))
@@ -193,6 +203,35 @@ class AthanService : Service() {
         }
     }
 
+    private fun createBasicNotification(reminder: Reminder): Notification {
+        return NotificationCompat.Builder(this, channelId).apply {
+            setSmallIcon(R.drawable.small_launcher_foreground)
+            setTicker(resources.getString(R.string.app_name))
+            setContentTitle(getBasicTitle(reminder))
+            setContentText(getBasicSubtitle(reminder))
+            priority = NotificationCompat.PRIORITY_MAX
+            setAutoCancel(true)
+            setOnlyAlertOnce(true)
+            setContentIntent(getStopAndOpenIntent())
+            setDeleteIntent(getStopIntent())
+        }.build()
+    }
+
+    private fun getBasicTitle(reminder: Reminder): String {
+        return if ((reminder == Reminder.Prayer.Dhuhr || reminder == Reminder.PrayerExtra.Dhuhr) &&
+            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
+            resources.getString(R.string.jumuah_title)
+        }
+        else resources.getStringArray(R.array.prayer_titles)[reminder.id-1]
+    }
+
+    private fun getBasicSubtitle(reminder: Reminder): String {
+        return if (reminder == Reminder.Prayer.Dhuhr &&
+            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+            resources.getString(R.string.jumuah_subtitle)
+        else resources.getStringArray(R.array.prayer_subtitles)[reminder.id-1]
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     private fun play(reminder: Reminder) {
         Log.i(Globals.TAG, "Playing Athan")
@@ -251,7 +290,7 @@ class AthanService : Service() {
         if (havePermission) {
             NotificationManagerCompat
                 .from(this)
-                .notify(notificationId, build(reminder))
+                .notify(notificationId, createFullNotification(reminder))
         }
     }
 
