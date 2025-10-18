@@ -165,13 +165,13 @@ private fun ActionButtonsSection(onHijriClick: () -> Unit, onGregorianClick: () 
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            EnhancedActionButton(
+            ActionButton(
                 text = stringResource(R.string.pick_hijri_date),
                 modifier = Modifier.weight(1f),
                 onClick = onHijriClick
             )
 
-            EnhancedActionButton(
+            ActionButton(
                 text = stringResource(R.string.pick_gregorian_date),
                 modifier = Modifier.weight(1f),
                 onClick = onGregorianClick
@@ -181,11 +181,7 @@ private fun ActionButtonsSection(onHijriClick: () -> Unit, onGregorianClick: () 
 }
 
 @Composable
-private fun EnhancedActionButton(
-    text: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
+private fun ActionButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         modifier = modifier.height(56.dp),
@@ -227,9 +223,6 @@ private fun ResultCard(title: String, date: Date) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
