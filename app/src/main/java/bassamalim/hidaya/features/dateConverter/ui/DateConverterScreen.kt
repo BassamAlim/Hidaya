@@ -150,17 +150,11 @@ private fun HeroSection() {
 @Composable
 private fun ActionButtonsSection(onHijriClick: () -> Unit, onGregorianClick: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        MyText(
-            text = stringResource(R.string.select_date),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(start = 4.dp)
-        )
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -184,7 +178,7 @@ private fun ActionButtonsSection(onHijriClick: () -> Unit, onGregorianClick: () 
 private fun ActionButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
         onClick = onClick,
-        modifier = modifier.height(56.dp),
+        modifier = modifier.height(64.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -197,7 +191,7 @@ private fun ActionButton(text: String, modifier: Modifier = Modifier, onClick: (
         ) {
             MyText(
                 text = text,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center
