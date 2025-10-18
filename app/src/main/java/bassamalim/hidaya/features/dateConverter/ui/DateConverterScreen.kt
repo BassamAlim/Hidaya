@@ -121,7 +121,7 @@ fun DateConverterScreen(viewModel: DateConverterViewModel) {
 private fun HeroSection() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Icon(
             imageVector = Icons.Default.CalendarMonth,
@@ -151,26 +151,27 @@ private fun HeroSection() {
 private fun ActionButtonsSection(onHijriClick: () -> Unit, onGregorianClick: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         MyText(
             text = stringResource(R.string.select_date),
-            fontSize = 18.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(start = 4.dp)
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            SimpleActionButton(
+            EnhancedActionButton(
                 text = stringResource(R.string.pick_hijri_date),
                 modifier = Modifier.weight(1f),
                 onClick = onHijriClick
             )
 
-            SimpleActionButton(
+            EnhancedActionButton(
                 text = stringResource(R.string.pick_gregorian_date),
                 modifier = Modifier.weight(1f),
                 onClick = onGregorianClick
@@ -180,7 +181,11 @@ private fun ActionButtonsSection(onHijriClick: () -> Unit, onGregorianClick: () 
 }
 
 @Composable
-private fun SimpleActionButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+private fun EnhancedActionButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     Card(
         onClick = onClick,
         modifier = modifier.height(56.dp),
