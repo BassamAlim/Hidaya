@@ -132,6 +132,10 @@
     <string name="year">السنة</string>
     <string name="month">الشهر</string>
     <string name="day">اليوم</string>
+    <string name="date_converter_title">تحويل التاريخ</string>
+    <string name="date_converter_subtitle">تحويل بين التقويم الهجري والميلادي</string>
+    <string name="select_date">اختر التاريخ</string>
+    <string name="no_date_placeholder">--</string>
     <string name="interpretation">التفسير</string>
     <string name="reference">المرجع</string>
     <string name="choose_books">اختر الكتب</string>
