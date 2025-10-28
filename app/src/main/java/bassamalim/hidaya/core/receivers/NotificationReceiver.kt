@@ -151,8 +151,18 @@ class NotificationReceiver : BroadcastReceiver() {
             putExtra("time", time)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            ctx.startForegroundService(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val havePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.checkSelfPermission(
+                    ctx,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            } else true
+
+            if (havePermission) {
+                ctx.startForegroundService(intent)
+            }
+        }
         else
             ctx.startService(intent)
 
