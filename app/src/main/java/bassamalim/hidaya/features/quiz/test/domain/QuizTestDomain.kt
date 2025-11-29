@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuizRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuizFullQuestion
+import bassamalim.hidaya.core.utils.LangUtils
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class QuizTestDomain @Inject constructor(
         return score
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 

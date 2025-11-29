@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
@@ -17,7 +16,7 @@ import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.helpers.Searcher
 import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.ReciterSura
-import kotlinx.coroutines.flow.first
+import bassamalim.hidaya.core.utils.LangUtils
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -26,7 +25,6 @@ class RecitationSurasMenuDomain @Inject constructor(
     app: Application,
     private val recitationsRepository: RecitationsRepository,
     private val quranRepository: QuranRepository,
-    private val appSettingsRepository: AppSettingsRepository,
     private val analyticsRepository: AnalyticsRepository
 ) {
 
@@ -108,7 +106,7 @@ class RecitationSurasMenuDomain @Inject constructor(
         downloadReceiver.unregister()
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     suspend fun getDecoratedSuraNames(language: Language) =
         quranRepository.getDecoratedSuraNames(language)

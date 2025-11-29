@@ -14,7 +14,6 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
 import android.media.MediaPlayer
-import android.net.Uri
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.WifiLock
 import android.os.Build
@@ -28,6 +27,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import bassamalim.hidaya.R
@@ -37,7 +37,6 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.ui.theme.getThemeColor
-import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -49,7 +48,6 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 @AndroidEntryPoint
 class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
@@ -113,11 +111,6 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     override fun onCreate() {
         super.onCreate()
         CoroutineScope(Dispatchers.Main).launch {
-            ActivityUtils.onActivityCreateSetLocale(
-                context = applicationContext,
-                language = appSettingsRepository.getLanguage().first()
-            )
-
             initSession()
             initPlayer()
             setActions()

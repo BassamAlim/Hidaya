@@ -1,15 +1,14 @@
 package bassamalim.hidaya.features.books.booksMenuFilter.domain
 
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.utils.LangUtils
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class BooksMenuFilterDomain @Inject constructor(
-    private val booksRepository: BooksRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val booksRepository: BooksRepository
 ) {
 
     suspend fun getOptions(language: Language) = booksRepository.getSearchSelections().map {
@@ -25,6 +24,6 @@ class BooksMenuFilterDomain @Inject constructor(
         booksRepository.setSearchSelections(options)
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
 }

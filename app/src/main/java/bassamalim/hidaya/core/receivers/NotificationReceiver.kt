@@ -31,7 +31,6 @@ import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.getThemeColor
-import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -62,12 +61,6 @@ class NotificationReceiver : BroadcastReceiver() {
         notificationId = reminder.id
 
         GlobalScope.launch {
-            ActivityUtils.configure(
-                context = context,
-                applicationContext = context.applicationContext,
-                language = appSettingsRepository.getLanguage().first()
-            )
-
             if (!isOnTime(time) || isAlreadyNotified(reminder)) {
                 Log.i(Globals.TAG, "notification receiver: not on time or already notified")
                 return@launch

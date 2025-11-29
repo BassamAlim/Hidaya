@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AppSettingsPreferences(
-    val language: Language = Language.ARABIC,
     val numeralsLanguage: Language = Language.ARABIC,
     val theme: Theme = Theme.LIGHT, // TODO add system theme
     val timeFormat: TimeFormat = TimeFormat.TWELVE,

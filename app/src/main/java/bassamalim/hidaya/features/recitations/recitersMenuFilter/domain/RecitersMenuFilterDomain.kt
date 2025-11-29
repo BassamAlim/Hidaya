@@ -1,14 +1,13 @@
 package bassamalim.hidaya.features.recitations.recitersMenuFilter.domain
 
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.utils.LangUtils
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class RecitersMenuFilterDomain @Inject constructor(
-    private val recitationsRepository: RecitationsRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val recitationsRepository: RecitationsRepository
 ) {
 
     suspend fun getOptions(language: Language) =
@@ -18,6 +17,6 @@ class RecitersMenuFilterDomain @Inject constructor(
         recitationsRepository.setNarrationSelections(options)
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
 }

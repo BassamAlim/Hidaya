@@ -58,11 +58,11 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.getLanguage(),
         domain.getNumeralsLanguage(),
         domain.getLocation(),
-        domain.getWerdPage()
-    ) { state, language, numeralsLanguage, location, werdPage ->
+        domain.getWerdPage(),
+        domain.isWerdDone()
+    ) { state, numeralsLanguage, location, werdPage, isWerdDone ->
         this.werdPage = werdPage
 
         state.copy(
@@ -70,13 +70,9 @@ class HomeViewModel @Inject constructor(
                 string = werdPage.toString(),
                 numeralsLanguage = numeralsLanguage
             ),
-            language = language,
             numeralsLanguage = numeralsLanguage,
+            isWerdDone = isWerdDone
         )
-    }.combine(
-        domain.isWerdDone()
-    ) { state, isWerdDone ->
-        state.copy(isWerdDone = isWerdDone)
     }.combine(
         domain.getLocalRecord()
     ) { state, localRecord ->

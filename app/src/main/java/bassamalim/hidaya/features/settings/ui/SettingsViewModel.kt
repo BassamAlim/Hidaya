@@ -9,6 +9,7 @@ import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.models.TimeOfDay
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.core.utils.LangUtils.translateTimeNums
 import bassamalim.hidaya.features.settings.domain.SettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,22 +35,24 @@ class SettingsViewModel @Inject constructor(
     var timePickerInitialMinute: Int = 0
         private set
 
-    private val _uiState = MutableStateFlow(SettingsUiState())
+    private val _uiState = MutableStateFlow(
+        SettingsUiState(
+            language = LangUtils.getAppLanguage()
+        )
+    )
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.getLanguage(),
         domain.getNumeralsLanguage(),
         domain.getTimeFormat(),
-        domain.getTheme()
-    ) { state, language, numeralsLanguage, timeFormat, theme ->
+        domain.getTheme(),
+        domain.getDevotionReminderEnabledMap()
+    ) { state, numeralsLanguage, timeFormat, theme, devotionReminderEnabledMap ->
         state.copy(
-            language = language,
             numeralsLanguage = numeralsLanguage,
             timeFormat = timeFormat,
-            theme = theme
+            theme = theme,
+            devotionalReminderEnabledStatuses = devotionReminderEnabledMap
         )
-    }.combine(domain.getDevotionReminderEnabledMap()) { state, devotionReminderEnabledMap ->
-        state.copy(devotionalReminderEnabledStatuses = devotionReminderEnabledMap)
     }.combine(domain.getDevotionReminderTimeOfDayMap()) { state, devotionReminderTimeOfDayMap ->
         state.copy(
             devotionalReminderTimes = devotionReminderTimeOfDayMap,
@@ -71,7 +74,10 @@ class SettingsViewModel @Inject constructor(
     fun onLanguageChange(newLanguage: Language, activity: Activity) {
         viewModelScope.launch {
             domain.setLanguage(newLanguage)
-            domain.restartActivity(activity)
+            _uiState.update { it.copy(
+                language = newLanguage
+            )}
+            domain.recreateActivity(activity)
         }
     }
 

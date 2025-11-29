@@ -12,16 +12,15 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -56,6 +55,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.getColorScheme
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.core.utils.OsUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
@@ -70,7 +70,7 @@ import java.util.Calendar
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class Activity : ComponentActivity() {
+class Activity : AppCompatActivity() {
 
     companion object {
         private const val FIREBASE_FETCH_INTERVAL = 3600 * 6L // 6 hours
@@ -125,7 +125,6 @@ class Activity : ComponentActivity() {
         if (isLaunch) testDb()
 
         initializeUserSettings()
-        configureActivity()
 
         if (isLaunch) handleStartupFlow()
         else launchApp()
@@ -139,15 +138,7 @@ class Activity : ComponentActivity() {
 
     private suspend fun initializeUserSettings() {
         shouldOnboard = !appStateRepository.isOnboardingCompleted().first()
-        language = appSettingsRepository.getLanguage().first()
-    }
-
-    private fun configureActivity() {
-        ActivityUtils.configure(
-            context = this@Activity,
-            applicationContext = applicationContext,
-            language = language
-        )
+        language = LangUtils.getAppLanguage()
     }
 
     private suspend fun handleStartupFlow() {
@@ -371,11 +362,6 @@ class Activity : ComponentActivity() {
             )
 
             applyTheme(themeState)
-
-            ActivityUtils.onActivityCreateSetLocale(
-                context = LocalContext.current,
-                language = language
-            )
 
             AppTheme(theme = themeState, direction = getDirection(language)) {
                 Navigation(

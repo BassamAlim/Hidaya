@@ -9,6 +9,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import bassamalim.hidaya.features.prayers.notificationSettings.ui.PrayerNotificationSettings
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +29,7 @@ class PrayersBoardDomain @Inject constructor(
 
     fun getLocation() = locationRepository.getLocation()
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
@@ -80,7 +81,7 @@ class PrayersBoardDomain @Inject constructor(
 
         return PrayerTimeUtils.formatPrayerTimes(
             prayerTimes = prayerTimes,
-            language = appSettingsRepository.getLanguage().first(),
+            language = getLanguage(),
             timeFormat = appSettingsRepository.getTimeFormat().first(),
             numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
         )

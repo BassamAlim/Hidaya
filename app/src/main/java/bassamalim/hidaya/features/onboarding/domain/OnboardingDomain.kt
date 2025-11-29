@@ -6,7 +6,7 @@ import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
-import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.LangUtils
 import javax.inject.Inject
 
 class OnboardingDomain @Inject constructor(
@@ -14,10 +14,10 @@ class OnboardingDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     fun setLanguage(language: Language) {
-        appSettingsRepository.setLanguage(language)
+        LangUtils.setAppLanguage(language)
     }
 
     fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
@@ -42,8 +42,8 @@ class OnboardingDomain @Inject constructor(
         appStateRepository.setOnboardingCompleted(true)
     }
 
-    fun restartActivity(activity: Activity) {
-        ActivityUtils.restartActivity(activity)
+    fun recreateActivity(activity: Activity) {
+        activity.recreate()
     }
 
 }

@@ -22,6 +22,7 @@ import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.receivers.NotificationReceiver
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.core.utils.LangUtils.translateTimeNums
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -135,7 +136,7 @@ class PrayersNotificationService : Service() {
     }
 
     private suspend fun buildPrayerData(location: Location): PrayerData {
-        val language = appSettingsRepository.getLanguage().first()
+        val language = LangUtils.getAppLanguage()
         val numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first()
 
         val times = getPrayerTimeMap(location)
@@ -251,7 +252,7 @@ class PrayersNotificationService : Service() {
 
     private suspend fun runCountdown(prayerData: PrayerData) {
         val prayerNames = prayersRepository.getPrayerNames()
-        val language = appSettingsRepository.getLanguage().first()
+        val language = LangUtils.getAppLanguage()
         val numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first()
 
         val nextPrayerTime =

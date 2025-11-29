@@ -12,8 +12,8 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
@@ -23,11 +23,9 @@ import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarm
-import bassamalim.hidaya.core.Globals
-import bassamalim.hidaya.core.widgets.PrayersWidget
-import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
+import bassamalim.hidaya.core.widgets.PrayersWidget
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
@@ -42,7 +40,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DailyUpdateReceiver : BroadcastReceiver() {
 
-    @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var appStateRepository: AppStateRepository
     @Inject lateinit var prayersRepository: PrayersRepository
     @Inject lateinit var quranRepository: QuranRepository
@@ -59,12 +56,6 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
         testDb(context)
         GlobalScope.launch {
-            ActivityUtils.configure(
-                context = context,
-                applicationContext = context.applicationContext,
-                language = appSettingsRepository.getLanguage().first(),
-            )
-
             val now = Calendar.getInstance()
             if ((intent.action == "daily" && notUpdatedToday(now)) || intent.action == "boot") {
                 val location = locationRepository.getLocation().first() ?: return@launch

@@ -20,6 +20,7 @@ import bassamalim.hidaya.features.books.bookChaptersMenu.domain.BookChaptersDoma
 import bassamalim.hidaya.features.books.bookReader.domain.BookReaderDomain
 import bassamalim.hidaya.features.books.bookSearcher.domain.BookSearcherDomain
 import bassamalim.hidaya.features.books.booksMenu.domain.BooksMenuDomain
+import bassamalim.hidaya.features.books.booksMenuFilter.domain.BooksMenuFilterDomain
 import bassamalim.hidaya.features.dateConverter.domain.DateConverterDomain
 import bassamalim.hidaya.features.dateEditor.domain.DateEditorDomain
 import bassamalim.hidaya.features.hijriDatePicker.domain.HijriDatePickerDomain
@@ -41,6 +42,7 @@ import bassamalim.hidaya.features.quran.surasMenu.domain.QuranSurasDomain
 import bassamalim.hidaya.features.radio.domain.RadioDomain
 import bassamalim.hidaya.features.recitations.player.domain.RecitationPlayerDomain
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.RecitationRecitersMenuDomain
+import bassamalim.hidaya.features.recitations.recitersMenuFilter.domain.RecitersMenuFilterDomain
 import bassamalim.hidaya.features.recitations.surasMenu.domain.RecitationSurasMenuDomain
 import bassamalim.hidaya.features.remembrances.reader.domain.RemembranceReaderDomain
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.domain.RemembrancesMenuDomain
@@ -64,29 +66,26 @@ object DomainModule {
     ) = AboutDomain(appStateRepository, booksRepository, prayersRepository, quranRepository)
 
     @Provides @Singleton
-    fun provideBookChaptersDomain(
-        booksRepository: BooksRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = BookChaptersDomain(booksRepository, appSettingsRepository)
+    fun provideBookChaptersDomain(booksRepository: BooksRepository) =
+        BookChaptersDomain(booksRepository)
 
     @Provides @Singleton
-    fun provideBookReaderDomain(
-        booksRepository: BooksRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = BookReaderDomain(booksRepository, appSettingsRepository)
+    fun provideBooksMenuFilterDomain(booksRepository: BooksRepository) =
+        BooksMenuFilterDomain(booksRepository)
 
     @Provides @Singleton
-    fun provideBookSearcherDomain(
-        booksRepository: BooksRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = BookSearcherDomain(booksRepository, appSettingsRepository)
+    fun provideBookReaderDomain(booksRepository: BooksRepository) =
+        BookReaderDomain(booksRepository)
+
+    @Provides @Singleton
+    fun provideBookSearcherDomain(booksRepository: BooksRepository) =
+        BookSearcherDomain(booksRepository)
 
     @Provides @Singleton
     fun provideBooksMenuDomain(
         booksRepository: BooksRepository,
-        appSettingsRepository: AppSettingsRepository,
         analyticsRepository: AnalyticsRepository
-    ) = BooksMenuDomain(booksRepository, appSettingsRepository, analyticsRepository)
+    ) = BooksMenuDomain(booksRepository, analyticsRepository)
 
     @Provides @Singleton
     fun provideDateConverterDomain(
@@ -95,9 +94,8 @@ object DomainModule {
     ) = DateConverterDomain(appSettingsRepository, appStateRepository)
 
     @Provides @Singleton
-    fun provideDateEditorDomain(
-        appSettingsRepository: AppSettingsRepository
-    ) = DateEditorDomain(appSettingsRepository)
+    fun provideDateEditorDomain(appSettingsRepository: AppSettingsRepository) =
+        DateEditorDomain(appSettingsRepository)
 
     @Provides @Singleton
     fun provideHijriDatePickerDomain(
@@ -132,17 +130,14 @@ object DomainModule {
     ) = LeaderboardDomain(app, userRepository, appSettingsRepository)
 
     @Provides @Singleton
-    fun provideLocationPickerDomain(
-        locationRepository: LocationRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = LocationPickerDomain(locationRepository, appSettingsRepository)
+    fun provideLocationPickerDomain(locationRepository: LocationRepository) =
+        LocationPickerDomain(locationRepository)
 
     @Provides @Singleton
     fun provideLocatorDomain(
         app: Application,
-        locationRepository: LocationRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = LocatorDomain(app, locationRepository, appSettingsRepository)
+        locationRepository: LocationRepository
+    ) = LocatorDomain(app, locationRepository)
 
     @Provides @Singleton
     fun provideMainDomain(
@@ -247,37 +242,27 @@ object DomainModule {
     fun provideRecitationPlayerDomain(
         app: Application,
         recitationsRepository: RecitationsRepository,
-        quranRepository: QuranRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = RecitationPlayerDomain(app, recitationsRepository, quranRepository, appSettingsRepository)
+        quranRepository: QuranRepository
+    ) = RecitationPlayerDomain(app, recitationsRepository, quranRepository)
 
     @Provides @Singleton
     fun provideRecitationRecitersMenuDomain(
         app: Application,
         recitationsRepository: RecitationsRepository,
-        quranRepository: QuranRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = RecitationRecitersMenuDomain(
-        app,
-        recitationsRepository,
-        quranRepository,
-        appSettingsRepository
-    )
+        quranRepository: QuranRepository
+    ) = RecitationRecitersMenuDomain(app, recitationsRepository, quranRepository)
+
+    @Provides @Singleton
+    fun provideRecitationRecitersMenuFilterDomain(recitationsRepository: RecitationsRepository) =
+        RecitersMenuFilterDomain(recitationsRepository)
 
     @Provides @Singleton
     fun provideRecitationSurasMenuDomain(
         app: Application,
         recitationsRepository: RecitationsRepository,
         quranRepository: QuranRepository,
-        appSettingsRepository: AppSettingsRepository,
         analyticsRepository: AnalyticsRepository
-    ) = RecitationSurasMenuDomain(
-        app,
-        recitationsRepository,
-        quranRepository,
-        appSettingsRepository,
-        analyticsRepository
-    )
+    ) = RecitationSurasMenuDomain(app, recitationsRepository, quranRepository, analyticsRepository)
 
     @Provides @Singleton
     fun provideRemembranceReaderDomain(
@@ -288,9 +273,8 @@ object DomainModule {
     @Provides @Singleton
     fun provideRemembrancesMenuDomain(
         remembrancesRepository: RemembrancesRepository,
-        appSettingsRepository: AppSettingsRepository,
         analyticsRepository: AnalyticsRepository
-    ) = RemembrancesMenuDomain(remembrancesRepository, appSettingsRepository, analyticsRepository)
+    ) = RemembrancesMenuDomain(remembrancesRepository, analyticsRepository)
 
     @Provides @Singleton
     fun provideSettingsDomain(
@@ -310,8 +294,7 @@ object DomainModule {
     @Provides @Singleton
     fun provideTvDomain(
         liveContentRepository: LiveContentRepository,
-        appSettingsRepository: AppSettingsRepository,
         analyticsRepository: AnalyticsRepository
-    ) = TvDomain(liveContentRepository, appSettingsRepository, analyticsRepository)
+    ) = TvDomain(liveContentRepository, analyticsRepository)
 
 }

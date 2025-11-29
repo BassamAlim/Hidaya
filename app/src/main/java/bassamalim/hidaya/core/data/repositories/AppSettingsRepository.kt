@@ -14,14 +14,6 @@ class AppSettingsRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope
 ) {
 
-    fun getLanguage() = appSettingsPreferencesDataSource.getLanguage()
-
-    fun setLanguage(language: Language) {
-        scope.launch {
-            appSettingsPreferencesDataSource.updateLanguage(language)
-        }
-    }
-
     fun getNumeralsLanguage() = appSettingsPreferencesDataSource.getNumeralsLanguage()
 
     fun setNumeralsLanguage(numeralsLanguage: Language) {

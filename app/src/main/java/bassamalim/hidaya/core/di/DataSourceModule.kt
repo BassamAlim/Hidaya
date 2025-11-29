@@ -18,14 +18,6 @@ import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.QuranPref
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.RecitationsPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.RemembrancePreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPreferencesDataSource
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.AppSettingsPreferencesMigration
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.AppStatePreferencesMigration
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.BooksPreferencesMigration
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.PrayersPreferencesMigration
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.QuranPreferencesMigration
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.RecitationsPreferencesMigration
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.RemembrancesPreferencesMigration
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.UserPreferencesMigration
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.AppSettingsPreferences
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.AppStatePreferences
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.BooksPreferences
@@ -73,9 +65,10 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { AppSettingsPreferences() }
                 ),
-                migrations = listOf(AppSettingsPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("app_settings_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.APP_SETTINGS_PREFERENCES_NAME)
+                }
             )
         )
 
@@ -87,7 +80,6 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { AppStatePreferences() }
                 ),
-                migrations = listOf(AppStatePreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = {
                     appContext.dataStoreFile(PreferencesFileNames.APP_STATE_PREFERENCES_NAME)
@@ -103,7 +95,6 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { BooksPreferences() }
                 ),
-                migrations = listOf(BooksPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = {
                     appContext.dataStoreFile(PreferencesFileNames.BOOKS_PREFERENCES_NAME)
@@ -134,7 +125,6 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { PrayersPreferences() }
                 ),
-                migrations = listOf(PrayersPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = {
                     appContext.dataStoreFile(PreferencesFileNames.PRAYERS_PREFERENCES_NAME)
@@ -150,7 +140,6 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { QuranPreferences() }
                 ),
-                migrations = listOf(QuranPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = {
                     appContext.dataStoreFile(PreferencesFileNames.QURAN_PREFERENCES_NAME)
@@ -166,7 +155,6 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { RecitationsPreferences() }
                 ),
-                migrations = listOf(RecitationsPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = {
                     appContext.dataStoreFile(PreferencesFileNames.RECITATIONS_PREFERENCES_NAME)
@@ -182,7 +170,6 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { RemembrancesPreferences() }
                 ),
-                migrations = listOf(RemembrancesPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = {
                     appContext.dataStoreFile(PreferencesFileNames.REMEMBRANCES_PREFERENCES_NAME)
@@ -198,7 +185,6 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { UserPreferences() }
                 ),
-                migrations = listOf(UserPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = {
                     appContext.dataStoreFile(PreferencesFileNames.USER_PREFERENCES_NAME)

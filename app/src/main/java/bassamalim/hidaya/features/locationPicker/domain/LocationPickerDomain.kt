@@ -1,16 +1,14 @@
 package bassamalim.hidaya.features.locationPicker.domain
 
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.Searcher
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.locationPicker.ui.LocationPickerItem
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class LocationPickerDomain @Inject constructor(
-    private val locationRepository: LocationRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val locationRepository: LocationRepository
 ) {
 
     private val searcher = Searcher<LocationPickerItem>()
@@ -18,7 +16,7 @@ class LocationPickerDomain @Inject constructor(
 
     fun setCountryId(id: Int) { countryId = id }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     suspend fun getCountries(language: Language) =
         locationRepository.getCountries(language = language)

@@ -1,14 +1,12 @@
 package bassamalim.hidaya.features.books.bookReader.domain
 
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.Language
-import kotlinx.coroutines.flow.first
+import bassamalim.hidaya.core.utils.LangUtils
 import javax.inject.Inject
 
 class BookReaderDomain @Inject constructor(
-    private val booksRepository: BooksRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val booksRepository: BooksRepository
 ) {
 
     suspend fun getBookTitle(bookId: Int, language: Language) =
@@ -22,6 +20,6 @@ class BookReaderDomain @Inject constructor(
         booksRepository.setTextSize(textSize)
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
 }

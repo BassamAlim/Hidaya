@@ -24,7 +24,7 @@ import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.models.Location
-import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
@@ -40,12 +40,6 @@ class PrayersWidget(
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val prayerTimeStrings = withContext(dispatcher) {
-            ActivityUtils.configure(
-                context = context,
-                applicationContext = context.applicationContext,
-                language = appSettingsRepository.getLanguage().first()
-            )
-
             getPrayerTimeStringMap(context)
         }
 
@@ -109,7 +103,7 @@ class PrayersWidget(
         )
         val prayerTimeStrings = PrayerTimeUtils.formatPrayerTimes(
             prayerTimes = prayerTimes,
-            language = appSettingsRepository.getLanguage().first(),
+            language = LangUtils.getAppLanguage(),
             numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
             timeFormat = appSettingsRepository.getTimeFormat().first()
         )

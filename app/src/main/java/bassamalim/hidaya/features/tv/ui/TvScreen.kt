@@ -16,29 +16,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Globals
-import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.ParentColumn
-import bassamalim.hidaya.core.utils.ActivityUtils
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -47,15 +42,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TvScreen(viewModel: TvViewModel) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-
-    if (state.isLoading) return
 
     MyScaffold(title = stringResource(R.string.tv_channels)) { padding ->
         ParentColumn(Modifier.padding(padding)) {
             YoutubeScreen(
-                language = viewModel.language,
                 onInitializationSuccess = viewModel::onInitializationSuccess,
                 snackbarHostState = snackbarHostState
             )
@@ -88,19 +79,11 @@ fun TvScreen(viewModel: TvViewModel) {
 
 @Composable
 fun YoutubeScreen(
-    language: Language,
     onInitializationSuccess: (YouTubePlayer) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val playbackFailedMessage = stringResource(R.string.playback_failed)
-
-    // a fix because locale changes when displaying YouTubePlayerView for some reason
-    DisposableEffect(Unit) {
-        ActivityUtils.onActivityCreateSetLocale(context = context, language = language)
-        onDispose {}
-    }
 
     AndroidView(
         factory = {

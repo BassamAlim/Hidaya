@@ -12,6 +12,7 @@ import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.core.utils.OsUtils.getDeviceId
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
@@ -43,7 +44,7 @@ class HomeDomain @Inject constructor(
         PrayerTimeUtils.formatPrayerTimes(
             prayerTimes = getPrayerTimeMap(location),
             timeFormat = appSettingsRepository.getTimeFormat().first(),
-            language = appSettingsRepository.getLanguage().first(),
+            language = getLanguage(),
             numeralsLanguage = getNumeralsLanguage().first()
         )
 
@@ -58,7 +59,7 @@ class HomeDomain @Inject constructor(
     suspend fun getStrYesterdayIshaa(location: Location) =
         PrayerTimeUtils.formatPrayerTime(
             time = getYesterdayIshaa(location),
-            language = appSettingsRepository.getLanguage().first(),
+            language = getLanguage(),
             numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
             timeFormat = appSettingsRepository.getTimeFormat().first()
         )
@@ -74,7 +75,7 @@ class HomeDomain @Inject constructor(
     suspend fun getStrTomorrowFajr(location: Location) =
         PrayerTimeUtils.formatPrayerTime(
             time = getTomorrowFajr(location),
-            language = appSettingsRepository.getLanguage().first(),
+            language = getLanguage(),
             numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
             timeFormat = appSettingsRepository.getTimeFormat().first()
         )
@@ -97,7 +98,7 @@ class HomeDomain @Inject constructor(
         return null
     }
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 

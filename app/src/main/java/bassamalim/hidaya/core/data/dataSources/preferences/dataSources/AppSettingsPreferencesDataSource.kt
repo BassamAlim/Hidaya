@@ -20,13 +20,6 @@ class AppSettingsPreferencesDataSource(
             else throw exception
         }
 
-    fun getLanguage() = flow.map { it.language }
-    suspend fun updateLanguage(language: Language) {
-        dataStore.updateData { preferences ->
-            preferences.copy(language = language)
-        }
-    }
-
     fun getNumeralsLanguage() = flow.map { it.numeralsLanguage }
     suspend fun updateNumeralsLanguage(numeralsLanguage: Language) {
         dataStore.updateData { preferences ->

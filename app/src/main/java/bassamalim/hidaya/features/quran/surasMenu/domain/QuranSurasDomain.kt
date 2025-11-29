@@ -11,6 +11,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.Searcher
 import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.Sura
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.surasMenu.ui.SearchMatch
 import bassamalim.hidaya.features.quran.surasMenu.ui.SuraMatch
@@ -28,7 +29,7 @@ class QuranSurasDomain @Inject constructor(
     private val suraSearcher = Searcher<Sura>()
     private val verseSearcher = Searcher<Verse>()
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 

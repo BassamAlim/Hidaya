@@ -237,6 +237,4 @@ class BooksRepository @Inject constructor(
         FileUtils.deleteFile(context = app, path = "${prefix}$bookId.json")
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
-
 }

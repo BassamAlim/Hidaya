@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.settings.domain
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatDelegate
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
@@ -12,7 +13,7 @@ import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.models.TimeOfDay
-import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
@@ -26,10 +27,11 @@ class SettingsDomain @Inject constructor(
     private val alarm: Alarm
 ) {
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     fun setLanguage(language: Language) {
-        appSettingsRepository.setLanguage(language)
+        val appLocale = LangUtils.languageToLocaleList(language)
+        AppCompatDelegate.setApplicationLocales(appLocale)
     }
 
     fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
@@ -62,8 +64,8 @@ class SettingsDomain @Inject constructor(
         prayersRepository.setAthanAudioId(athanAudioId)
     }
 
-    fun restartActivity(activity: Activity) {
-        ActivityUtils.restartActivity(activity)
+    fun recreateActivity(activity: Activity) {
+        activity.recreate()
     }
 
     fun getLocation() = locationRepository.getLocation()

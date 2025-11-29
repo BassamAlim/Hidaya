@@ -8,7 +8,6 @@ import android.location.Location
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -18,8 +17,7 @@ import javax.inject.Inject
 
 class LocatorDomain @Inject constructor(
     private val app: Application,
-    private val locationRepository: LocationRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val locationRepository: LocationRepository
 ) {
 
     private lateinit var locationRequestLauncher:
@@ -102,8 +100,6 @@ class LocatorDomain @Inject constructor(
                     app, Manifest.permission.ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
     }
-
-    fun getLanguage() = appSettingsRepository.getLanguage()
 
     fun setShowBackgroundLocationPermissionNeeded(showToast: () -> Unit) {
         this.showBackgroundLocationPermissionNeeded = showToast

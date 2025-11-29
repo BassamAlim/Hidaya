@@ -14,7 +14,6 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
 import android.media.MediaPlayer
-import android.net.Uri
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.WifiLock
 import android.os.Build
@@ -30,6 +29,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
@@ -45,7 +45,7 @@ import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.ui.theme.getThemeColor
-import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,7 +60,6 @@ import java.io.IOException
 import java.util.Locale
 import java.util.Random
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 @AndroidEntryPoint
 @UnstableApi
@@ -156,12 +155,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         super.onCreate()
 
         CoroutineScope(Dispatchers.Main).launch {
-            val language = appSettingsRepository.getLanguage().first()
-            ActivityUtils.onActivityCreateSetLocale(
-                context = applicationContext,
-                language = language
-            )
-
+            val language = LangUtils.getAppLanguage()
             getSuraNames(language)
 
             initSession()

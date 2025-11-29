@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.remembrances.reader.domain
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.utils.LangUtils
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
@@ -22,7 +23,7 @@ class RemembranceReaderDomain @Inject constructor(
         remembrancesRepository.setTextSize(textSize)
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 

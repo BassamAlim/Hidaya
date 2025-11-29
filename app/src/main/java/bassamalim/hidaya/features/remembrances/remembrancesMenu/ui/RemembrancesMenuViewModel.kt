@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -51,7 +50,7 @@ class RemembrancesMenuViewModel @Inject constructor(
 
     fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage().first()
+            language = domain.getLanguage()
 
             _uiState.update { it.copy(
                 isLoading = false,

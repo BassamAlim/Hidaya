@@ -31,7 +31,6 @@ import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.ui.theme.getThemeColor
-import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -57,12 +56,6 @@ class AthanService : Service() {
         createNotificationChannel()
 
         scope.launch {
-            ActivityUtils.configure(
-                context = application,
-                applicationContext = applicationContext,
-                language = appSettingsRepository.getLanguage().first(),
-            )
-
             athanAudio = getAthanAudio()
         }
     }

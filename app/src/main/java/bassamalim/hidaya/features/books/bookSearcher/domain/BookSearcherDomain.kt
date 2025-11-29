@@ -3,19 +3,17 @@ package bassamalim.hidaya.features.books.bookSearcher.domain
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.Searcher
 import bassamalim.hidaya.core.models.BookContent
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherMatch
-import kotlinx.coroutines.flow.first
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 class BookSearcherDomain @Inject constructor(
-    private val booksRepository: BooksRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val booksRepository: BooksRepository
 ) {
 
     private val searcher = Searcher<BookContent.Chapter.Door>()
@@ -84,7 +82,7 @@ class BookSearcherDomain @Inject constructor(
         return matches
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     fun getBookSelections() = booksRepository.getSearchSelections()
 

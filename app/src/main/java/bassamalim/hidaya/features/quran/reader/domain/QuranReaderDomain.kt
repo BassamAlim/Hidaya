@@ -23,6 +23,7 @@ import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.Verse
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.quran.reader.versePlayer.VersePlayerService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -205,7 +206,7 @@ class QuranReaderDomain @Inject constructor(
         mediaBrowser?.disconnect()
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 

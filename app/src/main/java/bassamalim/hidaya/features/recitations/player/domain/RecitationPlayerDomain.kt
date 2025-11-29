@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -19,28 +18,26 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.Globals
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.utils.FileUtils
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
-import kotlinx.coroutines.flow.first
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 class RecitationPlayerDomain @Inject constructor(
     private val app: Application,
     private val recitationsRepository: RecitationsRepository,
-    private val quranRepository: QuranRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val quranRepository: QuranRepository
 ) {
 
     private lateinit var activity: Activity
@@ -170,7 +167,7 @@ class RecitationPlayerDomain @Inject constructor(
         this.path = "${recitationsRepository.prefix}${reciterId}/$narrationId/"
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     suspend fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 

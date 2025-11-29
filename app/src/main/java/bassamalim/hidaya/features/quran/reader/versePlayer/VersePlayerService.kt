@@ -40,7 +40,7 @@ import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.ui.theme.getThemeColor
-import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.LangUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -132,17 +132,10 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         super.onCreate()
 
         runBlocking {
-            val language = appSettingsRepository.getLanguage().first()
-
-            ActivityUtils.onActivityCreateSetLocale(
-                context = applicationContext,
-                language = language
-            )
-
             allVerses = quranRepository.getAllVerses()
             allRecitations = recitationsRepository.getAllVerseRecitations()
             reciterNames = recitationsRepository.getVerseReciterNames()
-            suarNames = quranRepository.getDecoratedSuraNames(language)
+            suarNames = quranRepository.getDecoratedSuraNames(language = LangUtils.getAppLanguage())
 
             initSession()
             initAPM()

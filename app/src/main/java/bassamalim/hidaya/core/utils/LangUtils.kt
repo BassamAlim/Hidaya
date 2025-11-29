@@ -1,5 +1,7 @@
 package bassamalim.hidaya.core.utils
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import bassamalim.hidaya.core.enums.Language
 import java.util.Locale
 
@@ -7,6 +9,17 @@ object LangUtils {
 
     private val enNums = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
     private val arNums = arrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
+
+    fun getAppLanguage(): Language {
+        val appLocale = AppCompatDelegate.getApplicationLocales()
+        val languageTag = appLocale.toLanguageTags()
+        return getTagLanguage(languageTag)
+    }
+
+    fun setAppLanguage(language: Language) {
+        val appLocale = languageToLocaleList(language)
+        AppCompatDelegate.setApplicationLocales(appLocale)
+    }
 
     fun translateNums(string: String, numeralsLanguage: Language) : String {
         if (string.isEmpty()) return string
@@ -106,13 +119,27 @@ object LangUtils {
         return str
     }
 
-    fun getLocale(language: Language): Locale {
-        return Locale(
-            when (language) {
-                Language.ARABIC -> "ar"
-                Language.ENGLISH -> "en"
-            }
-        )
+    fun languageToLocale(language: Language): Locale {
+        val languageTag = getLanguageTag(language)
+        return Locale.forLanguageTag(languageTag)
     }
+
+    fun languageToLocaleList(language: Language): LocaleListCompat {
+        val languageTag = getLanguageTag(language)
+        return LocaleListCompat.forLanguageTags(languageTag)
+    }
+
+    private fun getLanguageTag(language: Language) =
+        when (language) {
+            Language.ARABIC -> "ar"
+            Language.ENGLISH -> "en"
+        }
+
+    private fun getTagLanguage(languageTag: String) =
+        when (languageTag) {
+            "ar" -> Language.ARABIC
+            "en" -> Language.ENGLISH
+            else -> Language.ARABIC
+        }
 
 }

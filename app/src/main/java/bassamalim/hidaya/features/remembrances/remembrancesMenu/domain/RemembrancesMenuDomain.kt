@@ -1,26 +1,25 @@
 package bassamalim.hidaya.features.remembrances.remembrancesMenu.domain
 
 import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
-import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.helpers.Searcher
 import bassamalim.hidaya.core.models.AnalyticsEvent
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesItem
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RemembrancesMenuDomain @Inject constructor(
     private val remembrancesRepository: RemembrancesRepository,
-    private val appSettingsRepository: AppSettingsRepository,
     private val analyticsRepository: AnalyticsRepository
 ) {
 
     private val searcher = Searcher<RemembrancesItem>()
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    fun getLanguage() = LangUtils.getAppLanguage()
 
     fun getRemembrances(menuType: MenuType, categoryId: Int): Flow<List<RemembrancesItem>> {
         val remembrancesFlow = when (menuType) {
@@ -29,10 +28,8 @@ class RemembrancesMenuDomain @Inject constructor(
             MenuType.CUSTOM -> remembrancesRepository.observeCategoryRemembrances(categoryId)
         }
 
-        return combine(
-            remembrancesFlow,
-            getLanguage()
-        ) { remembrances, language ->
+        val language = getLanguage()
+        return remembrancesFlow.map { remembrances ->
             remembrances.map { remembrance ->
                 RemembrancesItem(
                     id = remembrance.id,
