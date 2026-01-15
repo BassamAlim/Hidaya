@@ -221,6 +221,7 @@
         <item>جامعة العلوم الإسلامية, كراتشي</item>
         <item>الهيْة المصرية العامة</item>
         <item>مؤسسة الجيوفيزياء, جامعة طهران</item>
+        <item>وزارة الأوقاف والشؤون والمقدسات الاسلامية، الأردن</item>
     </string-array>
 
     <string-array name="prayer_times_calc_method_items" translatable="false">
@@ -230,6 +231,7 @@
         <item>KARACHI</item>
         <item>EGYPT</item>
         <item>TAHRAN</item>
+        <item>JORDAN</item>
     </string-array>
 
     <string-array name="juristic_method_entries">

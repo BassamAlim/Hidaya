@@ -39,7 +39,8 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
         PrayerTimeCalculationMethod.ISNA to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),
         PrayerTimeCalculationMethod.KARACHI to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
         PrayerTimeCalculationMethod.EGYPT to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
-        PrayerTimeCalculationMethod.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
+        PrayerTimeCalculationMethod.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0),
+        PrayerTimeCalculationMethod.JORDAN to doubleArrayOf(18.0, 1.0, 5.0, 0.0, 18.0)
     )
 
     // -------------------- Interface Functions --------------------

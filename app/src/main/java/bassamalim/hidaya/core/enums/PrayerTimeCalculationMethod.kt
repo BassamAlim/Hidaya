@@ -6,5 +6,6 @@ enum class PrayerTimeCalculationMethod {
     ISNA,
     KARACHI,
     EGYPT,
-    TAHRAN
+    TAHRAN,
+    JORDAN
 }
