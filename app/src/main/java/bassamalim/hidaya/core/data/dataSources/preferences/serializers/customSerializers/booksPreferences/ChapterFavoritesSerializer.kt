@@ -5,6 +5,7 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SealedSerializationApi
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -18,6 +19,7 @@ class ChapterFavoritesSerializer(
     private val valueSerializer: KSerializer<PersistentMap<Int, Boolean>>
 ) : KSerializer<PersistentMap<Int, PersistentMap<Int, Boolean>>> {
 
+    @OptIn(SealedSerializationApi::class)
     private class PersistentMapDescriptor :
         SerialDescriptor by serialDescriptor<Map<Int, Map<Int, Boolean>>>() {
         @ExperimentalSerializationApi

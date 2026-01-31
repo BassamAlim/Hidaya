@@ -7,7 +7,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("kotlin-kapt")
     id("kotlin-parcelize")
     alias(libs.plugins.compose.compiler)
 }
@@ -137,7 +136,7 @@ dependencies {
     implementation(libs.firebase.storage)
     // Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     // Other
     implementation(libs.coil.compose)

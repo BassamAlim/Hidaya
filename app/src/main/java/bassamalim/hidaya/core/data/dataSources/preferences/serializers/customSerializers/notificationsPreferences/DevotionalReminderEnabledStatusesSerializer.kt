@@ -5,6 +5,7 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SealedSerializationApi
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.serialDescriptor
@@ -17,6 +18,7 @@ class DevotionalReminderEnabledStatusesSerializer(
     private val valueSerializer: KSerializer<Boolean>
 ) : KSerializer<PersistentMap<Reminder.Devotional, Boolean>> {
 
+    @OptIn(SealedSerializationApi::class)
     private class PersistentMapDescriptor :
         SerialDescriptor by serialDescriptor<Map<Reminder.Devotional, Boolean>>() {
         @ExperimentalSerializationApi
