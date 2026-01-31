@@ -147,6 +147,8 @@
     <string name="finish_quiz">Finish quiz</string>
     <string name="answer_all_questions">Answer all questions</string>
     <string name="your_score_is">Your score is</string>
+    <string name="correct">Correct</string>
+    <string name="wrong">Wrong</string>
     <string name="prayer_alerts">Prayer alerts</string>
     <string name="stop_athan">Stop athan</string>
     <string name="for_reciter">for reciter</string>

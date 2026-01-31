@@ -19,6 +19,8 @@
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
     <string name="text_size_title">حجم الخط</string>
     <string name="reciter">القارئ</string>
+    <string name="correct">صحيح</string>
+    <string name="wrong">خطأ</string>
     <string name="verse_repeat">تكرار الآية</string>
     <string name="time_format">صيغة الوقت</string>
     <string name="calculation_method_title">طريقة الحساب</string>

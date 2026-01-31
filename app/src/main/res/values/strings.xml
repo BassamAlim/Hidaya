@@ -153,6 +153,8 @@
     <string name="finish_quiz">إنهاء الإختبار</string>
     <string name="answer_all_questions">أجب على جميع الاسئلة</string>
     <string name="your_score_is">نتيجتك هي</string>
+    <string name="correct">صحيح</string>
+    <string name="wrong">خطأ</string>
     <string name="prayer_alerts">إشعارات الصلوات</string>
     <string name="stop_athan">إيقاف الأذان</string>
     <string name="for_reciter">للقارئ</string>
