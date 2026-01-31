@@ -37,8 +37,8 @@
     <string name="tv_channels">بث مباشر</string>
     <string name="quran_channel">القرآن الكريم</string>
     <string name="sunnah_channel">السنة النبوية</string>
-    <string name="previous_question">السؤال السابق</string>
-    <string name="next_question">السؤال التالي</string>
+    <string name="previous">السابق</string>
+    <string name="next">التالي</string>
     <string name="rebuild_database">إعادة بناء قاعدة البيانات</string>
     <string name="about">حول التطبيق</string>
     <string name="share_app">شارك التطبيق</string>

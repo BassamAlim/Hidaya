@@ -36,8 +36,8 @@
     <string name="tv_channels">Live TV</string>
     <string name="quran_channel">Quran channel</string>
     <string name="sunnah_channel">Sunnah channel</string>
-    <string name="previous_question">Previous question</string>
-    <string name="next_question">Next question</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
     <string name="rebuild_database">Rebuild database</string>
     <string name="about">About</string>
     <string name="share_app">Share</string>

@@ -12,7 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
@@ -20,6 +22,7 @@ fun RadioGroup(
     options: List<String>,
     selection: Int,
     modifier: Modifier = Modifier,
+    fontSize: TextUnit = 18.sp,
     onSelect: (Int) -> Unit
 ) {
     Column(
@@ -30,6 +33,7 @@ fun RadioGroup(
         options.forEachIndexed { index, text ->
             MySquareButton(
                 text = text,
+                fontSize = fontSize,
                 textColor =
                     if (index == selection) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface,

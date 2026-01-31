@@ -28,8 +28,9 @@ class QuizTestViewModel @Inject constructor(
 
     private val category = savedStateHandle.get<String>("category") ?: "all"
 
+    val totalQuestions = 10
     private lateinit var questions: List<QuizFullQuestion>
-    private val chosenAs = IntArray(10) { -1 }
+    private val chosenAs = IntArray(totalQuestions) { -1 }
     private lateinit var language: Language
     private lateinit var numeralsLanguage: Language
 
@@ -62,7 +63,7 @@ class QuizTestViewModel @Inject constructor(
     }
 
     fun onNextQuestionClick() {
-        if (_uiState.value.questionIdx == 9) {
+        if (_uiState.value.questionIdx == totalQuestions-1) {
             if (_uiState.value.allAnswered) endQuiz()
         }
         else ask(_uiState.value.questionIdx + 1)
@@ -75,10 +76,10 @@ class QuizTestViewModel @Inject constructor(
             allAnswered = !chosenAs.contains(-1)
         )}
 
-        if (_uiState.value.questionIdx == 9) {
+        if (_uiState.value.questionIdx == totalQuestions-1) {
             _uiState.update { it.copy(
                 selection = answerIndex,
-                nextButtonEnabled = !(it.questionIdx == 9 && !it.allAnswered),
+                nextButtonEnabled = !(it.questionIdx == totalQuestions-1 && !it.allAnswered),
             )}
         }
         else onNextQuestionClick()
@@ -122,7 +123,7 @@ class QuizTestViewModel @Inject constructor(
             answers = question.answers.map { answer -> answer.text },
             selection = chosenAs[it.questionIdx],
             previousButtonEnabled = it.questionIdx != 0,
-            nextButtonEnabled = !(it.questionIdx == 9 && !it.allAnswered),
+            nextButtonEnabled = !(it.questionIdx == totalQuestions-1 && !it.allAnswered),
         )}
     }
 
