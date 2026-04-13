@@ -92,7 +92,7 @@
         </service>
 
         <service
-            android:name=".features.recitations.player.service.RecitationPlayerService"
+            android:name=".features.recitations.player.RecitationPlayerService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">
@@ -102,7 +102,7 @@
         </service>
 
         <service
-            android:name=".features.radio.service.RadioService"
+            android:name=".features.radio.RadioService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">

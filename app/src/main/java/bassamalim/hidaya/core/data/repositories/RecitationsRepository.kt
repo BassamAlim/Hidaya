@@ -3,7 +3,6 @@ package bassamalim.hidaya.core.data.repositories
 import android.app.Application
 import android.app.DownloadManager
 import android.content.Context
-import android.net.Uri
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.RecitationsPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationNarrationsDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.SuraRecitersDao
@@ -19,7 +18,7 @@ import bassamalim.hidaya.core.models.Narration
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
+import bassamalim.hidaya.features.recitations.recitersMenu.LastPlayedMedia
 import com.google.gson.Gson
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher

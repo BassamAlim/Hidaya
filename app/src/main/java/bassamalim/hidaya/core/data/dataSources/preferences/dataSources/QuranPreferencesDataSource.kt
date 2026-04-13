@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.QuranPreferences
 import bassamalim.hidaya.core.models.QuranBookmarks
-import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
+import bassamalim.hidaya.features.quran.reader.QuranViewType
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

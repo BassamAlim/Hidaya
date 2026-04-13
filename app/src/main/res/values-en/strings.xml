@@ -210,4 +210,10 @@
     <string name="date_converter_subtitle">Convert between Hijri and Gregorian calendars</string>
     <string name="select_date">Select Date</string>
     <string name="no_date_placeholder">--</string>
+    <string name="narrations">narrations</string>
+    <string name="suras">suras</string>
+    <string name="expand">Expand</string>
+    <string name="filtered">Filtered</string>
+    <string name="continue_listening">Continue listening</string>
+    <string name="no_recitations_found">No recitations found</string>
 </resources>

@@ -7,7 +7,7 @@ import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Sura
-import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
+import bassamalim.hidaya.features.quran.reader.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

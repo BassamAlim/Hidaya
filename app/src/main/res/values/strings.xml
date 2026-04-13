@@ -213,4 +213,10 @@
     <string name="pending_notification_permission_message">يتطلب التطبيق إذن الإشعارات لإرسال تذكيرات الصلاة في الوقت المحدد. يرجى تفعيل الإشعارات.</string>
     <string name="prayer_service_explanation" translatable="false">This service runs to show a foreground notification that allows users to track prayer times accurately, as prayers are time-sensitive religious obligations that cannot be delayed or missed.</string>
     <string name="give_permission">السماح بالإذن</string>
+    <string name="narrations">روايات</string>
+    <string name="suras">سور</string>
+    <string name="expand">توسيع</string>
+    <string name="filtered">مفلترة</string>
+    <string name="continue_listening">متابعة الاستماع</string>
+    <string name="no_recitations_found">لا توجد تلاوات</string>
 </resources>

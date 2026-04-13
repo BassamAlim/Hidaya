@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.RecitationsPreferences
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
+import bassamalim.hidaya.features.recitations.recitersMenu.LastPlayedMedia
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

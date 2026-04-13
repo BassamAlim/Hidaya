@@ -4,7 +4,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.customSerializers.IntBooleanPersistentMapSerializer
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.customSerializers.StringBooleanPersistentMapSerializer
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
+import bassamalim.hidaya.features.recitations.recitersMenu.LastPlayedMedia
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.serialization.Serializable

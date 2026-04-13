@@ -31,7 +31,7 @@ import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.getThemeColor
-import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
+import bassamalim.hidaya.features.quran.reader.QuranTarget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
