@@ -3,21 +3,24 @@ package bassamalim.hidaya.core.widgets
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.action.clickable
 import androidx.glance.material3.ColorProviders
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
-import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
@@ -38,13 +41,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
-private data class PrayerWidgetItem(
+private data class NextPrayerData(
     val name: String,
     val timeString: String,
-    val isNext: Boolean
+    val remainingText: String
 )
 
-class PrayersWidget(
+class NextPrayerWidget(
     private val appSettingsRepository: AppSettingsRepository,
     private val prayersRepository: PrayersRepository,
     private val locationRepository: LocationRepository,
@@ -52,23 +55,24 @@ class PrayersWidget(
 ) : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val items = withContext(dispatcher) {
-            getPrayerItems(context)
+        val data = withContext(dispatcher) {
+            getNextPrayerData(context)
         }
 
         provideContent {
             GlanceTheme(colors = ColorProviders(light = lightColorScheme, dark = darkColorScheme)) {
-                WidgetContent(items, context)
+                WidgetContent(data, context)
             }
         }
     }
 
     @Composable
-    private fun WidgetContent(items: List<PrayerWidgetItem>?, context: Context) {
+    private fun WidgetContent(data: NextPrayerData?, context: Context) {
         Box(
             modifier = GlanceModifier
                 .fillMaxSize()
                 .background(GlanceTheme.colors.surface)
+                .cornerRadius(16.dp)
                 .clickable {
                     val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
                     intent?.let {
@@ -77,61 +81,91 @@ class PrayersWidget(
                     }
                 }
         ) {
-            if (items == null) {
+            if (data == null) {
                 Box(
                     modifier = GlanceModifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.error_fetching_data),
+                        text = context.getString(R.string.error_fetching_data),
                         style = TextStyle(
                             color = GlanceTheme.colors.onSurface,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            fontSize = 12.sp
                         )
                     )
                 }
             } else {
-                Row(
-                    modifier = GlanceModifier
-                        .fillMaxSize()
-                        .padding(horizontal = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                Column(
+                    modifier = GlanceModifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    for (item in items) {
-                        Column(
-                            modifier = GlanceModifier
-                                .defaultWeight()
-                                .padding(vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = item.name,
-                                style = TextStyle(
-                                    color = if (item.isNext) GlanceTheme.colors.primary
-                                            else GlanceTheme.colors.onSurface,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = if (item.isNext) FontWeight.Bold else FontWeight.Normal
-                                )
+                    // Header strip
+                    Box(
+                        modifier = GlanceModifier
+                            .fillMaxWidth()
+                            .background(GlanceTheme.colors.primaryContainer)
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = context.getString(R.string.next_prayer),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onPrimaryContainer,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center
                             )
-                            Text(
-                                text = item.timeString,
-                                style = TextStyle(
-                                    color = if (item.isNext) GlanceTheme.colors.primary
-                                            else GlanceTheme.colors.onSurfaceVariant,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = if (item.isNext) FontWeight.Bold else FontWeight.Normal
-                                )
+                        )
+                    }
+
+                    // Prayer name and time
+                    Column(
+                        modifier = GlanceModifier
+                            .fillMaxSize()
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = data.name,
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
                             )
-                        }
+                        )
+
+                        Spacer(modifier = GlanceModifier.height(4.dp))
+
+                        Text(
+                            text = data.timeString,
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center
+                            )
+                        )
+
+                        Spacer(modifier = GlanceModifier.height(6.dp))
+
+                        Text(
+                            text = data.remainingText,
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onSurfaceVariant,
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        )
                     }
                 }
             }
         }
     }
 
-    private suspend fun getPrayerItems(context: Context): List<PrayerWidgetItem>? {
+    private suspend fun getNextPrayerData(context: Context): NextPrayerData? {
         val location = locationRepository.getLocation().first<Location?>() ?: return null
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
@@ -149,20 +183,24 @@ class PrayersWidget(
         val prayerNames = context.resources.getStringArray(R.array.prayer_names)
         val now = Calendar.getInstance()
 
-        val nextPrayer = prayerTimes.entries.firstOrNull { (prayer, time) ->
+        val nextEntry = prayerTimes.entries.firstOrNull { (prayer, time) ->
             prayer != Prayer.SUNRISE && prayer != Prayer.SUNSET && time != null && time.after(now)
-        }?.key
+        } ?: return null
 
-        return prayerTimes.keys
-            .filter { it != Prayer.SUNRISE && it != Prayer.SUNSET }
-            .reversed()
-            .map { prayer ->
-                PrayerWidgetItem(
-                    name = getPrayerName(prayer, prayerNames),
-                    timeString = prayerTimeStrings[prayer] ?: "",
-                    isNext = prayer == nextPrayer
-                )
-            }
+        val nextPrayer = nextEntry.key
+        val nextPrayerTime = nextEntry.value!!
+
+        val remainingMillis = nextPrayerTime.timeInMillis - now.timeInMillis
+        val hours = (remainingMillis / (1000L * 60 * 60)).toInt()
+        val minutes = ((remainingMillis % (1000L * 60 * 60)) / (1000L * 60)).toInt()
+        val remainingFormatted = if (hours > 0) "%d:%02d".format(hours, minutes)
+                                 else "%d min".format(minutes)
+
+        return NextPrayerData(
+            name = getPrayerName(nextPrayer, prayerNames),
+            timeString = prayerTimeStrings[nextPrayer] ?: "",
+            remainingText = context.getString(R.string.remaining, remainingFormatted)
+        )
     }
 
     private fun getPrayerName(prayer: Prayer, names: Array<String>) = when (prayer) {

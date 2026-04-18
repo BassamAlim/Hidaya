@@ -70,6 +70,17 @@
                 android:resource="@xml/prayers_widget_info" />
         </receiver>
 
+        <receiver
+            android:name=".core.receivers.NextPrayerWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/next_prayer_widget_info" />
+        </receiver>
+
         <service
             android:name=".core.services.AthanService"
             android:excludeFromRecents="true"
