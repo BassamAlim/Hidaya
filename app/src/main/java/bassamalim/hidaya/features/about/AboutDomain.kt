@@ -1,7 +1,9 @@
 package bassamalim.hidaya.features.about
 
 import android.app.Activity
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository

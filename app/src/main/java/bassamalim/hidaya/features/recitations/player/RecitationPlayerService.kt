@@ -780,7 +780,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
             val notificationChannel = NotificationChannel(channelId, name, importance)
             notificationChannel.description = description
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            notificationManager = Context.getSystemService(NotificationManager::class.java)
+            notificationManager = getSystemService(NotificationManager::class.java)!!
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }

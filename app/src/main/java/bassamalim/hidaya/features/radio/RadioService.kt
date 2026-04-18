@@ -448,7 +448,7 @@ class RadioService : MediaBrowserServiceCompat(), AudioManager.OnAudioFocusChang
                 description = "quran radio"
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             }
-            notificationManager = Context.getSystemService(NotificationManager::class.java)
+            notificationManager = getSystemService(NotificationManager::class.java)!!
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
