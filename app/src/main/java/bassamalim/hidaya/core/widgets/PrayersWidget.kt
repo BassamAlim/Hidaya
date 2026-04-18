@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -13,8 +14,11 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
+import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.padding
+import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
@@ -31,6 +35,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
+private data class PrayerWidgetItem(
+    val name: String,
+    val timeString: String,
+    val isNext: Boolean
+)
+
 class PrayersWidget(
     private val appSettingsRepository: AppSettingsRepository,
     private val prayersRepository: PrayersRepository,
@@ -39,61 +49,86 @@ class PrayersWidget(
 ) : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val prayerTimeStrings = withContext(dispatcher) {
-            getPrayerTimeStringMap(context)
+        val items = withContext(dispatcher) {
+            getPrayerItems(context)
         }
 
         provideContent {
             GlanceTheme {
-                WidgetContent(prayerTimeStrings, context)
+                WidgetContent(items, context)
             }
         }
     }
 
     @Composable
-    private fun WidgetContent(prayerTimesStrings: Map<Prayer, String>?, context: Context) {
+    private fun WidgetContent(items: List<PrayerWidgetItem>?, context: Context) {
         Box(
-            modifier = GlanceModifier.clickable {
-                val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
-                intent?.let {
-                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(it)
+            modifier = GlanceModifier
+                .fillMaxSize()
+                .background(GlanceTheme.colors.surface)
+                .clickable {
+                    val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+                    intent?.let {
+                        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(it)
+                    }
                 }
-            }
         ) {
-            if (prayerTimesStrings == null) {
-                Text(
-                    text = stringResource(R.string.error_fetching_data),
-                    style = TextStyle(
-                        color = GlanceTheme.colors.onSurface,
-                        textAlign = TextAlign.Center
+            if (items == null) {
+                Box(
+                    modifier = GlanceModifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.error_fetching_data),
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurface,
+                            textAlign = TextAlign.Center
+                        )
                     )
-                )
-            }
-            else {
+                }
+            } else {
                 Row(
                     modifier = GlanceModifier
                         .fillMaxSize()
-                        .background(GlanceTheme.colors.surface),
+                        .padding(horizontal = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    for (prayer in prayerTimesStrings) {
-                        Text(
-                            text = prayer.value,
-                            modifier = GlanceModifier.defaultWeight(),
-                            style = TextStyle(
-                                color = GlanceTheme.colors.onSurface,
-                                textAlign = TextAlign.Center
+                    for (item in items) {
+                        Column(
+                            modifier = GlanceModifier
+                                .defaultWeight()
+                                .padding(vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = item.name,
+                                style = TextStyle(
+                                    color = if (item.isNext) GlanceTheme.colors.primary
+                                            else GlanceTheme.colors.onSurface,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = if (item.isNext) FontWeight.Bold else FontWeight.Normal
+                                )
                             )
-                        )
+                            Text(
+                                text = item.timeString,
+                                style = TextStyle(
+                                    color = if (item.isNext) GlanceTheme.colors.primary
+                                            else GlanceTheme.colors.onSurfaceVariant,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = if (item.isNext) FontWeight.Bold else FontWeight.Normal
+                                )
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    private suspend fun getPrayerTimeStringMap(context: Context): Map<Prayer, String>? {
+    private suspend fun getPrayerItems(context: Context): List<PrayerWidgetItem>? {
         val location = locationRepository.getLocation().first<Location?>() ?: return null
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
@@ -109,18 +144,32 @@ class PrayersWidget(
         )
 
         val prayerNames = context.resources.getStringArray(R.array.prayer_names)
+        val now = Calendar.getInstance()
 
-        val strings = mutableMapOf<Prayer, String>()
-        for (n in prayerNames.indices.reversed()) {
-            if (n == 1) continue  // To skip sunrise
+        val nextPrayer = prayerTimes.entries.firstOrNull { (prayer, time) ->
+            prayer != Prayer.SUNRISE && prayer != Prayer.SUNSET && time != null && time.after(now)
+        }?.key
 
-            val name = prayerNames[n]
-            val prayer = prayerTimeStrings.keys.elementAt(n)
-            val timeString = prayerTimeStrings[prayer]
+        return prayerTimes.keys
+            .filter { it != Prayer.SUNRISE && it != Prayer.SUNSET }
+            .reversed()
+            .map { prayer ->
+                PrayerWidgetItem(
+                    name = getPrayerName(prayer, prayerNames),
+                    timeString = prayerTimeStrings[prayer] ?: "",
+                    isNext = prayer == nextPrayer
+                )
+            }
+    }
 
-            strings[prayer] = "$name\n$timeString"
-        }
-        return strings
+    private fun getPrayerName(prayer: Prayer, names: Array<String>) = when (prayer) {
+        Prayer.FAJR -> names[0]
+        Prayer.SUNRISE -> names[1]
+        Prayer.DHUHR -> names[2]
+        Prayer.ASR -> names[3]
+        Prayer.MAGHRIB -> names[4]
+        Prayer.ISHAA -> names[5]
+        Prayer.SUNSET -> ""
     }
 
 }
