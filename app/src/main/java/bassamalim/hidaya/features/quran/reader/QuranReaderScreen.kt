@@ -127,7 +127,6 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
         bottomBar = {
             val featureNotFoundMessage = stringResource(R.string.feature_not_supported)
             BottomBar(
-                activity = activity,
                 playerState = state.playerState,
                 onBookmarksClick = viewModel::onBookmarksClick,
                 bookmarkOptionsExpanded = state.bookmarkOptionsExpanded,
@@ -225,14 +224,13 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
 
 @Composable
 private fun BottomBar(
-    activity: Activity,
     playerState: Int,
     onBookmarksClick: () -> Unit,
     bookmarkOptionsExpanded: Boolean,
     bookmarks: QuranBookmarks,
     onBookmarkOptionClick: (Int?) -> Unit,
     onPreviousVerseClick: () -> Unit,
-    onPlayPauseClick: (Activity) -> Unit,
+    onPlayPauseClick: () -> Unit,
     onNextVerseClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
@@ -284,7 +282,7 @@ private fun BottomBar(
                     Box (Modifier.padding(horizontal = 4.dp)) {
                         MyIconPlayerButton(
                             state = playerState,
-                            onClick = { onPlayPauseClick(activity) },
+                            onClick = { onPlayPauseClick() },
                             iconSize = 40.dp,
                             filled = false
                         )
@@ -394,14 +392,18 @@ private fun PageContent(
     scrollTo: Float,
     onScrolled: () -> Unit,
     onPageChange: (Int, Int, ScrollState) -> Unit,
-    buildPage: (Int, Color, Color, Color) -> List<Section>,
-    buildListPage: (Int, Color, Color, Color) -> List<Section>,
+    buildPage: (Int, Int?, Int, Color, Color, Color) -> List<Section>,
+    buildListPage: (Int, Int?, Int, Color, Color, Color) -> List<Section>,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
     configuration: Configuration
 ) {
     val lineHeight = remember { getLineHeight(configuration) }
+    val defaultColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val tertiaryColor = MaterialTheme.colorScheme.tertiary
+    val selectedVerseId = selectedVerse?.id
 
     HorizontalPager(
         state = pagerState,
@@ -411,11 +413,11 @@ private fun PageContent(
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
 
-        onPageChange(pagerState.currentPage, pageIdx, scrollState)
+        LaunchedEffect(pagerState.currentPage) {
+            onPageChange(pagerState.currentPage, pageIdx, scrollState)
+        }
 
-        var columnModifier = Modifier.fillMaxSize()
-//        if (!(viewType == QuranViewType.PAGE && fillPage))
-        columnModifier = columnModifier.verticalScroll(scrollState)
+        val columnModifier = Modifier.fillMaxSize().verticalScroll(scrollState)
 
         Column(
             modifier = columnModifier,
@@ -426,12 +428,9 @@ private fun PageContent(
         ) {
             when (viewType) {
                 QuranViewType.PAGE -> {
-                    val pageContent = buildPage(
-                        pageIdx + 1,
-                        MaterialTheme.colorScheme.onSurfaceVariant,
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.tertiary
-                    )
+                    val pageContent = remember(pageIdx, selectedVerseId, trackedVerseId, defaultColor, primaryColor, tertiaryColor) {
+                        buildPage(pageIdx + 1, selectedVerseId, trackedVerseId, defaultColor, primaryColor, tertiaryColor)
+                    }
 
                     PageItems(
                         fillPage = fillPage,
@@ -444,12 +443,9 @@ private fun PageContent(
                     )
                 }
                 QuranViewType.LIST -> {
-                    val pageContent = buildListPage(
-                        pageIdx + 1,
-                        MaterialTheme.colorScheme.onSurfaceVariant,
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.tertiary
-                    )
+                    val pageContent = remember(pageIdx, selectedVerseId, trackedVerseId, defaultColor, primaryColor, tertiaryColor) {
+                        buildListPage(pageIdx + 1, selectedVerseId, trackedVerseId, defaultColor, primaryColor, tertiaryColor)
+                    }
 
                     ListItems(
                         sections = pageContent,
@@ -466,7 +462,7 @@ private fun PageContent(
             }
 
             if (isCurrentPage && scrollTo > 0f) {
-                LaunchedEffect(null) {
+                LaunchedEffect(scrollTo) {
                     scrollState.animateScrollTo(scrollTo.toInt())
                     onScrolled()
                 }

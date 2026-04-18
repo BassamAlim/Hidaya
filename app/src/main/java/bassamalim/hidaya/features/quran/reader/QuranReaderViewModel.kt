@@ -426,6 +426,8 @@ class QuranReaderViewModel @Inject constructor(
 
     fun buildPage(
         pageNumber: Int,
+        selectedVerseId: Int?,
+        trackedVerseId: Int,
         defaultVerseColor: Color,
         selectedVerseColor: Color,
         trackedVerseColor: Color
@@ -445,6 +447,8 @@ class QuranReaderViewModel @Inject constructor(
                             suraNum = verse.suraNum,
                             annotatedString = versesToAnnotatedString(
                                 verses = tempVerses.toList(),
+                                selectedVerseId = selectedVerseId,
+                                trackedVerseId = trackedVerseId,
                                 defaultVerseColor = defaultVerseColor,
                                 selectedVerseColor = selectedVerseColor,
                                 trackedVerseColor = trackedVerseColor
@@ -491,6 +495,8 @@ class QuranReaderViewModel @Inject constructor(
                     suraNum = tempVerses.last().suraNum,
                     annotatedString = versesToAnnotatedString(
                         verses = tempVerses.toList(),
+                        selectedVerseId = selectedVerseId,
+                        trackedVerseId = trackedVerseId,
                         defaultVerseColor = defaultVerseColor,
                         selectedVerseColor = selectedVerseColor,
                         trackedVerseColor = trackedVerseColor
@@ -505,6 +511,8 @@ class QuranReaderViewModel @Inject constructor(
 
     fun buildListPage(
         pageNumber: Int,
+        selectedVerseId: Int?,
+        trackedVerseId: Int,
         defaultVerseColor: Color,
         selectedVerseColor: Color,
         trackedVerseColor: Color
@@ -546,6 +554,8 @@ class QuranReaderViewModel @Inject constructor(
                                 interpretation = verse.interpretation
                             )
                         ),
+                        selectedVerseId = selectedVerseId,
+                        trackedVerseId = trackedVerseId,
                         defaultVerseColor = defaultVerseColor,
                         selectedVerseColor = selectedVerseColor,
                         trackedVerseColor = trackedVerseColor
@@ -562,13 +572,12 @@ class QuranReaderViewModel @Inject constructor(
 
     private fun versesToAnnotatedString(
         verses: List<Verse>,
+        selectedVerseId: Int?,
+        trackedVerseId: Int,
         defaultVerseColor: Color,
         selectedVerseColor: Color,
         trackedVerseColor: Color
     ): AnnotatedString {
-        val selectedVerseId = _uiState.value.selectedVerse?.id
-        val trackedVerseId = _uiState.value.trackedVerseId
-
         return buildAnnotatedString {
             for (verse in verses) {
                 val text = when (language) {
