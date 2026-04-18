@@ -7,13 +7,15 @@ import android.view.WindowManager
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,7 +37,6 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -43,10 +44,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -115,61 +118,80 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
         KeepScreenOn(activity)
     }
 
-    Scaffold(
-        modifier = Modifier.safeDrawingPadding(),
-        topBar = {
-            TopBar(
-                suraName = state.suraName,
-                pageNumText = state.pageNum,
-                juzNumText = state.juzNum
+    var tapCount by remember { mutableIntStateOf(0) }
+    var barsVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(tapCount) {
+        if (tapCount > 0) {
+            barsVisible = true
+            delay(3000)
+            barsVisible = false
+        }
+    }
+
+    val featureNotFoundMessage = stringResource(R.string.feature_not_supported)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+    ) {
+        TopBar(
+            suraName = state.suraName,
+            pageNumText = state.pageNum,
+            juzNumText = state.juzNum
+        )
+
+        Box(modifier = Modifier.weight(1f)) {
+            PageContent(
+                viewType = state.viewType,
+                fillPage = state.fillPage,
+                selectedVerse = state.selectedVerse,
+                trackedVerseId = state.trackedVerseId,
+                textSize = state.textSize.toInt(),
+                language = viewModel.language,
+                scrollTo = viewModel.scrollTo,
+                onScrolled = viewModel::onScrolled,
+                pagerState = pagerState,
+                onPageChange = viewModel::onPageChange,
+                buildPage = viewModel::buildPage,
+                buildListPage = viewModel::buildListPage,
+                onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
+                onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
+                onVersePointerInput = viewModel::onVersePointerInput,
+                onContentTap = { tapCount++ },
+                configuration = configuration
             )
-        },
-        bottomBar = {
-            val featureNotFoundMessage = stringResource(R.string.feature_not_supported)
-            BottomBar(
-                playerState = state.playerState,
-                onBookmarksClick = viewModel::onBookmarksClick,
-                bookmarkOptionsExpanded = state.bookmarkOptionsExpanded,
-                bookmarks = state.bookmarks,
-                onBookmarkOptionClick = { verseId ->
-                    viewModel.onBookmarkOptionClick(
-                        verseId = verseId,
-                        snackbarHostState = snackbarHostState,
-                        message = noBookmarkMessage
-                    )
-                },
-                onPreviousVerseClick = viewModel::onPreviousVerseClick,
-                onPlayPauseClick = {
-                    viewModel.onPlayPauseClick(
-                        activity = activity,
-                        snackbarHostState = snackbarHostState,
-                        message = featureNotFoundMessage
-                    )
-                },
-                onNextVerseClick = viewModel::onNextVerseClick,
-                onSettingsClick = viewModel::onSettingsClick
+
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter)
             )
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { padding ->
-        PageContent(
-            viewType = state.viewType,
-            fillPage = state.fillPage,
-            selectedVerse = state.selectedVerse,
-            trackedVerseId = state.trackedVerseId,
-            textSize = state.textSize.toInt(),
-            language = viewModel.language,
-            scrollTo = viewModel.scrollTo,
-            onScrolled = viewModel::onScrolled,
-            pagerState = pagerState,
-            padding = padding,
-            onPageChange = viewModel::onPageChange,
-            buildPage = viewModel::buildPage,
-            buildListPage = viewModel::buildListPage,
-            onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
-            onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
-            onVersePointerInput = viewModel::onVersePointerInput,
-            configuration = configuration
+        }
+
+        AnimatedBottomBar(
+            visible = barsVisible,
+            playerState = state.playerState,
+            onBookmarksClick = viewModel::onBookmarksClick,
+            bookmarkOptionsExpanded = state.bookmarkOptionsExpanded,
+            bookmarks = state.bookmarks,
+            onBookmarkOptionClick = { verseId ->
+                viewModel.onBookmarkOptionClick(
+                    verseId = verseId,
+                    snackbarHostState = snackbarHostState,
+                    message = noBookmarkMessage
+                )
+            },
+            onPreviousVerseClick = viewModel::onPreviousVerseClick,
+            onPlayPauseClick = {
+                viewModel.onPlayPauseClick(
+                    activity = activity,
+                    snackbarHostState = snackbarHostState,
+                    message = featureNotFoundMessage
+                )
+            },
+            onNextVerseClick = viewModel::onNextVerseClick,
+            onSettingsClick = viewModel::onSettingsClick
         )
     }
 
@@ -220,6 +242,38 @@ private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
             }
         }
     )
+}
+
+@Composable
+private fun AnimatedBottomBar(
+    visible: Boolean,
+    playerState: Int,
+    onBookmarksClick: () -> Unit,
+    bookmarkOptionsExpanded: Boolean,
+    bookmarks: QuranBookmarks,
+    onBookmarkOptionClick: (Int?) -> Unit,
+    onPreviousVerseClick: () -> Unit,
+    onPlayPauseClick: () -> Unit,
+    onNextVerseClick: () -> Unit,
+    onSettingsClick: () -> Unit
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically { it },
+        exit = slideOutVertically { it }
+    ) {
+        BottomBar(
+            playerState = playerState,
+            onBookmarksClick = onBookmarksClick,
+            bookmarkOptionsExpanded = bookmarkOptionsExpanded,
+            bookmarks = bookmarks,
+            onBookmarkOptionClick = onBookmarkOptionClick,
+            onPreviousVerseClick = onPreviousVerseClick,
+            onPlayPauseClick = onPlayPauseClick,
+            onNextVerseClick = onNextVerseClick,
+            onSettingsClick = onSettingsClick
+        )
+    }
 }
 
 @Composable
@@ -388,7 +442,6 @@ private fun PageContent(
     textSize: Int,
     language: Language,
     pagerState: PagerState,
-    padding: PaddingValues,
     scrollTo: Float,
     onScrolled: () -> Unit,
     onPageChange: (Int, Int, ScrollState) -> Unit,
@@ -397,6 +450,7 @@ private fun PageContent(
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
+    onContentTap: () -> Unit,
     configuration: Configuration
 ) {
     val lineHeight = remember { getLineHeight(configuration) }
@@ -407,8 +461,7 @@ private fun PageContent(
 
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = padding
+        modifier = Modifier.fillMaxSize()
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
@@ -417,7 +470,10 @@ private fun PageContent(
             onPageChange(pagerState.currentPage, pageIdx, scrollState)
         }
 
-        val columnModifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+        val columnModifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .pointerInput(Unit) { detectTapGestures { onContentTap() } }
 
         Column(
             modifier = columnModifier,
