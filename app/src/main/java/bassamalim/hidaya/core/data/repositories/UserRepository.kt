@@ -99,6 +99,17 @@ class UserRepository @Inject constructor(
 
         return try {
             firestore.runTransaction { transaction ->
+                val leaderboardDocRef = firestore.collection("Leaderboard").document(deviceId)
+                val existingSnapshot = transaction.get(leaderboardDocRef)
+                if (existingSnapshot.exists() && existingSnapshot.data != null) {
+                    val data = existingSnapshot.data!!
+                    return@runTransaction UserRecord(
+                        userId = existingSnapshot.getLong("user_id")?.toInt() ?: -1,
+                        quranPages = data["reading_record"].toString().toInt(),
+                        recitationsTime = data["listening_record"].toString().toLong()
+                    )
+                }
+
                 val counterDocRef = firestore.collection("Counters").document("users")
                 val counterSnapshot = transaction.get(counterDocRef)
 
@@ -109,14 +120,9 @@ class UserRepository @Inject constructor(
                     )
                 }
 
-                val lastId = counterSnapshot.data!!["last_id"].toString().toInt()
-                val newUserId = lastId + 1
+                val newUserId = (counterSnapshot.getLong("last_id") ?: 0L).toInt() + 1
 
-                // Update the counter document with the new last ID
                 transaction.update(counterDocRef, "last_id", newUserId)
-
-                // Create the new user record in Leaderboard collection
-                val leaderboardDocRef = firestore.collection("Leaderboard").document(deviceId)
                 transaction.set(leaderboardDocRef, mapOf(
                     "user_id" to newUserId,
                     "reading_record" to localRecord.quranPages,
@@ -124,7 +130,6 @@ class UserRepository @Inject constructor(
                     "created_at" to System.currentTimeMillis()
                 ))
 
-                // Return the created user record
                 UserRecord(
                     userId = newUserId,
                     quranPages = localRecord.quranPages,

@@ -57,6 +57,7 @@ fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
             else UsersList(
                 userId = state.userId,
                 userRankMap = state.userRanks,
+                userRankIntMap = state.userRankInts,
                 ranksMap = state.ranks,
                 isLoadingItems = state.isLoadingItems,
                 loadMoreItems = viewModel::loadMore,
@@ -70,6 +71,7 @@ fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
 private fun UsersList(
     userId: String,
     userRankMap: Map<RankType, String>,
+    userRankIntMap: Map<RankType, Int>,
     ranksMap: Map<RankType, List<Pair<String, String>>>,
     isLoadingItems: Map<RankType, Boolean>,
     loadMoreItems: (RankType) -> Unit,
@@ -83,10 +85,11 @@ private fun UsersList(
     ) { page ->
         val rankBy = RankType.entries[page]
         val userRank = userRankMap[rankBy] ?: "--"
+        val userRankInt = userRankIntMap[rankBy] ?: -1
         val ranks = ranksMap[rankBy] ?: emptyList()
 
         MyColumn {
-            UserRankCard(userId = userId, userRank = userRank)
+            UserRankCard(userId = userId, userRank = userRank, userRankInt = userRankInt)
 
             MyHorizontalDivider(thickness = 1.dp)
 
@@ -103,7 +106,13 @@ private fun UsersList(
 }
 
 @Composable
-private fun UserRankCard(userId: String, userRank: String) {
+private fun UserRankCard(userId: String, userRank: String, userRankInt: Int) {
+    val rankColor = when (userRankInt) {
+        1 -> Gold
+        2 -> Silver
+        3 -> Bronze
+        else -> MaterialTheme.colorScheme.onSurface
+    }
     MyRow(
         Modifier
             .padding(16.dp)
@@ -118,12 +127,7 @@ private fun UserRankCard(userId: String, userRank: String) {
             text = "${stringResource(R.string.user)} $userId",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            color = when (userRank) {
-                "1" -> Gold
-                "2" -> Silver
-                "3" -> Bronze
-                else -> MaterialTheme.colorScheme.onSurface
-            },
+            color = rankColor,
             modifier = Modifier.fillMaxWidth(0.4f)
         )
 
@@ -133,12 +137,7 @@ private fun UserRankCard(userId: String, userRank: String) {
         ) {
             MyText(
                 text = stringResource(R.string.your_position),
-                color = when (userRank) {
-                    "1" -> Gold
-                    "2" -> Silver
-                    "3" -> Bronze
-                    else -> MaterialTheme.colorScheme.onSurface
-                }
+                color = rankColor
             )
 
             Spacer(Modifier.width(10.dp))
@@ -147,12 +146,7 @@ private fun UserRankCard(userId: String, userRank: String) {
                 text = userRank,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = when (userRank) {
-                    "1" -> Gold
-                    "2" -> Silver
-                    "3" -> Bronze
-                    else -> MaterialTheme.colorScheme.onSurface
-                }
+                color = rankColor
             )
         }
     }

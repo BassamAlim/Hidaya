@@ -136,7 +136,7 @@ class HomeDomain @Inject constructor(
                 )
 
                 if (remoteRecord.quranPages != latestRecord.quranPages ||
-                    remoteRecord.recitationsTime > latestRecord.recitationsTime) {
+                    remoteRecord.recitationsTime != latestRecord.recitationsTime) {
                     userRepository.setRemoteRecord(
                         deviceId = deviceId,
                         record = latestRecord
@@ -144,13 +144,8 @@ class HomeDomain @Inject constructor(
                 }
 
                 if (localRecord.quranPages != latestRecord.quranPages ||
-                    localRecord.recitationsTime > latestRecord.recitationsTime) {
-                    userRepository.setLocalRecord(
-                        UserRecord(
-                            quranPages = latestRecord.quranPages,
-                            recitationsTime = latestRecord.recitationsTime
-                        )
-                    )
+                    localRecord.recitationsTime != latestRecord.recitationsTime) {
+                    userRepository.setLocalRecord(latestRecord)
                 }
 
                 true
@@ -159,12 +154,7 @@ class HomeDomain @Inject constructor(
                 if (response.message == "Device not registered") {
                     val remoteRecord = registerDevice(deviceId)
                     if (remoteRecord != null) {
-                        userRepository.setLocalRecord(
-                            UserRecord(
-                                quranPages = remoteRecord.quranPages,
-                                recitationsTime = remoteRecord.recitationsTime
-                            )
-                        )
+                        userRepository.setLocalRecord(remoteRecord)
                         true
                     } else false
                 } else false

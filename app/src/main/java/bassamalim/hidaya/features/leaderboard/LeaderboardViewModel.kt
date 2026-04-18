@@ -48,11 +48,11 @@ class LeaderboardViewModel @Inject constructor(
                 return@launch
             }
 
-            val userRank = domain.getUserRank(userRecord.userId)
-                .mapValues { (_, rank) -> 
-                    if (rank == -1) translateNums("--", numeralsLanguage)
-                    else translateNums(rank.toString(), numeralsLanguage)
-                }
+            val userRankRaw = domain.getUserRank(userRecord.userId)
+            val userRank = userRankRaw.mapValues { (_, rank) ->
+                if (rank == -1) translateNums("--", numeralsLanguage)
+                else translateNums(rank.toString(), numeralsLanguage)
+            }
 
             val ranksList = mapOf(
                 RankType.BY_READING to (ranks[RankType.BY_READING]?.data ?: emptyMap())
@@ -71,6 +71,7 @@ class LeaderboardViewModel @Inject constructor(
                 isLoading = false,
                 userId = translateNums(userRecord.userId.toString(), numeralsLanguage),
                 userRanks = userRank,
+                userRankInts = userRankRaw,
                 ranks = ranksList
             )}
         }
