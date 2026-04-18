@@ -114,7 +114,7 @@ class SettingsViewModel @Inject constructor(
                     val prayer =
                         if (devotion == Reminder.Devotional.MorningRemembrances) Prayer.FAJR
                         else Prayer.ASR
-                    val prayerTime = domain.getPrayerTime(prayer)
+                    val prayerTime = domain.getPrayerTime(prayer) ?: return@launch
                     onTimePicked(
                         hour = prayerTime.get(Calendar.HOUR_OF_DAY),
                         minute = prayerTime.get(Calendar.MINUTE)

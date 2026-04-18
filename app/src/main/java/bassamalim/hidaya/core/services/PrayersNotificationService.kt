@@ -190,6 +190,7 @@ class PrayersNotificationService : Service() {
                     if (devotion == Reminder.Devotional.MorningRemembrances) Prayer.FAJR
                     else Prayer.ASR
                 val prayerTime = getPrayerTime(referencePrayer)
+                    ?: return Calendar.getInstance()
                 Calendar.getInstance().apply {
                     timeInMillis = prayerTime.timeInMillis
                     add(Calendar.MINUTE, 30)
@@ -211,7 +212,7 @@ class PrayersNotificationService : Service() {
         return time
     }
 
-    suspend fun getPrayerTime(prayer: Prayer): Calendar {
+    suspend fun getPrayerTime(prayer: Prayer): Calendar? {
         val location = locationRepository.getLocation().first()!!
 
         var prayerTime = PrayerTimeUtils.getPrayerTimes(
@@ -219,7 +220,7 @@ class PrayersNotificationService : Service() {
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
-        )[prayer]!!
+        )[prayer] ?: return null
 
         // if prayer time passed
         if (prayerTime.timeInMillis < System.currentTimeMillis()) {
@@ -230,7 +231,7 @@ class PrayersNotificationService : Service() {
                 calendar = Calendar.getInstance().apply {
                     add(Calendar.DAY_OF_MONTH, 1)
                 }
-            )[prayer]!!
+            )[prayer] ?: return null
         }
 
         return prayerTime

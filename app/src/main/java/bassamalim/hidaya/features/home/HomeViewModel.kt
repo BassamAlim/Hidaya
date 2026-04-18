@@ -43,9 +43,9 @@ class HomeViewModel @Inject constructor(
     private val prayerNames = domain.getPrayerNames()
     private var times: Map<Prayer, Calendar?> = emptyMap()
     private var formattedTimes: Map<Prayer, String> = emptyMap()
-    private var yesterdayIshaa: Calendar = Calendar.getInstance()
+    private var yesterdayIshaa: Calendar? = null
     private var formattedYesterdayIshaa: String = ""
-    private var tomorrowFajr: Calendar = Calendar.getInstance()
+    private var tomorrowFajr: Calendar? = null
     private var formattedTomorrowFajr: String = ""
     private var timer: CountDownTimer? = null
     private var previousPrayer: Prayer? = null
@@ -300,8 +300,8 @@ class HomeViewModel @Inject constructor(
         }
 
         val till =
-            if (nextPrayerIsTomorrow) tomorrowFajr.timeInMillis
-            else times[nextPrayer]!!.timeInMillis
+            if (nextPrayerIsTomorrow) tomorrowFajr?.timeInMillis ?: return
+            else times[nextPrayer]?.timeInMillis ?: return
         timer = object : CountDownTimer(
             /* millisInFuture = */ till - System.currentTimeMillis(),
             /* countDownInterval = */ 1000
@@ -309,16 +309,16 @@ class HomeViewModel @Inject constructor(
             override fun onTick(millisUntilFinished: Long) {
                 val previousPrayerTime =
                     if (nextPrayer == Prayer.FAJR) yesterdayIshaa
-                    else times[previousPrayer]!!
+                    else times[previousPrayer]
                 val nextPrayerTime =
                     if (nextPrayerIsTomorrow) tomorrowFajr
-                    else times[nextPrayer]!!
+                    else times[nextPrayer]
 
                 val timeFromPreviousPrayer =
                     if (nextPrayer == Prayer.FAJR)
-                        System.currentTimeMillis() - previousPrayerTime.timeInMillis
+                        System.currentTimeMillis() - (previousPrayerTime?.timeInMillis ?: System.currentTimeMillis())
                     else
-                        System.currentTimeMillis() - times[previousPrayer]!!.timeInMillis
+                        System.currentTimeMillis() - (times[previousPrayer]?.timeInMillis ?: System.currentTimeMillis())
                 val timeFromPreviousPrayerHours = timeFromPreviousPrayer / (60 * 60 * 1000) % 24
                 val timeFromPreviousPrayerMinutes = timeFromPreviousPrayer / (60 * 1000) % 60
                 val timeFromPreviousPrayerSeconds = timeFromPreviousPrayer / 1000 % 60
@@ -353,8 +353,8 @@ class HomeViewModel @Inject constructor(
                             language = it.language,
                             numeralsLanguage = it.numeralsLanguage
                         ),
-                        previousPrayerTime = TimeOfDay.fromCalendar(previousPrayerTime),
-                        nextPrayerTime = TimeOfDay.fromCalendar(nextPrayerTime)
+                        previousPrayerTime = previousPrayerTime?.let { TimeOfDay.fromCalendar(it) },
+                        nextPrayerTime = nextPrayerTime?.let { TimeOfDay.fromCalendar(it) }
                     )}
                 }
             }

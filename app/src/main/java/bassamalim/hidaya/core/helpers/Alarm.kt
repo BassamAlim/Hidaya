@@ -47,7 +47,8 @@ class Alarm(
                     calendar = Calendar.getInstance()
                 ).map { (prayer, time) -> prayer.toReminder() to time }.toMap()
 
-                setPrayerAlarm(reminder = reminder, time = prayerTimes[reminder]!!)
+                val time = prayerTimes[reminder] ?: return
+                setPrayerAlarm(reminder = reminder, time = time)
             }
             is Reminder.PrayerExtra -> {
                 val location = locationRepository.getLocation().first() ?: return
@@ -56,7 +57,7 @@ class Alarm(
                     selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
                     location = location,
                     calendar = Calendar.getInstance()
-                )[reminder.toPrayer()]!!
+                )[reminder.toPrayer()] ?: return
 
                 setPrayerExtraReminderAlarm(
                     reminder = reminder,
@@ -75,8 +76,8 @@ class Alarm(
         Log.i(Globals.TAG, "in Alarm.setPrayerAlarms")
 
         for ((prayer, time) in prayerTimes) {
-            if (notificationsRepository.getNotificationType(prayer).first() != NotificationType.OFF)
-                setPrayerAlarm(prayer, time!!)
+            if (time != null && notificationsRepository.getNotificationType(prayer).first() != NotificationType.OFF)
+                setPrayerAlarm(prayer, time)
         }
     }
 
@@ -111,10 +112,10 @@ class Alarm(
         for ((prayer, time) in prayerTimes) {
             val prayerExtra = prayer.toPrayerExtra()
             val reminderOffset = reminderOffsets[prayerExtra]!!
-            if (reminderOffset != 0) {
+            if (time != null && reminderOffset != 0) {
                 setPrayerExtraReminderAlarm(
                     reminder = prayerExtra,
-                    time = time!!,
+                    time = time,
                     offset = reminderOffset
                 )
             }
@@ -202,6 +203,7 @@ class Alarm(
                     if (devotion == Reminder.Devotional.MorningRemembrances) Prayer.FAJR
                     else Prayer.ASR
                 val prayerTime = getPrayerTime(referencePrayer)
+                    ?: return Calendar.getInstance()
                 Calendar.getInstance().apply {
                     timeInMillis = prayerTime.timeInMillis
                     add(Calendar.MINUTE, 30)
@@ -235,7 +237,7 @@ class Alarm(
         Log.i(Globals.TAG, "Canceled $reminder Alarm")
     }
 
-    suspend fun getPrayerTime(prayer: Prayer): Calendar {
+    suspend fun getPrayerTime(prayer: Prayer): Calendar? {
         val location = locationRepository.getLocation().first()!!
 
         var prayerTime = PrayerTimeUtils.getPrayerTimes(
@@ -243,7 +245,7 @@ class Alarm(
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
-        )[prayer]!!
+        )[prayer] ?: return null
 
         // if prayer time passed
         if (prayerTime.timeInMillis < System.currentTimeMillis()) {
@@ -254,7 +256,7 @@ class Alarm(
                 calendar = Calendar.getInstance().apply {
                     add(Calendar.DAY_OF_MONTH, 1)
                 }
-            )[prayer]!!
+            )[prayer] ?: return null
         }
 
         return prayerTime

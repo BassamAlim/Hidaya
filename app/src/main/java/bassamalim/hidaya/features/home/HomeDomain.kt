@@ -54,7 +54,7 @@ class HomeDomain @Inject constructor(
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance().apply { add(Calendar.DATE, -1) }
-        )[Prayer.ISHAA]!!
+        )[Prayer.ISHAA]
 
     suspend fun getStrYesterdayIshaa(location: Location) =
         PrayerTimeUtils.formatPrayerTime(
@@ -70,7 +70,7 @@ class HomeDomain @Inject constructor(
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
-        )[Prayer.FAJR]!!
+        )[Prayer.FAJR]
 
     suspend fun getStrTomorrowFajr(location: Location) =
         PrayerTimeUtils.formatPrayerTime(

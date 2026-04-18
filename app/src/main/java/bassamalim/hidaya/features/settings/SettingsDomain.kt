@@ -70,7 +70,7 @@ class SettingsDomain @Inject constructor(
 
     fun getLocation() = locationRepository.getLocation()
 
-    suspend fun getPrayerTime(prayer: Prayer): Calendar {
+    suspend fun getPrayerTime(prayer: Prayer): Calendar? {
         val location = locationRepository.getLocation().first()!!
 
         var prayerTime = PrayerTimeUtils.getPrayerTimes(
@@ -78,7 +78,7 @@ class SettingsDomain @Inject constructor(
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
-        )[prayer]!!
+        )[prayer] ?: return null
 
         // if prayer time passed
         if (prayerTime.timeInMillis < System.currentTimeMillis()) {
@@ -89,7 +89,7 @@ class SettingsDomain @Inject constructor(
                 calendar = Calendar.getInstance().apply {
                     add(Calendar.DAY_OF_MONTH, 1)
                 }
-            )[prayer]!!
+            )[prayer] ?: return null
         }
 
         return prayerTime

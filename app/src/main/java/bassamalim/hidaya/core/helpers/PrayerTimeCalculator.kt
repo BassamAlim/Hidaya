@@ -63,7 +63,8 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
         )
     }
 
-    private fun buildCalendar(time: Double, date: Calendar): Calendar {
+    private fun buildCalendar(time: Double, date: Calendar): Calendar? {
+        if (time.isNaN()) return null
         val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
         val hours = floor(fixed).toInt()
         val minutes = floor((fixed - hours) * 60.0).roundToInt()
