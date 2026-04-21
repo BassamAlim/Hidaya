@@ -167,40 +167,49 @@ class NextPrayerWidget(
 
     private suspend fun getNextPrayerData(context: Context): NextPrayerData? {
         val location = locationRepository.getLocation().first<Location?>() ?: return null
-        val prayerTimes = PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-            location = location,
-            calendar = Calendar.getInstance()
-        )
-        val prayerTimeStrings = PrayerTimeUtils.formatPrayerTimes(
-            prayerTimes = prayerTimes,
-            language = LangUtils.getAppLanguage(),
-            numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
-            timeFormat = appSettingsRepository.getTimeFormat().first()
-        )
-
+        val settings = prayersRepository.getPrayerTimesCalculatorSettings().first()
+        val timeZoneId = locationRepository.getTimeZone(location.ids.cityId)
+        val language = LangUtils.getAppLanguage()
+        val numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first()
+        val timeFormat = appSettingsRepository.getTimeFormat().first()
         val prayerNames = context.resources.getStringArray(R.array.prayer_names)
         val now = Calendar.getInstance()
 
-        val nextEntry = prayerTimes.entries.firstOrNull { (prayer, time) ->
-            prayer != Prayer.SUNRISE && prayer != Prayer.SUNSET && time != null && time.after(now)
-        } ?: return null
+        // Try today; if all prayers have passed, fall back to tomorrow's Fajr
+        for (dayOffset in 0..1) {
+            val calendar = Calendar.getInstance().apply {
+                if (dayOffset > 0) add(Calendar.DAY_OF_YEAR, 1)
+            }
+            val prayerTimes = PrayerTimeUtils.getPrayerTimes(
+                settings = settings,
+                selectedTimeZoneId = timeZoneId,
+                location = location,
+                calendar = calendar
+            )
+            val nextEntry = prayerTimes.entries.firstOrNull { (prayer, time) ->
+                prayer != Prayer.SUNRISE && prayer != Prayer.SUNSET && time != null && time.after(now)
+            } ?: continue
 
-        val nextPrayer = nextEntry.key
-        val nextPrayerTime = nextEntry.value!!
+            val prayerTimeStrings = PrayerTimeUtils.formatPrayerTimes(
+                prayerTimes = prayerTimes,
+                language = language,
+                numeralsLanguage = numeralsLanguage,
+                timeFormat = timeFormat
+            )
 
-        val remainingMillis = nextPrayerTime.timeInMillis - now.timeInMillis
-        val hours = (remainingMillis / (1000L * 60 * 60)).toInt()
-        val minutes = ((remainingMillis % (1000L * 60 * 60)) / (1000L * 60)).toInt()
-        val remainingFormatted = if (hours > 0) "%d:%02d".format(hours, minutes)
-                                 else "%d min".format(minutes)
+            val remainingMillis = nextEntry.value!!.timeInMillis - now.timeInMillis
+            val hours = (remainingMillis / (1000L * 60 * 60)).toInt()
+            val minutes = ((remainingMillis % (1000L * 60 * 60)) / (1000L * 60)).toInt()
+            val remainingFormatted = if (hours > 0) "%d:%02d".format(hours, minutes)
+                                     else "%d min".format(minutes)
 
-        return NextPrayerData(
-            name = getPrayerName(nextPrayer, prayerNames),
-            timeString = prayerTimeStrings[nextPrayer] ?: "",
-            remainingText = context.getString(R.string.remaining, remainingFormatted)
-        )
+            return NextPrayerData(
+                name = getPrayerName(nextEntry.key, prayerNames),
+                timeString = prayerTimeStrings[nextEntry.key] ?: "",
+                remainingText = context.getString(R.string.remaining, remainingFormatted)
+            )
+        }
+        return null
     }
 
     private fun getPrayerName(prayer: Prayer, names: Array<String>) = when (prayer) {
