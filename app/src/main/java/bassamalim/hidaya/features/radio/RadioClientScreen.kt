@@ -144,29 +144,33 @@ private fun OrbitalButton(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.size(210.dp)
+        modifier = Modifier.size(250.dp)
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val cx = size.width / 2f
             val cy = size.height / 2f
             val ringR = size.minDimension / 2f * 0.9f
-            val strokeW = 1.dp.toPx()
-            val ringColor = color.copy(alpha = 0.32f)
 
-            // Three precessing ellipses — each is a circle viewed at a different tilt
+            // ryRatio ~0.55-0.65 looks like a circle tilted ~50°, not a squashed oval
             listOf(
-                Triple(rot1,        1.00f, 0.44f),
-                Triple(rot2 + 55f,  0.90f, 0.50f),
-                Triple(rot3 + 25f,  0.95f, 0.40f)
+                Triple(rot1,        1.00f, 0.62f),
+                Triple(rot2 + 60f,  0.96f, 0.55f),
+                Triple(rot3 + 30f,  0.92f, 0.60f)
             ).forEach { (rotation, rxRatio, ryRatio) ->
                 withTransform({ rotate(rotation, Offset(cx, cy)) }) {
                     val rx = ringR * rxRatio
                     val ry = ringR * ryRatio
+                    val top = Offset(cx - rx, cy - ry)
+                    val sz  = Size(rx * 2f, ry * 2f)
                     drawOval(
-                        color = ringColor,
-                        topLeft = Offset(cx - rx, cy - ry),
-                        size = Size(rx * 2f, ry * 2f),
-                        style = Stroke(width = strokeW)
+                        color = color.copy(alpha = 0.04f),
+                        topLeft = top, size = sz,
+                        style = Stroke(width = 5.dp.toPx())
+                    )
+                    drawOval(
+                        color = color.copy(alpha = 0.18f),
+                        topLeft = top, size = sz,
+                        style = Stroke(width = 1.dp.toPx())
                     )
                 }
             }
@@ -176,7 +180,7 @@ private fun OrbitalButton(
                 val rad = angleDeg * PI.toFloat() / 180f
                 val dist = ringR * distRatio
                 drawCircle(
-                    color = color.copy(alpha = 0.45f),
+                    color = color.copy(alpha = 0.22f),
                     radius = DOT_RADII_DP[i].dp.toPx(),
                     center = Offset(cx + cos(rad) * dist, cy + sin(rad) * dist)
                 )
@@ -250,9 +254,9 @@ private fun BottomWaves(
         val amp = size.height * 0.28f
         val freq = 2.5f
 
-        drawSineLine(color.copy(alpha = 0.18f), cy, phase1,          amp,        freq, 1.2.dp.toPx())
-        drawSineLine(color.copy(alpha = 0.28f), cy, phase2 + 0.8f,   amp * 0.8f, freq, 1.5.dp.toPx())
-        drawSineLine(color.copy(alpha = 0.15f), cy, phase3 + 1.6f,   amp * 0.9f, freq, 1.dp.toPx())
+        drawSineLine(color.copy(alpha = 0.55f), cy, phase1,          amp,        freq, 2.dp.toPx())
+        drawSineLine(color.copy(alpha = 0.35f), cy, phase2 + 0.8f,   amp * 0.8f, freq, 1.5.dp.toPx())
+        drawSineLine(color.copy(alpha = 0.25f), cy, phase3 + 1.6f,   amp * 0.9f, freq, 1.dp.toPx())
     }
 }
 
