@@ -336,7 +336,7 @@ private fun YearSelector(
             initialFirstVisibleItemScrollOffset = 0
         ),
         lazyList = {
-            items(yearOptions) { item ->
+            items(yearOptions, key = { it }) { item ->
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center

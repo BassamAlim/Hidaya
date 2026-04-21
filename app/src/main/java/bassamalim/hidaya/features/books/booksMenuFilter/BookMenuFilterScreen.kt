@@ -64,7 +64,7 @@ private fun DialogContent(viewModel: BooksMenuFilterViewModel) {
         MyLazyColumn(
             modifier = Modifier.heightIn(0.dp, 300.dp),
             lazyList = {
-                items(state.options.toList()) { (id, item) ->
+                items(state.options.toList(), key = { (id, _) -> id }) { (id, item) ->
                     CheckboxListItem(
                         title = item.name,
                         isChecked = item.isSelected,

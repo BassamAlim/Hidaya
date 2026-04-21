@@ -81,7 +81,7 @@ private fun Tab(
 
     MyLazyColumn(
         lazyList = {
-            items(suras) { sura ->
+            items(suras, key = { it.id }) { sura ->
                 SuraCard(
                     sura = sura,
                     downloadState = downloadStates[sura.id]!!,

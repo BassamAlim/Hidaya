@@ -68,7 +68,7 @@ private fun RemembrancesList(
 ) {
     MyLazyColumn(
         lazyList = {
-            items(remembrances) { remembrance ->
+            items(remembrances, key = { it.id }) { remembrance ->
                 RemembranceItem(
                     text = remembrance.name,
                     iconButton = {

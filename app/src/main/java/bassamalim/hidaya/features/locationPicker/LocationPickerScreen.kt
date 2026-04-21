@@ -99,7 +99,7 @@ private fun LocationItems(
     MyLazyColumn(
         state = lazyListState,
         lazyList = {
-            items(items) { item ->
+            items(items, key = { it.id }) { item ->
                 MySquareButton(
                     text = item.name,
                     modifier = Modifier.fillMaxWidth(),

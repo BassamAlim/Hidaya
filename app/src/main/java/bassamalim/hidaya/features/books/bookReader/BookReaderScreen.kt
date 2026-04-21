@@ -35,7 +35,7 @@ fun BookReaderScreen(viewModel: BookReaderViewModel) {
         MyLazyColumn(
             modifier = Modifier.padding(padding),
             lazyList = {
-                items(state.doors) { item ->
+                items(state.doors, key = { it.id }) { item ->
                     DoorCard(door = item, textSize = state.textSize)
                 }
             }

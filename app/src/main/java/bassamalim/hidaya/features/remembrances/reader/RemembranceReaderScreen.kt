@@ -52,7 +52,7 @@ fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
         MyLazyColumn(
             modifier = Modifier.padding(padding),
             lazyList = {
-                items(state.items) { item ->
+                items(state.items, key = { it.id }) { item ->
                     RemembrancePassageCard(
                         passage = item,
                         textSize = state.textSize,

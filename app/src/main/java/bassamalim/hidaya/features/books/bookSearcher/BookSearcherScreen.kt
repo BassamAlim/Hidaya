@@ -146,7 +146,7 @@ private fun BooksFilter(isFiltered: Boolean, onFilterClick: () -> Unit) {
 private fun ResultsList(matches: List<BookSearcherMatch>) {
     MyLazyColumn(
         lazyList = {
-            items(matches) { item ->
+            items(matches, key = { "${it.bookId}-${it.chapterId}-${it.doorId}" }) { item ->
                 MySurface {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally

@@ -66,7 +66,7 @@ private fun DialogContent(
         MyLazyColumn(
             modifier = Modifier.heightIn(0.dp, 300.dp),
             lazyList = {
-                items(state.options.toList()) { (name, isSelected) ->
+                items(state.options.toList(), key = { (name, _) -> name }) { (name, isSelected) ->
                     CheckboxListItem(
                         title = name,
                         isChecked = isSelected,

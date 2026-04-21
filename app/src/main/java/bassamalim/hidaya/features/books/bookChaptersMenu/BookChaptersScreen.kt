@@ -65,7 +65,7 @@ private fun Tab(
 
     MyLazyColumn(
         lazyList = {
-            items(chapters) { chapter ->
+            items(chapters, key = { it.id }) { chapter ->
                 ItemContainer(chapter = chapter, onItemClick = onItemClick, onFavClick = onFavClick)
             }
         }

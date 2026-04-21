@@ -68,7 +68,7 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
 
                 item { Spacer(Modifier.height(16.dp)) }
 
-                itemsIndexed(state.questions) { index, item ->
+                itemsIndexed(state.questions, key = { _, item -> item.questionNum }) { index, item ->
                     QuestionCard(
                         question = item,
                         questionIndex = index + 1

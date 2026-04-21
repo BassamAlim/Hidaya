@@ -138,7 +138,7 @@ private fun Tab(
     MyLazyColumn(
         state = lazyListState,
         lazyList = {
-            items(suras) { item ->
+            items(suras, key = { it.id }) { item ->
                 MyClickableSurface(
                     modifier = Modifier.padding(2.dp),
                     onClick = { onSuraClick(item.id) }
@@ -290,7 +290,16 @@ private fun SuraAndPagesMatchesSection(
     MyLazyColumn(
         state = rememberLazyListState(),
         lazyList = {
-            items(matches) { match ->
+            items(
+                matches,
+                key = { match ->
+                    when (match) {
+                        is SuraMatch -> "sura-${match.id}"
+                        is PageMatch -> "page-${match.num}"
+                        else -> match.hashCode()
+                    }
+                }
+            ) { match ->
                 when (match) {
                     is SuraMatch -> {
                         ListItem(
@@ -352,7 +361,7 @@ private fun VerseMatchesSection(verseMatches: List<VerseMatch>, onVerseClick: (I
     MyLazyColumn(
         state = rememberLazyListState(),
         lazyList = {
-            items(verseMatches) { verse ->
+            items(verseMatches, key = { it.id }) { verse ->
                 VerseMatchListItem(item = verse, onVerseClick = onVerseClick)
 
                 HorizontalDivider(thickness = 0.3.dp)

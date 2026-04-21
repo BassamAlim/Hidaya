@@ -166,6 +166,7 @@ private fun UsersList(
         loadMoreItems = loadMoreItems,
         listState = listState,
         isLoading = isLoading,
+        key = { _, item -> item.first },
         itemComponent = { index, item -> ItemCard(item, index+1, rankType, numeralsLanguage) }
     )
 }

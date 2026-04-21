@@ -69,7 +69,7 @@ fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
                 .padding(padding)
                 .padding(vertical = 5.dp),
             lazyList = {
-                items(state.books.toList()) { (id, book) ->
+                items(state.books.toList(), key = { (id, _) -> id }) { (id, book) ->
                     BookCard(
                         id = id,
                         book = book,
