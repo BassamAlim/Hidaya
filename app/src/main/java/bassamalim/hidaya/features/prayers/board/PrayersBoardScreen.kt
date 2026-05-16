@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.filled.AddAlert
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.MyLocation
@@ -77,6 +78,8 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
             )
 
             SettingsCard(onClick = viewModel::onTimeCalculationSettingsClick)
+
+            HelpCard(onClick = viewModel::onReportHelpClick)
         }
 
         PrayersSpace(
@@ -92,6 +95,30 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
             onDateClick = viewModel::onDateClick,
             onPreviousDayClick = viewModel::onPreviousDayClick,
             onNextDayClick = viewModel::onNextDayClick
+        )
+    }
+
+    if (state.reportDialogShown) {
+        PrayerTimesReportDialog(
+            state = state,
+            onDismiss = viewModel::onReportDismiss,
+            onOpenCalculationSettings = viewModel::onTimeCalculationSettingsClick,
+            onOpenLocator = viewModel::onLocatorClick,
+            onNext = viewModel::onReportNext,
+            onBack = viewModel::onReportBack,
+            onTogglePrayer = viewModel::onReportTogglePrayer,
+            onOpenCorrectTimePicker = viewModel::onCorrectTimePickerOpen,
+            onCorrectTimePickerDismiss = viewModel::onCorrectTimePickerDismiss,
+            onCorrectTimePickerConfirm = viewModel::onCorrectTimePickerConfirm,
+            onNotesChange = viewModel::onReportNotesChange,
+            onSubmit = viewModel::onReportSubmit
+        )
+
+        CorrectTimePickerHost(
+            target = state.reportTimePickerTarget,
+            existing = state.reportCorrectTimes,
+            onConfirm = viewModel::onCorrectTimePickerConfirm,
+            onDismiss = viewModel::onCorrectTimePickerDismiss
         )
     }
 }
@@ -146,6 +173,29 @@ private fun RowScope.SettingsCard(onClick: () -> Unit) {
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = stringResource(R.string.prayer_time_settings),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowScope.HelpCard(onClick: () -> Unit) {
+    OutlinedCard(
+        Modifier
+            .fillMaxHeight()
+            .aspectRatio(1f)
+    ) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .clickable(onClick = onClick)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
+                contentDescription = stringResource(R.string.report_wrong_prayer_times),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(10.dp)

@@ -32,6 +32,7 @@ import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.LiveContentRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
+import bassamalim.hidaya.core.data.repositories.PrayerTimesReportRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuizRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
@@ -168,6 +169,12 @@ object RepositoryModule {
         dispatcher,
         scope
     )
+
+    @Provides @Singleton
+    fun providePrayerTimesReportRepository(
+        app: Application,
+        firestore: FirebaseFirestore
+    ) = PrayerTimesReportRepository(app, firestore)
 
     @Provides @Singleton
     fun provideUserRepository(

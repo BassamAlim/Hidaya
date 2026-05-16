@@ -218,4 +218,22 @@
     <string name="filtered">Filtered</string>
     <string name="continue_listening">Continue listening</string>
     <string name="no_recitations_found">No recitations found</string>
+    <string name="back">Back</string>
+    <string name="report_wrong_prayer_times">Report wrong prayer times</string>
+    <string name="report_step_calc_title">Wrong prayer times?</string>
+    <string name="report_intro">Check these settings first. If the issue persists, send a report.</string>
+    <string name="report_calc_method_label">Calculation method</string>
+    <string name="report_location_label">Location</string>
+    <string name="change">Change</string>
+    <string name="report_still_wrong">Times are still wrong</string>
+    <string name="report_step_form_title">Report details</string>
+    <string name="report_step_form_hint">Select the prayers with wrong times and enter the correct time for each.</string>
+    <string name="report_correct_time_set">Set correct time</string>
+    <string name="report_correct_time_value">Correct time: %1$s</string>
+    <string name="report_notes_label">Notes (optional)</string>
+    <string name="report_submit">Submit report</string>
+    <string name="report_step_result_title">Submit report</string>
+    <string name="report_submitting">Submitting…</string>
+    <string name="report_submitted">Report submitted. Thank you!</string>
+    <string name="report_submit_failed">Could not submit. Check your connection and try again.</string>
 </resources>

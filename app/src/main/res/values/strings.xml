@@ -221,4 +221,22 @@
     <string name="filtered">مفلترة</string>
     <string name="continue_listening">متابعة الاستماع</string>
     <string name="no_recitations_found">لا توجد تلاوات</string>
+    <string name="back">رجوع</string>
+    <string name="report_wrong_prayer_times">الإبلاغ عن مواقيت صلاة خاطئة</string>
+    <string name="report_step_calc_title">مواقيت الصلاة خاطئة؟</string>
+    <string name="report_intro">تحقق من الإعدادات التالية أولاً، وإن استمرت المشكلة أرسل بلاغًا.</string>
+    <string name="report_calc_method_label">طريقة الحساب</string>
+    <string name="report_location_label">الموقع</string>
+    <string name="change">تغيير</string>
+    <string name="report_still_wrong">المواقيت لا تزال خاطئة</string>
+    <string name="report_step_form_title">تفاصيل البلاغ</string>
+    <string name="report_step_form_hint">حدد الصلوات ذات المواقيت الخاطئة وأدخل الوقت الصحيح لكل منها.</string>
+    <string name="report_correct_time_set">حدد الوقت الصحيح</string>
+    <string name="report_correct_time_value">الوقت الصحيح: %1$s</string>
+    <string name="report_notes_label">ملاحظات (اختياري)</string>
+    <string name="report_submit">إرسال البلاغ</string>
+    <string name="report_step_result_title">إرسال البلاغ</string>
+    <string name="report_submitting">جارٍ الإرسال…</string>
+    <string name="report_submitted">تم إرسال البلاغ. شكرًا لك!</string>
+    <string name="report_submit_failed">تعذر إرسال البلاغ. تأكد من اتصالك بالإنترنت وحاول مرة أخرى.</string>
 </resources>

@@ -8,6 +8,7 @@ import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.data.repositories.LiveContentRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
+import bassamalim.hidaya.core.data.repositories.PrayerTimesReportRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuizRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
@@ -172,12 +173,14 @@ object DomainModule {
         notificationsRepository: NotificationsRepository,
         appStateRepository: AppStateRepository,
         appSettingsRepository: AppSettingsRepository,
+        prayerTimesReportRepository: PrayerTimesReportRepository,
     ) = PrayersBoardDomain(
         prayersRepository,
         locationRepository,
         notificationsRepository,
         appStateRepository,
         appSettingsRepository,
+        prayerTimesReportRepository,
     )
 
     @Provides @Singleton

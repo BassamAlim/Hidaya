@@ -1,13 +1,17 @@
 package bassamalim.hidaya.features.prayers.board
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.core.utils.OsUtils
 import bassamalim.hidaya.features.prayers.notificationSettings.PrayerNotificationSettings
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PrayersBoardViewModel @Inject constructor(
+    private val app: Application,
     private val domain: PrayersBoardDomain,
     private val navigator: Navigator
 ): ViewModel() {
@@ -112,6 +117,149 @@ class PrayersBoardViewModel @Inject constructor(
         val newDate = (viewedDate.clone() as Calendar).apply { add(Calendar.DATE, 1) }
         updateDate(newDate)
     }
+
+    fun onReportHelpClick() {
+        viewModelScope.launch {
+            val location = location.first()
+            val settings = prayerTimesCalculatorSettings.first()
+            val methodEntries =
+                app.resources.getStringArray(R.array.prayer_times_calc_method_entries)
+            val methodName = methodEntries.getOrNull(settings.calculationMethod.ordinal).orEmpty()
+            val computed = location?.let {
+                domain.getTimes(
+                    location = it,
+                    date = currentDate,
+                    prayerTimesCalculatorSettings = settings
+                )
+            } ?: sortedMapOf()
+
+            _uiState.update { it.copy(
+                reportDialogShown = true,
+                reportStep = ReportStep.CHECKS,
+                reportCurrentMethodName = methodName,
+                reportIsAutoLocation = location?.type == LocationType.AUTO,
+                reportPrayerNames = prayerNames,
+                reportComputedTimes = computed,
+                reportWrongPrayers = emptySet(),
+                reportCorrectTimes = emptyMap(),
+                reportNotes = "",
+                reportSubmitting = false,
+                reportSubmitted = false,
+                reportError = null
+            )}
+        }
+    }
+
+    fun onReportDismiss() {
+        _uiState.update { it.copy(reportDialogShown = false) }
+    }
+
+    fun onReportNext() {
+        _uiState.update {
+            val next = when (it.reportStep) {
+                ReportStep.CHECKS -> ReportStep.FORM
+                else -> it.reportStep
+            }
+            it.copy(reportStep = next)
+        }
+    }
+
+    fun onReportBack() {
+        _uiState.update {
+            val prev = when (it.reportStep) {
+                ReportStep.FORM -> ReportStep.CHECKS
+                else -> it.reportStep
+            }
+            it.copy(reportStep = prev)
+        }
+    }
+
+    fun onReportTogglePrayer(prayer: Prayer) {
+        _uiState.update {
+            val newSet =
+                if (prayer in it.reportWrongPrayers) it.reportWrongPrayers - prayer
+                else it.reportWrongPrayers + prayer
+            it.copy(reportWrongPrayers = newSet)
+        }
+    }
+
+    fun onCorrectTimePickerOpen(prayer: Prayer) {
+        _uiState.update { it.copy(reportTimePickerTarget = prayer) }
+    }
+
+    fun onCorrectTimePickerDismiss() {
+        _uiState.update { it.copy(reportTimePickerTarget = null) }
+    }
+
+    fun onCorrectTimePickerConfirm(hour: Int, minute: Int) {
+        _uiState.update {
+            val prayer = it.reportTimePickerTarget ?: return@update it
+            val value = "%02d:%02d".format(hour, minute)
+            it.copy(
+                reportCorrectTimes = it.reportCorrectTimes + (prayer to value),
+                reportTimePickerTarget = null
+            )
+        }
+    }
+
+    fun onReportNotesChange(value: String) {
+        _uiState.update { it.copy(reportNotes = value) }
+    }
+
+    fun onReportSubmit() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                reportStep = ReportStep.RESULT,
+                reportSubmitting = true,
+                reportError = null
+            )}
+
+            val location = location.first()
+            val settings = prayerTimesCalculatorSettings.first()
+            val state = _uiState.value
+
+            val report = mutableMapOf<String, Any?>(
+                "device_id" to OsUtils.getDeviceId(app),
+                "app_version" to getAppVersionName(),
+                "language" to language.name,
+                "location_type" to location?.type?.name,
+                "latitude" to location?.coordinates?.latitude,
+                "longitude" to location?.coordinates?.longitude,
+                "country_id" to location?.ids?.countryId,
+                "city_id" to location?.ids?.cityId,
+                "location_name" to state.locationName,
+                "calculation_method" to settings.calculationMethod.name,
+                "juristic_method" to settings.juristicMethod.name,
+                "high_latitudes_adjustment" to settings.highLatitudesAdjustmentMethod.name,
+                "computed_times" to state.reportComputedTimes.mapKeys { it.key.name },
+                "wrong_prayers" to state.reportWrongPrayers.map { prayer ->
+                    mapOf(
+                        "prayer" to prayer.name,
+                        "computed" to state.reportComputedTimes[prayer],
+                        "correct" to state.reportCorrectTimes[prayer].orEmpty()
+                    )
+                },
+                "notes" to state.reportNotes
+            )
+
+            val success = domain.submitReport(report)
+
+            _uiState.update { it.copy(
+                reportSubmitting = false,
+                reportSubmitted = success,
+                reportError =
+                    if (success) null
+                    else app.getString(R.string.report_submit_failed)
+            )}
+        }
+    }
+
+    private fun getAppVersionName(): String =
+        try {
+            app.packageManager.getPackageInfo(app.packageName, 0).versionName.orEmpty()
+        } catch (_: Exception) {
+            ""
+        }
 
     private fun updateDate(newDate: Calendar) {
         viewModelScope.launch {
