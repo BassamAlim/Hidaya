@@ -19,19 +19,24 @@ import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan2
+import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.floor
-import kotlin.math.roundToInt
+import kotlin.math.round
 import kotlin.math.sin
+import kotlin.math.sqrt
 import kotlin.math.tan
 
 class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
+
+    private enum class RoundingMode { NEAREST, FLOOR, CEIL }
 
     private var asrJuristic =
         if (settings.juristicMethod == PrayerTimeJuristicMethod.HANAFI) 1
         else 0
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var numIterations = 1 // number of iterations needed to compute times
+    private var horizonDip = 0.0 // degrees of horizon depression from observer elevation
 
     private val methodParams = hashMapOf(
         PrayerTimeCalculationMethod.MECCA to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),
@@ -46,6 +51,13 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
     fun getPrayerTimes(coordinates: Coordinates, calendar: Calendar): SortedMap<Prayer, Calendar?> {
+        // Horizon dip from observer elevation: ~0.0347 * sqrt(h_m) degrees.
+        // Applied to sunrise only — matches awqaf.gov.jo, which displays an elevation-shifted
+        // sunrise but uses geometric sunset for the Maghrib offset.
+        horizonDip =
+            if (coordinates.elevation > 0.0) 0.0347 * sqrt(coordinates.elevation)
+            else 0.0
+
         val times = computeDayTimes(
             coordinates = coordinates,
             utcOffset = calendar[Calendar.ZONE_OFFSET].toDouble() / 3600000.0,
@@ -53,21 +65,38 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
         )
 
         return sortedMapOf(
-            FAJR to buildCalendar(time = times[FAJR]!!, date = calendar),
-            SUNRISE to buildCalendar(time = times[SUNRISE]!!, date = calendar),
-            DHUHR to buildCalendar(time = times[DHUHR]!!, date = calendar),
-            ASR to buildCalendar(time = times[ASR]!!, date = calendar),
+            FAJR to buildCalendar(times[FAJR]!!, calendar, roundingFor(FAJR)),
+            SUNRISE to buildCalendar(times[SUNRISE]!!, calendar, roundingFor(SUNRISE)),
+            DHUHR to buildCalendar(times[DHUHR]!!, calendar, roundingFor(DHUHR)),
+            ASR to buildCalendar(times[ASR]!!, calendar, roundingFor(ASR)),
             // skipping sunset time
-            MAGHRIB to buildCalendar(time = times[MAGHRIB]!!, date = calendar),
-            ISHAA to buildCalendar(time = times[ISHAA]!!, date = calendar)
+            MAGHRIB to buildCalendar(times[MAGHRIB]!!, calendar, roundingFor(MAGHRIB)),
+            ISHAA to buildCalendar(times[ISHAA]!!, calendar, roundingFor(ISHAA))
         )
     }
 
-    private fun buildCalendar(time: Double, date: Calendar): Calendar? {
+    // Awqaf-style safety rounding for Jordan: Fajr/Sunrise floor (earlier end-of-Fajr safety),
+    // Asr/Maghrib/Isha ceil (wait-for-actual-event safety). Other methods stay round-to-nearest.
+    private fun roundingFor(prayer: Prayer): RoundingMode {
+        if (settings.calculationMethod != PrayerTimeCalculationMethod.JORDAN)
+            return RoundingMode.NEAREST
+        return when (prayer) {
+            FAJR, SUNRISE -> RoundingMode.FLOOR
+            ASR, MAGHRIB, ISHAA -> RoundingMode.CEIL
+            else -> RoundingMode.NEAREST
+        }
+    }
+
+    private fun buildCalendar(time: Double, date: Calendar, mode: RoundingMode): Calendar? {
         if (time.isNaN()) return null
-        val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
-        val hours = floor(fixed).toInt()
-        val minutes = floor((fixed - hours) * 60.0).roundToInt()
+        val rawMinutes = fixHour(time) * 60.0
+        val totalMinutes = when (mode) {
+            RoundingMode.NEAREST -> round(rawMinutes).toInt()
+            RoundingMode.FLOOR -> floor(rawMinutes).toInt()
+            RoundingMode.CEIL -> ceil(rawMinutes).toInt()
+        }
+        val hours = (totalMinutes / 60) % 24
+        val minutes = totalMinutes % 60
 
         val cal = date.clone() as Calendar
         cal[Calendar.HOUR_OF_DAY] = hours
@@ -133,7 +162,7 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
                 jDate = jDate
             ),
             SUNRISE to computeTime(
-                g = 180 - 0.833,
+                g = 180 - (0.833 + horizonDip),
                 t = t[SUNRISE]!!,
                 latitude = latitude,
                 jDate = jDate
@@ -146,6 +175,10 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
                 jDate = jDate
             ),
             SUNSET to computeTime(
+                // Sunrise gets the elevation dip; sunset doesn't. Empirically, awqaf.gov.jo's
+                // Maghrib lines up with geometric sunset + the documented 5-min offset, with
+                // no extra dip — applying the dip on this side double-counts and pushes
+                // Maghrib several minutes late.
                 g = 0.833,
                 t = t[SUNSET]!!,
                 latitude = latitude,

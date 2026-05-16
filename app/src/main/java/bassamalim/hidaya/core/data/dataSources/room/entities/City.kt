@@ -12,5 +12,6 @@ data class City(
     @field:ColumnInfo(name = "name_en") val nameEn: String,
     @field:ColumnInfo(name = "latitude") val latitude: Double,
     @field:ColumnInfo(name = "longitude") val longitude: Double,
-    @field:ColumnInfo(name = "time_zone") val timeZone: String
+    @field:ColumnInfo(name = "time_zone") val timeZone: String,
+    @field:ColumnInfo(name = "elevation", defaultValue = "0") val elevation: Double = 0.0
 )

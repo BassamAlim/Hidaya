@@ -8,5 +8,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Coordinates(
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val elevation: Double = 0.0
 ) : Parcelable

@@ -9,7 +9,7 @@ object Globals {
     const val NUM_OF_QURAN_SURAS = 114
     const val NUM_OF_QURAN_VERSES = 6236
     const val DB_NAME = "HidayaDB"
-    const val DB_VERSION = 22
+    const val DB_VERSION = 23
     const val DAILY_UPDATE_HOUR = 0
     const val DAILY_UPDATE_MINUTE = 10
 }

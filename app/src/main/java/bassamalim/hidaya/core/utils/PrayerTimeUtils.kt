@@ -5,7 +5,6 @@ import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
-import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import java.util.Calendar
@@ -21,13 +20,12 @@ object PrayerTimeUtils {
         location: Location,
         calendar: Calendar = Calendar.getInstance()
     ): SortedMap<Prayer, Calendar?> {
-        val coordinates = Coordinates(location.coordinates.latitude, location.coordinates.longitude)
         calendar[Calendar.ZONE_OFFSET] = getZoneOffset(
             locationType = location.type,
             date = calendar.timeInMillis,
             selectedTimeZone = selectedTimeZoneId
         )
-        return PrayerTimeCalculator(settings).getPrayerTimes(coordinates, calendar)
+        return PrayerTimeCalculator(settings).getPrayerTimes(location.coordinates, calendar)
     }
 
     fun formatPrayerTimes(

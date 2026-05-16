@@ -29,16 +29,16 @@ class LocationRepository @Inject constructor(
 
     fun setLocation(location: android.location.Location) {
         scope.launch {
-            val closestCity = getClosestCity(
-                Coordinates(latitude = location.latitude, longitude = location.longitude)
+            val coordinates = Coordinates(
+                latitude = location.latitude,
+                longitude = location.longitude,
+                elevation = if (location.hasAltitude()) location.altitude else 0.0
             )
+            val closestCity = getClosestCity(coordinates)
             userPreferencesDataSource.updateLocation(
                 location = Location(
                     type = LocationType.AUTO,
-                    coordinates = Coordinates(
-                        latitude = location.latitude,
-                        longitude = location.longitude
-                    ),
+                    coordinates = coordinates,
                     ids = LocationIds(countryId = closestCity.countryId, cityId = closestCity.id)
                 )
             )
@@ -52,7 +52,11 @@ class LocationRepository @Inject constructor(
             userPreferencesDataSource.updateLocation(
                 location = Location(
                     type = LocationType.MANUAL,
-                    coordinates = Coordinates(latitude = city.latitude, longitude = city.longitude),
+                    coordinates = Coordinates(
+                        latitude = city.latitude,
+                        longitude = city.longitude,
+                        elevation = city.elevation
+                    ),
                     ids = LocationIds(countryId = countryId, cityId = cityId)
                 )
             )
