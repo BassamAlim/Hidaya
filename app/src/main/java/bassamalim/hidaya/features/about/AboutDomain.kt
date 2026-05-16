@@ -34,6 +34,10 @@ class AboutDomain @Inject constructor(
         quranRepository.setShouldShowReaderTutorial(true)
     }
 
+    fun resetOnboarding() {
+        appStateRepository.setOnboardingCompleted(false)
+    }
+
     fun handleTitleClicks(setDevModeEnabled: () -> Unit) {
         if (++counter >= 5) setDevModeEnabled()
     }

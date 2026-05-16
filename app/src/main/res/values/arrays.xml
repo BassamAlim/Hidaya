@@ -217,21 +217,21 @@
     <string-array name="prayer_times_calc_method_entries">
         <item>جامعة أم القرى, مكة المكرمة</item>
         <item>رابطة العالم الإسلامي</item>
-        <item>الجمعية الإسلامية لأمريكا الشمالية</item>
-        <item>جامعة العلوم الإسلامية, كراتشي</item>
-        <item>الهيْة المصرية العامة</item>
-        <item>مؤسسة الجيوفيزياء, جامعة طهران</item>
         <item>وزارة الأوقاف والشؤون والمقدسات الاسلامية، الأردن</item>
+        <item>الهيئة المصرية العامة</item>
+        <item>جامعة العلوم الإسلامية, كراتشي</item>
+        <item>مؤسسة الجيوفيزياء, جامعة طهران</item>
+        <item>الجمعية الإسلامية لأمريكا الشمالية</item>
     </string-array>
 
     <string-array name="prayer_times_calc_method_items" translatable="false">
         <item>MECCA</item>
         <item>MWL</item>
-        <item>ISNA</item>
-        <item>KARACHI</item>
-        <item>EGYPT</item>
-        <item>TAHRAN</item>
         <item>JORDAN</item>
+        <item>EGYPT</item>
+        <item>KARACHI</item>
+        <item>TAHRAN</item>
+        <item>ISNA</item>
     </string-array>
 
     <string-array name="juristic_method_entries">

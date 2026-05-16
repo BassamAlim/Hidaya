@@ -53,6 +53,13 @@ class AboutViewModel @Inject constructor(
         }
     }
 
+    fun onResetOnboarding(snackbarHostState: SnackbarHostState, message: String) {
+        viewModelScope.launch {
+            domain.resetOnboarding()
+            snackbarHostState.showSnackbar(message)
+        }
+    }
+
     fun onTitleClick() {
         domain.handleTitleClicks(
             setDevModeEnabled = {

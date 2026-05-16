@@ -73,6 +73,12 @@ fun AboutScreen(viewModel: AboutViewModel) {
                         snackbarHostState = snackbarHostState,
                         message = message
                     )
+                },
+                onResetOnboarding = { message ->
+                    viewModel.onResetOnboarding(
+                        snackbarHostState = snackbarHostState,
+                        message = message
+                    )
                 }
             )
         }
@@ -150,7 +156,8 @@ private fun ColumnScope.HiddenArea(
     isDevModeOn: Boolean,
     lastDailyUpdate: String,
     onRebuildDatabaseClick: (String) -> Unit,
-    onResetTutorials: (String) -> Unit
+    onResetTutorials: (String) -> Unit,
+    onResetOnboarding: (String) -> Unit
 ) {
     AnimatedVisibility(visible = isDevModeOn, enter = expandVertically()) {
         Column(
@@ -167,6 +174,11 @@ private fun ColumnScope.HiddenArea(
             // reset tutorials do not show again button
             FilledTonalButton(onClick = { onResetTutorials(tutorialsResetMessage) }) {
                 MyText(stringResource(R.string.reset_tutorials))
+            }
+
+            val onboardingResetMessage = stringResource(R.string.onboarding_reset)
+            FilledTonalButton(onClick = { onResetOnboarding(onboardingResetMessage) }) {
+                MyText(stringResource(R.string.reset_onboarding))
             }
 
             // last daily update text

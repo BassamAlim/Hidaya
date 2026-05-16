@@ -3,9 +3,9 @@ package bassamalim.hidaya.core.enums
 enum class PrayerTimeCalculationMethod {
     MECCA,
     MWL,
-    ISNA,
-    KARACHI,
+    JORDAN,
     EGYPT,
+    KARACHI,
     TAHRAN,
-    JORDAN
+    ISNA
 }
