@@ -13,14 +13,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.features.settings.AppearanceSettings
+import bassamalim.hidaya.features.settings.MenuSetting
 
 @Composable
 fun OnboardingScreen(viewModel: OnboardingViewModel) {
@@ -51,6 +54,14 @@ fun OnboardingScreen(viewModel: OnboardingViewModel) {
                 selectedTheme = state.theme,
                 onThemeChange = viewModel::onThemeChange,
                 numeralsLanguage = state.numeralsLanguage
+            )
+
+            MenuSetting(
+                selection = state.calculationMethod,
+                items = PrayerTimeCalculationMethod.entries.toTypedArray(),
+                entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
+                title = stringResource(R.string.calculation_method_title),
+                onSelection = viewModel::onCalculationMethodChange
             )
 
             Button(onClick = viewModel::onSaveClick) {

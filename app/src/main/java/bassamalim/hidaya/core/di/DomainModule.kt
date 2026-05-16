@@ -148,8 +148,9 @@ object DomainModule {
     @Provides @Singleton
     fun provideOnboardingDomain(
         appStateRepository: AppStateRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = OnboardingDomain(appStateRepository, appSettingsRepository)
+        appSettingsRepository: AppSettingsRepository,
+        prayersRepository: PrayersRepository
+    ) = OnboardingDomain(appStateRepository, appSettingsRepository, prayersRepository)
 
     @Provides @Singleton
     fun providePrayerReminderDomain(
