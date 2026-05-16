@@ -19,7 +19,7 @@ if (envFile.exists()) {
 
 android {
     namespace "bassamalim.hidaya"
-    compileSdk 36
+    compileSdk 37
 
     defaultConfig {
         applicationId "bassamalim.hidaya"
