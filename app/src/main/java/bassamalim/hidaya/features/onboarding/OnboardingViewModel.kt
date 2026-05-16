@@ -3,8 +3,10 @@ package bassamalim.hidaya.features.onboarding
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
+import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.nav.Navigator
@@ -36,13 +38,15 @@ class OnboardingViewModel @Inject constructor(
         domain.getNumeralsLanguage(),
         domain.getTimeFormat(),
         domain.getTheme(),
-        domain.getCalculationMethod()
-    ) { state, numeralsLanguage, timeFormat, theme, calculationMethod ->
+        domain.getPrayerTimesCalculatorSettings()
+    ) { state, numeralsLanguage, timeFormat, theme, prayerSettings ->
         state.copy(
             numeralsLanguage = numeralsLanguage,
             timeFormat = timeFormat,
             theme = theme,
-            calculationMethod = calculationMethod
+            calculationMethod = prayerSettings.calculationMethod,
+            juristicMethod = prayerSettings.juristicMethod,
+            highLatitudesAdjustment = prayerSettings.highLatitudesAdjustmentMethod
         )
     }.stateIn(
         scope = viewModelScope,
@@ -81,6 +85,18 @@ class OnboardingViewModel @Inject constructor(
     fun onCalculationMethodChange(method: PrayerTimeCalculationMethod) {
         viewModelScope.launch {
             domain.setCalculationMethod(method)
+        }
+    }
+
+    fun onJuristicMethodChange(method: PrayerTimeJuristicMethod) {
+        viewModelScope.launch {
+            domain.setJuristicMethod(method)
+        }
+    }
+
+    fun onHighLatitudesAdjustmentChange(method: HighLatitudesAdjustmentMethod) {
+        viewModelScope.launch {
+            domain.setHighLatitudesAdjustment(method)
         }
     }
 

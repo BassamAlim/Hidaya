@@ -4,13 +4,14 @@ import android.app.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
+import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
+import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.utils.LangUtils
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class OnboardingDomain @Inject constructor(
@@ -43,13 +44,27 @@ class OnboardingDomain @Inject constructor(
         appSettingsRepository.setTheme(theme)
     }
 
-    fun getCalculationMethod() =
-        prayersRepository.getPrayerTimesCalculatorSettings().map { it.calculationMethod }
+    fun getPrayerTimesCalculatorSettings() =
+        prayersRepository.getPrayerTimesCalculatorSettings()
 
     suspend fun setCalculationMethod(method: PrayerTimeCalculationMethod) {
         val current = prayersRepository.getPrayerTimesCalculatorSettings().first()
         prayersRepository.setPrayerTimesCalculatorSettings(
             current.copy(calculationMethod = method)
+        )
+    }
+
+    suspend fun setJuristicMethod(method: PrayerTimeJuristicMethod) {
+        val current = prayersRepository.getPrayerTimesCalculatorSettings().first()
+        prayersRepository.setPrayerTimesCalculatorSettings(
+            current.copy(juristicMethod = method)
+        )
+    }
+
+    suspend fun setHighLatitudesAdjustment(method: HighLatitudesAdjustmentMethod) {
+        val current = prayersRepository.getPrayerTimesCalculatorSettings().first()
+        prayersRepository.setPrayerTimesCalculatorSettings(
+            current.copy(highLatitudesAdjustmentMethod = method)
         )
     }
 

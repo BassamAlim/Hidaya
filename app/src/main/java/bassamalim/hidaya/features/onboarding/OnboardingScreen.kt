@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
+import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.features.settings.AppearanceSettings
 import bassamalim.hidaya.features.settings.MenuSetting
@@ -62,6 +64,22 @@ fun OnboardingScreen(viewModel: OnboardingViewModel) {
                 entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
                 title = stringResource(R.string.calculation_method_title),
                 onSelection = viewModel::onCalculationMethodChange
+            )
+
+            MenuSetting(
+                selection = state.juristicMethod,
+                items = PrayerTimeJuristicMethod.entries.toTypedArray(),
+                entries = stringArrayResource(R.array.juristic_method_entries),
+                title = stringResource(R.string.juristic_method_title),
+                onSelection = viewModel::onJuristicMethodChange
+            )
+
+            MenuSetting(
+                selection = state.highLatitudesAdjustment,
+                items = HighLatitudesAdjustmentMethod.entries.toTypedArray(),
+                entries = stringArrayResource(R.array.high_lat_adjustment_entries),
+                title = stringResource(R.string.high_lat_adjustment_title),
+                onSelection = viewModel::onHighLatitudesAdjustmentChange
             )
 
             Button(onClick = viewModel::onSaveClick) {
