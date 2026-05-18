@@ -55,10 +55,7 @@ private fun SheetContent(viewModel: VerseInfoViewModel, state: VerseInfoUiState)
         BookmarkOptionsSection(
             verseId = state.verseId,
             bookmarks = state.bookmarks,
-            onBookmark1Click = viewModel::onBookmark1Click,
-            onBookmark2Click = viewModel::onBookmark2Click,
-            onBookmark3Click = viewModel::onBookmark3Click,
-            onBookmark4Click = viewModel::onBookmark4Click
+            onBookmarkClick = viewModel::onBookmarkClick
         )
 
         MyHorizontalDivider()
@@ -75,54 +72,31 @@ private fun SheetContent(viewModel: VerseInfoViewModel, state: VerseInfoUiState)
 private fun BookmarkOptionsSection(
     verseId: Int,
     bookmarks: QuranBookmarks,
-    onBookmark1Click: (Int?) -> Unit,
-    onBookmark2Click: (Int?) -> Unit,
-    onBookmark3Click: (Int?) -> Unit,
-    onBookmark4Click: (Int?) -> Unit
+    onBookmarkClick: (Int, Int?) -> Unit
 ) {
+    val bookmarkVerseIds = listOf(
+        bookmarks.bookmark1VerseId,
+        bookmarks.bookmark2VerseId,
+        bookmarks.bookmark3VerseId,
+        bookmarks.bookmark4VerseId
+    )
+    val bookmarkColors = listOf(Bookmark1Color, Bookmark2Color, Bookmark3Color, Bookmark4Color)
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        MyIconButton(
-            imageVector =
-                if (verseId == bookmarks.bookmark1VerseId) Icons.Default.BookmarkRemove
-                else Icons.Default.BookmarkAdd,
-            description = stringResource(R.string.bookmark_verse_button_description),
-            onClick = { onBookmark1Click(bookmarks.bookmark1VerseId) },
-            iconModifier = Modifier.size(32.dp),
-            iconColor = Bookmark1Color
-        )
-
-        MyIconButton(
-            imageVector =
-                if (verseId == bookmarks.bookmark2VerseId) Icons.Default.BookmarkRemove
-                else Icons.Default.BookmarkAdd,
-            description = stringResource(R.string.bookmark_verse_button_description),
-            onClick = { onBookmark2Click(bookmarks.bookmark2VerseId) },
-            iconModifier = Modifier.size(32.dp),
-            iconColor = Bookmark2Color
-        )
-
-        MyIconButton(
-            imageVector =
-                if (verseId == bookmarks.bookmark3VerseId) Icons.Default.BookmarkRemove
-                else Icons.Default.BookmarkAdd,
-            description = stringResource(R.string.bookmark_verse_button_description),
-            onClick = { onBookmark3Click(bookmarks.bookmark3VerseId) },
-            iconModifier = Modifier.size(32.dp),
-            iconColor = Bookmark3Color
-        )
-
-        MyIconButton(
-            imageVector =
-                if (verseId == bookmarks.bookmark4VerseId) Icons.Default.BookmarkRemove
-                else Icons.Default.BookmarkAdd,
-            description = stringResource(R.string.bookmark_verse_button_description),
-            onClick = { onBookmark4Click(bookmarks.bookmark4VerseId) },
-            iconModifier = Modifier.size(32.dp),
-            iconColor = Bookmark4Color
-        )
+        bookmarkVerseIds.forEachIndexed { i, bookmarkVerseId ->
+            MyIconButton(
+                imageVector =
+                    if (verseId == bookmarkVerseId) Icons.Default.BookmarkRemove
+                    else Icons.Default.BookmarkAdd,
+                description = stringResource(R.string.bookmark_verse_button_description),
+                onClick = { onBookmarkClick(i + 1, bookmarkVerseId) },
+                iconModifier = Modifier.size(32.dp),
+                iconColor = bookmarkColors[i]
+            )
+        }
     }
 }
 

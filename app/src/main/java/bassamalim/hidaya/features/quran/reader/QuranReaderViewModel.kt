@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.QuranViewType
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.nav.Screen

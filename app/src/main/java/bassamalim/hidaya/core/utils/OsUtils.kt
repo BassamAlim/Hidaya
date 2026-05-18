@@ -1,7 +1,6 @@
 package bassamalim.hidaya.core.utils
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -10,9 +9,9 @@ import android.provider.Settings
 object OsUtils {
 
     @SuppressLint("HardwareIds")
-    fun getDeviceId(app: Application): String =
+    fun getDeviceId(context: Context): String =
         Settings.Secure.getString(
-            app.contentResolver,
+            context.contentResolver,
             Settings.Secure.ANDROID_ID
         )
 

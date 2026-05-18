@@ -3,17 +3,14 @@ package bassamalim.hidaya.core.data.repositories
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.QuranPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VersesDao
-import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.QuranViewType
 import bassamalim.hidaya.core.models.Sura
-import bassamalim.hidaya.features.quran.reader.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -21,8 +18,7 @@ class QuranRepository @Inject constructor(
     private val quranPreferencesDataSource: QuranPreferencesDataSource,
     private val surasDao: SurasDao,
     private val versesDao: VersesDao,
-    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) {
 
     fun observeAllSuras(language: Language) = surasDao.observeAll().map {
@@ -54,25 +50,21 @@ class QuranRepository @Inject constructor(
         surasDao.getPlainNamesAr()
     }
 
-    fun setSuraFavoriteStatus(suraId: Int, isFavorite: Boolean) {
-        scope.launch {
-            withContext(dispatcher) {
-                surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
-            }
-            setSuraFavoritesBackup(
-                surasDao.observeIsFavorites().first().mapIndexed { index, value ->
-                    index + 1 to (value == 1)
-                }.toMap()
-            )
+    suspend fun setSuraFavoriteStatus(suraId: Int, isFavorite: Boolean) {
+        withContext(dispatcher) {
+            surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
         }
+        setSuraFavoritesBackup(
+            surasDao.observeIsFavorites().first().mapIndexed { index, value ->
+                index + 1 to (value == 1)
+            }.toMap()
+        )
     }
 
-    fun setSuraFavorites(map: Map<Int, Boolean>) {
-        scope.launch {
-            withContext(dispatcher) {
-                map.forEach { (suraId, isFavorite) ->
-                    surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
-                }
+    suspend fun setSuraFavorites(map: Map<Int, Boolean>) {
+        withContext(dispatcher) {
+            map.forEach { (suraId, isFavorite) ->
+                surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
             }
         }
     }
@@ -125,64 +117,35 @@ class QuranRepository @Inject constructor(
 
     fun getBookmarks() = quranPreferencesDataSource.getBookmarks()
 
-    fun setBookmark1VerseId(verseId: Int?) {
-        scope.launch {
-            quranPreferencesDataSource.updateBookmarks(
-                quranPreferencesDataSource.getBookmarks().first()
-                    .copy(bookmark1VerseId = verseId)
-            )
-        }
-    }
-
-    fun setBookmark2VerseId(verseId: Int?) {
-        scope.launch {
-            quranPreferencesDataSource.updateBookmarks(
-                quranPreferencesDataSource.getBookmarks().first()
-                    .copy(bookmark2VerseId = verseId)
-            )
-        }
-    }
-
-    fun setBookmark3VerseId(verseId: Int?) {
-        scope.launch {
-            quranPreferencesDataSource.updateBookmarks(
-                quranPreferencesDataSource.getBookmarks().first()
-                    .copy(bookmark3VerseId = verseId)
-            )
-        }
-    }
-
-    fun setBookmark4VerseId(verseId: Int?) {
-        scope.launch {
-            quranPreferencesDataSource.updateBookmarks(
-                quranPreferencesDataSource.getBookmarks().first()
-                    .copy(bookmark4VerseId = verseId)
-            )
-        }
+    suspend fun setBookmarkVerseId(index: Int, verseId: Int?) {
+        val current = quranPreferencesDataSource.getBookmarks().first()
+        quranPreferencesDataSource.updateBookmarks(
+            when (index) {
+                1 -> current.copy(bookmark1VerseId = verseId)
+                2 -> current.copy(bookmark2VerseId = verseId)
+                3 -> current.copy(bookmark3VerseId = verseId)
+                4 -> current.copy(bookmark4VerseId = verseId)
+                else -> throw IllegalArgumentException("Invalid bookmark index: $index")
+            }
+        )
     }
 
     fun getShouldShowReaderTutorial() = quranPreferencesDataSource.getShouldShowReaderTutorial()
 
-    fun setShouldShowReaderTutorial(shouldShowReaderTutorial: Boolean) {
-        scope.launch {
-            quranPreferencesDataSource.updateShouldShowReaderTutorial(shouldShowReaderTutorial)
-        }
+    suspend fun setShouldShowReaderTutorial(shouldShowReaderTutorial: Boolean) {
+        quranPreferencesDataSource.updateShouldShowReaderTutorial(shouldShowReaderTutorial)
     }
 
     fun getWerdPageNum() = quranPreferencesDataSource.getWerdPageNum()
 
-    fun setWerdPageNum(werdPageNum: Int) {
-        scope.launch {
-            quranPreferencesDataSource.updateWerdPageNum(werdPageNum)
-        }
+    suspend fun setWerdPageNum(werdPageNum: Int) {
+        quranPreferencesDataSource.updateWerdPageNum(werdPageNum)
     }
 
     fun isWerdDone() = quranPreferencesDataSource.getWerdDone()
 
-    fun setWerdDone(isWerdDone: Boolean) {
-        scope.launch {
-            quranPreferencesDataSource.updateWerdDone(isWerdDone)
-        }
+    suspend fun setWerdDone(isWerdDone: Boolean) {
+        quranPreferencesDataSource.updateWerdDone(isWerdDone)
     }
 
 }

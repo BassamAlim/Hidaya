@@ -75,6 +75,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.QuranViewType
 import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.ui.components.LoadingScreen

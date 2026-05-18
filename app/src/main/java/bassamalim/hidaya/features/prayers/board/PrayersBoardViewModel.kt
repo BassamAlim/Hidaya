@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.repositories.PrayerTimesReport
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Prayer
@@ -11,7 +12,6 @@ import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.core.utils.OsUtils
 import bassamalim.hidaya.features.prayers.notificationSettings.PrayerNotificationSettings
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,16 +75,14 @@ class PrayersBoardViewModel @Inject constructor(
         initialValue = PrayersBoardUiState()
     )
 
-    private fun initializeData() {
-        viewModelScope.launch {
-            language = domain.getLanguage()
-            numeralsLanguage = domain.getNumeralsLanguage()
+    private suspend fun initializeData() {
+        language = domain.getLanguage()
+        numeralsLanguage = domain.getNumeralsLanguage()
 
-            _uiState.update { it.copy(
-                loading = false,
-                dateText = getDateText(viewedDate)
-            )}
-        }
+        _uiState.update { it.copy(
+            loading = false,
+            dateText = getDateText(viewedDate)
+        )}
     }
 
     fun onLocatorClick() {
@@ -122,9 +120,7 @@ class PrayersBoardViewModel @Inject constructor(
         viewModelScope.launch {
             val location = location.first()
             val settings = prayerTimesCalculatorSettings.first()
-            val methodEntries =
-                app.resources.getStringArray(R.array.prayer_times_calc_method_entries)
-            val methodName = methodEntries.getOrNull(settings.calculationMethod.ordinal).orEmpty()
+            val methodName = domain.getMethodName(settings.calculationMethod.ordinal)
             val computed = location?.let {
                 domain.getTimes(
                     location = it,
@@ -224,28 +220,15 @@ class PrayersBoardViewModel @Inject constructor(
             val settings = prayerTimesCalculatorSettings.first()
             val state = _uiState.value
 
-            val report = mutableMapOf<String, Any?>(
-                "device_id" to OsUtils.getDeviceId(app),
-                "app_version" to getAppVersionName(),
-                "language" to language.name,
-                "location_type" to location?.type?.name,
-                "latitude" to location?.coordinates?.latitude,
-                "longitude" to location?.coordinates?.longitude,
-                "country_id" to location?.ids?.countryId,
-                "city_id" to location?.ids?.cityId,
-                "location_name" to state.locationName,
-                "calculation_method" to settings.calculationMethod.name,
-                "juristic_method" to settings.juristicMethod.name,
-                "high_latitudes_adjustment" to settings.highLatitudesAdjustmentMethod.name,
-                "computed_times" to state.report.computedTimes.mapKeys { it.key.name },
-                "wrong_prayers" to state.report.wrongPrayers.map { prayer ->
-                    mapOf(
-                        "prayer" to prayer.name,
-                        "computed" to state.report.computedTimes[prayer],
-                        "correct" to state.report.correctTimes[prayer].orEmpty()
-                    )
-                },
-                "notes" to state.report.notes
+            val report = PrayerTimesReport(
+                language = language,
+                location = location,
+                locationName = state.locationName,
+                calculatorSettings = settings,
+                computedTimes = state.report.computedTimes,
+                wrongPrayers = state.report.wrongPrayers,
+                correctTimes = state.report.correctTimes,
+                notes = state.report.notes
             )
 
             val success = domain.submitReport(report)
@@ -261,13 +244,6 @@ class PrayersBoardViewModel @Inject constructor(
             )}
         }
     }
-
-    private fun getAppVersionName(): String =
-        try {
-            app.packageManager.getPackageInfo(app.packageName, 0).versionName.orEmpty()
-        } catch (_: Exception) {
-            ""
-        }
 
     private fun updateDate(newDate: Calendar) {
         viewModelScope.launch {
@@ -295,11 +271,12 @@ class PrayersBoardViewModel @Inject constructor(
         prayerSettings: Map<Prayer, PrayerNotificationSettings>
     ) = sortedMapOf<Prayer, PrayerCardData>().apply {
         prayerNames.forEach { (prayer, name) ->
+            val settings = prayerSettings[prayer] ?: return@forEach
             this[prayer] = PrayerCardData(
                 text = "$name ${prayerTimeMap[prayer] ?: ""}",
-                notificationType = prayerSettings[prayer]!!.notificationType,
-                isExtraReminderOffsetSpecified = prayerSettings[prayer]!!.reminderOffset != 0,
-                extraReminderOffset = formatOffset(prayerSettings[prayer]!!.reminderOffset)
+                notificationType = settings.notificationType,
+                isExtraReminderOffsetSpecified = settings.reminderOffset != 0,
+                extraReminderOffset = formatOffset(settings.reminderOffset)
             )
         }
     }

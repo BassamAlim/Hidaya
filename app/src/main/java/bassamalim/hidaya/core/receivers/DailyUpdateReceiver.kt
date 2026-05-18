@@ -159,7 +159,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         appStateRepository.setLastDailyUpdateMillis(now.timeInMillis)
     }
 
-    private fun pickWerd() {
+    private suspend fun pickWerd() {
         val randomWerd = Random().nextInt(Globals.NUM_OF_QURAN_PAGES)
         quranRepository.setWerdPageNum(randomWerd)
         quranRepository.setWerdDone(false)

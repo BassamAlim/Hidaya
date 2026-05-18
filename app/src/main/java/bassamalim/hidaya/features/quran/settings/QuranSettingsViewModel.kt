@@ -6,7 +6,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.utils.LangUtils
-import bassamalim.hidaya.features.quran.reader.QuranViewType
+import bassamalim.hidaya.core.enums.QuranViewType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

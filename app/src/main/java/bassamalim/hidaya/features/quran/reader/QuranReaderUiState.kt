@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.quran.reader
 
 import android.support.v4.media.session.PlaybackStateCompat
+import bassamalim.hidaya.core.enums.QuranViewType
 import bassamalim.hidaya.core.models.QuranBookmarks
 import bassamalim.hidaya.core.models.Verse
 

@@ -55,38 +55,11 @@ class VerseInfoViewModel @Inject constructor(
         }
     }
 
-    fun onBookmark1Click(bookmarkVerseId: Int?) {
+    fun onBookmarkClick(index: Int, bookmarkVerseId: Int?) {
         viewModelScope.launch {
-            domain.setBookmark1VerseId(
-                if (bookmarkVerseId == verseId) null
-                else verseId
-            )
-        }
-    }
-
-    fun onBookmark2Click(bookmarkVerseId: Int?) {
-        viewModelScope.launch {
-            domain.setBookmark2VerseId(
-                if (bookmarkVerseId == verseId) null
-                else verseId
-            )
-        }
-    }
-
-    fun onBookmark3Click(bookmarkVerseId: Int?) {
-        viewModelScope.launch {
-            domain.setBookmark3VerseId(
-                if (bookmarkVerseId == verseId) null
-                else verseId
-            )
-        }
-    }
-
-    fun onBookmark4Click(bookmarkVerseId: Int?) {
-        viewModelScope.launch {
-            domain.setBookmark4VerseId(
-                if (bookmarkVerseId == verseId) null
-                else verseId
+            domain.setBookmarkVerseId(
+                index = index,
+                verseId = if (bookmarkVerseId == verseId) null else verseId
             )
         }
     }

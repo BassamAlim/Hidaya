@@ -37,7 +37,7 @@ class QuranSurasDomain @Inject constructor(
 
     suspend fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 
-    fun setFav(suraId: Int, fav: Boolean) {
+    suspend fun setFav(suraId: Int, fav: Boolean) {
         quranRepository.setSuraFavoriteStatus(suraId, fav)
     }
 

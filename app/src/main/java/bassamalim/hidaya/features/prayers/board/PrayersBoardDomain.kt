@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
+import bassamalim.hidaya.core.data.repositories.PrayerTimesReport
 import bassamalim.hidaya.core.data.repositories.PrayerTimesReportRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Language
@@ -29,8 +30,11 @@ class PrayersBoardDomain @Inject constructor(
     private val prayerTimesReportRepository: PrayerTimesReportRepository
 ) {
 
-    suspend fun submitReport(report: Map<String, Any?>) =
+    suspend fun submitReport(report: PrayerTimesReport) =
         prayerTimesReportRepository.submitReport(report)
+
+    fun getMethodName(ordinal: Int) =
+        prayerTimesReportRepository.getMethodName(ordinal)
 
     fun getLocation() = locationRepository.getLocation()
 

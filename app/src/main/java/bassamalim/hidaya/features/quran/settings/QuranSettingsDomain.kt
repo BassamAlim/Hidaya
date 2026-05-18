@@ -4,7 +4,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.features.quran.reader.QuranViewType
+import bassamalim.hidaya.core.enums.QuranViewType
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 

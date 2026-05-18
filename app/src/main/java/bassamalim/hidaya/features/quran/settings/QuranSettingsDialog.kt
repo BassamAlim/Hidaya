@@ -30,7 +30,7 @@ import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.quran.reader.QuranViewType
+import bassamalim.hidaya.core.enums.QuranViewType
 import bassamalim.hidaya.features.settings.CategoryTitle
 import bassamalim.hidaya.features.settings.MenuSetting
 import bassamalim.hidaya.features.settings.PreferenceTitle

@@ -1,6 +1,7 @@
 package bassamalim.hidaya.core.di
 
 import android.app.Application
+import android.content.Context
 import android.content.res.Resources
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppStatePreferencesDataSource
@@ -47,6 +48,7 @@ import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -126,9 +128,8 @@ object RepositoryModule {
         quranPreferencesDataSource: QuranPreferencesDataSource,
         surasDao: SurasDao,
         versesDao: VersesDao,
-        @DefaultDispatcher dispatcher: CoroutineDispatcher,
-        @ApplicationScope scope: CoroutineScope
-    ) = QuranRepository(quranPreferencesDataSource, surasDao, versesDao, dispatcher, scope)
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
+    ) = QuranRepository(quranPreferencesDataSource, surasDao, versesDao, dispatcher)
 
     @Provides @Singleton
     fun provideRecitationsRepository(
@@ -172,9 +173,9 @@ object RepositoryModule {
 
     @Provides @Singleton
     fun providePrayerTimesReportRepository(
-        app: Application,
+        @ApplicationContext context: Context,
         firestore: FirebaseFirestore
-    ) = PrayerTimesReportRepository(app, firestore)
+    ) = PrayerTimesReportRepository(context, firestore)
 
     @Provides @Singleton
     fun provideUserRepository(

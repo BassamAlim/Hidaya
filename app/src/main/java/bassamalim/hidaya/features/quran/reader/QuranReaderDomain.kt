@@ -107,11 +107,11 @@ class QuranReaderDomain @Inject constructor(
 
     private fun getWerdPage() = quranRepository.getWerdPageNum()
 
-    private fun setWerdDone() {
+    private suspend fun setWerdDone() {
         quranRepository.setWerdDone(true)
     }
 
-    fun setDoNotShowTutorial() {
+    suspend fun setDoNotShowTutorial() {
         quranRepository.setShouldShowReaderTutorial(false)
     }
 

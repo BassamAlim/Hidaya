@@ -29,7 +29,7 @@ class AboutDomain @Inject constructor(
         ActivityUtils.restartApplication(activity)
     }
 
-    fun resetTutorials() {
+    suspend fun resetTutorials() {
         booksRepository.setShouldShowTutorial(true)
         quranRepository.setShouldShowReaderTutorial(true)
     }

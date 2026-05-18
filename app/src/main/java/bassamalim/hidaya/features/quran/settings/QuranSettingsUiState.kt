@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.quran.settings
 
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.features.quran.reader.QuranViewType
+import bassamalim.hidaya.core.enums.QuranViewType
 
 data class QuranSettingsUiState(
     val isLoading: Boolean = true,
