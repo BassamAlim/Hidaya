@@ -1,6 +1,8 @@
 package bassamalim.hidaya.features.radio
 
 import android.app.Activity
+import android.content.ComponentName
+import android.media.AudioManager
 import android.os.Build
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -26,16 +28,29 @@ class RadioClientViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private var pendingActivity: Activity? = null
+    private var mediaBrowser: MediaBrowserCompat? = null
+    private var controller: MediaControllerCompat? = null
+    private var tc: MediaControllerCompat.TransportControls? = null
 
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback =
         object : MediaBrowserCompat.ConnectionCallback() {
             override fun onConnected() {
                 val activity = pendingActivity ?: return
-                domain.initializeController(activity)
+
+                // Get the token for the MediaSession
+                val token = mediaBrowser!!.sessionToken
+
+                // Create a MediaControllerCompat
+                val mediaController = MediaControllerCompat(activity, token)
+
+                // Save the controller
+                MediaControllerCompat.setMediaController(activity, mediaController)
+                controller = MediaControllerCompat.getMediaController(activity)
+                tc = controller!!.transportControls
 
                 // just sending the static url to extract the dynamic url
                 val url = domain.getUrl()
-                domain.play(url)
+                tc?.playFromMediaId(url, null)
 
                 // Finish building the UI
                 buildTransportControls()
@@ -60,11 +75,22 @@ class RadioClientViewModel @Inject constructor(
 
         updatePbState(PlaybackStateCompat.STATE_CONNECTING)
 
-        domain.connect(activity, connectionCallbacks)
+        mediaBrowser = MediaBrowserCompat(
+            activity,
+            ComponentName(activity, RadioService::class.java),
+            connectionCallbacks,
+            null
+        )
+        mediaBrowser?.connect()
+
+        activity.volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
     fun onStop(activity: Activity) {
-        domain.disconnect(activity, controllerCallback)
+        MediaControllerCompat.getMediaController(activity)
+            ?.unregisterCallback(controllerCallback)
+
+        mediaBrowser?.disconnect()
         pendingActivity = null
     }
 
@@ -81,10 +107,10 @@ class RadioClientViewModel @Inject constructor(
 
     private fun buildTransportControls() {
         // Display the initial state
-        updatePbState(domain.getState())
+        updatePbState(controller?.playbackState?.state ?: PlaybackStateCompat.STATE_NONE)
 
         // Register a Callback to stay in sync
-        domain.registerCallback(controllerCallback)
+        controller?.registerCallback(controllerCallback)
     }
 
     private fun updatePbState(state: Int) {
@@ -101,14 +127,14 @@ class RadioClientViewModel @Inject constructor(
     }
 
     fun onPlayPauseClick() {
-        when (domain.getState()) {
+        when (controller?.playbackState?.state) {
             PlaybackStateCompat.STATE_PLAYING -> {
-                domain.pause()
+                tc?.pause()
                 updatePbState(PlaybackStateCompat.STATE_STOPPED)
             }
             PlaybackStateCompat.STATE_STOPPED,
             PlaybackStateCompat.STATE_PAUSED -> {
-                domain.resume()
+                tc?.play()
                 updatePbState(PlaybackStateCompat.STATE_PLAYING)
             }
             else -> {}

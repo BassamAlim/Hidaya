@@ -1,31 +1,15 @@
 package bassamalim.hidaya.features.recitations.player
 
-import android.app.Activity
 import android.app.Application
 import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.media.AudioManager
-import android.os.Build
-import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.annotation.OptIn
-import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.Recitation
@@ -39,126 +23,7 @@ class RecitationPlayerDomain @Inject constructor(
     private val quranRepository: QuranRepository
 ) {
 
-    private lateinit var updateDownloadStates: (DownloadState) -> Unit
-    private var mediaBrowser: MediaBrowserCompat? = null
-    private lateinit var controller: MediaControllerCompat
-    private lateinit var tc: MediaControllerCompat.TransportControls
     private var path = ""
-    private lateinit var downloadReceiver: ReceiverWrapper
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @OptIn(UnstableApi::class)
-    fun connect(
-        activity: Activity,
-        connectionCallbacks: MediaBrowserCompat.ConnectionCallback,
-        updateDownloadStates: (DownloadState) -> Unit
-    ) {
-        this.updateDownloadStates = updateDownloadStates
-
-        downloadReceiver = ReceiverWrapper(
-            context = activity.applicationContext,
-            intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-            broadcastReceiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    updateDownloadStates(checkDownload())
-                }
-            }
-        )
-
-        mediaBrowser = MediaBrowserCompat(
-            activity,
-            ComponentName(activity, RecitationPlayerService::class.java),
-            connectionCallbacks,
-            null
-        )
-        mediaBrowser?.connect()
-
-        activity.volumeControlStream = AudioManager.STREAM_MUSIC
-
-        downloadReceiver.register()
-    }
-
-    fun stopMediaBrowser(activity: Activity, controllerCallback: MediaControllerCompat.Callback) {
-        downloadReceiver.unregister()
-
-        MediaControllerCompat.getMediaController(activity)
-            ?.unregisterCallback(controllerCallback)
-
-        disconnectMediaBrowser()
-    }
-
-    fun disconnectMediaBrowser() {
-        mediaBrowser?.disconnect()
-    }
-
-    fun initializeController(activity: Activity, controllerCallback: MediaControllerCompat.Callback) {
-        Log.d(Globals.TAG, "in initializeController of RecitationPlayerDomain")
-
-        // Get the token for the MediaSession
-        val token = mediaBrowser!!.sessionToken
-
-        // Create a MediaControllerCompat
-        val mediaController = MediaControllerCompat(activity, token)
-
-        // Save the controller
-        MediaControllerCompat.setMediaController(activity, mediaController)
-
-        controller = MediaControllerCompat.getMediaController(activity)
-        tc = controller.transportControls
-
-        // Register a Callback to stay in sync
-        controller.registerCallback(controllerCallback)
-    }
-
-    fun sendPlayRequest(
-        mediaId: String,
-        playType: String,
-        reciterName: String,
-        narration: Recitation.Narration
-    ) {
-        // Pass media data
-        val bundle = Bundle()
-        bundle.putString("play_type", playType)
-        bundle.putString("reciter_name", reciterName)
-        bundle.putSerializable("narration", narration)
-
-        // Start Playback
-        tc.playFromMediaId(mediaId, bundle)
-    }
-
-    fun pause() = tc.pause()
-
-    fun resume() = tc.play()
-
-    fun seekTo(pos: Long) = tc.seekTo(pos)
-
-    fun skipToNext() = tc.skipToNext()
-
-    fun skipToPrevious() = tc.skipToPrevious()
-
-    fun getState() = controller.playbackState.state
-
-    fun getMetadata(): MediaMetadataCompat = controller.metadata
-
-    fun getPlaybackState(): PlaybackStateCompat = controller.playbackState
-
-    fun downloadRecitation(activity: Activity, narration: Recitation.Narration, suraIdx: Int, suraName: String) {
-        val server = narration.server
-        val link = String.Companion.format(Locale.US, "%s/%03d.mp3", server, suraIdx+1)
-        val uri = link.toUri()
-
-        val request = DownloadManager.Request(uri)
-        request.setTitle(suraName)
-        FileUtils.createDir(app, path)
-        request.setDestinationInExternalFilesDir(app, path, "${suraIdx}.mp3")
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-
-        (activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-    }
-
-    fun deleteRecitation() {
-        FileUtils.deleteFile(app, path)
-    }
 
     fun setPath(reciterId: Int, narrationId: Int) {
         this.path = "${recitationsRepository.prefix}${reciterId}/$narrationId/"
@@ -188,15 +53,32 @@ class RecitationPlayerDomain @Inject constructor(
     fun getRepeatMode() = recitationsRepository.getRepeatMode()
 
     suspend fun setRepeatMode(mode: Int) {
-        tc.setRepeatMode(mode)
         recitationsRepository.setRepeatMode(mode)
     }
 
     fun getShuffleMode() = recitationsRepository.getShuffleMode()
 
     suspend fun setShuffleMode(mode: Int) {
-        tc.setShuffleMode(mode)
         recitationsRepository.setShuffleMode(mode)
+    }
+
+    @OptIn(UnstableApi::class)
+    fun downloadRecitation(narration: Recitation.Narration, suraIdx: Int, suraName: String) {
+        val server = narration.server
+        val link = String.Companion.format(Locale.US, "%s/%03d.mp3", server, suraIdx+1)
+        val uri = link.toUri()
+
+        val request = DownloadManager.Request(uri)
+        request.setTitle(suraName)
+        FileUtils.createDir(app, path)
+        request.setDestinationInExternalFilesDir(app, path, "${suraIdx}.mp3")
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+
+        (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+    }
+
+    fun deleteRecitation() {
+        FileUtils.deleteFile(app, path)
     }
 
     fun checkDownload(): DownloadState {

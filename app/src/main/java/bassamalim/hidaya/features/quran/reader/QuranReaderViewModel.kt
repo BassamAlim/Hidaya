@@ -1,7 +1,11 @@
 package bassamalim.hidaya.features.quran.reader
 
 import android.app.Activity
+import android.content.ComponentName
+import android.media.AudioManager
 import android.os.Build
+import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -29,6 +33,7 @@ import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.quran.reader.versePlayer.VersePlayerService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -41,7 +46,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 import javax.inject.Inject
+import android.util.Log
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse as VerseEntity
 
 @HiltViewModel
@@ -129,13 +136,86 @@ class QuranReaderViewModel @Inject constructor(
         }
     }
 
+    private var pendingActivity: Activity? = null
+    private var mediaBrowser: MediaBrowserCompat? = null
+    private var controller: MediaControllerCompat? = null
+    private var tc: MediaControllerCompat.TransportControls? = null
+
     fun onStart(pagerState: PagerState, coroutineScope: CoroutineScope) {
         this.pagerState = pagerState
         this.coroutineScope = coroutineScope
     }
 
     fun onStop(activity: Activity) {
-        domain.stopPlayer(activity)
+        controllerCallback.let {
+            MediaControllerCompat.getMediaController(activity)?.unregisterCallback(it)
+        }
+
+        mediaBrowser?.disconnect()
+        mediaBrowser = null
+
+        pendingActivity = null
+
+        domain.stopHandler()
+    }
+
+    private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
+        override fun onConnected() {
+            Log.i(Globals.TAG, "In onServiceConnected")
+
+            if (mediaBrowser == null) return
+
+            val activity = pendingActivity ?: return
+
+            val mediaController: MediaControllerCompat?
+            try {
+                // Create a MediaControllerCompat
+                mediaController = MediaControllerCompat(activity, mediaBrowser!!.sessionToken)
+            } catch (e: IllegalStateException) {
+                Log.e(Globals.TAG, "Error in QuranReader: ${e.message}")
+                return
+            }
+
+            // Save the controller
+            MediaControllerCompat.setMediaController(activity, mediaController)
+
+            controller = MediaControllerCompat.getMediaController(activity)
+            tc = controller!!.transportControls
+
+            if (_uiState.value.selectedVerse == null) {
+                _uiState.update { it.copy(
+                    selectedVerse = it.pageVerses[0]
+                )}
+            }
+
+            // Finish building the UI
+            buildTransportControls()
+
+            requestPlay(_uiState.value.selectedVerse!!.id)
+        }
+
+        override fun onConnectionSuspended() {
+            Log.e(Globals.TAG, "Connection suspended in QuranReader")
+            // The Service has crashed.
+        }
+
+        override fun onConnectionFailed() {
+            Log.e(Globals.TAG, "Connection failed in QuranReader")
+            // The Service has refused our connection
+        }
+    }
+
+    private fun buildTransportControls() {
+        // Register a Callback to stay in sync
+        controller?.registerCallback(controllerCallback)
+    }
+
+    private fun requestPlay(ayaId: Int) {
+        Executors.newSingleThreadExecutor().execute {
+            tc?.playFromMediaId(ayaId.toString(), Bundle())
+
+            _uiState.update { it.copy(selectedVerse = null) }
+        }
     }
 
     fun onPageChange(currentPageIdx: Int, pageIdx: Int, scrollState: ScrollState? = null) {
@@ -213,39 +293,38 @@ class QuranReaderViewModel @Inject constructor(
             return
         }
 
-        if (!domain.isMediaPlayerInitialized() || !domain.isControllerInitialized()) {
+        if (mediaBrowser == null || controller == null) {
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
-            domain.setupPlayer(
-                activity = activity,
-                controllerCallback = controllerCallback,
-                getPageCallback = { pageNum },
-                getPageVersesCallback = { _uiState.value.pageVerses },
-                getSelectedVerseCallback = { _uiState.value.selectedVerse },
-                setSelectedVerseCallback = { value ->
-                    _uiState.update { it.copy(
-                        selectedVerse = value
-                    )}
-                }
+
+            pendingActivity = activity
+            mediaBrowser = MediaBrowserCompat(
+                activity,
+                ComponentName(activity, VersePlayerService::class.java),
+                connectionCallbacks,
+                null
             )
+            mediaBrowser?.connect()
+
+            activity.volumeControlStream = AudioManager.STREAM_MUSIC
         }
         else {
-            when (domain.getPlaybackState()) {
+            when (controller?.playbackState?.state ?: PlaybackStateCompat.STATE_NONE) {
                 PlaybackStateCompat.STATE_PLAYING -> {
                     updateButton(PlaybackStateCompat.STATE_PAUSED)
-                    domain.pausePlayer()
+                    tc?.pause()
                 }
                 PlaybackStateCompat.STATE_PAUSED -> {
                     updateButton(PlaybackStateCompat.STATE_BUFFERING)
 
                     if (_uiState.value.selectedVerse == null) {
-                        domain.playPlayer()
+                        tc?.play()
 
                         _uiState.update { it.copy(
                             selectedVerse = null
                         )}
                     }
                     else
-                        domain.requestPlay(_uiState.value.selectedVerse!!.id)
+                        requestPlay(_uiState.value.selectedVerse!!.id)
                 }
                 PlaybackStateCompat.STATE_STOPPED -> {
                     updateButton(PlaybackStateCompat.STATE_BUFFERING)
@@ -256,7 +335,7 @@ class QuranReaderViewModel @Inject constructor(
                         )}
                     }
 
-                    domain.requestPlay(_uiState.value.selectedVerse!!.id)
+                    requestPlay(_uiState.value.selectedVerse!!.id)
                 }
                 else -> {}
             }
@@ -264,11 +343,11 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun onPreviousVerseClick() {
-        domain.skipToPreviousTrack()
+        tc?.skipToPrevious()
     }
 
     fun onNextVerseClick() {
-        domain.skipToNextTrack()
+        tc?.skipToNext()
     }
 
     fun onSettingsClick() {
@@ -635,7 +714,7 @@ class QuranReaderViewModel @Inject constructor(
         }
 
         override fun onSessionDestroyed() {
-            domain.disconnectMediaBrowser()
+            mediaBrowser?.disconnect()
         }
     }
 

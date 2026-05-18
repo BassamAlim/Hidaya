@@ -42,13 +42,13 @@ import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.LangUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -81,6 +81,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     private lateinit var reciterNames: List<String>
     private lateinit var suarNames: List<String>
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val readySignal = CompletableDeferred<Unit>()
     private val notificationId = 101
     private var updateRecordCounter = 0
     private var channelId = "channel ID"
@@ -115,11 +116,11 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
                     }
                     ACTION_NEXT -> {
                         Log.i(Globals.TAG, "In ACTION_NEXT")
-                        apm.nextVerse()
+                        serviceScope.launch { readySignal.await(); apm.nextVerse() }
                     }
                     ACTION_PREV -> {
                         Log.i(Globals.TAG, "In ACTION_PREV")
-                        apm.previousVerse()
+                        serviceScope.launch { readySignal.await(); apm.previousVerse() }
                     }
                     ACTION_STOP -> {
                         Log.i(Globals.TAG, "In ACTION_STOP")
@@ -133,16 +134,17 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     override fun onCreate() {
         super.onCreate()
 
-        runBlocking {
+        initSession()
+        setupActions()
+        initMetadata()
+
+        serviceScope.launch {
             allVerses = quranRepository.getAllVerses()
             allRecitations = recitationsRepository.getAllVerseRecitations()
             reciterNames = recitationsRepository.getVerseReciterNames()
             suarNames = quranRepository.getDecoratedSuraNames(language = LangUtils.getAppLanguage())
-
-            initSession()
             initAPM()
-            setupActions()
-            initMetadata()
+            readySignal.complete(Unit)
         }
     }
 
@@ -157,14 +159,16 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             val ayaId = mediaId.toInt()
 
-            if (apm.isNotInitialized()) {
-                // Start the service
-                startService(Intent(applicationContext, VersePlayerService::class.java))
-            }
-
             mediaSession.isActive = true
 
             serviceScope.launch {
+                readySignal.await()
+
+                if (apm.isNotInitialized()) {
+                    // Start the service
+                    startService(Intent(applicationContext, VersePlayerService::class.java))
+                }
+
                 buildNotification()
 
                 // Put the service in the foreground, post notification
@@ -191,13 +195,15 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         override fun onPlay() {
             Log.i(Globals.TAG, "In onPlay of AyaPlayerService")
 
-            if (apm.isNotInitialized()) {
-                startService(Intent(applicationContext, VersePlayerService::class.java))
-            }
-
             mediaSession.isActive = true
 
             serviceScope.launch {
+                readySignal.await()
+
+                if (apm.isNotInitialized()) {
+                    startService(Intent(applicationContext, VersePlayerService::class.java))
+                }
+
                 buildNotification()
 
                 startForeground(notificationId, notification)
@@ -221,56 +227,59 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         override fun onPause() {
             Log.i(Globals.TAG, "In onPause of AyaPlayerService")
 
-            updatePbState(PlaybackStateCompat.STATE_PAUSED)
-            updateNotification(false)
-
-            apm.pause()
-
             serviceScope.launch {
+                readySignal.await()
+
+                updatePbState(PlaybackStateCompat.STATE_PAUSED)
+                updateNotification(false)
+
+                apm.pause()
+
                 updateDurationRecord(updateRecordCounter)
+
+                handler.removeCallbacks(runnable)
+                abandonAudioFocus()
+
+                stopForeground()
             }
-
-            handler.removeCallbacks(runnable)
-            abandonAudioFocus()
-
-            stopForeground()
         }
 
         override fun onStop() {
             Log.i(Globals.TAG, "In onStop of AyaPlayerService")
 
-            updatePbState(PlaybackStateCompat.STATE_STOPPED)
-
-            handler.removeCallbacks(runnable)
-            abandonAudioFocus()
-            receiver.unregister()
-            if (wifiLock.isHeld) wifiLock.release()
-
             serviceScope.launch {
+                readySignal.await()
+
+                updatePbState(PlaybackStateCompat.STATE_STOPPED)
+
+                handler.removeCallbacks(runnable)
+                abandonAudioFocus()
+                receiver.unregister()
+                if (wifiLock.isHeld) wifiLock.release()
+
                 updateDurationRecord(updateRecordCounter)
+
+                apm.release()
+
+                stopSelf()    // Stop the service
+                mediaSession.isActive = false    // Set the session inactive
+                stopForeground()
             }
-
-            apm.release()
-
-            stopSelf()    // Stop the service
-            mediaSession.isActive = false    // Set the session inactive
-            stopForeground()
         }
 
         override fun onSkipToNext() {
             super.onSkipToNext()
-            apm.nextVerse()
+            serviceScope.launch { readySignal.await(); apm.nextVerse() }
         }
 
         override fun onSkipToPrevious() {
             super.onSkipToPrevious()
-            apm.previousVerse()
+            serviceScope.launch { readySignal.await(); apm.previousVerse() }
         }
 
         override fun onSeekTo(pos: Long) {
             super.onSeekTo(pos)
-            apm.seekTo(pos)
-            updatePbState(getPbState())
+            serviceScope.launch { readySignal.await(); apm.seekTo(pos); updatePbState(getPbState()) }
         }
     }
 
@@ -666,9 +675,9 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
         handler.removeCallbacks(runnable)
 
-        apm.release()
+        if (::apm.isInitialized) apm.release()
 
-        if (wifiLock.isHeld) wifiLock.release()
+        if (::wifiLock.isInitialized && wifiLock.isHeld) wifiLock.release()
 
         abandonAudioFocus()
 

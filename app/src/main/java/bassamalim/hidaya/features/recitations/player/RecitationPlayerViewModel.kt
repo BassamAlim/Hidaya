@@ -1,7 +1,15 @@
 package bassamalim.hidaya.features.recitations.player
 
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.os.Build
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -24,6 +32,7 @@ import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.recitations.recitersMenu.Recitation
@@ -93,27 +102,50 @@ class RecitationPlayerViewModel @Inject constructor(
     }
 
     private var pendingActivity: Activity? = null
+    private var mediaBrowser: MediaBrowserCompat? = null
+    private var controller: MediaControllerCompat? = null
+    private var tc: MediaControllerCompat.TransportControls? = null
+    private lateinit var downloadReceiver: ReceiverWrapper
 
     fun onStart(activity: Activity) {
         Log.i(Globals.TAG, "in onStart of RecitationsPlayerViewModel")
 
         pendingActivity = activity
 
-        domain.connect(
-            activity = activity,
-            connectionCallbacks = connectionCallbacks,
-            updateDownloadStates = { newState ->
-                _uiState.update { it.copy(
-                    downloadState = newState
-                )}
+        downloadReceiver = ReceiverWrapper(
+            context = activity.applicationContext,
+            intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+            broadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    _uiState.update { it.copy(
+                        downloadState = domain.checkDownload()
+                    )}
+                }
             }
         )
+
+        mediaBrowser = MediaBrowserCompat(
+            activity,
+            ComponentName(activity, RecitationPlayerService::class.java),
+            connectionCallbacks,
+            null
+        )
+        mediaBrowser?.connect()
+
+        activity.volumeControlStream = AudioManager.STREAM_MUSIC
+
+        downloadReceiver.register()
     }
 
     fun onStop(activity: Activity) {
         Log.i(Globals.TAG, "in onStop of RecitationsPlayerViewModel")
 
-        domain.stopMediaBrowser(activity, controllerCallback)
+        downloadReceiver.unregister()
+
+        MediaControllerCompat.getMediaController(activity)
+            ?.unregisterCallback(controllerCallback)
+
+        mediaBrowser?.disconnect()
         pendingActivity = null
     }
 
@@ -122,22 +154,40 @@ class RecitationPlayerViewModel @Inject constructor(
             Log.i(Globals.TAG, "onConnected in RecitationsPlayerViewModel")
 
             val activity = pendingActivity ?: return
-            domain.initializeController(activity, controllerCallback)
+
+            Log.d(Globals.TAG, "in initializeController of RecitationPlayerViewModel")
+
+            // Get the token for the MediaSession
+            val token = mediaBrowser!!.sessionToken
+
+            // Create a MediaControllerCompat
+            val mediaController = MediaControllerCompat(activity, token)
+
+            // Save the controller
+            MediaControllerCompat.setMediaController(activity, mediaController)
+
+            controller = MediaControllerCompat.getMediaController(activity)
+            tc = controller!!.transportControls
+
+            // Register a Callback to stay in sync
+            controller?.registerCallback(controllerCallback)
 
             // Finish building the UI
             buildTransportControls()
 
             if (action != "back" &&
-                (domain.getState() == STATE_NONE ||
-                        mediaId != domain.getMetadata()
-                            .getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID))
+                (controller?.playbackState?.state == STATE_NONE ||
+                        mediaId != controller?.metadata
+                            ?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID))
             ) {
-                domain.sendPlayRequest(
-                    mediaId = mediaId,
-                    playType = action,
-                    reciterName = _uiState.value.reciterName,
-                    narration = narration
-                )
+                // Pass media data
+                val bundle = Bundle()
+                bundle.putString("play_type", action)
+                bundle.putString("reciter_name", _uiState.value.reciterName)
+                bundle.putSerializable("narration", narration)
+
+                // Start Playback
+                tc?.playFromMediaId(mediaId, bundle)
             }
         }
 
@@ -183,8 +233,8 @@ class RecitationPlayerViewModel @Inject constructor(
         enableControls()
 
         // Display the initial state
-        updateMetadata(domain.getMetadata())
-        updatePlaybackState(domain.getPlaybackState())
+        controller?.metadata?.let { updateMetadata(it) }
+        controller?.playbackState?.let { updatePlaybackState(it) }
     }
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {
@@ -200,7 +250,7 @@ class RecitationPlayerViewModel @Inject constructor(
         }
 
         override fun onSessionDestroyed() {
-            domain.disconnectMediaBrowser()
+            mediaBrowser?.disconnect()
         }
     }
 
@@ -260,27 +310,26 @@ class RecitationPlayerViewModel @Inject constructor(
         if (_uiState.value.btnState == STATE_NONE)
             return
 
-        if (domain.getState() == STATE_PLAYING) {
-            domain.pause()
+        if (controller?.playbackState?.state == STATE_PLAYING) {
+            tc?.pause()
             _uiState.update { it.copy(
                 btnState = STATE_PAUSED
             )}
         }
         else {
-            domain.resume()
+            tc?.play()
             _uiState.update { it.copy(
                 btnState = STATE_PLAYING
             )}
         }
-
     }
 
     fun onPreviousTrackClick() {
-        domain.skipToPrevious()
+        tc?.skipToPrevious()
     }
 
     fun onNextTrackClick() {
-        domain.skipToNext()
+        tc?.skipToNext()
     }
 
     fun onSliderChange(progress: Float) {
@@ -291,37 +340,32 @@ class RecitationPlayerViewModel @Inject constructor(
     }
 
     fun onSliderChangeFinished() {
-        domain.seekTo(progress)
+        tc?.seekTo(progress)
     }
 
     fun onRepeatClick(oldMode: Int) {
         viewModelScope.launch {
-            domain.setRepeatMode(
-                if (oldMode == REPEAT_MODE_NONE) REPEAT_MODE_ONE
-                else REPEAT_MODE_NONE
-            )
+            val newMode = if (oldMode == REPEAT_MODE_NONE) REPEAT_MODE_ONE else REPEAT_MODE_NONE
+            tc?.setRepeatMode(newMode)
+            domain.setRepeatMode(newMode)
         }
     }
 
     fun onShuffleClick(oldMode: Int) {
         viewModelScope.launch {
-            domain.setShuffleMode(
-                if (oldMode == SHUFFLE_MODE_NONE) SHUFFLE_MODE_ALL
-                else SHUFFLE_MODE_NONE
-            )
+            val newMode = if (oldMode == SHUFFLE_MODE_NONE) SHUFFLE_MODE_ALL else SHUFFLE_MODE_NONE
+            tc?.setShuffleMode(newMode)
+            domain.setShuffleMode(newMode)
         }
     }
 
     fun onDownloadClick() {
-        val activity = pendingActivity ?: return
-
         if (_uiState.value.downloadState == DownloadState.NOT_DOWNLOADED) {
             _uiState.update { it.copy(
                 downloadState = DownloadState.DOWNLOADING
             )}
 
             domain.downloadRecitation(
-                activity = activity,
                 narration = narration,
                 suraIdx = suraIdx,
                 suraName = suraNames[suraIdx]
