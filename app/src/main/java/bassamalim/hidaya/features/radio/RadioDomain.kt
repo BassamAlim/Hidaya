@@ -14,16 +14,11 @@ class RadioDomain @Inject constructor(
     private val liveContentRepository: LiveContentRepository
 ) {
 
-    private lateinit var activity: Activity
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
 
-    fun setActivity(activity: Activity) {
-        this.activity = activity
-    }
-
-    fun initializeController() {
+    fun initializeController(activity: Activity) {
         // Get the token for the MediaSession
         val token = mediaBrowser!!.sessionToken
 
@@ -37,7 +32,7 @@ class RadioDomain @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun connect(connectionCallbacks: MediaBrowserCompat.ConnectionCallback) {
+    fun connect(activity: Activity, connectionCallbacks: MediaBrowserCompat.ConnectionCallback) {
         mediaBrowser = MediaBrowserCompat(
             activity,
             ComponentName(activity, RadioService::class.java),
@@ -49,7 +44,7 @@ class RadioDomain @Inject constructor(
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
-    fun disconnect(controllerCallback: MediaControllerCompat.Callback) {
+    fun disconnect(activity: Activity, controllerCallback: MediaControllerCompat.Callback) {
         MediaControllerCompat.getMediaController(activity)
             ?.unregisterCallback(controllerCallback)
 

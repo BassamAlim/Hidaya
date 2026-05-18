@@ -23,11 +23,13 @@ import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.AnalyticsEvent
 import bassamalim.hidaya.core.models.Verse
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.quran.reader.versePlayer.VersePlayerService
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -36,10 +38,13 @@ class QuranReaderDomain @Inject constructor(
     private val quranRepository: QuranRepository,
     private val appSettingsRepository: AppSettingsRepository,
     private val userRepository: UserRepository,
-    private val analyticsRepository: AnalyticsRepository
+    private val analyticsRepository: AnalyticsRepository,
+    @ApplicationScope private val appScope: CoroutineScope
 ) {
 
-    private lateinit var activity: Activity
+    // TODO: pendingActivity bridges setupPlayer() → onConnected() for the async MediaBrowser callback.
+    //  The proper fix is to move MediaBrowser+MediaController plumbing into the ViewModel. Deferred.
+    private var pendingActivity: Activity? = null
     private val handler = Handler(Looper.getMainLooper())
     private var mediaBrowser: MediaBrowserCompat? = null
     private var controller: MediaControllerCompat? = null
@@ -57,7 +62,7 @@ class QuranReaderDomain @Inject constructor(
 
     private val runnable = Runnable {
         if (getPageNumCallback() == lastRecordedPage) {
-            runBlocking {
+            appScope.launch {
                 updateRecords()
             }
         }
@@ -91,7 +96,7 @@ class QuranReaderDomain @Inject constructor(
         getSelectedVerseCallback: () -> Verse?,
         setSelectedVerseCallback: (Verse?) -> Unit
     ) {
-        this.activity = activity
+        this.pendingActivity = activity
         this.controllerCallback = controllerCallback
         this.getPageNumCallback = getPageCallback
         this.getSelectedVerseCallback = getSelectedVerseCallback
@@ -114,6 +119,8 @@ class QuranReaderDomain @Inject constructor(
             Log.i(Globals.TAG, "In onServiceConnected")
 
             if (mediaBrowser == null) return
+
+            val activity = pendingActivity ?: return
 
             val mediaController: MediaControllerCompat?
             try {
@@ -149,7 +156,7 @@ class QuranReaderDomain @Inject constructor(
     }
 
     private fun buildTransportControls() {
-        controller = MediaControllerCompat.getMediaController(activity)
+        controller = MediaControllerCompat.getMediaController(pendingActivity!!)
         tc = controller!!.transportControls
 
         // Register a Callback to stay in sync
@@ -185,6 +192,8 @@ class QuranReaderDomain @Inject constructor(
 
         mediaBrowser?.disconnect()
         mediaBrowser = null
+
+        pendingActivity = null
 
         handler.removeCallbacks(runnable)
     }

@@ -42,8 +42,9 @@ import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import bassamalim.hidaya.core.utils.LangUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -79,6 +80,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     private lateinit var allVerses: List<Verse>
     private lateinit var reciterNames: List<String>
     private lateinit var suarNames: List<String>
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val notificationId = 101
     private var updateRecordCounter = 0
     private var channelId = "channel ID"
@@ -149,7 +151,6 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         return super.onStartCommand(intent, flags, startId)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.i(Globals.TAG, "In onPlayFromMediaId of AyaPlayerService")
@@ -163,7 +164,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             mediaSession.isActive = true
 
-            GlobalScope.launch {
+            serviceScope.launch {
                 buildNotification()
 
                 // Put the service in the foreground, post notification
@@ -196,7 +197,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             mediaSession.isActive = true
 
-            GlobalScope.launch {
+            serviceScope.launch {
                 buildNotification()
 
                 startForeground(notificationId, notification)
@@ -225,7 +226,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             apm.pause()
 
-            GlobalScope.launch {
+            serviceScope.launch {
                 updateDurationRecord(updateRecordCounter)
             }
 
@@ -245,7 +246,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             receiver.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
-            GlobalScope.launch {
+            serviceScope.launch {
                 updateDurationRecord(updateRecordCounter)
             }
 
@@ -304,7 +305,8 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             repeatModeFlow = recitationsRepository.getVerseRepeatMode(),
             stopOnPageEndFlow = recitationsRepository.getShouldStopOnPageEnd(),
             stopOnSuraEndFlow = recitationsRepository.getShouldStopOnSuraEnd(),
-            callback = this@VersePlayerService
+            callback = this@VersePlayerService,
+            scope = serviceScope
         )
 
         wifiLock =
@@ -416,7 +418,6 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         )
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private suspend fun buildNotification() {
         // Get the session's metadata
         controller = mediaSession.controller
@@ -501,12 +502,11 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             refresh()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun refresh() {
         updatePbState(getPbState())
 
         if (updateRecordCounter++ >= 10) {
-            GlobalScope.launch {
+            serviceScope.launch {
                 updateDurationRecord(updateRecordCounter)
             }
         }
@@ -652,16 +652,16 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         else stopForeground(false)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(Globals.TAG, "In onUnbind of AyaPlayerService")
-        GlobalScope.launch {
+        serviceScope.launch {
             updateDurationRecord(updateRecordCounter)
         }
         return super.onUnbind(intent)
     }
 
     override fun onDestroy() {
+        serviceScope.cancel()
         super.onDestroy()
 
         handler.removeCallbacks(runnable)

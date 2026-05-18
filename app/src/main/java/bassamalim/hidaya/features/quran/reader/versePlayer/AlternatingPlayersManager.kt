@@ -18,8 +18,7 @@ import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
 import bassamalim.hidaya.core.data.dataSources.room.entities.VerseRecitation
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -33,7 +32,8 @@ class AlternatingPlayersManager(
     private val repeatModeFlow: Flow<VerseRepeatMode>,
     private val stopOnPageEndFlow: Flow<Boolean>,
     private val stopOnSuraEndFlow: Flow<Boolean>,
-    private val callback: PlayerCallback
+    private val callback: PlayerCallback,
+    private val scope: CoroutineScope
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
 
     private val numOfPlayers = 2
@@ -52,7 +52,6 @@ class AlternatingPlayersManager(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onPrepared(mp: MediaPlayer) {
         val currentPlayerIdx = idx(mp)
         val prvPlayerIdx = prvIdx(mp)
@@ -72,7 +71,7 @@ class AlternatingPlayersManager(
                 play(playerIdx = currentPlayerIdx, verseIdx = aps[currentPlayerIdx].verseIdx)
         }
 
-        GlobalScope.launch {
+        scope.launch {
             val shouldStop = checkShouldStop(
                 currentVerse = aps[currentPlayerIdx].verseIdx,
                 shouldStopOnPageEnd = stopOnPageEndFlow.first(),
@@ -92,7 +91,6 @@ class AlternatingPlayersManager(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCompletion(mp: MediaPlayer) {
         val currentPlayerIdx = idx(mp)
         val nxtPlayerIdx = nxtIdx(mp)
@@ -105,7 +103,7 @@ class AlternatingPlayersManager(
         aps[currentPlayerIdx].state = PlayerState.COMPLETED
         aps[currentPlayerIdx].repeated++
 
-        GlobalScope.launch {
+        scope.launch {
             val shouldRepeat = checkShouldRepeat(currentPlayerIdx, repeatModeFlow.first())
             if (shouldRepeat)
                 aps[currentPlayerIdx].mp.start()
@@ -241,24 +239,22 @@ class AlternatingPlayersManager(
         prepare(playerIdx = 0, verseIdx = verseIdx)  // prepare first
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun play(playerIdx: Int, verseIdx: Int) {
         aps[playerIdx].state = PlayerState.PLAYING
         this.playerIdx = playerIdx
         this.verseIdx = verseIdx
         aps[playerIdx].mp.start()
-        GlobalScope.launch {
+        scope.launch {
             callback.track(verseId = verseIdx+1)
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun prepare(playerIdx: Int, verseIdx: Int) {
         aps[playerIdx].state = PlayerState.PREPARING
         aps[playerIdx].verseIdx = verseIdx
         aps[playerIdx].repeated = 0
 
-        GlobalScope.launch {
+        scope.launch {
             val uri: Uri
             try {
                 aps[playerIdx].mp.reset()

@@ -25,10 +25,13 @@ class RadioClientViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RadioClientUiState())
     val uiState = _uiState.asStateFlow()
 
+    private var pendingActivity: Activity? = null
+
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback =
         object : MediaBrowserCompat.ConnectionCallback() {
             override fun onConnected() {
-                domain.initializeController()
+                val activity = pendingActivity ?: return
+                domain.initializeController(activity)
 
                 // just sending the static url to extract the dynamic url
                 val url = domain.getUrl()
@@ -53,15 +56,16 @@ class RadioClientViewModel @Inject constructor(
         }
 
     fun onStart(activity: Activity) {
-        domain.setActivity(activity)
+        pendingActivity = activity
 
         updatePbState(PlaybackStateCompat.STATE_CONNECTING)
 
-        domain.connect(connectionCallbacks)
+        domain.connect(activity, connectionCallbacks)
     }
 
-    fun onStop() {
-        domain.disconnect(controllerCallback)
+    fun onStop(activity: Activity) {
+        domain.disconnect(activity, controllerCallback)
+        pendingActivity = null
     }
 
     private var controllerCallback: MediaControllerCompat.Callback =

@@ -57,38 +57,38 @@ fun PrayerTimesReportDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            DialogTitle(stringResource(reportTitleRes(state.reportStep)))
+            DialogTitle(stringResource(reportTitleRes(state.report.step)))
         },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                when (state.reportStep) {
+                when (state.report.step) {
                     ReportStep.CHECKS -> ChecksStep(
-                        currentMethodName = state.reportCurrentMethodName,
+                        currentMethodName = state.report.currentMethodName,
                         locationName = state.locationName,
-                        isAutoLocation = state.reportIsAutoLocation,
+                        isAutoLocation = state.report.isAutoLocation,
                         onOpenCalculationSettings = onOpenCalculationSettings,
                         onOpenLocator = onOpenLocator
                     )
                     ReportStep.FORM -> ReportFormStep(
-                        prayerNames = state.reportPrayerNames,
-                        computedTimes = state.reportComputedTimes,
-                        wrongPrayers = state.reportWrongPrayers,
-                        correctTimes = state.reportCorrectTimes,
-                        notes = state.reportNotes,
+                        prayerNames = state.report.prayerNames,
+                        computedTimes = state.report.computedTimes,
+                        wrongPrayers = state.report.wrongPrayers,
+                        correctTimes = state.report.correctTimes,
+                        notes = state.report.notes,
                         onTogglePrayer = onTogglePrayer,
                         onOpenCorrectTimePicker = onOpenCorrectTimePicker,
                         onNotesChange = onNotesChange
                     )
                     ReportStep.RESULT -> ResultStep(
-                        submitting = state.reportSubmitting,
-                        success = state.reportSubmitted,
-                        errorMessage = state.reportError
+                        submitting = state.report.submitting,
+                        success = state.report.submitted,
+                        errorMessage = state.report.error
                     )
                 }
             }
         },
         confirmButton = {
-            when (state.reportStep) {
+            when (state.report.step) {
                 ReportStep.CHECKS -> {
                     TextButton(onClick = onNext) {
                         MyText(stringResource(R.string.report_still_wrong))
@@ -97,7 +97,7 @@ fun PrayerTimesReportDialog(
                 ReportStep.FORM -> {
                     TextButton(
                         onClick = onSubmit,
-                        enabled = state.reportWrongPrayers.isNotEmpty() && !state.reportSubmitting
+                        enabled = state.report.wrongPrayers.isNotEmpty() && !state.report.submitting
                     ) {
                         MyText(stringResource(R.string.report_submit))
                     }
@@ -110,7 +110,7 @@ fun PrayerTimesReportDialog(
             }
         },
         dismissButton = {
-            when (state.reportStep) {
+            when (state.report.step) {
                 ReportStep.FORM -> {
                     TextButton(onClick = onBack) {
                         MyText(stringResource(R.string.back))

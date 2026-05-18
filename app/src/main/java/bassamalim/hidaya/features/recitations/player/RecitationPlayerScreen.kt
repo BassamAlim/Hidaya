@@ -52,7 +52,7 @@ fun RecitationPlayerScreen(viewModel: RecitationPlayerViewModel) {
 
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart(activity)
-        onDispose(viewModel::onStop)
+        onDispose { viewModel.onStop(activity) }
     }
 
     MyScaffold(

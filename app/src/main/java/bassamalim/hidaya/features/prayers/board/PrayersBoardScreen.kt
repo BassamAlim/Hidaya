@@ -98,7 +98,7 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
         )
     }
 
-    if (state.reportDialogShown) {
+    if (state.report.dialogShown) {
         PrayerTimesReportDialog(
             state = state,
             onDismiss = viewModel::onReportDismiss,
@@ -115,8 +115,8 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
         )
 
         CorrectTimePickerHost(
-            target = state.reportTimePickerTarget,
-            existing = state.reportCorrectTimes,
+            target = state.report.timePickerTarget,
+            existing = state.report.correctTimes,
             onConfirm = viewModel::onCorrectTimePickerConfirm,
             onDismiss = viewModel::onCorrectTimePickerDismiss
         )

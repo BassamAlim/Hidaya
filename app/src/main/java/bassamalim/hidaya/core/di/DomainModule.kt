@@ -53,6 +53,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module @InstallIn(SingletonComponent::class)
@@ -221,13 +222,15 @@ object DomainModule {
         quranRepository: QuranRepository,
         appSettingsRepository: AppSettingsRepository,
         userRepository: UserRepository,
-        analyticsRepository: AnalyticsRepository
+        analyticsRepository: AnalyticsRepository,
+        @ApplicationScope appScope: CoroutineScope
     ) = QuranReaderDomain(
         app,
         quranRepository,
         appSettingsRepository,
         userRepository,
-        analyticsRepository
+        analyticsRepository,
+        appScope
     )
 
     @Provides @Singleton

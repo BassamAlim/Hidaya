@@ -134,84 +134,90 @@ class PrayersBoardViewModel @Inject constructor(
             } ?: sortedMapOf()
 
             _uiState.update { it.copy(
-                reportDialogShown = true,
-                reportStep = ReportStep.CHECKS,
-                reportCurrentMethodName = methodName,
-                reportIsAutoLocation = location?.type == LocationType.AUTO,
-                reportPrayerNames = prayerNames,
-                reportComputedTimes = computed,
-                reportWrongPrayers = emptySet(),
-                reportCorrectTimes = emptyMap(),
-                reportNotes = "",
-                reportSubmitting = false,
-                reportSubmitted = false,
-                reportError = null
+                report = ReportUiState(
+                    dialogShown = true,
+                    step = ReportStep.CHECKS,
+                    currentMethodName = methodName,
+                    isAutoLocation = location?.type == LocationType.AUTO,
+                    prayerNames = prayerNames,
+                    computedTimes = computed,
+                    wrongPrayers = emptySet(),
+                    correctTimes = emptyMap(),
+                    notes = "",
+                    submitting = false,
+                    submitted = false,
+                    error = null
+                )
             )}
         }
     }
 
     fun onReportDismiss() {
-        _uiState.update { it.copy(reportDialogShown = false) }
+        _uiState.update { it.copy(report = it.report.copy(dialogShown = false)) }
     }
 
     fun onReportNext() {
         _uiState.update {
-            val next = when (it.reportStep) {
+            val next = when (it.report.step) {
                 ReportStep.CHECKS -> ReportStep.FORM
-                else -> it.reportStep
+                else -> it.report.step
             }
-            it.copy(reportStep = next)
+            it.copy(report = it.report.copy(step = next))
         }
     }
 
     fun onReportBack() {
         _uiState.update {
-            val prev = when (it.reportStep) {
+            val prev = when (it.report.step) {
                 ReportStep.FORM -> ReportStep.CHECKS
-                else -> it.reportStep
+                else -> it.report.step
             }
-            it.copy(reportStep = prev)
+            it.copy(report = it.report.copy(step = prev))
         }
     }
 
     fun onReportTogglePrayer(prayer: Prayer) {
         _uiState.update {
             val newSet =
-                if (prayer in it.reportWrongPrayers) it.reportWrongPrayers - prayer
-                else it.reportWrongPrayers + prayer
-            it.copy(reportWrongPrayers = newSet)
+                if (prayer in it.report.wrongPrayers) it.report.wrongPrayers - prayer
+                else it.report.wrongPrayers + prayer
+            it.copy(report = it.report.copy(wrongPrayers = newSet))
         }
     }
 
     fun onCorrectTimePickerOpen(prayer: Prayer) {
-        _uiState.update { it.copy(reportTimePickerTarget = prayer) }
+        _uiState.update { it.copy(report = it.report.copy(timePickerTarget = prayer)) }
     }
 
     fun onCorrectTimePickerDismiss() {
-        _uiState.update { it.copy(reportTimePickerTarget = null) }
+        _uiState.update { it.copy(report = it.report.copy(timePickerTarget = null)) }
     }
 
     fun onCorrectTimePickerConfirm(hour: Int, minute: Int) {
         _uiState.update {
-            val prayer = it.reportTimePickerTarget ?: return@update it
+            val prayer = it.report.timePickerTarget ?: return@update it
             val value = "%02d:%02d".format(hour, minute)
             it.copy(
-                reportCorrectTimes = it.reportCorrectTimes + (prayer to value),
-                reportTimePickerTarget = null
+                report = it.report.copy(
+                    correctTimes = it.report.correctTimes + (prayer to value),
+                    timePickerTarget = null
+                )
             )
         }
     }
 
     fun onReportNotesChange(value: String) {
-        _uiState.update { it.copy(reportNotes = value) }
+        _uiState.update { it.copy(report = it.report.copy(notes = value)) }
     }
 
     fun onReportSubmit() {
         viewModelScope.launch {
             _uiState.update { it.copy(
-                reportStep = ReportStep.RESULT,
-                reportSubmitting = true,
-                reportError = null
+                report = it.report.copy(
+                    step = ReportStep.RESULT,
+                    submitting = true,
+                    error = null
+                )
             )}
 
             val location = location.first()
@@ -231,25 +237,27 @@ class PrayersBoardViewModel @Inject constructor(
                 "calculation_method" to settings.calculationMethod.name,
                 "juristic_method" to settings.juristicMethod.name,
                 "high_latitudes_adjustment" to settings.highLatitudesAdjustmentMethod.name,
-                "computed_times" to state.reportComputedTimes.mapKeys { it.key.name },
-                "wrong_prayers" to state.reportWrongPrayers.map { prayer ->
+                "computed_times" to state.report.computedTimes.mapKeys { it.key.name },
+                "wrong_prayers" to state.report.wrongPrayers.map { prayer ->
                     mapOf(
                         "prayer" to prayer.name,
-                        "computed" to state.reportComputedTimes[prayer],
-                        "correct" to state.reportCorrectTimes[prayer].orEmpty()
+                        "computed" to state.report.computedTimes[prayer],
+                        "correct" to state.report.correctTimes[prayer].orEmpty()
                     )
                 },
-                "notes" to state.reportNotes
+                "notes" to state.report.notes
             )
 
             val success = domain.submitReport(report)
 
             _uiState.update { it.copy(
-                reportSubmitting = false,
-                reportSubmitted = success,
-                reportError =
-                    if (success) null
-                    else app.getString(R.string.report_submit_failed)
+                report = it.report.copy(
+                    submitting = false,
+                    submitted = success,
+                    error =
+                        if (success) null
+                        else app.getString(R.string.report_submit_failed)
+                )
             )}
         }
     }

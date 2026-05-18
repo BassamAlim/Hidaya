@@ -92,8 +92,12 @@ class RecitationPlayerViewModel @Inject constructor(
         }
     }
 
+    private var pendingActivity: Activity? = null
+
     fun onStart(activity: Activity) {
         Log.i(Globals.TAG, "in onStart of RecitationsPlayerViewModel")
+
+        pendingActivity = activity
 
         domain.connect(
             activity = activity,
@@ -106,17 +110,19 @@ class RecitationPlayerViewModel @Inject constructor(
         )
     }
 
-    fun onStop() {
+    fun onStop(activity: Activity) {
         Log.i(Globals.TAG, "in onStop of RecitationsPlayerViewModel")
 
-        domain.stopMediaBrowser(controllerCallback)
+        domain.stopMediaBrowser(activity, controllerCallback)
+        pendingActivity = null
     }
 
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             Log.i(Globals.TAG, "onConnected in RecitationsPlayerViewModel")
 
-            domain.initializeController(controllerCallback)
+            val activity = pendingActivity ?: return
+            domain.initializeController(activity, controllerCallback)
 
             // Finish building the UI
             buildTransportControls()
@@ -307,12 +313,15 @@ class RecitationPlayerViewModel @Inject constructor(
     }
 
     fun onDownloadClick() {
+        val activity = pendingActivity ?: return
+
         if (_uiState.value.downloadState == DownloadState.NOT_DOWNLOADED) {
             _uiState.update { it.copy(
                 downloadState = DownloadState.DOWNLOADING
             )}
 
             domain.downloadRecitation(
+                activity = activity,
                 narration = narration,
                 suraIdx = suraIdx,
                 suraName = suraNames[suraIdx]

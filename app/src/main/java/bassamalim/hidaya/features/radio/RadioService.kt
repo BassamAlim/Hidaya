@@ -37,9 +37,8 @@ import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -66,6 +65,7 @@ class RadioService : MediaBrowserServiceCompat(), AudioManager.OnAudioFocusChang
     private val intentFilter: IntentFilter = IntentFilter()
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var wifiLock: WifiManager.WifiLock
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var staticUrl: String? = null
     private lateinit var dynamicUrl: String
 
@@ -111,7 +111,7 @@ class RadioService : MediaBrowserServiceCompat(), AudioManager.OnAudioFocusChang
 
     override fun onCreate() {
         super.onCreate()
-        CoroutineScope(Dispatchers.Main).launch {
+        serviceScope.launch {
             initSession()
             initPlayer()
             setActions()
@@ -119,7 +119,11 @@ class RadioService : MediaBrowserServiceCompat(), AudioManager.OnAudioFocusChang
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    override fun onDestroy() {
+        serviceScope.cancel()
+        super.onDestroy()
+    }
+
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.i(Globals.TAG, "In onPlayFromMediaId of RadioClient")
@@ -138,7 +142,7 @@ class RadioService : MediaBrowserServiceCompat(), AudioManager.OnAudioFocusChang
         override fun onPlay() {
             super.onPlay()
 
-            GlobalScope.launch {
+            serviceScope.launch {
                 buildNotification()
                 var result = AudioManager.AUDIOFOCUS_REQUEST_GRANTED
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)

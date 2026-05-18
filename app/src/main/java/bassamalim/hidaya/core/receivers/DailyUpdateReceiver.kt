@@ -29,8 +29,9 @@ import bassamalim.hidaya.core.widgets.PrayersWidget
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -50,56 +51,48 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     @Inject lateinit var alarm: Alarm
     @Inject @IoDispatcher lateinit var dispatcher: CoroutineDispatcher
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
         Log.i(Globals.TAG, "in DailyUpdateReceiver")
 
-        testDb(context)
-        GlobalScope.launch {
-            val now = Calendar.getInstance()
-            if ((intent.action == "daily" && notUpdatedToday(now)) || intent.action == "boot") {
-                val location = locationRepository.getLocation().first() ?: return@launch
-                when (location.type) {
-                    LocationType.AUTO -> locate(context, now)
-                    LocationType.MANUAL -> update(context = context, location = null, now = now)
-                    LocationType.NONE -> return@launch
+        val pendingResult = goAsync()
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        scope.launch {
+            try {
+                val shouldReviveDb = DbUtils.shouldReviveDb(
+                    lastDbVersion = appStateRepository.getLastDbVersion().first(),
+                    test = surasDao::getPlainNamesAr,
+                    dispatcher = dispatcher
+                )
+                if (shouldReviveDb) {
+                    DbUtils.resetDB(context)
+                    DbUtils.restoreDbData(
+                        suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
+                        setSuraFavorites = quranRepository::setSuraFavorites,
+                        reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+                        setReciterFavorites = recitationsRepository::setReciterFavorites,
+                        remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+                        setRemembranceFavorites = remembrancesRepository::setFavorites,
+                    )
+                    appStateRepository.setLastDbVersion(Globals.DB_VERSION)
                 }
 
-                pickWerd()
+                val now = Calendar.getInstance()
+                if ((intent.action == "daily" && notUpdatedToday(now)) || intent.action == "boot") {
+                    val location = locationRepository.getLocation().first() ?: return@launch
+                    when (location.type) {
+                        LocationType.AUTO -> locate(context, now, this)
+                        LocationType.MANUAL -> update(context = context, location = null, now = now)
+                        LocationType.NONE -> return@launch
+                    }
+
+                    pickWerd()
+                }
+                else Log.i(Globals.TAG, "dead intent in daily update receiver")
+
+                setTomorrow(context)
+            } finally {
+                pendingResult.finish()
             }
-            else Log.i(Globals.TAG, "dead intent in daily update receiver")
-
-            setTomorrow(context)
-        }
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun testDb(context: Context) {
-        GlobalScope.launch {
-            val shouldReviveDb = DbUtils.shouldReviveDb(
-                lastDbVersion = appStateRepository.getLastDbVersion().first(),
-                test = surasDao::getPlainNamesAr,
-                dispatcher = dispatcher
-            )
-            if (shouldReviveDb) {
-                reviveDb(context)
-                appStateRepository.setLastDbVersion(Globals.DB_VERSION)
-            }
-        }
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun reviveDb(context: Context) {
-        DbUtils.resetDB(context)
-        GlobalScope.launch {
-            DbUtils.restoreDbData(
-                suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
-                setSuraFavorites = quranRepository::setSuraFavorites,
-                reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
-                setReciterFavorites = recitationsRepository::setReciterFavorites,
-                remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
-                setRemembranceFavorites = remembrancesRepository::setFavorites,
-            )
         }
     }
 
@@ -109,7 +102,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         return lastUpdate[Calendar.DATE] != now[Calendar.DATE]
     }
 
-    private fun locate(context: Context, now: Calendar) {
+    private fun locate(context: Context, now: Calendar, scope: CoroutineScope) {
         if (ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
@@ -120,36 +113,33 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             LocationServices.getFusedLocationProviderClient(context)
                 .lastLocation.addOnSuccessListener {
                     location: Location? ->
-                    update(context = context, location = location, now = now)
+                    scope.launch { update(context = context, location = location, now = now) }
             }
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun update(context: Context, location: Location?, now: Calendar) {
-        GlobalScope.launch {
-            if (location != null)
-                locationRepository.setLocation(location)
+    private suspend fun update(context: Context, location: Location?, now: Calendar) {
+        if (location != null)
+            locationRepository.setLocation(location)
 
-            val latestLocation = locationRepository.getLocation().first()
-            if (latestLocation == null) {
-                Log.e(Globals.TAG, "no available location in DailyUpdate")
-                return@launch
-            }
-
-            val prayerTimes = PrayerTimeUtils.getPrayerTimes(
-                settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-                selectedTimeZoneId = locationRepository.getTimeZone(latestLocation.ids.cityId),
-                location = latestLocation,
-                calendar = now
-            )
-
-            alarm.setAll(prayerTimes)
-
-            updateWidget(context)
-
-            setUpdated(now)
+        val latestLocation = locationRepository.getLocation().first()
+        if (latestLocation == null) {
+            Log.e(Globals.TAG, "no available location in DailyUpdate")
+            return
         }
+
+        val prayerTimes = PrayerTimeUtils.getPrayerTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            selectedTimeZoneId = locationRepository.getTimeZone(latestLocation.ids.cityId),
+            location = latestLocation,
+            calendar = now
+        )
+
+        alarm.setAll(prayerTimes)
+
+        updateWidget(context)
+
+        setUpdated(now)
     }
 
     private fun updateWidget(context: Context) {

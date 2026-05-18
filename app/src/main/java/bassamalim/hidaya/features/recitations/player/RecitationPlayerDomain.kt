@@ -39,7 +39,6 @@ class RecitationPlayerDomain @Inject constructor(
     private val quranRepository: QuranRepository
 ) {
 
-    private lateinit var activity: Activity
     private lateinit var updateDownloadStates: (DownloadState) -> Unit
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
@@ -54,11 +53,10 @@ class RecitationPlayerDomain @Inject constructor(
         connectionCallbacks: MediaBrowserCompat.ConnectionCallback,
         updateDownloadStates: (DownloadState) -> Unit
     ) {
-        this.activity = activity
         this.updateDownloadStates = updateDownloadStates
 
         downloadReceiver = ReceiverWrapper(
-            context = activity,
+            context = activity.applicationContext,
             intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
             broadcastReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
@@ -80,7 +78,7 @@ class RecitationPlayerDomain @Inject constructor(
         downloadReceiver.register()
     }
 
-    fun stopMediaBrowser(controllerCallback: MediaControllerCompat.Callback) {
+    fun stopMediaBrowser(activity: Activity, controllerCallback: MediaControllerCompat.Callback) {
         downloadReceiver.unregister()
 
         MediaControllerCompat.getMediaController(activity)
@@ -93,7 +91,7 @@ class RecitationPlayerDomain @Inject constructor(
         mediaBrowser?.disconnect()
     }
 
-    fun initializeController(controllerCallback: MediaControllerCompat.Callback) {
+    fun initializeController(activity: Activity, controllerCallback: MediaControllerCompat.Callback) {
         Log.d(Globals.TAG, "in initializeController of RecitationPlayerDomain")
 
         // Get the token for the MediaSession
@@ -144,7 +142,7 @@ class RecitationPlayerDomain @Inject constructor(
 
     fun getPlaybackState(): PlaybackStateCompat = controller.playbackState
 
-    fun downloadRecitation(narration: Recitation.Narration, suraIdx: Int, suraName: String) {
+    fun downloadRecitation(activity: Activity, narration: Recitation.Narration, suraIdx: Int, suraName: String) {
         val server = narration.server
         val link = String.Companion.format(Locale.US, "%s/%03d.mp3", server, suraIdx+1)
         val uri = link.toUri()
