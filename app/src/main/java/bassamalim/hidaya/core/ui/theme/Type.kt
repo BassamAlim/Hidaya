@@ -1,6 +1,8 @@
 package bassamalim.hidaya.core.ui.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -23,11 +25,35 @@ val tajwal = FontFamily(
 val hafs_smart = FontFamily(Font(R.font.hafs_smart_8))
 val uthmanic_hafs = FontFamily(Font(R.font.uthmanic_hafs_v22))
 
+/**
+ * App-wide text styles. Prefer these over ad-hoc `TextStyle(...)` so type ramps
+ * stay consistent across screens.
+ *
+ * Access via `MaterialTheme.appTypography.<style>` from any @Composable.
+ *
+ * Styles are ordered from largest to smallest:
+ *   display (28) > h1 (24) > headline (20) > title (18) > body/subtitle/button (16) > label (14) > caption (12)
+ */
 data class AppTypography(
+    val display: TextStyle = TextStyle(
+        fontFamily = tajwal,
+        fontWeight = FontWeight.Bold,
+        fontSize = 28.sp
+    ),
     val h1: TextStyle = TextStyle(
         fontFamily = tajwal,
         fontWeight = FontWeight.Normal,
         fontSize = 24.sp
+    ),
+    val headline: TextStyle = TextStyle(
+        fontFamily = tajwal,
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp
+    ),
+    val title: TextStyle = TextStyle(
+        fontFamily = tajwal,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp
     ),
     val subtitle: TextStyle = TextStyle(
         fontFamily = tajwal,
@@ -41,18 +67,32 @@ data class AppTypography(
     ),
     val button: TextStyle = TextStyle(
         fontFamily = tajwal,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 16.sp
+    ),
+    val label: TextStyle = TextStyle(
+        fontFamily = tajwal,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp
     ),
     val caption: TextStyle = TextStyle(
         fontFamily = tajwal,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp
-    )
+    ),
 )
 
 internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
 
+val MaterialTheme.appTypography: AppTypography
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalTypography.current
+
+/**
+ * Font-scale-normalised sp. Compensates 15% upward to match the project's
+ * historical density expectations regardless of the user's font-scale setting.
+ */
 val Int.nsp
     @Composable
     get() = (this / LocalDensity.current.fontScale * 1.15).sp

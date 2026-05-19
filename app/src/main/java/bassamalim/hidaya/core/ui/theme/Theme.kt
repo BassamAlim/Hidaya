@@ -16,9 +16,14 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
-        LocalLayoutDirection provides direction
+        LocalLayoutDirection provides direction,
+        LocalDimensions provides AppDimensions(),
+        LocalTypography provides AppTypography(),
     ) {
-        MaterialTheme(colorScheme = getColorScheme(theme)) {
+        MaterialTheme(
+            colorScheme = getColorScheme(theme),
+            shapes = shapes,
+        ) {
             content()
         }
     }
