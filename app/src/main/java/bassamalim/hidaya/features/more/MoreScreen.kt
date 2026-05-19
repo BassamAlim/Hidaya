@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,11 +25,11 @@ import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Radio
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,18 +37,22 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.nsp
+import bassamalim.hidaya.core.ui.components.MyCard
+import bassamalim.hidaya.core.ui.components.MySectionHeader
+import bassamalim.hidaya.core.ui.theme.appTypography
+import bassamalim.hidaya.core.ui.theme.dimensions
+
+private val FeatureCardHeight = 140.dp
+private val FeatureIconContainerSize = 48.dp
 
 @Composable
 fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
     val context = LocalContext.current
     val unsupportedMessage = stringResource(R.string.feature_not_supported)
+    val dims = MaterialTheme.dimensions
 
     val featuresItems = listOf(
         FeatureItem(
@@ -127,32 +132,25 @@ fun MoreScreen(viewModel: MoreViewModel, snackBarHostState: SnackbarHostState) {
                 )
             )
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+            .padding(dims.spaceLg),
+        verticalArrangement = Arrangement.spacedBy(dims.spaceXl)
     ) {
         FeatureSection(title = stringResource(R.string.features), items = featuresItems)
-        
+
         FeatureSection(title = stringResource(R.string.app_and_support), items = settingsItems)
     }
 }
 
 @Composable
 private fun FeatureSection(title: String, items: List<FeatureItem>) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        MyText(
-            text = title,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Start
-        )
-        
+    val dims = MaterialTheme.dimensions
+    Column(verticalArrangement = Arrangement.spacedBy(dims.spaceLg)) {
+        MySectionHeader(title = title)
+
         items.chunked(2).forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(dims.spaceMd)
             ) {
                 rowItems.forEach { item ->
                     FeatureCard(
@@ -170,32 +168,29 @@ private fun FeatureSection(title: String, items: List<FeatureItem>) {
 
 @Composable
 private fun FeatureCard(item: FeatureItem, modifier: Modifier = Modifier) {
-    Card(
+    val dims = MaterialTheme.dimensions
+    MyCard(
+        modifier = modifier.height(FeatureCardHeight),
         onClick = item.onClick,
-        modifier = modifier.height(140.dp),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        ),
+        shape = RoundedCornerShape(dims.radiusLg),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp,
-            pressedElevation = 6.dp,
-            hoveredElevation = 4.dp
-        )
+            defaultElevation = dims.elevationSm,
+            pressedElevation = dims.elevationLg,
+            hoveredElevation = dims.elevationMd
+        ),
+        contentPadding = PaddingValues(dims.spaceLg)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Box(
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(FeatureIconContainerSize)
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(dims.radiusLg)
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -204,7 +199,7 @@ private fun FeatureCard(item: FeatureItem, modifier: Modifier = Modifier) {
                         Icon(
                             imageVector = item.icon,
                             contentDescription = item.title,
-                            modifier = Modifier.size(26.dp),
+                            modifier = Modifier.size(dims.iconMd),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
@@ -212,19 +207,18 @@ private fun FeatureCard(item: FeatureItem, modifier: Modifier = Modifier) {
                         Icon(
                             painter = painterResource(item.drawableId),
                             contentDescription = item.title,
-                            modifier = Modifier.size(26.dp),
+                            modifier = Modifier.size(dims.iconMd),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dims.spaceLg))
 
-            MyText(
+            Text(
                 text = item.title,
-                fontSize = 14.nsp,
-                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.appTypography.label,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )

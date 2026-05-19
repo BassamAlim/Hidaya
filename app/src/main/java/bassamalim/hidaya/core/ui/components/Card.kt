@@ -3,6 +3,7 @@ package bassamalim.hidaya.core.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,7 +39,12 @@ fun MyCard(
 ) {
     val cardModifier = modifier.fillMaxWidth()
     val inner: @Composable ColumnScope.() -> Unit = {
-        Column(modifier = Modifier.padding(contentPadding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(contentPadding)
+        ) {
             content()
         }
     }
