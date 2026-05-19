@@ -155,7 +155,7 @@ fun MyDownloadButton(
     onClick: () -> Unit
 ) {
     Box(
-//        modifier = modifier.size(iconSize),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         if (state == DownloadState.DOWNLOADING)
