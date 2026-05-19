@@ -11,7 +11,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,7 +46,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
@@ -95,7 +93,6 @@ import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
 @Composable
 fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalActivity.current!!
     val configuration = LocalConfiguration.current
@@ -109,8 +106,14 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     )
 
     DisposableEffect(key1 = viewModel) {
-        viewModel.onStart(pagerState, coroutineScope)
         onDispose { viewModel.onStop(activity) }
+    }
+
+    LaunchedEffect(state.navigateToPage) {
+        state.navigateToPage?.let { page ->
+            pagerState.scrollToPage(page)
+            viewModel.onNavigateToPageConsumed()
+        }
     }
 
     EnforcePortrait(activity)
@@ -154,6 +157,8 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                 scrollTo = viewModel.scrollTo,
                 onScrolled = viewModel::onScrolled,
                 pagerState = pagerState,
+                scrollToVersePosition = state.scrollToVersePosition,
+                onScrollToVerseConsumed = viewModel::onScrollToVerseConsumed,
                 onPageChange = viewModel::onPageChange,
                 buildPage = viewModel::buildPage,
                 buildListPage = viewModel::buildListPage,
@@ -445,7 +450,9 @@ private fun PageContent(
     pagerState: PagerState,
     scrollTo: Float,
     onScrolled: () -> Unit,
-    onPageChange: (Int, Int, ScrollState) -> Unit,
+    scrollToVersePosition: Float?,
+    onScrollToVerseConsumed: () -> Unit,
+    onPageChange: (Int, Int) -> Unit,
     buildPage: (Int, Int?, Int, Color, Color, Color) -> List<Section>,
     buildListPage: (Int, Int?, Int, Color, Color, Color) -> List<Section>,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
@@ -468,7 +475,16 @@ private fun PageContent(
         val scrollState = rememberScrollState()
 
         LaunchedEffect(pagerState.currentPage) {
-            onPageChange(pagerState.currentPage, pageIdx, scrollState)
+            onPageChange(pagerState.currentPage, pageIdx)
+        }
+
+        if (isCurrentPage) {
+            LaunchedEffect(scrollToVersePosition) {
+                scrollToVersePosition?.let { position ->
+                    scrollState.animateScrollTo(position.toInt())
+                    onScrollToVerseConsumed()
+                }
+            }
         }
 
         val columnModifier = Modifier

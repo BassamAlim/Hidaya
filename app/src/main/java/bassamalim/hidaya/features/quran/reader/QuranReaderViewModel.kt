@@ -9,8 +9,6 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -36,7 +34,6 @@ import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.versePlayer.VersePlayerService
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,9 +63,6 @@ class QuranReaderViewModel @Inject constructor(
 
     lateinit var language: Language
     lateinit var numeralsLanguage: Language
-    private lateinit var coroutineScope: CoroutineScope
-    private lateinit var pagerState: PagerState
-    private lateinit var scrollState: ScrollState
     private lateinit var suraNames: List<String>
     private lateinit var allVerses: List<VerseEntity>
     var pageNum = 0
@@ -142,11 +136,6 @@ class QuranReaderViewModel @Inject constructor(
     private var controller: MediaControllerCompat? = null
     private var tc: MediaControllerCompat.TransportControls? = null
 
-    fun onStart(pagerState: PagerState, coroutineScope: CoroutineScope) {
-        this.pagerState = pagerState
-        this.coroutineScope = coroutineScope
-    }
-
     fun onStop(activity: Activity) {
         controllerCallback.let {
             MediaControllerCompat.getMediaController(activity)?.unregisterCallback(it)
@@ -219,7 +208,7 @@ class QuranReaderViewModel @Inject constructor(
         }
     }
 
-    fun onPageChange(currentPageIdx: Int, pageIdx: Int, scrollState: ScrollState? = null) {
+    fun onPageChange(currentPageIdx: Int, pageIdx: Int) {
         if (currentPageIdx == pageIdx) {
             pageNum = pageIdx+1
 
@@ -248,8 +237,6 @@ class QuranReaderViewModel @Inject constructor(
 
             domain.handlePageChange(pageNum)
 
-            scrollState?.let { this.scrollState = it }
-
             domain.trackPageViewed(pageNum)
         }
     }
@@ -274,9 +261,8 @@ class QuranReaderViewModel @Inject constructor(
 
         viewModelScope.launch {
             val targetPageNum = domain.getVersePageNum(verseId)
-            pagerState.scrollToPage(targetPageNum - 1)
-
             _uiState.update { it.copy(
+                navigateToPage = targetPageNum - 1,
                 selectedVerse = it.pageVerses.first { verse -> verse.id == verseId }
             )}
         }
@@ -421,7 +407,7 @@ class QuranReaderViewModel @Inject constructor(
     private fun onVersePressed(verseId: Int) {
         pressedVerseId = verseId
 
-        longPressJob = coroutineScope.launch {
+        longPressJob = viewModelScope.launch {
             delay(500)
             if (pressedVerseId == verseId) onVerseHold(verseId)
         }
@@ -474,6 +460,14 @@ class QuranReaderViewModel @Inject constructor(
 
     fun onScrolled() {
         scrollTo = 0F
+    }
+
+    fun onNavigateToPageConsumed() {
+        _uiState.update { it.copy(navigateToPage = null) }
+    }
+
+    fun onScrollToVerseConsumed() {
+        _uiState.update { it.copy(scrollToVersePosition = null) }
     }
 
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
@@ -686,19 +680,14 @@ class QuranReaderViewModel @Inject constructor(
                     .getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
             )}
             if (_uiState.value.viewType == QuranViewType.LIST) {
-                coroutineScope.launch {
-                    if (versePositions[_uiState.value.trackedVerseId] != null)
-                        scrollState.animateScrollTo(
-                            versePositions[_uiState.value.trackedVerseId]!!.toInt()
-                        )
+                versePositions[_uiState.value.trackedVerseId]?.let { position ->
+                    _uiState.update { it.copy(scrollToVersePosition = position) }
                 }
             }
 
             val newPageNum = metadata.getLong("page_num").toInt()
             if (newPageNum != pageNum) {
-                viewModelScope.launch {
-                    pagerState.scrollToPage(newPageNum - 1)
-                }
+                _uiState.update { it.copy(navigateToPage = newPageNum - 1) }
             }
         }
 

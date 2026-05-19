@@ -20,5 +20,7 @@ data class QuranReaderUiState(
     val playerState: Int = PlaybackStateCompat.STATE_STOPPED,
     val bookmarks: QuranBookmarks = QuranBookmarks(),
     val bookmarkOptionsExpanded: Boolean = false,
-    val isTutorialDialogShown: Boolean = false
+    val isTutorialDialogShown: Boolean = false,
+    val navigateToPage: Int? = null,
+    val scrollToVersePosition: Float? = null
 )
