@@ -12,6 +12,7 @@ data class PrayersBoardUiState(
     val dateText: String = "",
     val settingsDialogShown: Boolean = false,
     val timeCalculationSettingsDialogShown: Boolean = false,
+    val isTutorialActive: Boolean = false,
     val report: ReportUiState = ReportUiState(),
 )
 

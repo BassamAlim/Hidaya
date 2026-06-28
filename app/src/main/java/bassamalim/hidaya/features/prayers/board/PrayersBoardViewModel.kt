@@ -81,8 +81,14 @@ class PrayersBoardViewModel @Inject constructor(
 
         _uiState.update { it.copy(
             loading = false,
-            dateText = getDateText(viewedDate)
+            dateText = getDateText(viewedDate),
+            isTutorialActive = domain.getShouldShowTutorial()
         )}
+    }
+
+    fun onTutorialFinished() {
+        _uiState.update { it.copy(isTutorialActive = false) }
+        domain.setTutorialSeen()
     }
 
     fun onLocatorClick() {

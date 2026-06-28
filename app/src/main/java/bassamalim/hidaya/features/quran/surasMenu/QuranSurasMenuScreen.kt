@@ -35,6 +35,7 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,6 +58,11 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TabLayout
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialOverlay
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialShape
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialStep
+import bassamalim.hidaya.core.ui.components.tutorial.rememberTutorialState
+import bassamalim.hidaya.core.ui.components.tutorial.tutorialTarget
 import bassamalim.hidaya.core.ui.theme.Bookmark1Color
 import bassamalim.hidaya.core.ui.theme.Bookmark2Color
 import bassamalim.hidaya.core.ui.theme.Bookmark3Color
@@ -73,56 +79,78 @@ fun QuranSurasMenuScreen(viewModel: QuranSurasViewModel, snackbarHostState: Snac
 
     if (state.isLoading) return LoadingScreen()
 
-    MyScaffold(
-        title = "",
-        topBar = {},  // override the default top bar
-        floatingActionButton = {
-            AnimatedVisibility(
-                visible = !lazyListState.isScrollInProgress && lazyListState.canScrollForward
-            ) {
-                BookmarksFab(
-                    isExpanded = state.isBookmarksExpanded,
-                    bookmarks = state.bookmarks,
-                    onBookmarksClick = viewModel::onBookmarksClick,
-                    onBookmarkOptionClick = { verseId ->
-                        viewModel.onBookmarkOptionClick(
-                            verseId = verseId,
-                            snackbarHostState = snackbarHostState,
-                            message = noBookmarkMessage
-                        )
-                    }
-                )
-            }
-        },
-        snackBarHost = {
-            SnackbarHost(snackbarHostState)
-        }
-    ) { padding ->
-        TabLayout(
-            pageNames = listOf(
-                stringResource(R.string.all),
-                stringResource(R.string.favorites)
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(padding),
-            searchComponent = {
-                QuranSearchBar(
-                    searchSurasAndPages = viewModel::searchSurasAndPages,
-                    searchVerses = viewModel::searchVerses,
-                    onSuraClick = viewModel::onSuraClick,
-                    onPageClick = viewModel::onPageClick,
-                    onVerseClick = viewModel::onVerseClick
-                )
-            }
-        ) { page ->
-            Tab(
-                surasFlow = viewModel.getItems(page),
-                onSuraClick = viewModel::onSuraClick,
-                onFavoriteClick = viewModel::onFavoriteClick,
-                lazyListState = lazyListState
+    val tutorialState = rememberTutorialState()
+    val bookmarksTip = stringResource(R.string.quran_suras_tutorial_bookmarks)
+    LaunchedEffect(state.isTutorialActive) {
+        if (state.isTutorialActive) {
+            tutorialState.start(
+                steps = listOf(
+                    TutorialStep(
+                        text = bookmarksTip,
+                        targetKey = "quran_bookmarks_fab",
+                        shape = TutorialShape.Circle
+                    )
+                ),
+                onFinished = viewModel::onTutorialFinished
             )
         }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        MyScaffold(
+            title = "",
+            topBar = {},  // override the default top bar
+            floatingActionButton = {
+                AnimatedVisibility(
+                    visible = !lazyListState.isScrollInProgress && lazyListState.canScrollForward
+                ) {
+                    BookmarksFab(
+                        isExpanded = state.isBookmarksExpanded,
+                        bookmarks = state.bookmarks,
+                        onBookmarksClick = viewModel::onBookmarksClick,
+                        onBookmarkOptionClick = { verseId ->
+                            viewModel.onBookmarkOptionClick(
+                                verseId = verseId,
+                                snackbarHostState = snackbarHostState,
+                                message = noBookmarkMessage
+                            )
+                        },
+                        mainFabModifier = Modifier.tutorialTarget(tutorialState, "quran_bookmarks_fab")
+                    )
+                }
+            },
+            snackBarHost = {
+                SnackbarHost(snackbarHostState)
+            }
+        ) { padding ->
+            TabLayout(
+                pageNames = listOf(
+                    stringResource(R.string.all),
+                    stringResource(R.string.favorites)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(padding),
+                searchComponent = {
+                    QuranSearchBar(
+                        searchSurasAndPages = viewModel::searchSurasAndPages,
+                        searchVerses = viewModel::searchVerses,
+                        onSuraClick = viewModel::onSuraClick,
+                        onPageClick = viewModel::onPageClick,
+                        onVerseClick = viewModel::onVerseClick
+                    )
+                }
+            ) { page ->
+                Tab(
+                    surasFlow = viewModel.getItems(page),
+                    onSuraClick = viewModel::onSuraClick,
+                    onFavoriteClick = viewModel::onFavoriteClick,
+                    lazyListState = lazyListState
+                )
+            }
+        }
+
+        TutorialOverlay(state = tutorialState)
     }
 }
 
@@ -398,7 +426,8 @@ private fun BookmarksFab(
     isExpanded: Boolean,
     bookmarks: QuranBookmarks,
     onBookmarksClick: () -> Unit,
-    onBookmarkOptionClick: (Int?) -> Unit
+    onBookmarkOptionClick: (Int?) -> Unit,
+    mainFabModifier: Modifier = Modifier
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -482,7 +511,7 @@ private fun BookmarksFab(
             }
 
             // Main FAB
-            FloatingActionButton(onClick = onBookmarksClick) {
+            FloatingActionButton(onClick = onBookmarksClick, modifier = mainFabModifier) {
                 Icon(
                     imageVector = Icons.Default.Bookmarks,
                     contentDescription = stringResource(R.string.bookmarked_verses)

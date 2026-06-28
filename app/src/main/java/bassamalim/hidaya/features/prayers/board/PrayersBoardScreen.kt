@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +54,11 @@ import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyTextButton
 import bassamalim.hidaya.core.ui.components.ParentColumn
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialOverlay
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialShape
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialStep
+import bassamalim.hidaya.core.ui.components.tutorial.rememberTutorialState
+import bassamalim.hidaya.core.ui.components.tutorial.tutorialTarget
 import bassamalim.hidaya.core.ui.theme.nsp
 import java.util.SortedMap
 
@@ -62,64 +68,108 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
 
     if (state.loading) return LoadingScreen()
 
-    ParentColumn(Modifier.padding(vertical = 16.dp)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min)
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LocationCard(
-                isLocationAvailable = state.locationAvailable,
-                locationName = state.locationName,
-                onLocatorClick = viewModel::onLocatorClick
+    val tutorialState = rememberTutorialState()
+    val locationTip = stringResource(R.string.prayers_tutorial_location)
+    val settingsTip = stringResource(R.string.prayers_tutorial_settings)
+    val reportTip = stringResource(R.string.prayers_tutorial_report)
+    val notificationTip = stringResource(R.string.prayers_tutorial_notification)
+    val reminderTip = stringResource(R.string.prayers_tutorial_reminder)
+    LaunchedEffect(state.isTutorialActive) {
+        if (state.isTutorialActive) {
+            tutorialState.start(
+                steps = listOf(
+                    TutorialStep(text = locationTip, targetKey = "prayers_location"),
+                    TutorialStep(text = settingsTip, targetKey = "prayers_settings"),
+                    TutorialStep(text = reportTip, targetKey = "prayers_report"),
+                    TutorialStep(
+                        text = notificationTip,
+                        targetKey = "prayers_notification",
+                        shape = TutorialShape.Circle
+                    ),
+                    TutorialStep(
+                        text = reminderTip,
+                        targetKey = "prayers_reminder",
+                        shape = TutorialShape.Circle
+                    )
+                ),
+                onFinished = viewModel::onTutorialFinished
             )
-
-            SettingsCard(onClick = viewModel::onTimeCalculationSettingsClick)
-
-            HelpCard(onClick = viewModel::onReportHelpClick)
         }
-
-        PrayersSpace(
-            prayersData = state.prayersData,
-            isLocationAvailable = state.locationAvailable,
-            onPrayerCardClick = viewModel::onPrayerCardClick,
-            onReminderCardClick = viewModel::onExtraReminderCardClick
-        )
-
-        DayCard(
-            dateText = state.dateText,
-            isNoDateOffset = state.noDateOffset,
-            onDateClick = viewModel::onDateClick,
-            onPreviousDayClick = viewModel::onPreviousDayClick,
-            onNextDayClick = viewModel::onNextDayClick
-        )
     }
 
-    if (state.report.dialogShown) {
-        PrayerTimesReportDialog(
-            state = state,
-            onDismiss = viewModel::onReportDismiss,
-            onOpenCalculationSettings = viewModel::onTimeCalculationSettingsClick,
-            onOpenLocator = viewModel::onLocatorClick,
-            onNext = viewModel::onReportNext,
-            onBack = viewModel::onReportBack,
-            onTogglePrayer = viewModel::onReportTogglePrayer,
-            onOpenCorrectTimePicker = viewModel::onCorrectTimePickerOpen,
-            onCorrectTimePickerDismiss = viewModel::onCorrectTimePickerDismiss,
-            onCorrectTimePickerConfirm = viewModel::onCorrectTimePickerConfirm,
-            onNotesChange = viewModel::onReportNotesChange,
-            onSubmit = viewModel::onReportSubmit
-        )
+    Box(Modifier.fillMaxSize()) {
+        ParentColumn(Modifier.padding(vertical = 16.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LocationCard(
+                    isLocationAvailable = state.locationAvailable,
+                    locationName = state.locationName,
+                    onLocatorClick = viewModel::onLocatorClick,
+                    modifier = Modifier.tutorialTarget(tutorialState, "prayers_location")
+                )
 
-        CorrectTimePickerHost(
-            target = state.report.timePickerTarget,
-            existing = state.report.correctTimes,
-            onConfirm = viewModel::onCorrectTimePickerConfirm,
-            onDismiss = viewModel::onCorrectTimePickerDismiss
-        )
+                SettingsCard(
+                    onClick = viewModel::onTimeCalculationSettingsClick,
+                    modifier = Modifier.tutorialTarget(tutorialState, "prayers_settings")
+                )
+
+                HelpCard(
+                    onClick = viewModel::onReportHelpClick,
+                    modifier = Modifier.tutorialTarget(tutorialState, "prayers_report")
+                )
+            }
+
+            PrayersSpace(
+                prayersData = state.prayersData,
+                isLocationAvailable = state.locationAvailable,
+                onPrayerCardClick = viewModel::onPrayerCardClick,
+                onReminderCardClick = viewModel::onExtraReminderCardClick,
+                notificationTargetModifier =
+                    Modifier.tutorialTarget(tutorialState, "prayers_notification"),
+                reminderTargetModifier =
+                    Modifier.tutorialTarget(tutorialState, "prayers_reminder")
+            )
+
+            DayCard(
+                dateText = state.dateText,
+                isNoDateOffset = state.noDateOffset,
+                onDateClick = viewModel::onDateClick,
+                onPreviousDayClick = viewModel::onPreviousDayClick,
+                onNextDayClick = viewModel::onNextDayClick
+            )
+        }
+
+        if (state.report.dialogShown) {
+            PrayerTimesReportDialog(
+                state = state,
+                onDismiss = viewModel::onReportDismiss,
+                onOpenCalculationSettings = viewModel::onTimeCalculationSettingsClick,
+                onOpenLocator = viewModel::onLocatorClick,
+                onNext = viewModel::onReportNext,
+                onBack = viewModel::onReportBack,
+                onTogglePrayer = viewModel::onReportTogglePrayer,
+                onOpenCorrectTimePicker = viewModel::onCorrectTimePickerOpen,
+                onCorrectTimePickerDismiss = viewModel::onCorrectTimePickerDismiss,
+                onCorrectTimePickerConfirm = viewModel::onCorrectTimePickerConfirm,
+                onNotesChange = viewModel::onReportNotesChange,
+                onSubmit = viewModel::onReportSubmit
+            )
+
+            CorrectTimePickerHost(
+                target = state.report.timePickerTarget,
+                existing = state.report.correctTimes,
+                onConfirm = viewModel::onCorrectTimePickerConfirm,
+                onDismiss = viewModel::onCorrectTimePickerDismiss
+            )
+        }
+
+        TutorialOverlay(state = tutorialState)
     }
 }
 
@@ -127,10 +177,11 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
 private fun RowScope.LocationCard(
     isLocationAvailable: Boolean,
     locationName: String,
-    onLocatorClick: () -> Unit
+    onLocatorClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     OutlinedCard(
-        Modifier
+        modifier
             .fillMaxHeight()
             .weight(1f)
     ) {
@@ -159,9 +210,9 @@ private fun RowScope.LocationCard(
 }
 
 @Composable
-private fun RowScope.SettingsCard(onClick: () -> Unit) {
+private fun RowScope.SettingsCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
     OutlinedCard(
-        Modifier
+        modifier
             .fillMaxHeight()
             .aspectRatio(1f)
     ) {
@@ -182,9 +233,9 @@ private fun RowScope.SettingsCard(onClick: () -> Unit) {
 }
 
 @Composable
-private fun RowScope.HelpCard(onClick: () -> Unit) {
+private fun RowScope.HelpCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
     OutlinedCard(
-        Modifier
+        modifier
             .fillMaxHeight()
             .aspectRatio(1f)
     ) {
@@ -209,7 +260,9 @@ private fun ColumnScope.PrayersSpace(
     prayersData: SortedMap<Prayer, PrayerCardData>,
     isLocationAvailable: Boolean,
     onPrayerCardClick: (Prayer) -> Unit,
-    onReminderCardClick: (Prayer) -> Unit
+    onReminderCardClick: (Prayer) -> Unit,
+    notificationTargetModifier: Modifier = Modifier,
+    reminderTargetModifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier
@@ -219,12 +272,16 @@ private fun ColumnScope.PrayersSpace(
         verticalArrangement = Arrangement.SpaceAround
     ) {
         prayersData.forEach { (prayer, data) ->
+            // Spotlight the controls on the first prayer row only.
+            val isFirst = prayer == prayersData.firstKey()
             PrayerSpace(
                 prayer = prayer,
                 data = data,
                 isLocationAvailable = isLocationAvailable,
                 onPrayerCardClick = onPrayerCardClick,
-                onReminderCardClick = onReminderCardClick
+                onReminderCardClick = onReminderCardClick,
+                notificationModifier = if (isFirst) notificationTargetModifier else Modifier,
+                reminderModifier = if (isFirst) reminderTargetModifier else Modifier
             )
 
             if (prayer != prayersData.lastKey()) {
@@ -243,7 +300,9 @@ private fun PrayerSpace(
     data: PrayerCardData,
     isLocationAvailable: Boolean,
     onPrayerCardClick: (Prayer) -> Unit,
-    onReminderCardClick: (Prayer) -> Unit
+    onReminderCardClick: (Prayer) -> Unit,
+    notificationModifier: Modifier = Modifier,
+    reminderModifier: Modifier = Modifier
 ) {
     MyRow {
         MyText(
@@ -257,13 +316,19 @@ private fun PrayerSpace(
         )
 
         if (isLocationAvailable) {
-            NotificationType(prayer = prayer, data = data, onPrayerCardClick = onPrayerCardClick)
+            NotificationType(
+                prayer = prayer,
+                data = data,
+                onPrayerCardClick = onPrayerCardClick,
+                modifier = notificationModifier
+            )
 
             ExtraReminderButton(
                 prayer = prayer,
                 isReminderOffsetSpecified = data.isExtraReminderOffsetSpecified,
                 reminderOffsetText = data.extraReminderOffset,
-                onReminderCardClick = onReminderCardClick
+                onReminderCardClick = onReminderCardClick,
+                modifier = reminderModifier
             )
         }
     }
@@ -273,12 +338,13 @@ private fun PrayerSpace(
 private fun RowScope.NotificationType(
     prayer: Prayer,
     data: PrayerCardData,
-    onPrayerCardClick: (Prayer) -> Unit
+    onPrayerCardClick: (Prayer) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(Modifier.padding(horizontal = 6.dp)) {
         FilledTonalIconButton(
             onClick = { onPrayerCardClick(prayer) },
-            modifier = Modifier.size(48.dp)
+            modifier = modifier.size(48.dp)
         ) {
             Icon(
                 imageVector = when (data.notificationType) {
@@ -299,12 +365,13 @@ private fun ExtraReminderButton(
     prayer: Prayer,
     isReminderOffsetSpecified: Boolean,
     reminderOffsetText: String,
-    onReminderCardClick: (Prayer) -> Unit
+    onReminderCardClick: (Prayer) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(Modifier.padding(horizontal = 6.dp)) {
         FilledTonalIconButton(
             onClick = { onReminderCardClick(prayer) },
-            modifier = Modifier.size(48.dp)
+            modifier = modifier.size(48.dp)
         ) {
             MyRow(horizontalArrangement = Arrangement.Center) {
                 if (isReminderOffsetSpecified) {

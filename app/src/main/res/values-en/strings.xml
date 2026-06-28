@@ -62,6 +62,12 @@
     <string name="reader_tutorial_play">Tap a verse, then tap the play button to start reciting from it.</string>
     <string name="reader_tutorial_reciter">You can change the reciter while reciting from the player settings.</string>
     <string name="books_tutorial_search">Tap this button to search for text inside downloaded books.</string>
+    <string name="prayers_tutorial_location">Tap here to set your location; prayer times are calculated based on it.</string>
+    <string name="prayers_tutorial_settings">Adjust how prayer times are calculated from here.</string>
+    <string name="prayers_tutorial_report">Tap here to report incorrect prayer times.</string>
+    <string name="prayers_tutorial_notification">Tap this button to switch the alert type for each prayer: athan, notification, silent, or off.</string>
+    <string name="prayers_tutorial_reminder">Set an extra reminder before or after the prayer time.</string>
+    <string name="quran_suras_tutorial_bookmarks">Tap here to open your saved bookmarks and jump straight to a bookmarked verse.</string>
     <string name="tutorial_skip">Skip</string>
     <string name="tutorial_done">Done</string>
     <string name="quran_search_hint">Search for sura or page or verse</string>

@@ -52,6 +52,13 @@ class PrayersBoardDomain @Inject constructor(
 
     fun getPrayerNames() = prayersRepository.getPrayerNames()
 
+    suspend fun getShouldShowTutorial() =
+        prayersRepository.getShouldShowBoardTutorial().first()
+
+    fun setTutorialSeen() {
+        prayersRepository.setShouldShowBoardTutorial(false)
+    }
+
     fun getPrayerSettings(): Flow<Map<Prayer, PrayerNotificationSettings>> {
         return combine(
             getNotificationTypes(),

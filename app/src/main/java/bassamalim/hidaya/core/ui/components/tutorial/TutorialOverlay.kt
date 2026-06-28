@@ -20,15 +20,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,8 +60,14 @@ fun TutorialOverlay(
     val step = state.currentStep ?: return
 
     val density = LocalDensity.current
-    val targetRect = step.targetKey?.let { state.targets[it] }
-    val hasTarget = targetRect != null
+
+    // The overlay may be nested below a top app bar, while targets report their
+    // bounds in the composition root. Track our own offset from root so we can
+    // translate target bounds into the overlay's local coordinate space.
+    var overlayOffset by remember { mutableStateOf(Offset.Zero) }
+    val targetRectInRoot = step.targetKey?.let { state.targets[it] }
+    val hasTarget = targetRectInRoot != null
+    val targetRect = targetRectInRoot?.translate(-overlayOffset.x, -overlayOffset.y)
 
     val cutoutPadding = with(density) { 8.dp.toPx() }
     val cornerRadius = with(density) { 12.dp.toPx() }
@@ -67,7 +79,11 @@ fun TutorialOverlay(
         label = "spotlight"
     )
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .onGloballyPositioned { overlayOffset = it.positionInRoot() }
+    ) {
         // Dim scrim with a spotlight cutout punched out of it.
         Canvas(
             modifier = Modifier
@@ -130,14 +146,14 @@ private fun Callout(state: TutorialState, targetRect: Rect?) {
                 (screenHeightPx - targetRect.bottom) >= targetRect.top -> {
                 // More room below the target → place the callout below it.
                 alignment = Alignment.TopCenter
-                padding = Modifier.padding(top = with(density) { targetRect.bottom.toDp() } + spacing)
+                val top = with(density) { targetRect.bottom.toDp() } + spacing
+                padding = Modifier.padding(top = top.coerceAtLeast(0.dp))
             }
             targetRect.top >= minRoomPx -> {
                 // More room above the target → place the callout above it.
                 alignment = Alignment.BottomCenter
-                padding = Modifier.padding(
-                    bottom = with(density) { (screenHeightPx - targetRect.top).toDp() } + spacing
-                )
+                val bottom = with(density) { (screenHeightPx - targetRect.top).toDp() } + spacing
+                padding = Modifier.padding(bottom = bottom.coerceAtLeast(0.dp))
             }
             else -> {
                 // Target fills most of the screen → anchor to the bottom edge.

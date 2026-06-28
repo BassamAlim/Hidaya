@@ -63,6 +63,12 @@
     <string name="reader_tutorial_play">اضغط على آية ثم اضغط على زر التشغيل لبدء التلاوة من الآية المختارة.</string>
     <string name="reader_tutorial_reciter">يمكنك تغيير القارئ أثناء التلاوة من إعدادات المشغّل.</string>
     <string name="books_tutorial_search">اضغط على هذا الزر للبحث عن نص داخل الكتب المحمّلة.</string>
+    <string name="prayers_tutorial_location">اضغط هنا لتحديد موقعك؛ تُحسب أوقات الصلاة بناءً عليه.</string>
+    <string name="prayers_tutorial_settings">من هنا يمكنك ضبط طريقة حساب أوقات الصلاة.</string>
+    <string name="prayers_tutorial_report">اضغط هنا للإبلاغ عن أوقات صلاة غير صحيحة.</string>
+    <string name="prayers_tutorial_notification">اضغط على هذا الزر لتبديل نوع التنبيه لكل صلاة: أذان، إشعار، صامت، أو إيقاف.</string>
+    <string name="prayers_tutorial_reminder">اضبط تذكيرًا إضافيًا قبل وقت الصلاة أو بعده.</string>
+    <string name="quran_suras_tutorial_bookmarks">اضغط هنا لفتح علاماتك المحفوظة والانتقال مباشرةً إلى الآية المعلَّمة.</string>
     <string name="tutorial_skip">تخطّي</string>
     <string name="tutorial_done">تم</string>
     <string name="quran_search_hint">ابحث عن سورة أو صفحة أو آية</string>

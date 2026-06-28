@@ -31,6 +31,13 @@ class QuranSurasDomain @Inject constructor(
 
     fun getBookmarks() = quranRepository.getBookmarks()
 
+    suspend fun getShouldShowTutorial() =
+        quranRepository.getShouldShowSurasMenuTutorial().first()
+
+    suspend fun setTutorialSeen() {
+        quranRepository.setShouldShowSurasMenuTutorial(false)
+    }
+
     fun getAllSuras(language: Language) = quranRepository.observeAllSuras(language)
 
     suspend fun getAllVerses() = quranRepository.getAllVerses()

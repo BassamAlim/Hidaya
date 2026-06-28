@@ -136,6 +136,13 @@ class QuranRepository @Inject constructor(
         quranPreferencesDataSource.updateShouldShowReaderTutorial(shouldShowReaderTutorial)
     }
 
+    fun getShouldShowSurasMenuTutorial() =
+        quranPreferencesDataSource.getShouldShowSurasMenuTutorial()
+
+    suspend fun setShouldShowSurasMenuTutorial(shouldShow: Boolean) {
+        quranPreferencesDataSource.updateShouldShowSurasMenuTutorial(shouldShow)
+    }
+
     fun getWerdPageNum() = quranPreferencesDataSource.getWerdPageNum()
 
     suspend fun setWerdPageNum(werdPageNum: Int) {

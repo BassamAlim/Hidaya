@@ -42,6 +42,15 @@ class PrayersRepository @Inject constructor(
         }
     }
 
+    fun getShouldShowBoardTutorial() =
+        prayersPreferencesDataSource.getShouldShowBoardTutorial()
+
+    fun setShouldShowBoardTutorial(shouldShow: Boolean) {
+        scope.launch {
+            prayersPreferencesDataSource.updateShouldShowBoardTutorial(shouldShow)
+        }
+    }
+
     fun getPrayerNames(): Map<Prayer, String> {
         val names = resources.getStringArray(R.array.prayer_names) as Array<String>
         return mapOf(

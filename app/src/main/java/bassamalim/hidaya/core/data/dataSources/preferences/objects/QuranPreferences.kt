@@ -17,6 +17,7 @@ data class QuranPreferences(
     val keepScreenOn: Boolean = false,
     val bookmarks: QuranBookmarks = QuranBookmarks(),
     val shouldShowReaderTutorial: Boolean = true,
+    val shouldShowSurasMenuTutorial: Boolean = true,
     val werdPageNum: Int = 25,
     val isWerdDone: Boolean = false,
 )

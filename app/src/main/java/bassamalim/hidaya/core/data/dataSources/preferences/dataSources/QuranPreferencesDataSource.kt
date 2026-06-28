@@ -69,6 +69,13 @@ class QuranPreferencesDataSource(
         }
     }
 
+    fun getShouldShowSurasMenuTutorial() = flow.map { it.shouldShowSurasMenuTutorial }
+    suspend fun updateShouldShowSurasMenuTutorial(shouldShow: Boolean) {
+        dataStore.updateData { preferences ->
+            preferences.copy(shouldShowSurasMenuTutorial = shouldShow)
+        }
+    }
+
     fun getWerdPageNum() = flow.map { it.werdPageNum }
     suspend fun updateWerdPageNum(num: Int) {
         dataStore.updateData { preferences ->

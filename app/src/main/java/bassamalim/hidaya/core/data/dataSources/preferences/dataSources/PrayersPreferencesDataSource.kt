@@ -41,4 +41,11 @@ class PrayersPreferencesDataSource(
         }
     }
 
+    fun getShouldShowBoardTutorial() = flow.map { it.shouldShowBoardTutorial }
+    suspend fun updateShouldShowBoardTutorial(shouldShow: Boolean) {
+        dataStore.updateData { preferences ->
+            preferences.copy(shouldShowBoardTutorial = shouldShow)
+        }
+    }
+
 }

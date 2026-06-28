@@ -66,8 +66,16 @@ class QuranSurasViewModel @Inject constructor(
             allVerses = domain.getAllVerses()
 
             _uiState.update { it.copy(
-                isLoading = false
+                isLoading = false,
+                isTutorialActive = domain.getShouldShowTutorial()
             )}
+        }
+    }
+
+    fun onTutorialFinished() {
+        _uiState.update { it.copy(isTutorialActive = false) }
+        viewModelScope.launch {
+            domain.setTutorialSeen()
         }
     }
 

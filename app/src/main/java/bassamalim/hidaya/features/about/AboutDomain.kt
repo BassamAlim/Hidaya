@@ -32,6 +32,8 @@ class AboutDomain @Inject constructor(
     suspend fun resetTutorials() {
         booksRepository.setShouldShowTutorial(true)
         quranRepository.setShouldShowReaderTutorial(true)
+        quranRepository.setShouldShowSurasMenuTutorial(true)
+        prayersRepository.setShouldShowBoardTutorial(true)
     }
 
     fun resetOnboarding() {
