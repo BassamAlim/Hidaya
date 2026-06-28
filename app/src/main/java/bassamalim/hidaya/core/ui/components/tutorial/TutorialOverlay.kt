@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyCard
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyTextButton
 import kotlin.math.max
@@ -144,51 +146,57 @@ private fun Callout(state: TutorialState, targetRect: Rect?) {
             }
         }
 
-        MyCard(
+        Surface(
             modifier = Modifier
                 .align(alignment)
                 .padding(horizontal = 24.dp)
                 .then(padding)
-                .widthIn(max = 360.dp)
+                .widthIn(max = 360.dp),
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            tonalElevation = 3.dp,
+            shadowElevation = 6.dp
         ) {
-            MyText(
-                text = state.currentStep?.text.orEmpty(),
-                fontSize = 17.sp
-            )
-
-            StepIndicators(
-                count = state.steps.size,
-                current = state.currentIndex,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 14.dp)
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (!state.isLastStep) {
-                    MyTextButton(
-                        text = stringResource(R.string.tutorial_skip),
-                        textColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        onClick = state::finish
-                    )
-                } else {
-                    // Keep the layout balanced when there is no Skip button.
-                    Box(Modifier) {}
-                }
-
-                MyTextButton(
-                    text = stringResource(
-                        if (state.isLastStep) R.string.tutorial_done else R.string.next
-                    ),
-                    fontWeight = FontWeight.Bold,
-                    onClick = state::next
+            Column(modifier = Modifier.padding(20.dp)) {
+                MyText(
+                    text = state.currentStep?.text.orEmpty(),
+                    fontSize = 17.sp
                 )
+
+                StepIndicators(
+                    count = state.steps.size,
+                    current = state.currentIndex,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 14.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (!state.isLastStep) {
+                        MyTextButton(
+                            text = stringResource(R.string.tutorial_skip),
+                            textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            onClick = state::finish
+                        )
+                    } else {
+                        // Keep the layout balanced when there is no Skip button.
+                        Box(Modifier) {}
+                    }
+
+                    MyTextButton(
+                        text = stringResource(
+                            if (state.isLastStep) R.string.tutorial_done else R.string.next
+                        ),
+                        fontWeight = FontWeight.Bold,
+                        onClick = state::next
+                    )
+                }
             }
         }
     }
