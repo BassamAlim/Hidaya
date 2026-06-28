@@ -81,7 +81,10 @@ import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyIconPlayerButton
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.TutorialDialog
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialOverlay
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialStep
+import bassamalim.hidaya.core.ui.components.tutorial.rememberTutorialState
+import bassamalim.hidaya.core.ui.components.tutorial.tutorialTarget
 import bassamalim.hidaya.core.ui.theme.Bookmark1Color
 import bassamalim.hidaya.core.ui.theme.Bookmark2Color
 import bassamalim.hidaya.core.ui.theme.Bookmark3Color
@@ -135,18 +138,40 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
 
     val featureNotFoundMessage = stringResource(R.string.feature_not_supported)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding()
-    ) {
+    val tutorialState = rememberTutorialState()
+    val verseTip = stringResource(R.string.reader_tutorial_verse)
+    val playTip = stringResource(R.string.reader_tutorial_play)
+    val reciterTip = stringResource(R.string.reader_tutorial_reciter)
+    LaunchedEffect(state.isTutorialActive) {
+        if (state.isTutorialActive) {
+            tutorialState.start(
+                steps = listOf(
+                    TutorialStep(text = verseTip, targetKey = "reader_content"),
+                    TutorialStep(text = playTip, targetKey = "reader_play"),
+                    TutorialStep(text = reciterTip)
+                ),
+                onFinished = viewModel::onTutorialFinished
+            )
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .safeDrawingPadding()
+        ) {
         TopBar(
             suraName = state.suraName,
             pageNumText = state.pageNum,
             juzNumText = state.juzNum
         )
 
-        Box(modifier = Modifier.weight(1f)) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .tutorialTarget(tutorialState, "reader_content")
+        ) {
             PageContent(
                 viewType = state.viewType,
                 fillPage = state.fillPage,
@@ -176,7 +201,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
         }
 
         AnimatedBottomBar(
-            visible = barsVisible,
+            visible = barsVisible || state.isTutorialActive,
             playerState = state.playerState,
             onBookmarksClick = viewModel::onBookmarksClick,
             bookmarkOptionsExpanded = state.bookmarkOptionsExpanded,
@@ -197,15 +222,13 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                 )
             },
             onNextVerseClick = viewModel::onNextVerseClick,
-            onSettingsClick = viewModel::onSettingsClick
+            onSettingsClick = viewModel::onSettingsClick,
+            playButtonModifier = Modifier.tutorialTarget(tutorialState, "reader_play")
         )
-    }
+        }
 
-    TutorialDialog(
-        shown = state.isTutorialDialogShown,
-        text = stringResource(R.string.suras_reader_tips),
-        onDismissRequest = viewModel::onTutorialDialogDismiss
-    )
+        TutorialOverlay(state = tutorialState)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -261,7 +284,8 @@ private fun AnimatedBottomBar(
     onPreviousVerseClick: () -> Unit,
     onPlayPauseClick: () -> Unit,
     onNextVerseClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    playButtonModifier: Modifier = Modifier
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -277,7 +301,8 @@ private fun AnimatedBottomBar(
             onPreviousVerseClick = onPreviousVerseClick,
             onPlayPauseClick = onPlayPauseClick,
             onNextVerseClick = onNextVerseClick,
-            onSettingsClick = onSettingsClick
+            onSettingsClick = onSettingsClick,
+            playButtonModifier = playButtonModifier
         )
     }
 }
@@ -292,7 +317,8 @@ private fun BottomBar(
     onPreviousVerseClick: () -> Unit,
     onPlayPauseClick: () -> Unit,
     onNextVerseClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    playButtonModifier: Modifier = Modifier
 ) {
     BottomAppBar(Modifier.height(56.dp)) {
         Row(
@@ -339,7 +365,7 @@ private fun BottomBar(
                     )
 
                     // Play/Pause button
-                    Box (Modifier.padding(horizontal = 4.dp)) {
+                    Box (playButtonModifier.padding(horizontal = 4.dp)) {
                         MyIconPlayerButton(
                             state = playerState,
                             onClick = { onPlayPauseClick() },

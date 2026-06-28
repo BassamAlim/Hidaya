@@ -52,8 +52,8 @@ class BooksMenuDomain @Inject constructor(
 
     fun getShowTutorial() = booksRepository.getShouldShowTutorial()
 
-    fun handleTutorialDialogDismiss(doNotShowAgain: Boolean) {
-        if (doNotShowAgain) booksRepository.setShouldShowTutorial(false)
+    fun setTutorialSeen() {
+        booksRepository.setShouldShowTutorial(false)
     }
 
     fun trackBookOpened(bookId: Int) {

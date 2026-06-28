@@ -41,7 +41,7 @@ class BooksMenuViewModel @Inject constructor(
             _uiState.update { it.copy(
                 isLoading = false,
                 books = domain.getBooks(language),
-                tutorialDialogShown = domain.getShowTutorial().first()
+                isTutorialActive = domain.getShowTutorial().first()
             )}
         }
     }
@@ -128,14 +128,12 @@ class BooksMenuViewModel @Inject constructor(
         else navigator.navigate(Screen.BookSearcher)
     }
 
-    fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
+    fun onTutorialFinished() {
         _uiState.update { it.copy(
-            tutorialDialogShown = false
+            isTutorialActive = false
         )}
 
-        viewModelScope.launch {
-            domain.handleTutorialDialogDismiss(doNotShowAgain)
-        }
+        domain.setTutorialSeen()
     }
 
 }

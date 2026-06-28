@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.books.booksMenu
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,61 +34,81 @@ import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.TutorialDialog
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialOverlay
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialShape
+import bassamalim.hidaya.core.ui.components.tutorial.TutorialStep
+import bassamalim.hidaya.core.ui.components.tutorial.rememberTutorialState
+import bassamalim.hidaya.core.ui.components.tutorial.tutorialTarget
 import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
 fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
+    val tutorialState = rememberTutorialState()
 
     if (state.isLoading) return LoadingScreen()
 
-    MyScaffold(
-        title = stringResource(R.string.hadeeth_books),
-        floatingActionButton = {
-            val noDownloadedBooksMessage = stringResource(R.string.no_downloaded_books)
-            MyFloatingActionButton(
-                iconId = R.drawable.ic_quran_search,
-//                imageVector = Icons.Default.FindInPage,
-                description = stringResource(R.string.search_in_books),
-                onClick = {
-                    viewModel.onSearcherClick(
-                        snackBarHostState = snackBarHostState,
-                        message = noDownloadedBooksMessage
+    val searchTip = stringResource(R.string.books_tutorial_search)
+    LaunchedEffect(state.isTutorialActive) {
+        if (state.isTutorialActive) {
+            tutorialState.start(
+                steps = listOf(
+                    TutorialStep(
+                        text = searchTip,
+                        targetKey = "books_search",
+                        shape = TutorialShape.Circle
                     )
+                ),
+                onFinished = viewModel::onTutorialFinished
+            )
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        MyScaffold(
+            title = stringResource(R.string.hadeeth_books),
+            floatingActionButton = {
+                val noDownloadedBooksMessage = stringResource(R.string.no_downloaded_books)
+                MyFloatingActionButton(
+                    iconId = R.drawable.ic_quran_search,
+//                imageVector = Icons.Default.FindInPage,
+                    description = stringResource(R.string.search_in_books),
+                    modifier = Modifier.tutorialTarget(tutorialState, "books_search"),
+                    onClick = {
+                        viewModel.onSearcherClick(
+                            snackBarHostState = snackBarHostState,
+                            message = noDownloadedBooksMessage
+                        )
+                    }
+                )
+            },
+            snackBarHost = {
+                SnackbarHost(hostState = snackBarHostState)
+            }
+        ) { padding ->
+            // books list
+            MyLazyColumn(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(vertical = 5.dp),
+                lazyList = {
+                    items(state.books.toList(), key = { (id, _) -> id }) { (id, book) ->
+                        BookCard(
+                            id = id,
+                            book = book,
+                            onItemClick = viewModel::onItemClick,
+                            onDownloadButtonClick = viewModel::onDownloadButtonClick
+                        )
+                    }
                 }
             )
-        },
-        snackBarHost = {
-            SnackbarHost(hostState = snackBarHostState)
+
+            if (state.shouldShowWait != 0)
+                WaitMessage(state.shouldShowWait)
         }
-    ) { padding ->
-        // books list
-        MyLazyColumn(
-            modifier = Modifier
-                .padding(padding)
-                .padding(vertical = 5.dp),
-            lazyList = {
-                items(state.books.toList(), key = { (id, _) -> id }) { (id, book) ->
-                    BookCard(
-                        id = id,
-                        book = book,
-                        onItemClick = viewModel::onItemClick,
-                        onDownloadButtonClick = viewModel::onDownloadButtonClick
-                    )
-                }
-            }
-        )
 
-        TutorialDialog(
-            shown = state.tutorialDialogShown,
-            text = stringResource(R.string.books_menu_tips),
-            onDismissRequest = viewModel::onTutorialDialogDismiss
-        )
-
-        if (state.shouldShowWait != 0)
-            WaitMessage(state.shouldShowWait)
+        TutorialOverlay(state = tutorialState)
     }
 }
 

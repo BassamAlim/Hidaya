@@ -58,8 +58,12 @@
     <string name="bookmark_verse_button_description">Save verse</string>
     <string name="filter_search_description">Filter search</string>
     <string name="already_read_description">Already read</string>
-    <string name="suras_reader_tips">Click and hold the verse to view its interpretation.\n\n Click on a verse then click on the play button in the bottom bar to start playing from that verse.\n\n You can change the reciter while recitation is playing.</string>
-    <string name="books_menu_tips">You can click on the button in the bottom corner of the screen to search in the downloaded books.</string>
+    <string name="reader_tutorial_verse">Press and hold any verse to view its info.</string>
+    <string name="reader_tutorial_play">Tap a verse, then tap the play button to start reciting from it.</string>
+    <string name="reader_tutorial_reciter">You can change the reciter while reciting from the player settings.</string>
+    <string name="books_tutorial_search">Tap this button to search for text inside downloaded books.</string>
+    <string name="tutorial_skip">Skip</string>
+    <string name="tutorial_done">Done</string>
     <string name="quran_search_hint">Search for sura or page or verse</string>
     <string name="remembrances_search_hint">Search for remembrance</string>
     <string name="reciters_search_hint">Search for reciter</string>

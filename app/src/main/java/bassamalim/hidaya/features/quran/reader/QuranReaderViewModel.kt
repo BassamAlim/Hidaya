@@ -126,7 +126,7 @@ class QuranReaderViewModel @Inject constructor(
 
             _uiState.update { it.copy(
                 isLoading = false,
-                isTutorialDialogShown = domain.getShouldShowTutorial()
+                isTutorialActive = domain.getShouldShowTutorial()
             )}
         }
     }
@@ -470,15 +470,13 @@ class QuranReaderViewModel @Inject constructor(
         _uiState.update { it.copy(scrollToVersePosition = null) }
     }
 
-    fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
+    fun onTutorialFinished() {
         _uiState.update { it.copy(
-            isTutorialDialogShown = false
+            isTutorialActive = false
         )}
 
-        if (doNotShowAgain) {
-            viewModelScope.launch {
-                domain.setDoNotShowTutorial()
-            }
+        viewModelScope.launch {
+            domain.setDoNotShowTutorial()
         }
     }
 

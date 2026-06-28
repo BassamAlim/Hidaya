@@ -22,10 +22,11 @@ import androidx.compose.ui.unit.dp
 fun MyFloatingActionButton(
     iconId: Int,
     description: String,
+    modifier: Modifier = Modifier,
     iconSize: Dp = 36.dp,
     onClick: () -> Unit
 ) {
-    FloatingActionButton(onClick = onClick) {
+    FloatingActionButton(onClick = onClick, modifier = modifier) {
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = description,
