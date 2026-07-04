@@ -112,7 +112,12 @@ class PrayersBoardViewModelTest {
             advanceUntilIdle()
             awaitItem()
 
-            // Force dialog open by updating _uiState directly via the public helper
+            // Open the dialog first, otherwise dismissing is a no-op and StateFlow won't emit
+            vm.onReportHelpClick()
+            advanceUntilIdle()
+            val opened = awaitItem()
+            assertTrue(opened.report.dialogShown)
+
             vm.onReportDismiss()
             val state = awaitItem()
 
@@ -136,10 +141,10 @@ class PrayersBoardViewModelTest {
             val atForm = awaitItem()
             assertEquals(ReportStep.FORM, atForm.report.step)
 
-            // Calling Next again from FORM should stay at FORM
+            // Calling Next again from FORM is a no-op, so no new emission is expected
             vm.onReportNext()
-            val stillForm = awaitItem()
-            assertEquals(ReportStep.FORM, stillForm.report.step)
+            expectNoEvents()
+            assertEquals(ReportStep.FORM, vm.uiState.value.report.step)
 
             cancelAndIgnoreRemainingEvents()
         }

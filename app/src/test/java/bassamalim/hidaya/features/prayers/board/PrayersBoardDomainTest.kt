@@ -4,12 +4,14 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
+import bassamalim.hidaya.core.data.repositories.PrayerTimesReport
 import bassamalim.hidaya.core.data.repositories.PrayerTimesReportRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.Reminder
+import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import bassamalim.hidaya.testutil.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -85,7 +87,16 @@ class PrayersBoardDomainTest {
 
     @Test
     fun `submitReport delegates to repository and returns its result`() = runTest {
-        val report = mapOf<String, Any?>("prayer" to "Fajr", "correct_time" to "05:00")
+        val report = PrayerTimesReport(
+            language = Language.ENGLISH,
+            location = null,
+            locationName = "Mecca",
+            calculatorSettings = PrayerTimeCalculatorSettings(),
+            computedTimes = mapOf(Prayer.FAJR to "04:55"),
+            wrongPrayers = setOf(Prayer.FAJR),
+            correctTimes = mapOf(Prayer.FAJR to "05:00"),
+            notes = ""
+        )
         coEvery { reportRepository.submitReport(report) } returns true
 
         val result = domain.submitReport(report)
