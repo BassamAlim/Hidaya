@@ -8,6 +8,7 @@
 #   scripts/release.sh minor          2.6.5 -> 2.7.0
 #   scripts/release.sh major          2.6.5 -> 3.0.0
 #   scripts/release.sh 2.7.1          explicit version
+#   scripts/release.sh -y patch       skip the confirmation prompt
 #
 # versionCode follows the existing scheme: versionName with the dots removed
 # (2.6.5 -> 265). The script verifies it still increases monotonically.
@@ -18,9 +19,15 @@ cd "$(dirname "$0")/.."
 GRADLE_FILE="app/build.gradle"
 
 usage() {
-    sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
     exit 1
 }
+
+assume_yes=false
+if [[ "${1:-}" == "-y" || "${1:-}" == "--yes" ]]; then
+    assume_yes=true
+    shift
+fi
 
 [[ $# -eq 1 ]] || usage
 
@@ -60,8 +67,10 @@ if (( new_code <= old_code )); then
 fi
 
 echo "Release v$current -> v$new (versionCode $old_code -> $new_code)"
-read -r -p "Proceed? [y/N] " reply
-[[ "$reply" =~ ^[Yy]$ ]] || exit 1
+if ! $assume_yes; then
+    read -r -p "Proceed? [y/N] " reply
+    [[ "$reply" =~ ^[Yy]$ ]] || exit 1
+fi
 
 sed -i -E "s/versionCode [0-9]+/versionCode $new_code/" "$GRADLE_FILE"
 sed -i -E "s/versionName '[^']*'/versionName '$new'/" "$GRADLE_FILE"
