@@ -48,9 +48,9 @@ import bassamalim.hidaya.features.recitations.recitersMenu.LastPlayedMedia
 import bassamalim.hidaya.features.recitations.recitersMenu.Recitation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
@@ -73,6 +73,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
     @Inject
     lateinit var userRepository: UserRepository
     private val notificationId = 333
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val intentFilter: IntentFilter = IntentFilter()
     private lateinit var notificationManager: NotificationManager
@@ -162,7 +163,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
         println("OnCreate")
         super.onCreate()
 
-        CoroutineScope(Dispatchers.Main).launch {
+        serviceScope.launch {
             val language = LangUtils.getAppLanguage()
             getSuraNames(language)
 
@@ -178,7 +179,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
         return super.onStartCommand(intent, flags, startId)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
             Log.i(Globals.TAG, "In onPlayFromMediaId of RecitationsPlayerService")
@@ -197,7 +197,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
                     else
                         extras.getSerializable("narration") as Recitation.Narration
 
-                GlobalScope.launch {
+                serviceScope.launch {
                     if (playType == "continue")
                         continueFrom = recitationsRepository.getLastPlayedMedia()
                             .first()!!.progress.toInt()
@@ -218,7 +218,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
 
             if (mediaId == null) return  // bandage for an error
 
-            GlobalScope.launch {
+            serviceScope.launch {
                 buildNotification()
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -261,7 +261,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
             )
             updateNotification(false)
 
-            GlobalScope.launch {
+            serviceScope.launch {
                 saveForLater(player.currentPosition)
                 updateDurationRecord(updateRecordCounter)
             }
@@ -289,7 +289,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
             receiver.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
-            GlobalScope.launch {
+            serviceScope.launch {
                 saveForLater(player.currentPosition)
                 updateDurationRecord(updateRecordCounter)
             }
@@ -625,7 +625,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
         if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) refresh()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun refresh() {
         updatePbState(
             controller.playbackState.state,
@@ -633,7 +632,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
         )
 
         if (updateRecordCounter++ >= 10) {
-            GlobalScope.launch {
+            serviceScope.launch {
                 updateDurationRecord(updateRecordCounter)
             }
         }
@@ -653,7 +652,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
         notificationManager.notify(notificationId, notification)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun initPlayer() {
         player = MediaPlayer()
         player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
@@ -699,7 +697,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
         }
 
         player.setOnCompletionListener {
-            GlobalScope.launch {
+            serviceScope.launch {
                 updateDurationRecord(updateRecordCounter)
             }
             skipToNext()
@@ -865,14 +863,18 @@ class RecitationPlayerService : MediaBrowserServiceCompat(),
         else stopForeground(false)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(Globals.TAG, "In onUnbind of RecitationsPlayerService")
-        GlobalScope.launch {
+        serviceScope.launch {
             saveForLater(player.currentPosition)
             updateDurationRecord(updateRecordCounter)
         }
         return super.onUnbind(intent)
+    }
+
+    override fun onDestroy() {
+        serviceScope.cancel()
+        super.onDestroy()
     }
 
 }

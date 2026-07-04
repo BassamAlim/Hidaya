@@ -10,9 +10,6 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LocatorDomain @Inject constructor(
@@ -25,15 +22,12 @@ class LocatorDomain @Inject constructor(
     private lateinit var showBackgroundLocationPermissionNeeded: () -> Unit
     private lateinit var launch: () -> Unit
 
-    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
     fun locate() {
         if (isPermissionsGranted()) {
             LocationServices.getFusedLocationProviderClient(app).lastLocation
                 .addOnSuccessListener { location: Location? ->
-                    if (location != null) GlobalScope.launch {
-                        setAutoLocation(location)
-                    }
+                    if (location != null) setAutoLocation(location)
 
                     requestBackgroundLocationPermission()
 
