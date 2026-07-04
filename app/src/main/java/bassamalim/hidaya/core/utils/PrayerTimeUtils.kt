@@ -20,9 +20,17 @@ object PrayerTimeUtils {
         location: Location,
         calendar: Calendar = Calendar.getInstance()
     ): SortedMap<Prayer, Calendar?> {
+        // Sample the UTC offset at midday of the target date, not at the calendar's own
+        // time-of-day: the daily update runs at midnight, and DST transitions happen between
+        // 00:00 and 04:00, so a midnight sample would apply the pre-transition offset to the
+        // whole day, putting every prayer time and athan alarm off by an hour on those days.
+        val midday = (calendar.clone() as Calendar).apply {
+            this[Calendar.HOUR_OF_DAY] = 12
+            this[Calendar.MINUTE] = 0
+        }
         calendar[Calendar.ZONE_OFFSET] = getZoneOffset(
             locationType = location.type,
-            date = calendar.timeInMillis,
+            date = midday.timeInMillis,
             selectedTimeZone = selectedTimeZoneId
         )
         return PrayerTimeCalculator(settings).getPrayerTimes(location.coordinates, calendar)
