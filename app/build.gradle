@@ -31,17 +31,23 @@ android {
     }
 
     signingConfigs {
+        // Keystore details come from .env; environments without it (e.g. CI running
+        // unit tests) leave the configs empty, which only fails if signing actually runs.
         debug {
-            storeFile = file(envProperties['KEYSTORE_PATH'] ?: "")
-            storePassword = envProperties['KEYSTORE_PASSWORD'] ?: ""
-            keyAlias = envProperties['KEY_ALIAS'] ?: ""
-            keyPassword = envProperties['KEY_PASSWORD'] ?: ""
+            if (envProperties['KEYSTORE_PATH']) {
+                storeFile = file(envProperties['KEYSTORE_PATH'])
+                storePassword = envProperties['KEYSTORE_PASSWORD'] ?: ""
+                keyAlias = envProperties['KEY_ALIAS'] ?: ""
+                keyPassword = envProperties['KEY_PASSWORD'] ?: ""
+            }
         }
         release {
-            storeFile = file(envProperties['KEYSTORE_PATH'] ?: "")
-            storePassword = envProperties['KEYSTORE_PASSWORD'] ?: ""
-            keyAlias = envProperties['KEY_ALIAS'] ?: ""
-            keyPassword = envProperties['KEY_PASSWORD'] ?: ""
+            if (envProperties['KEYSTORE_PATH']) {
+                storeFile = file(envProperties['KEYSTORE_PATH'])
+                storePassword = envProperties['KEYSTORE_PASSWORD'] ?: ""
+                keyAlias = envProperties['KEY_ALIAS'] ?: ""
+                keyPassword = envProperties['KEY_PASSWORD'] ?: ""
+            }
         }
     }
 

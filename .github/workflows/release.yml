@@ -1,0 +1,114 @@
+name: Release
+
+# Builds a signed release and publishes it to Google Play and Samsung Galaxy Store.
+#
+# Trigger: push a version tag (v2.6.6) after bumping versionCode/versionName in
+# app/build.gradle, or run manually from the Actions tab.
+#
+# Required repository secrets:
+#   KEYSTORE_BASE64             upload keystore, base64-encoded (base64 -w0 keystore.jks)
+#   KEYSTORE_PASSWORD           keystore password
+#   KEY_ALIAS                   key alias
+#   KEY_PASSWORD                key password
+#   GOOGLE_SERVICES_JSON        contents of the live app/google-services.json
+#   PLAY_SERVICE_ACCOUNT_JSON   Google Cloud service account key linked in Play Console
+#   SAMSUNG_SERVICE_ACCOUNT_ID  Galaxy Store service account id (Seller Portal -> API Service)
+#   SAMSUNG_PRIVATE_KEY         private key (PEM) for the Galaxy Store service account
+#   SAMSUNG_CONTENT_ID          the app's content id in Seller Portal
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Provide google-services.json
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: Provide signing config
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/upload-keystore.jks"
+          cat > .env <<EOF
+          KEYSTORE_PATH=$GITHUB_WORKSPACE/upload-keystore.jks
+          KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
+          KEY_ALIAS=$KEY_ALIAS
+          KEY_PASSWORD=$KEY_PASSWORD
+          EOF
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Build release bundle and APK
+        run: ./gradlew bundleRelease assembleRelease
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: |
+            app/build/outputs/bundle/release/app-release.aab
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/mapping/release/mapping.txt
+          retention-days: 7
+
+  publish-play:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts
+          path: outputs
+
+      - name: Publish to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: bassamalim.hidaya
+          releaseFiles: outputs/bundle/release/app-release.aab
+          mappingFile: outputs/mapping/release/mapping.txt
+          # For a staged rollout instead of a full release, set status: inProgress
+          # and e.g. userFraction: 0.2, then complete it from Play Console.
+          track: production
+          status: completed
+
+  publish-galaxy-store:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts
+          path: outputs
+
+      - name: Install script dependencies
+        run: pip install pyjwt[crypto] requests
+
+      - name: Publish to Samsung Galaxy Store
+        run: |
+          python scripts/publish_galaxy_store.py \
+            --apk outputs/apk/release/app-release.apk
+        env:
+          SAMSUNG_SERVICE_ACCOUNT_ID: ${{ secrets.SAMSUNG_SERVICE_ACCOUNT_ID }}
+          SAMSUNG_PRIVATE_KEY: ${{ secrets.SAMSUNG_PRIVATE_KEY }}
+          SAMSUNG_CONTENT_ID: ${{ secrets.SAMSUNG_CONTENT_ID }}
