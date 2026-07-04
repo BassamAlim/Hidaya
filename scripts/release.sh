@@ -24,10 +24,15 @@ usage() {
 }
 
 assume_yes=false
-if [[ "${1:-}" == "-y" || "${1:-}" == "--yes" ]]; then
-    assume_yes=true
-    shift
-fi
+args=()
+for arg in "$@"; do
+    if [[ "$arg" == "-y" || "$arg" == "--yes" ]]; then
+        assume_yes=true
+    else
+        args+=("$arg")
+    fi
+done
+set -- "${args[@]}"
 
 [[ $# -eq 1 ]] || usage
 
