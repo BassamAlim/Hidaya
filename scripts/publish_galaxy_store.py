@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 """Publish an APK to Samsung Galaxy Store via the Galaxy Store Developer API.
 
-Flow (per https://developer.samsung.com/galaxy-store/galaxy-store-develop-api.html):
+Flow (per https://developer.samsung.com/galaxy-store/galaxy-store-developer-api/content-publish-api.html):
   1. Mint a JWT with the Seller Portal service account and exchange it for an
      access token.
   2. Create an upload session and upload the APK.
-  3. Attach the uploaded binary to the app's content via contentUpdate.
+  3. Add the uploaded binary via POST /seller/v2/content/binary (contentUpdate's
+     binaryList parameter is no longer accepted). The app must be in REGISTERING
+     state; if the add fails, contentUpdate is called to enter that state and the
+     add is retried once.
   4. Submit the app for review via contentSubmit.
 
-NOTE: This is scaffolding written against Samsung's documented API. Validate the
-request/response shapes against the current docs on the first real run — Samsung
-occasionally revises this API, and error responses are printed verbatim to help.
+Error responses are printed verbatim to make failures diagnosable from CI logs.
 
 Environment variables:
   SAMSUNG_SERVICE_ACCOUNT_ID  service account id from Seller Portal (API Service)
   SAMSUNG_PRIVATE_KEY         PEM private key for that service account
   SAMSUNG_CONTENT_ID          the app's content id in Seller Portal
+  SAMSUNG_GMS                 "Y" if the app uses Google mobile services (default "Y")
 """
 
 import argparse
@@ -84,19 +86,19 @@ def upload_apk(headers: dict, session_id: str, apk_path: str) -> str:
     return response.json()["fileKey"]
 
 
-def attach_binary(headers: dict, content_id: str, file_key: str, apk_path: str):
+def add_binary(headers: dict, content_id: str, file_key: str, gms: str) -> requests.Response:
+    return requests.post(
+        f"{DEV_API}/seller/v2/content/binary",
+        headers=headers,
+        json={"contentId": content_id, "gms": gms, "filekey": file_key},
+    )
+
+
+def enter_update_state(headers: dict, content_id: str):
     response = requests.post(
         f"{DEV_API}/seller/contentUpdate",
         headers=headers,
-        json={
-            "contentId": content_id,
-            "binaryList": [
-                {
-                    "fileName": os.path.basename(apk_path),
-                    "filekey": file_key,
-                }
-            ],
-        },
+        json={"contentId": content_id},
     )
     if not response.ok:
         fail("contentUpdate", response)
@@ -137,8 +139,17 @@ def main():
     file_key = upload_apk(headers, session_id, args.apk)
     print(f"Uploaded, fileKey={file_key}")
 
-    print("Attaching binary to content...")
-    attach_binary(headers, content_id, file_key, args.apk)
+    gms = os.environ.get("SAMSUNG_GMS", "Y")
+    print("Adding binary...")
+    response = add_binary(headers, content_id, file_key, gms)
+    if not response.ok:
+        print(f"binary add returned HTTP {response.status_code}:\n{response.text}")
+        print("Moving app into REGISTERING state via contentUpdate, then retrying...")
+        enter_update_state(headers, content_id)
+        response = add_binary(headers, content_id, file_key, gms)
+        if not response.ok:
+            fail("binary add (after contentUpdate)", response)
+    print(f"binary add ok: {response.text}")
 
     print("Submitting for review...")
     submit(headers, content_id)

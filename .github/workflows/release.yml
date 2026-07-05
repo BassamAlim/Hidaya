@@ -20,6 +20,11 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      skip_play:
+        description: 'Skip Google Play publishing (e.g. when this version is already uploaded)'
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -77,6 +82,7 @@ jobs:
 
   publish-play:
     needs: build
+    if: ${{ !inputs.skip_play }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
