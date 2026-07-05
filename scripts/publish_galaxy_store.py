@@ -97,6 +97,17 @@ def add_binary(headers: dict, content_id: str, file_key: str, gms: str) -> reque
     )
 
 
+def is_already_in_use(response: requests.Response) -> bool:
+    """resultCode 5021: this exact APK is already attached to the draft
+    (happens when a previous run added the binary but failed later)."""
+    try:
+        payload = response.json()
+    except ValueError:
+        return False
+    body = payload.get("body") or payload
+    return body.get("resultCode") == "5021"
+
+
 def enter_update_state(headers: dict, content_id: str):
     response = requests.post(
         f"{DEV_API}/seller/contentUpdate",
@@ -167,22 +178,39 @@ def main():
 
     gms = os.environ.get("SAMSUNG_GMS", "Y")
     print("Adding binary...")
+    new_binary_seq = None
     response = add_binary(headers, content_id, file_key, gms)
-    if not response.ok:
+    if response.ok:
+        new_binary_seq = response.json().get("data", {}).get("binarySeq")
+        print(f"binary add ok: binarySeq={new_binary_seq}")
+    elif is_already_in_use(response):
+        print("Binary already attached to the draft by a previous run, continuing.")
+    else:
         print(f"binary add returned HTTP {response.status_code}:\n{response.text}")
         print("Moving app into REGISTERING state via contentUpdate, then retrying...")
         enter_update_state(headers, content_id)
         response = add_binary(headers, content_id, file_key, gms)
-        if not response.ok:
+        if response.ok:
+            new_binary_seq = response.json().get("data", {}).get("binarySeq")
+            print(f"binary add ok: binarySeq={new_binary_seq}")
+        elif is_already_in_use(response):
+            print("Binary already attached to the draft by a previous run, continuing.")
+        else:
             fail("binary add (after contentUpdate)", response)
-    new_binary_seq = response.json().get("data", {}).get("binarySeq")
-    print(f"binary add ok: binarySeq={new_binary_seq}")
 
     # The new binary replaces all previous ones (single universal APK app);
     # leaving them in the draft makes contentSubmit fail.
-    print("Removing superseded binaries...")
     content_info = get_content_info(headers, content_id)
-    for binary in content_info.get("binaryList") or []:
+    binaries = content_info.get("binaryList") or []
+    if not binaries:
+        sys.exit("contentInfo returned no binaries — nothing to submit")
+    if new_binary_seq is None:
+        # The APK was attached by a previous run; it is the highest versionCode
+        new_binary_seq = max(
+            binaries, key=lambda binary: int(binary.get("versionCode") or 0)
+        )["binarySeq"]
+    print(f"Keeping binarySeq={new_binary_seq}; removing superseded binaries...")
+    for binary in binaries:
         if binary.get("binarySeq") != new_binary_seq:
             delete_binary(headers, content_id, binary["binarySeq"])
 
