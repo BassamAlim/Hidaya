@@ -9,7 +9,10 @@ Flow (per https://developer.samsung.com/galaxy-store/galaxy-store-developer-api/
      binaryList parameter is no longer accepted). The app must be in REGISTERING
      state; if the add fails, contentUpdate is called to enter that state and the
      add is retried once.
-  4. Submit the app for review via contentSubmit.
+  4. Delete every other binary from the draft (this app ships one universal APK,
+     so an update always replaces the previous binary; leftover binaries make
+     contentSubmit fail).
+  5. Submit the app for review via contentSubmit.
 
 Error responses are printed verbatim to make failures diagnosable from CI logs.
 
@@ -105,6 +108,29 @@ def enter_update_state(headers: dict, content_id: str):
     print(f"contentUpdate ok: {response.text}")
 
 
+def get_content_info(headers: dict, content_id: str) -> dict:
+    response = requests.get(
+        f"{DEV_API}/seller/contentInfo",
+        headers=headers,
+        params={"contentId": content_id},
+    )
+    if not response.ok:
+        fail("contentInfo", response)
+    data = response.json()
+    return data[0] if isinstance(data, list) else data
+
+
+def delete_binary(headers: dict, content_id: str, binary_seq: str):
+    response = requests.delete(
+        f"{DEV_API}/seller/v2/content/binary",
+        headers=headers,
+        params={"contentId": content_id, "binarySeq": binary_seq},
+    )
+    if not response.ok:
+        fail(f"binary delete (binarySeq={binary_seq})", response)
+    print(f"deleted superseded binary binarySeq={binary_seq}")
+
+
 def submit(headers: dict, content_id: str):
     response = requests.post(
         f"{DEV_API}/seller/contentSubmit",
@@ -149,7 +175,16 @@ def main():
         response = add_binary(headers, content_id, file_key, gms)
         if not response.ok:
             fail("binary add (after contentUpdate)", response)
-    print(f"binary add ok: {response.text}")
+    new_binary_seq = response.json().get("data", {}).get("binarySeq")
+    print(f"binary add ok: binarySeq={new_binary_seq}")
+
+    # The new binary replaces all previous ones (single universal APK app);
+    # leaving them in the draft makes contentSubmit fail.
+    print("Removing superseded binaries...")
+    content_info = get_content_info(headers, content_id)
+    for binary in content_info.get("binaryList") or []:
+        if binary.get("binarySeq") != new_binary_seq:
+            delete_binary(headers, content_id, binary["binarySeq"])
 
     print("Submitting for review...")
     submit(headers, content_id)
