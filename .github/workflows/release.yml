@@ -42,14 +42,20 @@ jobs:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
 
       - name: Provide signing config
+        # printf '%s' writes the secret values byte-for-byte; a heredoc would let the
+        # shell expand $ and backticks inside passwords. The keytool check fails the
+        # job in seconds if the keystore/password/alias don't match, instead of after
+        # a full build.
         run: |
           echo "$KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/upload-keystore.jks"
-          cat > .env <<EOF
-          KEYSTORE_PATH=$GITHUB_WORKSPACE/upload-keystore.jks
-          KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
-          KEY_ALIAS=$KEY_ALIAS
-          KEY_PASSWORD=$KEY_PASSWORD
-          EOF
+          {
+            printf 'KEYSTORE_PATH=%s\n' "$GITHUB_WORKSPACE/upload-keystore.jks"
+            printf 'KEYSTORE_PASSWORD=%s\n' "$KEYSTORE_PASSWORD"
+            printf 'KEY_ALIAS=%s\n' "$KEY_ALIAS"
+            printf 'KEY_PASSWORD=%s\n' "$KEY_PASSWORD"
+          } > .env
+          keytool -list -keystore "$GITHUB_WORKSPACE/upload-keystore.jks" \
+            -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" > /dev/null
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
