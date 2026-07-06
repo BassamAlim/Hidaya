@@ -89,11 +89,22 @@ def upload_apk(headers: dict, session_id: str, apk_path: str) -> str:
     return response.json()["fileKey"]
 
 
-def add_binary(headers: dict, content_id: str, file_key: str, gms: str) -> requests.Response:
+def add_binary(
+    headers: dict,
+    content_id: str,
+    file_key: str,
+    gms: str,
+    device_info_source_seq: str | None,
+) -> requests.Response:
+    payload = {"contentId": content_id, "gms": gms, "filekey": file_key}
+    # Copy the supported-device configuration from the previous binary;
+    # a binary without device groups cannot be submitted.
+    if device_info_source_seq is not None:
+        payload["binarySeqForDeviceInfo"] = device_info_source_seq
     return requests.post(
         f"{DEV_API}/seller/v2/content/binary",
         headers=headers,
-        json={"contentId": content_id, "gms": gms, "filekey": file_key},
+        json=payload,
     )
 
 
@@ -177,9 +188,17 @@ def main():
     print(f"Uploaded, fileKey={file_key}")
 
     gms = os.environ.get("SAMSUNG_GMS", "Y")
-    print("Adding binary...")
+
+    # The current top binary is the template for the new one's device settings
+    binaries = get_content_info(headers, content_id).get("binaryList") or []
+    device_info_source_seq = (
+        max(binaries, key=lambda binary: int(binary.get("versionCode") or 0))["binarySeq"]
+        if binaries else None
+    )
+
+    print(f"Adding binary (device settings from binarySeq={device_info_source_seq})...")
     new_binary_seq = None
-    response = add_binary(headers, content_id, file_key, gms)
+    response = add_binary(headers, content_id, file_key, gms, device_info_source_seq)
     if response.ok:
         new_binary_seq = response.json().get("data", {}).get("binarySeq")
         print(f"binary add ok: binarySeq={new_binary_seq}")
@@ -189,7 +208,7 @@ def main():
         print(f"binary add returned HTTP {response.status_code}:\n{response.text}")
         print("Moving app into REGISTERING state via contentUpdate, then retrying...")
         enter_update_state(headers, content_id)
-        response = add_binary(headers, content_id, file_key, gms)
+        response = add_binary(headers, content_id, file_key, gms, device_info_source_seq)
         if response.ok:
             new_binary_seq = response.json().get("data", {}).get("binarySeq")
             print(f"binary add ok: binarySeq={new_binary_seq}")
