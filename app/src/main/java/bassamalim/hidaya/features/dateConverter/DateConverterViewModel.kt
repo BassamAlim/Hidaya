@@ -28,7 +28,7 @@ class DateConverterViewModel @Inject constructor(
     private var gregorianCalendar = Calendar.getInstance()
     private val hijriMonth = domain.getHijriMonths()
     private val gregorianMonths = domain.getGregorianMonths()
-    private lateinit var numeralsLanguage: Language
+    private var numeralsLanguage: Language? = null
 
     private val _uiState = MutableStateFlow(DateConverterUiState())
     val uiState = _uiState.onStart {
@@ -104,6 +104,8 @@ class DateConverterViewModel @Inject constructor(
     }
 
     private fun updateDates() {
+        val numeralsLanguage = numeralsLanguage ?: return
+
         _uiState.update { it.copy(
             hijriDate = Date(
                 year = translateNums(

@@ -25,7 +25,7 @@ class BookSearcherViewModel @Inject constructor(
 ): ViewModel() {
 
     private var highlightColor: Color? = null
-    private lateinit var language: Language
+    private var language: Language? = null
 
     private val _uiState = MutableStateFlow(BookSearcherUiState())
     val uiState = combine(
@@ -33,13 +33,15 @@ class BookSearcherViewModel @Inject constructor(
         domain.getBookSelections(),
         domain.getMaxMatches()
     ) { state, bookSelections, maxMatches ->
-        if (state.searched) state.copy(
+        val language = language
+        val highlightColor = highlightColor
+        if (state.searched && language != null && highlightColor != null) state.copy(
             matches = domain.search(
                 query = state.searchText,
                 bookSelections = bookSelections,
                 maxMatches = maxMatches,
                 language = language,
-                highlightColor = highlightColor!!
+                highlightColor = highlightColor
             ),
             maxMatches = maxMatches,
             bookSelections = bookSelections,
@@ -60,7 +62,8 @@ class BookSearcherViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage()
+            val language = domain.getLanguage()
+            this@BookSearcherViewModel.language = language
 
             _uiState.update { it.copy(
                 isLoading = false,
@@ -70,6 +73,7 @@ class BookSearcherViewModel @Inject constructor(
     }
 
     fun onSearch(highlightColor: Color, bookSelections: Map<Int, Boolean>) {
+        val language = language ?: return
         this.highlightColor = highlightColor
 
         viewModelScope.launch {

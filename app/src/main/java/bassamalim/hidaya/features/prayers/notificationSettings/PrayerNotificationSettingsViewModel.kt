@@ -3,7 +3,6 @@ package bassamalim.hidaya.features.prayers.notificationSettings
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.nav.Navigator
@@ -25,8 +24,6 @@ class PrayerNotificationSettingsViewModel @Inject constructor(
 
     private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer_name") ?: "")
 
-    lateinit var numeralsLanguage: Language
-
     private val _uiState = MutableStateFlow(PrayerNotificationSettingsUiState(
         prayer = prayer,
         prayerName = domain.getPrayerName(prayer)
@@ -41,8 +38,6 @@ class PrayerNotificationSettingsViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            numeralsLanguage = domain.getNumeralsLanguage()
-
             _uiState.update { it.copy(
                 notificationType = domain.getNotificationType(prayer)
             )}

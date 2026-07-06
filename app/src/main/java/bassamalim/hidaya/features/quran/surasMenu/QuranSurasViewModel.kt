@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -33,13 +34,21 @@ class QuranSurasViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private lateinit var language: Language
-    private lateinit var numeralsLanguage: Language
-    private lateinit var suraNames: List<String>
-    private lateinit var allSurasFlow: Flow<List<Sura>>
-    private lateinit var allSuras: List<Sura>
-    private lateinit var allVerses: List<Verse>
-    private var highlightColor: Color? = null
+    /**
+     * Holds all data loaded asynchronously in [initializeData]. Kept as a single nullable holder
+     * set atomically once loading completes, so callbacks can never observe a partially
+     * initialized state (previously the source of [UninitializedPropertyAccessException] crashes
+     * when a callback fired before the loading coroutine finished).
+     */
+    private data class LoadedData(
+        val numeralsLanguage: Language,
+        val suraNames: List<String>,
+        val allSurasFlow: Flow<List<Sura>>,
+        val allSuras: List<Sura>,
+        val allVerses: List<Verse>
+    )
+
+    private var data: LoadedData? = null
 
     private val _uiState = MutableStateFlow(QuranSurasUiState())
     val uiState = combine(
@@ -58,12 +67,15 @@ class QuranSurasViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage()
-            numeralsLanguage = domain.getNumeralsLanguage()
-            allSurasFlow = domain.getAllSuras(language)
-            allSuras = allSurasFlow.first()
-            suraNames = domain.getSuraNames(language)
-            allVerses = domain.getAllVerses()
+            val language = domain.getLanguage()
+            val allSurasFlow = domain.getAllSuras(language)
+            data = LoadedData(
+                numeralsLanguage = domain.getNumeralsLanguage(),
+                suraNames = domain.getSuraNames(language),
+                allSurasFlow = allSurasFlow,
+                allSuras = allSurasFlow.first(),
+                allVerses = domain.getAllVerses()
+            )
 
             _uiState.update { it.copy(
                 isLoading = false,
@@ -87,7 +99,7 @@ class QuranSurasViewModel @Inject constructor(
             )
         )
 
-        domain.trackSuraViewed(suraNames[suraId])
+        data?.let { domain.trackSuraViewed(it.suraNames[suraId]) }
     }
 
     fun onPageClick(pageNum: String) {
@@ -132,15 +144,16 @@ class QuranSurasViewModel @Inject constructor(
     }
 
     fun getItems(page: Int): Flow<List<Sura>> {
+        val data = data ?: return flowOf(emptyList())
         val menuType = MenuType.entries[page]
 
-        return allSurasFlow.map { suras ->
+        return data.allSurasFlow.map { suras ->
             suras.filter { sura ->
                 !(menuType == MenuType.FAVORITES && !sura.isFavorite)
             }.map { sura ->
                 Sura(
                     id = sura.id,
-                    decoratedName = suraNames[sura.id],
+                    decoratedName = data.suraNames[sura.id],
                     plainName = sura.plainName,
                     revelation = sura.revelation,
                     isFavorite = sura.isFavorite
@@ -150,11 +163,13 @@ class QuranSurasViewModel @Inject constructor(
     }
 
     fun searchSurasAndPages(query: String): List<SearchMatch> {
+        val data = data ?: return emptyList()
+
         return if (query.isEmpty()) {
-            allSuras.take(3).map { sura ->
+            data.allSuras.take(3).map { sura ->
                 SuraMatch(
                     id = sura.id,
-                    decoratedName = suraNames[sura.id],
+                    decoratedName = data.suraNames[sura.id],
                     plainName = sura.plainName,
                     isFavorite = sura.isFavorite
                 )
@@ -163,14 +178,14 @@ class QuranSurasViewModel @Inject constructor(
         else if (query.isDigitsOnly()) {
             val num = query.toInt()
             if (num in 1..604) {
-                val pageSuraId = allVerses.first { verse -> verse.pageNum == num }.suraNum - 1
+                val pageSuraId = data.allVerses.first { verse -> verse.pageNum == num }.suraNum - 1
                 listOf(
                     PageMatch(
                         num = translateNums(
                             string = query,
-                            numeralsLanguage = numeralsLanguage
+                            numeralsLanguage = data.numeralsLanguage
                         ),
-                        suraName = suraNames[pageSuraId]
+                        suraName = data.suraNames[pageSuraId]
                     )
                 )
             }
@@ -179,20 +194,20 @@ class QuranSurasViewModel @Inject constructor(
         else {
             domain.searchSuras(
                 query = query,
-                items = allSuras,
+                items = data.allSuras,
                 limit = 3
             )
         }
     }
 
     fun searchVerses(query: String, highlightColor: Color): List<VerseMatch> {
-        this.highlightColor = highlightColor
+        val data = data ?: return emptyList()
 
         return domain.searchVerses(
             query = query,
-            items = allVerses,
-            suraNames = suraNames,
-            numeralsLanguage = numeralsLanguage,
+            items = data.allVerses,
+            suraNames = data.suraNames,
+            numeralsLanguage = data.numeralsLanguage,
             highlightColor = highlightColor
         )
     }

@@ -22,7 +22,7 @@ class DateEditorViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private lateinit var numeralsLanguage: Language
+    private var numeralsLanguage: Language? = null
 
     private val _uiState = MutableStateFlow(DateEditorUiState())
     val uiState = _uiState.onStart {
@@ -68,23 +68,25 @@ class DateEditorViewModel @Inject constructor(
     }
 
     private fun updateState() {
+        val numeralsLanguage = numeralsLanguage ?: return
+
         val dateOffset = domain.getDateOffset()
         if (dateOffset == 0) {
             _uiState.update { it.copy(
                 isUnchanged = true,
-                dateText = getDateText()
+                dateText = getDateText(numeralsLanguage)
             )}
         }
         else {
             _uiState.update { it.copy(
                 isUnchanged = false,
-                dateOffsetText = getDateOffsetText(dateOffset),
-                dateText = getDateText()
+                dateOffsetText = getDateOffsetText(dateOffset, numeralsLanguage),
+                dateText = getDateText(numeralsLanguage)
             )}
         }
     }
 
-    private fun getDateText(): String {
+    private fun getDateText(numeralsLanguage: Language): String {
         val cal = UmmalquraCalendar().apply {
             val millisInDay = 1000 * 60 * 60 * 24
             timeInMillis += (domain.getDateOffset() * millisInDay).toLong()
@@ -96,7 +98,7 @@ class DateEditorViewModel @Inject constructor(
         )
     }
 
-    private fun getDateOffsetText(dateOffset: Int): String {
+    private fun getDateOffsetText(dateOffset: Int, numeralsLanguage: Language): String {
         var offsetStr = dateOffset.toString()
         if (dateOffset > 0) offsetStr = "+$offsetStr"
         return LangUtils.translateNums(

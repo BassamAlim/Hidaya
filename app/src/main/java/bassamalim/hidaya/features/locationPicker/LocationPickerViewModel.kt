@@ -24,7 +24,7 @@ class LocationPickerViewModel @Inject constructor(
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var lazyListState: LazyListState
-    private lateinit var language: Language
+    private var language: Language? = null
 
     private val _uiState = MutableStateFlow(LocationPickerUiState())
     val uiState = _uiState.onStart {
@@ -103,6 +103,7 @@ class LocationPickerViewModel @Inject constructor(
     }
 
     private suspend fun fillWithCountries() {
+        val language = language ?: return
         val countries = domain.getCountries(language = language).map { country ->
             LocationPickerItem(
                 id = country.id,
@@ -123,6 +124,7 @@ class LocationPickerViewModel @Inject constructor(
     }
 
     private fun fillWithCities() {
+        val language = language ?: return
         viewModelScope.launch {
             val cities = domain.getCities(language = language).map { city ->
                 LocationPickerItem(

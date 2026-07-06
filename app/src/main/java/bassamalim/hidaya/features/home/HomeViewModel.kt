@@ -32,7 +32,6 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.collections.get
-import kotlin.properties.Delegates
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -52,7 +51,7 @@ class HomeViewModel @Inject constructor(
     private var nextPrayer: Prayer? = null
     private var previousPrayerWasYesterday = false
     private var nextPrayerIsTomorrow = false
-    private var werdPage by Delegates.notNull<Int>()
+    private var werdPage: Int? = null
     private var shouldCount = false
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -164,6 +163,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onTodayWerdCardClick() {
+        val werdPage = werdPage ?: return
+
         navigator.navigate(
             Screen.QuranReader(
                 targetType = QuranTarget.PAGE.name,

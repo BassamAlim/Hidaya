@@ -19,7 +19,7 @@ class MisbahaViewModel @Inject constructor(
     val domain: MisbahaDomain
 ): ViewModel() {
 
-    private lateinit var numeralsLanguage: Language
+    private var numeralsLanguage: Language? = null
     var count = 0
         private set
 
@@ -34,7 +34,8 @@ class MisbahaViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            numeralsLanguage = domain.getNumeralsLanguage().first()
+            val numeralsLanguage = domain.getNumeralsLanguage().first()
+            this@MisbahaViewModel.numeralsLanguage = numeralsLanguage
             _uiState.update { it.copy(
                 isLoading = false,
                 countText = translateNums(
@@ -58,6 +59,8 @@ class MisbahaViewModel @Inject constructor(
     }
 
     private fun updateCountText() {
+        val numeralsLanguage = numeralsLanguage ?: return
+
         _uiState.update { it.copy(
             countText = translateNums(
                 string = count.toString(),

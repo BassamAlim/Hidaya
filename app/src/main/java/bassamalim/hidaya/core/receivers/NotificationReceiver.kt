@@ -85,7 +85,13 @@ class NotificationReceiver : BroadcastReceiver() {
         val notificationType = notificationsRepository.getNotificationType(reminder).first()
 
         if (notificationType != NotificationType.OFF) {
-            if (notificationType == NotificationType.ATHAN) startService(context, reminder, time)
+            if (notificationType == NotificationType.ATHAN) {
+                // Starting a foreground service from a background alarm can be rejected by the
+                // system (ForegroundServiceStartNotAllowedException on Android 12+). If that
+                // happens, fall back to a regular notification instead of crashing.
+                val started = startService(context, reminder, time)
+                if (!started) showNotification(context, reminder, NotificationType.NOTIFICATION)
+            }
             else showNotification(context, reminder, notificationType)
         }
     }
@@ -143,29 +149,43 @@ class NotificationReceiver : BroadcastReceiver() {
         markAsNotified(reminder)
     }
 
-    private fun startService(context: Context, reminder: Reminder.Prayer, time: Long) {
+    /**
+     * Tries to start the [AthanService] to play the athan.
+     * Returns true if the service was started, false otherwise (e.g. the required permission is
+     * missing, or the system rejected the foreground service start). When it returns false the
+     * caller should fall back to a regular notification.
+     */
+    private fun startService(context: Context, reminder: Reminder.Prayer, time: Long): Boolean {
         val intent = Intent(context, AthanService::class.java).apply {
             action = Globals.PLAY_ATHAN
             putExtra("id", reminder.id)
             putExtra("time", time)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val havePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            } else true
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val havePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                } else true
 
-            if (havePermission) {
+                if (!havePermission) return false
+
                 context.startForegroundService(intent)
             }
-        }
-        else
-            context.startService(intent)
+            else
+                context.startService(intent)
 
-        markAsNotified(reminder)
+            markAsNotified(reminder)
+            true
+        } catch (e: Exception) {
+            // ForegroundServiceStartNotAllowedException (Android 12+) or any other failure while
+            // starting the service from the background. Degrade gracefully to a notification.
+            Log.e(Globals.TAG, "Failed to start AthanService", e)
+            false
+        }
     }
 
     private suspend fun build(
