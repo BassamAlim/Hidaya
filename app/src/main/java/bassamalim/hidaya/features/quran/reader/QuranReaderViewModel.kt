@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -71,7 +70,7 @@ class QuranReaderViewModel @Inject constructor(
     var scrollTo = -1F
         private set
     private val versePositions = mutableMapOf<Int, Float>()
-    private var shouldSelectVerse = false
+    private var pendingVerseSelectionId: Int? = null
     private var pressedVerseId: Int? = null
     private var longPressJob: Job? = null
 
@@ -97,13 +96,17 @@ class QuranReaderViewModel @Inject constructor(
         )
     }.combine(domain.getBookmarks()) { state, bookmarks ->
         state.copy(bookmarks = bookmarks)
-    }.onStart {
-        initializeData()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
         initialValue = QuranReaderUiState()
     )
+
+    init {
+        // must run once per instance, not on every re-subscription, otherwise going back to the
+        // screen after the subscription times out would reset the reader to the navigation target
+        initializeData()
+    }
 
     private fun initializeData() {
         viewModelScope.launch {
@@ -117,7 +120,7 @@ class QuranReaderViewModel @Inject constructor(
                 QuranTarget.PAGE -> targetValue
                 QuranTarget.SURA -> domain.getSuraPageNum(targetValue)
                 QuranTarget.VERSE -> {
-                    shouldSelectVerse = true
+                    pendingVerseSelectionId = targetValue
                     domain.getVersePageNum(targetValue)
                 }
             }
@@ -209,36 +212,39 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun onPageChange(currentPageIdx: Int, pageIdx: Int) {
-        if (currentPageIdx == pageIdx) {
-            pageNum = pageIdx+1
+        if (currentPageIdx != pageIdx) return
 
-            suraId = allVerses.first { verse -> verse.pageNum == pageNum }.suraNum - 1
-            _uiState.update { it.copy(
-                pageNum = translateNums(
-                    string = pageNum.toString(),
-                    numeralsLanguage = numeralsLanguage
-                ),
-                suraName = suraNames[suraId],
-                juzNum = translateNums(
-                    string = allVerses.first { verse ->
-                        verse.pageNum == pageNum
-                    }.juzNum.toString(),
-                    numeralsLanguage = numeralsLanguage
-                ),
-                pageVerses = getPageVerses(pageNum)
-            )}
+        pageNum = pageIdx+1
 
-            if (shouldSelectVerse) {
-                _uiState.update { it.copy(
-                    selectedVerse = it.pageVerses.first { verse -> verse.id == targetValue }
-                )}
-                shouldSelectVerse = false
-            }
+        val pageVerses = getPageVerses(pageNum)
+        val firstVerse = allVerses.firstOrNull { verse -> verse.pageNum == pageNum }
+        if (firstVerse != null) suraId = firstVerse.suraNum - 1
 
-            domain.handlePageChange(pageNum)
-
-            domain.trackPageViewed(pageNum)
+        // the pending verse is only selectable once its page is the one being shown
+        val pendingVerse = pendingVerseSelectionId?.let { verseId ->
+            pageVerses.firstOrNull { verse -> verse.id == verseId }
         }
+        if (pendingVerse != null) pendingVerseSelectionId = null
+
+        _uiState.update { it.copy(
+            pageNum = translateNums(
+                string = pageNum.toString(),
+                numeralsLanguage = numeralsLanguage
+            ),
+            suraName = suraNames[suraId],
+            juzNum =
+                if (firstVerse == null) it.juzNum
+                else translateNums(
+                    string = firstVerse.juzNum.toString(),
+                    numeralsLanguage = numeralsLanguage
+                ),
+            pageVerses = pageVerses,
+            selectedVerse = pendingVerse ?: it.selectedVerse
+        )}
+
+        domain.handlePageChange(pageNum)
+
+        domain.trackPageViewed(pageNum)
     }
 
     fun onBookmarksClick() {
@@ -261,9 +267,12 @@ class QuranReaderViewModel @Inject constructor(
 
         viewModelScope.launch {
             val targetPageNum = domain.getVersePageNum(verseId)
+            // the bookmarked verse is usually on another page, so it must be looked up in that
+            // page's verses instead of the currently displayed ones
+            val targetVerse = getPageVerses(targetPageNum).find { verse -> verse.id == verseId }
             _uiState.update { it.copy(
                 navigateToPage = targetPageNum - 1,
-                selectedVerse = it.pageVerses.first { verse -> verse.id == verseId }
+                selectedVerse = targetVerse ?: it.selectedVerse
             )}
         }
     }

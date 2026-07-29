@@ -80,20 +80,19 @@ class HomeDomain @Inject constructor(
             timeFormat = appSettingsRepository.getTimeFormat().first()
         )
 
+    // Times can be null for prayers that don't occur at high latitudes, so they're skipped.
     fun getPreviousPrayer(times: Map<Prayer, Calendar?>): Prayer? {
         val currentMillis = System.currentTimeMillis()
-        for (prayer in times.entries.reversed()) {
-            val millis = prayer.value!!.timeInMillis
-            if (millis < currentMillis) return prayer.key
+        for ((prayer, time) in times.entries.reversed()) {
+            if (time != null && time.timeInMillis < currentMillis) return prayer
         }
         return null
     }
 
     fun getNextPrayer(times: Map<Prayer, Calendar?>): Prayer? {
         val currentMillis = System.currentTimeMillis()
-        for (prayer in times.entries) {
-            val millis = prayer.value!!.timeInMillis
-            if (millis > currentMillis) return prayer.key
+        for ((prayer, time) in times.entries) {
+            if (time != null && time.timeInMillis > currentMillis) return prayer
         }
         return null
     }

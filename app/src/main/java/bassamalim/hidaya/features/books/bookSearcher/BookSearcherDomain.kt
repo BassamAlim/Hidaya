@@ -31,7 +31,7 @@ class BookSearcherDomain @Inject constructor(
 
         val bookContents = booksRepository.getBookContents(language)
         for ((bookId, bookContent) in bookContents) {
-            if (!bookSelections[bookId]!! || !booksRepository.isDownloaded(bookId))
+            if (bookSelections[bookId] != true || !booksRepository.isDownloaded(bookId))
                 continue
 
             for ((c, chapter) in bookContent.chapters.withIndex()) {

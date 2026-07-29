@@ -1,7 +1,6 @@
 package bassamalim.hidaya.core.nav
 
 import android.os.Build
-import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,7 +52,6 @@ import bassamalim.hidaya.features.remembrances.reader.RemembranceReaderScreen
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.RemembrancesMenuScreen
 import bassamalim.hidaya.features.settings.SettingsScreen
 import bassamalim.hidaya.features.tv.TvScreen
-import com.google.gson.Gson
 
 @Composable
 fun Navigation(navigator: Navigator, thenTo: String? = null, shouldOnboard: Boolean = false) {
@@ -255,12 +253,7 @@ fun NavGraph(navController: NavHostController, startDest: String) {
         }
 
         composable(
-            route = Screen.QuizResult("{score}", "{questions}", "{chosen_answers}").route,
-            arguments = listOf(
-                navArgument("score") { type = NavType.IntType },
-                navArgument("questions") { type = NavType.StringType },
-                navArgument("chosen_answers") { type = IntArrType }
-            ),
+            route = Screen.QuizResult.route,
             enterTransition = inFromLeft,
             exitTransition = outToLeft,
             popEnterTransition = inFromRight,
@@ -407,20 +400,5 @@ fun NavGraph(navController: NavHostController, startDest: String) {
         ) {
             VerseInfoDialog(hiltViewModel())
         }
-    }
-}
-
-// custom nav type because the default one crashes
-val IntArrType: NavType<IntArray> = object : NavType<IntArray>(false) {
-    override fun put(bundle: Bundle, key: String, value: IntArray) {
-        bundle.putIntArray(key, value)
-    }
-
-    override fun get(bundle: Bundle, key: String): IntArray {
-        return bundle.getIntArray(key) as IntArray
-    }
-
-    override fun parseValue(value: String): IntArray {
-        return Gson().fromJson(value, IntArray::class.java)
     }
 }

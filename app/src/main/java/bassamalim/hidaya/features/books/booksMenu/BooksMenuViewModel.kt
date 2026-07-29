@@ -63,6 +63,13 @@ class BooksMenuViewModel @Inject constructor(
                                 this[id] = book.copy(downloadState = DownloadState.DOWNLOADED)
                             }
                         )}
+                    },
+                    onFailedCallback = {
+                        _uiState.update { it.copy(
+                            books = it.books.toMutableMap().apply {
+                                this[id] = book.copy(downloadState = DownloadState.NOT_DOWNLOADED)
+                            }
+                        )}
                     }
                 )
             }
@@ -94,6 +101,13 @@ class BooksMenuViewModel @Inject constructor(
                         _uiState.update { it.copy(
                             books = it.books.toMutableMap().apply {
                                 this[id] = book.copy(downloadState = DownloadState.DOWNLOADED)
+                            }
+                        )}
+                    },
+                    onFailedCallback = {
+                        _uiState.update { it.copy(
+                            books = it.books.toMutableMap().apply {
+                                this[id] = book.copy(downloadState = DownloadState.NOT_DOWNLOADED)
                             }
                         )}
                     }

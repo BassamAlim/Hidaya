@@ -55,11 +55,7 @@ sealed class Screen(val route: String) {
 
     data object QuizLobby: Screen("quiz_lobby")
 
-    data class QuizResult(
-        val score: String,
-        val questions: String,
-        val chosenAnswers: String
-    ): Screen("quiz_result/$score/$questions/$chosenAnswers")
+    data object QuizResult: Screen("quiz_result")
 
     data class QuizTest(
         val category: String = "all"

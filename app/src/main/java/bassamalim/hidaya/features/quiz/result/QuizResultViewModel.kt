@@ -1,12 +1,10 @@
 package bassamalim.hidaya.features.quiz.result
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.QuizFullQuestion
 import bassamalim.hidaya.core.utils.LangUtils
-import com.google.gson.Gson
+import bassamalim.hidaya.features.quiz.QuizResultHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,15 +17,10 @@ import javax.inject.Inject
 @HiltViewModel
 class QuizResultViewModel @Inject constructor(
     private val domain: QuizResultDomain,
-    savedStateHandle: SavedStateHandle,
+    resultHolder: QuizResultHolder,
 ): ViewModel() {
 
-    private val score = savedStateHandle.get<Int>("score") ?: 0
-    private val questions = Gson().fromJson(
-        savedStateHandle.get<String>("questions"),
-        Array<QuizFullQuestion>::class.java
-    )
-    private val chosenAnswers = savedStateHandle.get<IntArray>("chosen_answers") ?: intArrayOf()
+    private val result = resultHolder.result
 
     private lateinit var numeralsLanguage: Language
 
@@ -41,22 +34,30 @@ class QuizResultViewModel @Inject constructor(
     )
 
     private fun initializeData() {
+        // Can be null if the process was killed and restored while on this screen; the
+        // in-memory hand-off does not survive that, so we render an empty result rather
+        // than crash.
+        val result = result ?: run {
+            _uiState.update { it.copy(isLoading = false) }
+            return
+        }
+
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
 
             _uiState.update { it.copy(
                 isLoading = false,
-                questions = questions.mapIndexed { i, q ->
+                questions = result.questions.mapIndexed { i, q ->
                     QuizResultQuestion(
                         questionNum = i + 1,
                         questionText = q.question,
                         answers = q.answers,
-                        chosenAnswerId = chosenAnswers[i]
+                        chosenAnswerId = result.chosenAnswers[i]
                     )
                 },
                 score = LangUtils.translateNums(
                     numeralsLanguage = numeralsLanguage,
-                    string = (score * 10).toString()
+                    string = (result.score * 10).toString()
                 )
             )}
         }

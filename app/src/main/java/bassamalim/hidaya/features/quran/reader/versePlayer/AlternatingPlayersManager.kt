@@ -37,19 +37,23 @@ class AlternatingPlayersManager(
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
 
     private val numOfPlayers = 2
-    private val aps = Array(numOfPlayers) { AlternatePlayer(MediaPlayer()) }
+    private var audioAttributes: AudioAttributes? = null
+    private var volume = 1F
+    private val aps = Array(numOfPlayers) { AlternatePlayer(createPlayer()) }
     private var playerIdx = 0
     var verseIdx = -1
     private var isPaused = false
+    private var isReleased = false
 
-    init {
-        aps.map { ap ->
-            ap.mp.setOnPreparedListener(this)
-            ap.mp.setOnCompletionListener(this)
-            ap.mp.setOnErrorListener(this)
+    private fun createPlayer() = MediaPlayer().apply {
+        setOnPreparedListener(this@AlternatingPlayersManager)
+        setOnCompletionListener(this@AlternatingPlayersManager)
+        setOnErrorListener(this@AlternatingPlayersManager)
 
-            ap.mp.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
-        }
+        setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+
+        audioAttributes?.let { setAudioAttributes(it) }
+        setVolume(volume, volume)
     }
 
     override fun onPrepared(mp: MediaPlayer) {
@@ -72,6 +76,8 @@ class AlternatingPlayersManager(
         }
 
         scope.launch {
+            if (isReleased) return@launch
+
             val shouldStop = checkShouldStop(
                 currentVerse = aps[currentPlayerIdx].verseIdx,
                 shouldStopOnPageEnd = stopOnPageEndFlow.first(),
@@ -104,6 +110,8 @@ class AlternatingPlayersManager(
         aps[currentPlayerIdx].repeated++
 
         scope.launch {
+            if (isReleased) return@launch
+
             val shouldRepeat = checkShouldRepeat(currentPlayerIdx, repeatModeFlow.first())
             if (shouldRepeat)
                 aps[currentPlayerIdx].mp.start()
@@ -159,19 +167,28 @@ class AlternatingPlayersManager(
             "in playFromMediaId in AlternatingPlayersManager with verseIdx: $verseIdx"
         )
 
-        if (verseIdx != this.verseIdx) playNew(verseIdx)
+        if (isReleased || verseIdx != this.verseIdx) playNew(verseIdx)
         else if (isPaused) resume()
 
         callback.updatePbState(PlaybackStateCompat.STATE_PLAYING)
     }
 
     fun resume() {
-        aps[playerIdx].mp.start()
+        if (isReleased) {  // the players were torn down, restart the current verse
+            if (verseIdx < 0) return
+            playNew(verseIdx)
+        }
+        else {
+            isPaused = false
+            aps[playerIdx].mp.start()
+        }
 
         callback.updatePbState(PlaybackStateCompat.STATE_PLAYING)
     }
 
     fun pause() {
+        if (isReleased) return
+
         aps[playerIdx].mp.pause()
 
         isPaused = true
@@ -179,6 +196,8 @@ class AlternatingPlayersManager(
     }
 
     fun seekTo(pos: Long) {
+        if (isReleased) return
+
         aps[playerIdx].mp.seekTo(pos.toInt())
     }
 
@@ -192,11 +211,13 @@ class AlternatingPlayersManager(
             playNew(verseIdx + 1)
     }
 
-    fun getCurrentPosition() = aps[playerIdx].mp.currentPosition
+    fun getCurrentPosition() = if (isReleased) 0 else aps[playerIdx].mp.currentPosition
 
-    fun getDuration() = aps[playerIdx].mp.duration
+    fun getDuration() = if (isReleased) 0 else aps[playerIdx].mp.duration
 
     private fun reset() {
+        if (isReleased) return
+
         aps.map { ap ->
             ap.mp.reset()
             ap.state = PlayerState.NONE
@@ -210,22 +231,49 @@ class AlternatingPlayersManager(
     }
 
     fun release() {
+        if (isReleased) return
+        isReleased = true
+
         aps.map { ap ->
-            ap.mp.stop()
-            ap.mp.release()
+            // release() stops playback on its own and, unlike stop(), is valid in every state
+            try {
+                ap.mp.release()
+            } catch (e: Exception) {
+                Log.e(Globals.TAG, "Failed to release a verse player", e)
+            }
             ap.state = PlayerState.NONE
         }
 
         callback.updatePbState(PlaybackStateCompat.STATE_STOPPED)
     }
 
+    /**
+     * Replaces the released players with fresh ones so playback can start again
+     * on a service instance that was stopped but not destroyed.
+     */
+    private fun recreatePlayers() {
+        aps.map { ap ->
+            ap.mp = createPlayer()
+            ap.state = PlayerState.NONE
+            ap.repeated = 0
+        }
+
+        isReleased = false
+    }
+
     fun setAudioAttributes(audioAttributes: AudioAttributes) {
+        this.audioAttributes = audioAttributes
+
+        if (isReleased) return
         aps.map { ap ->
             ap.mp.setAudioAttributes(audioAttributes)
         }
     }
 
     fun setVolume(volume: Float) {
+        this.volume = volume
+
+        if (isReleased) return
         aps.map { ap ->
             ap.mp.setVolume(volume, volume)
         }
@@ -233,8 +281,10 @@ class AlternatingPlayersManager(
 
     private fun playNew(verseIdx: Int) {
         this.verseIdx = verseIdx
+        isPaused = false
 
-        reset()
+        if (isReleased) recreatePlayers()
+        else reset()
 
         prepare(playerIdx = 0, verseIdx = verseIdx)  // prepare first
     }
@@ -255,6 +305,8 @@ class AlternatingPlayersManager(
         aps[playerIdx].repeated = 0
 
         scope.launch {
+            if (isReleased) return@launch
+
             val uri: Uri
             try {
                 aps[playerIdx].mp.reset()

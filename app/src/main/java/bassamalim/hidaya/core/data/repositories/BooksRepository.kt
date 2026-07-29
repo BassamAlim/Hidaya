@@ -14,12 +14,15 @@ import com.google.firebase.Firebase
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.storage
 import com.google.gson.Gson
+import com.google.gson.JsonParseException
 import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -75,25 +78,32 @@ class BooksRepository @Inject constructor(
         }
     }
 
+    /**
+     * Returns the downloaded content of the book, or null if it isn't downloaded yet or its file
+     * is still incomplete or corrupt.
+     */
     private fun getBookContent(bookId: Int): BookContent? {
         if (!isDownloaded(bookId)) return null
         val jsonStr = FileUtils.getJsonFromDownloads("$dir$bookId.json")
-        return gson.fromJson(jsonStr, BookContent::class.java)
+        return try {
+            gson.fromJson(jsonStr, BookContent::class.java)
+        } catch (_: JsonParseException) {
+            null
+        }
     }
 
     suspend fun getBookContents(language: Language): Map<Int, BookContent> {
         if (!File(dir).exists()) return emptyMap()
 
-        return getBooksMenu(language)
-            .filter { bookInfo -> isDownloaded(bookInfo.id) }.associate { bookInfo ->
-                val jsonStr = FileUtils.getJsonFromDownloads("${dir}${bookInfo.id}.json")
-                bookInfo.id to gson.fromJson(jsonStr, BookContent::class.java)
-            }
+        return getBooksMenu(language).mapNotNull { bookInfo ->
+            getBookContent(bookInfo.id)?.let { content -> bookInfo.id to content }
+        }.toMap()
     }
 
     suspend fun getFullBook(bookId: Int, language: Language): Flow<Book> {
         val bookInfo = getBookInfo(bookId, language)
-        val bookContent = getBookContent(bookId)!!
+        val bookContent = getBookContent(bookId)
+            ?: return flowOf(Book(id = bookInfo.id, title = bookInfo.title, chapters = emptyList()))
         val favorites = getChapterFavorites(bookId)
 
         return favorites.map {
@@ -104,14 +114,14 @@ class BooksRepository @Inject constructor(
                     Book.Chapter(
                         id = chapter.id,
                         title = chapter.title,
-                        doors = bookContent.chapters[chapter.id].doors.map { door ->
+                        doors = chapter.doors.map { door ->
                             Book.Chapter.Door(
                                 id = door.id,
                                 title = door.title,
                                 text = door.text
                             )
                         },
-                        isFavorite = it[chapter.id]!!
+                        isFavorite = it[chapter.id] ?: false
                     )
                 }
             )
@@ -133,15 +143,16 @@ class BooksRepository @Inject constructor(
     }
 
     fun getDoors(bookId: Int, chapterId: Int) =
-        getBookContent(bookId)!!.chapters[chapterId].doors.toList()
+        getBookContent(bookId)?.chapters?.getOrNull(chapterId)?.doors?.toList() ?: emptyList()
 
     fun getChapterFavorites(bookId: Int): Flow<Map<Int, Boolean>> {
         val bookContent = getBookContent(bookId)
 
         return booksPreferencesDataSource.getChapterFavorites().map {
             if (it.containsKey(bookId)) it[bookId]!!.toMap()
+            else if (bookContent == null) emptyMap()
             else {
-                val favs = bookContent!!.chapters.associate { it.id to false }
+                val favs = bookContent.chapters.associate { it.id to false }
                 booksPreferencesDataSource.updateChapterFavorites(
                     it.mutate { oldMap -> oldMap[bookId] = favs.toPersistentMap() }
                 )
@@ -154,7 +165,8 @@ class BooksRepository @Inject constructor(
         scope.launch {
             booksPreferencesDataSource.updateChapterFavorites(
                 booksPreferencesDataSource.getChapterFavorites().first().mutate { oldMap ->
-                    oldMap[bookId] = oldMap[bookId]!!.mutate { it[chapterNum] = newValue }
+                    oldMap[bookId] = (oldMap[bookId] ?: persistentMapOf<Int, Boolean>())
+                        .mutate { it[chapterNum] = newValue }
                 }
             )
         }
@@ -202,36 +214,27 @@ class BooksRepository @Inject constructor(
         val fileRef = storageRef.child("${prefix.substring(1)}$bookId.json")
 
         FileUtils.createDir(app, prefix)
-        val file = File("${app.getExternalFilesDir(null)}/$prefix/${fileRef.name}")
+        val file = File("$dir${fileRef.name}")
         file.createNewFile()
 
-        return fileRef.getFile(file)
+        val task = fileRef.getFile(file)
+        // The stub file is created before the download starts, so it has to be removed on failure
+        // or cancellation, otherwise the book keeps showing up as still downloading.
+        task.addOnFailureListener { file.delete() }
+
+        return task
     }
 
     fun isDownloaded(id: Int): Boolean {
-        val dir = File(dir)
-        if (!dir.exists()) return false
-
-        for (file in dir.listFiles()!!) {
-            val fileName = file.name
-            val n = fileName.substring(0, fileName.length - 5)
-            try {
-                val num = n.toInt()
-                if (num == id) return true
-            } catch (_: NumberFormatException) {}
-        }
-        return false
+        val files = File(dir).listFiles() ?: return false
+        return files.any { it.name == "$id.json" }
     }
 
-    fun isDownloading(bookId: Int): Boolean {
-        val jsonStr = FileUtils.getJsonFromDownloads(path="$dir$bookId.json")
-        return try {
-            gson.fromJson(jsonStr, BookContent::class.java)
-            false
-        } catch (_: Exception) {
-            true
-        }
-    }
+    /**
+     * The file is created as soon as the download starts, so a file that exists but can't be parsed
+     * yet is still being downloaded (or was left behind by a failed download).
+     */
+    fun isDownloading(bookId: Int) = isDownloaded(bookId) && getBookContent(bookId) == null
 
     fun deleteBook(bookId: Int) {
         FileUtils.deleteFile(context = app, path = "${prefix}$bookId.json")

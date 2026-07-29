@@ -34,7 +34,7 @@ class BooksMenuDomain @Inject constructor(
         }
         else DownloadState.NOT_DOWNLOADED
 
-    fun downloadBook(bookId: Int, onDownloadedCallback: () -> Unit) {
+    fun downloadBook(bookId: Int, onDownloadedCallback: () -> Unit, onFailedCallback: () -> Unit) {
         booksRepository.download(bookId)
             .addOnSuccessListener {
                 Log.i(Globals.TAG, "File download succeeded")
@@ -43,6 +43,8 @@ class BooksMenuDomain @Inject constructor(
             }
             .addOnFailureListener {
                 Log.e(Globals.TAG, "File download failed")
+
+                onFailedCallback()
             }
     }
 
