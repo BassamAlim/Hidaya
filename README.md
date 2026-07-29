@@ -1,10 +1,10 @@
 # Hidaya
 
-Hidaya is a fully equipped muslims app that helps reminds us with prayers and points us towards the qibla and give them easy access to quran and hidaya and much more.
-Originally developed with Java/XML, then migrated to Kotlin/Jetpack Compose.
+Hidaya is a feature-rich Islamic Android app with 18,000+ installs, offering prayer times, Quran with tafseer and audio recitations, qibla direction, hadith collections, athkar, and more. Originally built in Java/XML and later fully migrated to Kotlin and Jetpack Compose.
 
 Get it from Google Play:
 https://play.google.com/store/apps/details?id=bassamalim.hidaya
+
 
 ## Features
 - Prayer times, using your current location or a location of your choice
@@ -22,23 +22,6 @@ https://play.google.com/store/apps/details?id=bassamalim.hidaya
 - Available in Arabic and English
 - Choose between many themes
 - and much more
-
-## License
-All code found in this repository is licensed under GPL v3
-Copyright (C) 2023  Bassam Alim
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
 ## Screenshots
@@ -71,3 +54,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     </td>
   </tr>
 </table>
+
+
+## Tech & Architecture
+
+**Stack:** Kotlin, Jetpack Compose (Material 2), Hilt, Room, DataStore, Coroutines & Flow, Firebase, GitHub Actions
+
+**Structure.** The codebase is feature-sliced. Shared infrastructure lives under `core/`; every screen lives in its own package under `features/` and follows the same four-part pattern:
+
+| File | Responsibility |
+| --- | --- |
+| `XScreen.kt` | Compose UI, stateless, renders from a single state object |
+| `XUiState.kt` | Immutable data class holding all state for the screen |
+| `XViewModel.kt` | Exposes state as a `StateFlow`, handles user actions as plain methods |
+| `XDomain.kt` | Feature logic and coordination across repositories |
+
+**MVVM/MVI hybrid.** Each screen has one immutable `UiState` observed by the composable, in the MVI spirit, but user actions are ordinary ViewModel methods rather than a formal intent-and-reducer pipeline. This keeps state predictable and rendering trivially testable without the boilerplate of full MVI. Feature logic sits in a separate `Domain` class rather than the ViewModel, so ViewModels stay thin and coordination logic is reusable and independent of Android lifecycle types.
+
+**Data layer.** 14 repositories abstract over two sources: a bundled Room database for offline content (Quran text, tafseer, hadith collections, reciters, remembrances, cities), and typed DataStore preference sources with custom serializers, one per domain, for user settings and state.
+
+**Platform work.**
+- `PrayerTimeCalculator` computes prayer times astronomically from coordinates rather than calling an API, so the app works fully offline.
+- Alarm-based scheduling with boot receivers to restore notifications after restart, covering athan playback, prayer reminders, and daily athkar.
+- Two home-screen app widgets showing next prayer and the daily prayer board.
+- Full Arabic and English localisation with RTL layout, plus light/dark themes and Android 11+ dynamic colour.
+
+**CI.** GitHub Actions workflows for build/check on push and for release packaging.
+
+
+## License
+
+Licensed under the [GNU General Public License v3.0](LICENSE).
+Copyright © 2023 Bassam Alim.
