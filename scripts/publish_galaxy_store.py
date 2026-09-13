@@ -5,14 +5,18 @@ Flow (per https://developer.samsung.com/galaxy-store/galaxy-store-developer-api/
   1. Mint a JWT with the Seller Portal service account and exchange it for an
      access token.
   2. Create an upload session and upload the APK.
-  3. Add the uploaded binary via POST /seller/v2/content/binary (contentUpdate's
-     binaryList parameter is no longer accepted). The app must be in REGISTERING
-     state; if the add fails, contentUpdate is called to enter that state and the
-     add is retried once.
-  4. Delete every other binary from the draft (this app ships one universal APK,
+  3. Call contentUpdate to put the app into REGISTERING state. Adding a binary
+     requires that state, so this is done up front rather than as a retry.
+  4. Add the uploaded binary via POST /seller/v2/content/binary (contentUpdate's
+     binaryList parameter is no longer accepted).
+  5. Re-read the draft and confirm a binary with the expected versionCode is
+     attached. The add is not trusted on its own: submitting whatever binary
+     happens to have the highest versionCode would silently re-submit the
+     previous release if the upload had in fact failed.
+  6. Delete every other binary from the draft (this app ships one universal APK,
      so an update always replaces the previous binary; leftover binaries make
      contentSubmit fail).
-  5. Submit the app for review via contentSubmit.
+  7. Submit the app for review via contentSubmit.
 
 Error responses are printed verbatim to make failures diagnosable from CI logs.
 
@@ -167,6 +171,12 @@ def submit(headers: dict, content_id: str):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apk", required=True, help="path to the signed release APK")
+    parser.add_argument(
+        "--version-code",
+        required=True,
+        help="versionCode of the APK being published; the draft is only submitted "
+             "if a binary with this versionCode is attached",
+    )
     args = parser.parse_args()
 
     if not os.path.isfile(args.apk):
@@ -189,6 +199,11 @@ def main():
 
     gms = os.environ.get("SAMSUNG_GMS", "Y")
 
+    # A binary can only be added while the app is in REGISTERING state; entering
+    # it up front avoids a guaranteed first failure.
+    print("Moving app into REGISTERING state via contentUpdate...")
+    enter_update_state(headers, content_id)
+
     # The current top binary is the template for the new one's device settings
     binaries = get_content_info(headers, content_id).get("binaryList") or []
     device_info_source_seq = (
@@ -197,38 +212,40 @@ def main():
     )
 
     print(f"Adding binary (device settings from binarySeq={device_info_source_seq})...")
-    new_binary_seq = None
     response = add_binary(headers, content_id, file_key, gms, device_info_source_seq)
     if response.ok:
-        new_binary_seq = response.json().get("data", {}).get("binarySeq")
-        print(f"binary add ok: binarySeq={new_binary_seq}")
+        print(f"binary add ok: binarySeq={response.json().get('data', {}).get('binarySeq')}")
     elif is_already_in_use(response):
         print("Binary already attached to the draft by a previous run, continuing.")
     else:
-        print(f"binary add returned HTTP {response.status_code}:\n{response.text}")
-        print("Moving app into REGISTERING state via contentUpdate, then retrying...")
-        enter_update_state(headers, content_id)
-        response = add_binary(headers, content_id, file_key, gms, device_info_source_seq)
-        if response.ok:
-            new_binary_seq = response.json().get("data", {}).get("binarySeq")
-            print(f"binary add ok: binarySeq={new_binary_seq}")
-        elif is_already_in_use(response):
-            print("Binary already attached to the draft by a previous run, continuing.")
-        else:
-            fail("binary add (after contentUpdate)", response)
+        fail("binary add", response)
+
+    # Confirm the APK we just built is really on the draft. The add response is
+    # not taken as proof: a 5021 ("already in use") can also mean the new binary
+    # never landed, and submitting the draft anyway would re-submit whatever the
+    # previous release left behind.
+    binaries = get_content_info(headers, content_id).get("binaryList") or []
+    attached = [
+        binary for binary in binaries
+        if str(binary.get("versionCode")) == str(args.version_code)
+    ]
+    if not attached:
+        listing = ", ".join(
+            f"binarySeq={binary.get('binarySeq')} versionCode={binary.get('versionCode')}"
+            for binary in binaries
+        ) or "none"
+        sys.exit(
+            f"versionCode {args.version_code} is not attached to the draft after the "
+            f"binary add; refusing to submit. Draft binaries: {listing}"
+        )
+    new_binary_seq = attached[0]["binarySeq"]
 
     # The new binary replaces all previous ones (single universal APK app);
     # leaving them in the draft makes contentSubmit fail.
-    content_info = get_content_info(headers, content_id)
-    binaries = content_info.get("binaryList") or []
-    if not binaries:
-        sys.exit("contentInfo returned no binaries — nothing to submit")
-    if new_binary_seq is None:
-        # The APK was attached by a previous run; it is the highest versionCode
-        new_binary_seq = max(
-            binaries, key=lambda binary: int(binary.get("versionCode") or 0)
-        )["binarySeq"]
-    print(f"Keeping binarySeq={new_binary_seq}; removing superseded binaries...")
+    print(
+        f"Keeping binarySeq={new_binary_seq} (versionCode {args.version_code}); "
+        "removing superseded binaries..."
+    )
     for binary in binaries:
         if binary.get("binarySeq") != new_binary_seq:
             delete_binary(headers, content_id, binary["binarySeq"])

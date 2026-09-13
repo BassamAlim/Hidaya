@@ -117,9 +117,18 @@ jobs:
         run: pip install pyjwt[crypto] requests
 
       - name: Publish to Samsung Galaxy Store
+        # versionCode comes from the same source the APK was built from, so the
+        # script can verify the draft holds this build and not a leftover binary.
         run: |
+          VERSION_CODE=$(grep -oP '^\s*versionCode\s+\K[0-9]+' app/build.gradle || true)
+          if [ -z "$VERSION_CODE" ]; then
+            echo "could not read versionCode from app/build.gradle" >&2
+            exit 1
+          fi
+          echo "Publishing versionCode $VERSION_CODE"
           python scripts/publish_galaxy_store.py \
-            --apk outputs/apk/release/app-release.apk
+            --apk outputs/apk/release/app-release.apk \
+            --version-code "$VERSION_CODE"
         env:
           SAMSUNG_SERVICE_ACCOUNT_ID: ${{ secrets.SAMSUNG_SERVICE_ACCOUNT_ID }}
           SAMSUNG_PRIVATE_KEY: ${{ secrets.SAMSUNG_PRIVATE_KEY }}
