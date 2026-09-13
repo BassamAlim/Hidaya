@@ -24,7 +24,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
-import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.enums.Reminder
@@ -33,7 +32,7 @@ import bassamalim.hidaya.core.enums.ThemeColor
 import bassamalim.hidaya.core.ui.theme.getThemeColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -45,62 +44,62 @@ class AthanService : Service() {
     @Inject @ApplicationScope lateinit var scope: CoroutineScope
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var prayersRepository: PrayersRepository
-    @Inject lateinit var notificationsRepository: NotificationsRepository
     private var notificationId = 0
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
-    private var athanAudio: Int? = null
+    private var audioFocusRequest: AudioFocusRequest? = null
+    private var playbackJob: Job? = null
+    /**
+     * Whether the notification should survive the service. It should when the athan played to the
+     * end (it then becomes the prayer notification), but not when the user stopped it.
+     */
+    private var keepNotificationOnStop = false
 
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-
-        scope.launch {
-            athanAudio = getAthanAudio()
-        }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == StartAction.STOP_ATHAN.name) {
-            onDestroy()
+        if (intent == null || intent.action == StartAction.STOP_ATHAN.name) {
+            stopSelf()
             return START_NOT_STICKY
         }
 
-        val reminder = Reminder.getById(intent!!.getIntExtra("id", -1))
+        val reminder = try {
+            Reminder.getById(intent.getIntExtra("id", -1))
+        } catch (e: IllegalArgumentException) {
+            Log.e(Globals.TAG, "Invalid reminder id in athan service intent", e)
+            stopSelf()
+            return START_NOT_STICKY
+        }
         val time = intent.getLongExtra("time", 0L)
         Log.i(Globals.TAG, "In athan service for $reminder")
         notificationId = reminder.id
 
-        val basicNotification = createBasicNotification(reminder)
-        startForeground(notificationId, basicNotification)
+        // Has to happen synchronously, before any suspending work: the system kills the process
+        // if a service started with startForegroundService() doesn't post its notification in time.
+        startForeground(notificationId, createBasicNotification(reminder))
 
-        scope.launch {
+        playbackJob?.cancel()
+        playbackJob = scope.launch {
             try {
-                if (!isOnTime(time) || isAlreadyNotified(reminder)) {
-                    Log.i(Globals.TAG, "notification receiver: not on time or already notified")
+                if (!isOnTime(time)) {
+                    Log.i(Globals.TAG, "athan service: not on time")
                     stopSelf()
                     return@launch
                 }
+
+                // Read before anything is shown or played, so playback never starts without it.
+                val athanAudio = getAthanAudio()
 
                 val fullNotification = createFullNotification(reminder)
                 val notificationManager = getSystemService(NotificationManager::class.java)
                 notificationManager.notify(notificationId, fullNotification)
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    (getSystemService(AUDIO_SERVICE) as AudioManager)
-                        .requestAudioFocus(
-                            AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                                .setAudioAttributes(
-                                    AudioAttributes.Builder()
-                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                        .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                                        .build()
-                                ).build()
-                        )
-                }
+                requestAudioFocus(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
 
-                play(reminder)
+                play(reminder, athanAudio)
             } catch (e: Exception) {
                 Log.e(Globals.TAG, "Error in AthanService", e)
                 stopSelf()
@@ -117,11 +116,6 @@ class AthanService : Service() {
         return System.currentTimeMillis() <= max
     }
 
-    private suspend fun isAlreadyNotified(reminder: Reminder): Boolean {
-        val lastDate = notificationsRepository.getLastNotificationDates().first()[reminder]
-        return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
-    }
-
     private suspend fun createFullNotification(reminder: Reminder): Notification {
         return NotificationCompat.Builder(this, channelId).apply {
             setSmallIcon(R.drawable.small_launcher_foreground)
@@ -131,7 +125,6 @@ class AthanService : Service() {
             setContentText(getSubtitle(reminder))
 
             addAction(0, getString(R.string.stop_athan), getStopIntent())
-            clearActions()
             setContentIntent(getStopAndOpenIntent())
             setDeleteIntent(getStopIntent())
             priority = NotificationCompat.PRIORITY_MAX
@@ -166,7 +159,7 @@ class AthanService : Service() {
             Intent(this, AthanService::class.java)
                 .setAction(StartAction.STOP_ATHAN.name)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
-            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
@@ -175,7 +168,7 @@ class AthanService : Service() {
             this,
             12,
             Intent(this, Activity::class.java).setAction(StartAction.STOP_ATHAN.name),
-            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
@@ -202,6 +195,7 @@ class AthanService : Service() {
             setTicker(resources.getString(R.string.app_name))
             setContentTitle(getBasicTitle(reminder))
             setContentText(getBasicSubtitle(reminder))
+            addAction(0, getString(R.string.stop_athan), getStopIntent())
             priority = NotificationCompat.PRIORITY_MAX
             setAutoCancel(true)
             setOnlyAlertOnce(true)
@@ -225,29 +219,47 @@ class AthanService : Service() {
         else resources.getStringArray(R.array.prayer_subtitles)[reminder.id-1]
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun play(reminder: Reminder) {
+    private fun play(reminder: Reminder, athanAudio: Int) {
         Log.i(Globals.TAG, "Playing Athan")
 
-        if (athanAudio == null) {
-            Log.e(Globals.TAG, "Athan audio is null")
+        val audioAttributes = AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+            .build()
+        val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+
+        // The attributes have to be passed to create(): it prepares the player itself, and
+        // setAudioAttributes() has no effect once the player is prepared.
+        val player = MediaPlayer.create(
+            this,
+            athanAudio,
+            audioAttributes,
+            audioManager.generateAudioSessionId()
+        )
+        if (player == null) {
+            Log.e(Globals.TAG, "Failed to create the athan media player")
+            stopSelf()
             return
         }
+        mediaPlayer = player
 
-        mediaPlayer = MediaPlayer.create(this@AthanService, athanAudio!!).apply {
-            setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-            setAudioAttributes(
-                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
-            )
-            setOnPreparedListener { mediaPlayer?.start() }
-            setOnCompletionListener {
-                scope.launch {
-                    showReminderNotification(reminder)
-                    onDestroy()
-                }
+        player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+        player.setOnCompletionListener {
+            scope.launch {
+                showReminderNotification(reminder)
+                keepNotificationOnStop = true
+                stopSelf()
             }
         }
+        player.setOnErrorListener { _, what, extra ->
+            Log.e(Globals.TAG, "Athan media player error: what=$what, extra=$extra")
+            stopSelf()
+            true
+        }
+
+        // create() returns an already prepared player, so it is started directly; an
+        // OnPreparedListener registered after create() is never called and the athan stays silent.
+        player.start()
     }
 
     private suspend fun getAthanAudio(): Int {
@@ -261,18 +273,7 @@ class AthanService : Service() {
     }
 
     private suspend fun showReminderNotification(reminder: Reminder) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            (getSystemService(AUDIO_SERVICE) as AudioManager)
-                .requestAudioFocus(                   // Request permanent focus
-                    AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                        .setAudioAttributes(
-                            AudioAttributes.Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .setUsage(AudioAttributes.USAGE_ALARM)
-                                .build()
-                        ).build()
-                )
-        }
+        requestAudioFocus(AudioAttributes.USAGE_ALARM)
 
         val havePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.checkSelfPermission(
@@ -287,15 +288,61 @@ class AthanService : Service() {
         }
     }
 
+    private fun requestAudioFocus(usage: Int) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+
+        abandonAudioFocus()
+
+        val request = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(usage)
+                    .build()
+            ).build()
+        audioFocusRequest = request
+
+        (getSystemService(AUDIO_SERVICE) as AudioManager).requestAudioFocus(request)
+    }
+
+    private fun abandonAudioFocus() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+
+        audioFocusRequest?.let {
+            (getSystemService(AUDIO_SERVICE) as AudioManager).abandonAudioFocusRequest(it)
+        }
+        audioFocusRequest = null
+    }
+
+    private fun releaseMediaPlayer() {
+        mediaPlayer?.let { player ->
+            try {
+                if (player.isPlaying) player.stop()
+            } catch (e: IllegalStateException) {
+                Log.w(Globals.TAG, "Athan media player was in an invalid state", e)
+            }
+            player.release()
+        }
+        mediaPlayer = null
+    }
+
     override fun onDestroy() {
+        playbackJob?.cancel()
+        playbackJob = null
+
+        releaseMediaPlayer()
+        abandonAudioFocus()
+
+        // Detaching keeps the prayer notification around after the athan finished playing;
+        // removing it is what the user asked for when they stopped the athan themselves.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(
+                if (keepNotificationOnStop) STOP_FOREGROUND_DETACH else STOP_FOREGROUND_REMOVE
+            )
+        }
+        else stopForeground(!keepNotificationOnStop)
+
         super.onDestroy()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_REMOVE)
-        else stopForeground(true)
-
-        mediaPlayer?.stop()
-
-        stopSelf()
     }
 
 }

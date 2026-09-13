@@ -87,7 +87,7 @@ class Alarm(
         val millis = time.timeInMillis
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(app, NotificationReceiver::class.java).apply {
-                action = if (reminder == Reminder.Prayer.Sunrise) "devotion" else "prayer"
+                action = getAction(reminder)
                 putExtra("id", reminder.id)
                 putExtra("time", millis)
             }
@@ -132,7 +132,7 @@ class Alarm(
         val millis = time.timeInMillis + offset * 1000 * 60
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(app, NotificationReceiver::class.java).apply {
-                action = "prayer_extra"
+                action = getAction(reminder)
                 putExtra("id", reminder.id)
                 putExtra("time", millis)
             }
@@ -174,8 +174,15 @@ class Alarm(
 
         val time = getDevotionalReminderTime(devotion)
 
+        // An alarm set in the past fires immediately and is then dropped by the receiver's
+        // on-time check, so there is nothing to schedule; the daily update sets tomorrow's.
+        if (time.timeInMillis < System.currentTimeMillis()) {
+            Log.i(Globals.TAG, "$devotion Passed")
+            return
+        }
+
         val intent = Intent(app, NotificationReceiver::class.java).apply {
-            action = "devotion"
+            action = getAction(devotion)
             putExtra("id", devotion.id)
             putExtra("time", time.timeInMillis)
         }
@@ -226,15 +233,34 @@ class Alarm(
     }
 
     fun cancelAlarm(reminder: Reminder) {
+        // AlarmManager matches alarms by PendingIntent, and PendingIntents by request code plus
+        // Intent.filterEquals(), so the intent has to carry the same component and action as the
+        // one the alarm was scheduled with. A bare Intent() matches nothing and cancels nothing.
+        val intent = Intent(app, NotificationReceiver::class.java).apply {
+            action = getAction(reminder)
+        }
+
         val pendingIntent = PendingIntent.getBroadcast(
-            app, reminder.id, Intent(),
-            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            app, reminder.id, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
+        pendingIntent.cancel()
 
         Log.i(Globals.TAG, "Canceled $reminder Alarm")
+    }
+
+    /**
+     * The action the alarm of [reminder] is scheduled with. Scheduling and canceling have to agree
+     * on it, otherwise the canceling PendingIntent doesn't match the scheduled one.
+     */
+    private fun getAction(reminder: Reminder) = when (reminder) {
+        Reminder.Prayer.Sunrise -> "devotion"
+        is Reminder.Prayer -> "prayer"
+        is Reminder.PrayerExtra -> "prayer_extra"
+        is Reminder.Devotional -> "devotion"
     }
 
     suspend fun getPrayerTime(prayer: Prayer): Calendar? {

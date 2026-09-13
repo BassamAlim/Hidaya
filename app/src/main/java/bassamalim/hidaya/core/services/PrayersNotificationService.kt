@@ -262,17 +262,27 @@ class PrayersNotificationService : Service() {
             else
                 prayerData.times[prayerData.nextPrayer]?.timeInMillis ?: return
 
+        // Loop-invariant, so it is resolved once: resolving it per iteration meant a missing
+        // previous prayer time skipped straight back to the condition without ever reaching the
+        // delay, spinning the loop at full speed.
+        val previousPrayerTime =
+            if (prayerData.previousPrayerWasYesterday) prayerData.yesterdayIshaa.timeInMillis
+            else prayerData.times[prayerData.previousPrayer]?.timeInMillis
+
         var remainingTime = nextPrayerTime - System.currentTimeMillis()
 
         var lastDevotionalCheck = 0L
         while (remainingTime > 0) {
-            val previousPrayerTime = if (prayerData.previousPrayerWasYesterday)
-                prayerData.yesterdayIshaa.timeInMillis
-            else prayerData.times[prayerData.previousPrayer]?.timeInMillis ?: continue
             val currentTime = System.currentTimeMillis()
 
-            val timeFromPreviousPrayer = currentTime - previousPrayerTime
-            if (timeFromPreviousPrayer < THIRTY_MINUTES_MS) updateStateWithElapsedTime(
+            // Without a previous prayer time there is no elapsed time to show, so the countdown
+            // to the next prayer is shown instead.
+            val timeFromPreviousPrayer =
+                if (previousPrayerTime == null) null
+                else currentTime - previousPrayerTime
+
+            if (timeFromPreviousPrayer != null &&
+                timeFromPreviousPrayer < THIRTY_MINUTES_MS) updateStateWithElapsedTime(
                 prayerName = prayerNames[prayerData.previousPrayer] ?: "",
                 prayerTime = prayerData.formattedTimes[prayerData.previousPrayer] ?: "",
                 elapsedMs = timeFromPreviousPrayer,

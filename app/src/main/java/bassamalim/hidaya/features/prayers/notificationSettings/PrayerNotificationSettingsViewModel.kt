@@ -53,6 +53,7 @@ class PrayerNotificationSettingsViewModel @Inject constructor(
     fun onSave() {
         viewModelScope.launch {
             domain.setNotificationType(_uiState.value.notificationType, prayer)
+            domain.updateAlarm(_uiState.value.notificationType, prayer)
 
             navigator.popBackStack()
         }
