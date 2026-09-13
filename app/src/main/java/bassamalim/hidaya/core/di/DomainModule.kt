@@ -188,8 +188,14 @@ object DomainModule {
     fun providePrayerSettingsDomain(
         prayersRepository: PrayersRepository,
         notificationsRepository: NotificationsRepository,
-        appSettingsRepository: AppSettingsRepository
-    ) = PrayerNotificationSettingsDomain(prayersRepository, notificationsRepository, appSettingsRepository)
+        appSettingsRepository: AppSettingsRepository,
+        alarm: Alarm
+    ) = PrayerNotificationSettingsDomain(
+        prayersRepository,
+        notificationsRepository,
+        appSettingsRepository,
+        alarm
+    )
 
     @Provides @Singleton
     fun provideQiblaDomain(
