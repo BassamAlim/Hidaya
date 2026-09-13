@@ -1,50 +1,25 @@
 package bassamalim.hidaya.features.tv
 
-import android.util.Log
-import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.data.repositories.AnalyticsRepository
 import bassamalim.hidaya.core.data.repositories.LiveContentRepository
 import bassamalim.hidaya.core.models.AnalyticsEvent
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import javax.inject.Inject
 
 class TvDomain @Inject constructor(
-    liveContentRepository: LiveContentRepository,
+    private val liveContentRepository: LiveContentRepository,
     private val analyticsRepository: AnalyticsRepository
 ) {
 
-    private val quranVidId = liveContentRepository.getMakkahVideoId()
-    private val sunnahVidId = liveContentRepository.getMadinaVideoId()
-    private var ytPlayer: YouTubePlayer? = null
-
-    fun handleInitialization(player: YouTubePlayer) {
-        Log.i(
-            Globals.TAG,
-            "Youtube player initialized - " +
-                    "Quran video id: $quranVidId, " +
-                    "Sunnah video id: $sunnahVidId"
-        )
-
-        ytPlayer = player
-        ytPlayer?.loadVideo(quranVidId, 0f)
+    suspend fun getStreamUrl(channel: TvChannel): String {
+        val channelId = when (channel) {
+            TvChannel.QURAN -> liveContentRepository.getQuranTvChannelId()
+            TvChannel.SUNNAH -> liveContentRepository.getSunnahTvChannelId()
+        }
+        return liveContentRepository.getTvStreamUrl(channelId)
     }
 
-    fun playMakkahVideo() {
-        ytPlayer?.loadVideo(quranVidId, 0f)
-        ytPlayer?.play()
-
-        trackTvChannelViewed("Quran Channel")
-    }
-
-    fun playMadinaVideo() {
-        ytPlayer?.loadVideo(sunnahVidId, 0f)
-        ytPlayer?.play()
-
-        trackTvChannelViewed("Sunnah Channel")
-    }
-
-    private fun trackTvChannelViewed(channel: String) {
-        analyticsRepository.trackEvent(AnalyticsEvent.TvChannelViewed(channel))
+    fun trackTvChannelViewed(channel: TvChannel) {
+        analyticsRepository.trackEvent(AnalyticsEvent.TvChannelViewed(channel.analyticsName))
     }
 
 }

@@ -98,6 +98,8 @@ dependencies {
     implementation(libs.androidx.media)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.common)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
     implementation(libs.androidx.datastore.preferences)
@@ -146,15 +148,12 @@ dependencies {
     // Other
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
-    implementation(libs.core)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
-    // jar Files
-    implementation files("libs/YouTubeAndroidPlayerApi.jar")
     // GitHub
     implementation(libs.ummalqura.calendar)
     // Temporary

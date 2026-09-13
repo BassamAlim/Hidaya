@@ -91,8 +91,9 @@ object RepositoryModule {
 
     @Provides @Singleton
     fun provideLiveContentRepository(
-        remoteConfig: FirebaseRemoteConfig
-    ) = LiveContentRepository(remoteConfig)
+        remoteConfig: FirebaseRemoteConfig,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ) = LiveContentRepository(remoteConfig, dispatcher)
 
     @Provides @Singleton
     fun provideLocationRepository(

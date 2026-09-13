@@ -10,13 +10,18 @@
     </entry>
 
     <entry>
-        <key>makkah_url</key>
-        <value>tAdKKC3FZhU</value>
+        <key>live_tv_stream_api_url</key>
+        <value>https://aloula.faulio.com/api/v1.1/channels/{channel_id}/player</value>
     </entry>
 
     <entry>
-        <key>madina_url</key>
-        <value>gUC3TjCrwRw</value>
+        <key>quran_tv_channel_id</key>
+        <value>7</value>
+    </entry>
+
+    <entry>
+        <key>sunnah_tv_channel_id</key>
+        <value>6</value>
     </entry>
 
     <entry>
