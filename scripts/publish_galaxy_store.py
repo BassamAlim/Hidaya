@@ -8,7 +8,9 @@ Flow (per https://developer.samsung.com/galaxy-store/galaxy-store-developer-api/
   3. Call contentUpdate to put the app into REGISTERING state. Adding a binary
      requires that state, so this is done up front rather than as a retry.
   4. Add the uploaded binary via POST /seller/v2/content/binary (contentUpdate's
-     binaryList parameter is no longer accepted).
+     binaryList parameter is no longer accepted). A draft holds one binary, so if
+     the slot is still held by a leftover from an unfinished release the add is
+     refused with 5021; that leftover is then deleted and the add retried.
   5. Re-read the draft and confirm a binary with the expected versionCode is
      attached. The add is not trusted on its own: submitting whatever binary
      happens to have the highest versionCode would silently re-submit the
@@ -216,7 +218,58 @@ def main():
     if response.ok:
         print(f"binary add ok: binarySeq={response.json().get('data', {}).get('binarySeq')}")
     elif is_already_in_use(response):
-        print("Binary already attached to the draft by a previous run, continuing.")
+        # 5021 on a draft that does not contain this versionCode means the slot is
+        # occupied by a leftover binary from an earlier, unfinished release, not
+        # that our APK is already attached. Clearing it is the only way forward,
+        # but it is done here rather than unconditionally up front: deleting
+        # before a successful add would throw away the device-settings template
+        # and, if the add then failed, leave the draft with no binary at all.
+        already_attached = any(
+            str(binary.get("versionCode")) == str(args.version_code)
+            for binary in binaries
+        )
+        stale = [
+            binary for binary in binaries
+            if str(binary.get("versionCode")) != str(args.version_code)
+        ]
+        if already_attached:
+            print("Binary already attached to the draft by a previous run, continuing.")
+        elif not stale:
+            fail("binary add", response)
+        else:
+            print(
+                "Draft slot is held by "
+                + ", ".join(
+                    f"binarySeq={binary.get('binarySeq')} versionCode={binary.get('versionCode')}"
+                    for binary in stale
+                )
+                + "; removing to make room and retrying the add."
+            )
+            for binary in stale:
+                delete_binary(headers, content_id, binary["binarySeq"])
+
+            response = add_binary(headers, content_id, file_key, gms, device_info_source_seq)
+            if not response.ok:
+                # The template binary may itself have just been deleted, which
+                # makes binarySeqForDeviceInfo a dangling reference. Retry without
+                # it; the binary then lands with no device groups and cannot be
+                # submitted until they are set in Seller Portal.
+                print(f"retry after delete failed:\n{response.text}")
+                print("Retrying without the device-settings template...")
+                response = add_binary(headers, content_id, file_key, gms, None)
+                if response.ok:
+                    print(
+                        "WARNING: binary added without copied device groups. Set "
+                        "the supported devices for this binary in Seller Portal "
+                        "before it can pass review."
+                    )
+            if not response.ok:
+                fail(
+                    "binary add (after clearing the draft; the draft may now hold "
+                    "no binary and may need restoring from Seller Portal)",
+                    response,
+                )
+            print(f"binary add ok: binarySeq={response.json().get('data', {}).get('binarySeq')}")
     else:
         fail("binary add", response)
 
