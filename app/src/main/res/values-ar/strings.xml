@@ -166,6 +166,10 @@
     <string name="basmalah" translatable="false">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
     <string name="display_method">طريقة العرض</string>
     <string name="qibla">القبلة</string>
+    <string name="compass_north">شمال</string>
+    <string name="compass_east">شرق</string>
+    <string name="compass_south">جنوب</string>
+    <string name="compass_west">غرب</string>
     <string name="numerals_language">لغة الأرقام</string>
     <string name="select_country">اختر البلد</string>
     <string name="select_city">اختر المدينة</string>

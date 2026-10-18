@@ -173,6 +173,10 @@
     <string name="verse_number">Verse number</string>
     <string name="display_method">View Method</string>
     <string name="qibla">Qibla</string>
+    <string name="compass_north">N</string>
+    <string name="compass_east">E</string>
+    <string name="compass_south">S</string>
+    <string name="compass_west">W</string>
     <string name="numerals_language">Numerals language</string>
     <string name="select_country">Choose country</string>
     <string name="select_city">Choose city</string>
