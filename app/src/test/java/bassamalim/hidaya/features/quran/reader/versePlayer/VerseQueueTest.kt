@@ -11,7 +11,7 @@ class VerseQueueTest {
 
     private fun verse(idx: Int, suraNum: Int, pageNum: Int) = Verse(
         id = idx + 1, num = 1, juzNum = 1, suraNum = suraNum, pageNum = pageNum,
-        decoratedText = "", plainText = "", startLineNum = 1, endLineNum = 1,
+        decoratedText = "", plainText = "", mushafText = "", startLineNum = 1, endLineNum = 1,
         translationEn = "", interpretation = ""
     )
 

@@ -47,7 +47,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -82,7 +81,6 @@ private const val BARS_AUTO_HIDE_MILLIS = 5000L
 fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalActivity.current!!
-    val configuration = LocalConfiguration.current
 
     if (state.isLoading) return LoadingScreen()
 
@@ -177,11 +175,11 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                     onPageChange = viewModel::onPageChange,
                     buildPage = viewModel.pageBuilder::buildPage,
                     buildListPage = viewModel.pageBuilder::buildListPage,
+                    buildMushafPage = viewModel.pageBuilder::buildMushafPage,
                     onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
                     onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
                     onVersePointerInput = viewModel::onVersePointerInput,
-                    onContentTap = onInteraction,
-                    configuration = configuration
+                    onContentTap = onInteraction
                 )
             }
 

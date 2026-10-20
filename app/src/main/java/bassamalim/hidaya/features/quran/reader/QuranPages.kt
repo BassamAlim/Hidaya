@@ -1,15 +1,17 @@
 package bassamalim.hidaya.features.quran.reader
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberScrollState
@@ -17,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,13 +34,17 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
@@ -65,13 +72,12 @@ internal fun PageContent(
     onPageChange: (Int, Int) -> Unit,
     buildPage: (Int, Int?, Int, Color, Color, Color) -> List<Section>,
     buildListPage: (Int, Int?, Int, Color, Color, Color) -> List<Section>,
+    buildMushafPage: (Int, Int?, Int, Color, Color, Color) -> List<Section?>,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
-    onContentTap: () -> Unit,
-    configuration: Configuration
+    onContentTap: () -> Unit
 ) {
-    val lineHeight = remember { getLineHeight(configuration) }
     val defaultColor = MaterialTheme.colorScheme.onSurface
     val primaryColor = MaterialTheme.colorScheme.primary
     val tertiaryColor = MaterialTheme.colorScheme.tertiary
@@ -102,7 +108,22 @@ internal fun PageContent(
             .verticalScroll(scrollState)
             .pointerInput(Unit) { detectTapGestures { onContentTap() } }
 
-        Column(
+        if (viewType == QuranViewType.PAGE && fillPage) {
+            val lines = remember(pageIdx, selectedVerseId, trackedVerseId, defaultColor, primaryColor, tertiaryColor) {
+                buildMushafPage(pageIdx + 1, selectedVerseId, trackedVerseId, defaultColor, primaryColor, tertiaryColor)
+            }
+
+            MushafPage(
+                lines = lines,
+                // The two opening pages are printed as short centered lines
+                justify = pageIdx >= 2,
+                isCurrentPage = isCurrentPage,
+                onVersePointerInput = onVersePointerInput,
+                onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned,
+                onContentTap = onContentTap
+            )
+        }
+        else Column(
             modifier = columnModifier,
             verticalArrangement =
                 if (pageIdx == 0 || pageIdx == 1) Arrangement.Top
@@ -116,11 +137,9 @@ internal fun PageContent(
                     }
 
                     PageItems(
-                        fillPage = fillPage,
                         sections = pageContent,
                         isCurrentPage = isCurrentPage,
                         textSize = textSize,
-                        lineHeight = lineHeight,
                         onVersePointerInput = onVersePointerInput,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                     )
@@ -156,11 +175,9 @@ internal fun PageContent(
 
 @Composable
 private fun PageItems(
-    fillPage: Boolean,
     sections: List<Section>,
     isCurrentPage: Boolean,
     textSize: Int,
-    lineHeight: Dp,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
@@ -186,57 +203,6 @@ private fun PageItems(
                 )
             }
         }
-
-//        if (fillPage) {
-//            when (section) {
-//                is SuraHeaderSection -> {
-//                    SuraHeader(
-//                        suraNum = section.suraNum,
-//                        suraName = section.suraName,
-//                        isCurrentPage = isCurrentPage,
-//                        textSize = textSize,
-//                        height = lineHeight,
-//                        onGloballyPositioned = onSuraHeaderGloballyPositioned
-//                    )
-//                }
-//                is BasmalahSection -> {
-//                    Basmalah(textSize = textSize, height = lineHeight)
-//                }
-//                is VersesSection -> {
-//                    FilledPageViewScreen(
-//                        annotatedString = section.annotatedString,
-//                        numOfLines =
-//                            if (section.suraNum == 1) section.numOfLines-1
-//                            else section.numOfLines,
-//                        lineHeight = lineHeight,
-//                        onVersePointerInput = onVersePointerInput
-//                    )
-//                }
-//            }
-//        }
-//        else {
-//            when (section) {
-//                is SuraHeaderSection -> {
-//                    SuraHeader(
-//                        suraNum = section.suraNum,
-//                        suraName = section.suraName,
-//                        isCurrentPage = isCurrentPage,
-//                        textSize = textSize,
-//                        onGloballyPositioned = onSuraHeaderGloballyPositioned
-//                    )
-//                }
-//                is BasmalahSection -> {
-//                    Basmalah(textSize)
-//                }
-//                is VersesSection -> {
-//                    PageViewScreen(
-//                        annotatedString = section.annotatedString,
-//                        textSize = textSize,
-//                        onVersePointerInput = onVersePointerInput
-//                    )
-//                }
-//            }
-//        }
     }
 }
 
@@ -321,83 +287,117 @@ private fun PageViewScreen(
     )
 }
 
-//@Composable
-//private fun FilledPageViewScreen(
-//    annotatedString: AnnotatedString,
-//    numOfLines: Int,
-//    lineHeight: Dp,
-//    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
-//) {
-//    BoxWithConstraints(
-//        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 6.dp).background(Color.Black)
-//    ) {
-//        val availableHeight = maxHeight
-//        val usableHeight = availableHeight
-//
-//        val calculatedLineHeight = usableHeight / numOfLines * 0.95f
-//
-//        var fontSize by remember(annotatedString) { mutableStateOf(25.sp) }
-//        var ready by remember(annotatedString) { mutableStateOf(false) }
-//        var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-//        var adjustmentCount by remember(annotatedString) { mutableIntStateOf(0) }
-//        val t1 = remember { System.currentTimeMillis() }
-//
-//        Text(
-//            text = annotatedString,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(vertical = 6.dp, horizontal = 6.dp)
-//                .pointerInput(annotatedString) {
-//                    onVersePointerInput(this, layoutResult, annotatedString)
-//                }
-//                .drawWithContent {
-//                    if (ready) {
-//                        drawContent()
-//                        println("Took ${System.currentTimeMillis() - t1} ms to draw content")
-//                    }
-//                },
-//            style = TextStyle(
-//                fontFamily = hafs_smart,
-//                fontSize = fontSize,
-//                color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                lineHeight = calculatedLineHeight.value.sp,
-//                lineHeightStyle = LineHeightStyle(
-//                    alignment = LineHeightStyle.Alignment.Center,
-//                    trim = LineHeightStyle.Trim.None
-//                ),
-//                textAlign = TextAlign.Justify,
-//                lineBreak = LineBreak(
-//                    strategy = LineBreak.Strategy.Balanced,
-//                    strictness = LineBreak.Strictness.Strict,
-//                    wordBreak = LineBreak.WordBreak.Default
-//                ),
-//                platformStyle = PlatformTextStyle(includeFontPadding = false)
-//            ),
-//            overflow = TextOverflow.Visible,
-//            onTextLayout = { textLayoutResult ->
-//                layoutResult = textLayoutResult
-//
-//                if (!ready && adjustmentCount < 50) {
-//                    val lineCount = textLayoutResult.lineCount
-//
-//                    when {
-//                        lineCount > numOfLines -> {
-//                            fontSize = (fontSize.value - 0.2f).sp
-//                            adjustmentCount++
-//                        }
-//                        lineCount < numOfLines -> {
-//                            fontSize = (fontSize.value + 0.2f).sp
-//                            adjustmentCount++
-//                        }
-//                        else -> {
-//                            ready = true
-//                        }
-//                    }
-//                }
-//            }
-//        )
-//    }
-//}
+/**
+ * The page as printed: fixed line slots sharing the height, one font size for the page (the
+ * largest at which its widest line fits), and each line's words spread across the full width.
+ */
+@Composable
+private fun MushafPage(
+    lines: List<Section?>,
+    justify: Boolean,
+    isCurrentPage: Boolean,
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
+    onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
+    onContentTap: () -> Unit
+) {
+    val textMeasurer = rememberTextMeasurer()
+    val textColor = MaterialTheme.colorScheme.onSurface
+
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 8.dp)
+            .pointerInput(Unit) { detectTapGestures { onContentTap() } },
+        contentAlignment = Alignment.Center
+    ) {
+        val lineHeight = maxHeight / QuranPageBuilder.MUSHAF_LINES
+        val density = LocalDensity.current
+        val fontSize = remember(lines, constraints, density) {
+            // Width grows linearly with font size, so measuring each line once at 100sp is enough
+            val referenceStyle = TextStyle(fontFamily = uthmanic_hafs, fontSize = 100.sp)
+            val widestLine = lines.filterIsInstance<MushafLineSection>().maxOfOrNull { line ->
+                textMeasurer.measure(
+                    text = line.words.joinToString(" ") { it.text },
+                    style = referenceStyle,
+                    softWrap = false
+                ).size.width
+            } ?: 1
+            val widthFit = 100f * constraints.maxWidth / widestLine * 0.97f
+            // ponytail: height ratio eyeballed for the KFGQPC font, tune if lines touch
+            val heightFit = with(density) { (lineHeight * 0.55f).toSp().value }
+            minOf(widthFit, heightFit).sp
+        }
+        val wordStyle = TextStyle(fontFamily = uthmanic_hafs, fontSize = fontSize, color = textColor)
+
+        // Mushaf lines read right to left whatever the app language
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                for (line in lines) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(lineHeight),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        when (line) {
+                            is MushafLineSection -> Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight(unbounded = true),
+                                horizontalArrangement =
+                                    if (justify) Arrangement.SpaceBetween
+                                    else Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                for (word in line.words) {
+                                    MushafWord(
+                                        word = word,
+                                        style = wordStyle,
+                                        onVersePointerInput = onVersePointerInput
+                                    )
+                                }
+                            }
+                            is SuraHeaderSection -> SuraHeader(
+                                suraNum = line.suraNum,
+                                suraName = line.suraName,
+                                isCurrentPage = isCurrentPage,
+                                textSize = fontSize.value.toInt(),
+                                height = lineHeight,
+                                onGloballyPositioned = onSuraHeaderGloballyPositioned
+                            )
+                            is BasmalahSection -> Basmalah(
+                                textSize = fontSize.value.toInt(),
+                                height = lineHeight
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MushafWord(
+    word: AnnotatedString,
+    style: TextStyle,
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
+) {
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+    Text(
+        text = word,
+        modifier = Modifier.pointerInput(Unit) {
+            onVersePointerInput(this, layoutResult, word)
+        },
+        onTextLayout = { textLayoutResult ->
+            layoutResult = textLayoutResult
+        },
+        style = style,
+        softWrap = false,
+        maxLines = 1
+    )
+}
 
 @Composable
 private fun ListViewScreen(
@@ -497,12 +497,4 @@ private fun Basmalah(textSize: Int, height: Dp? = null) {
         contentScale = ContentScale.FillBounds,
         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
     )
-}
-
-private fun getLineHeight(configuration: Configuration): Dp {
-    val screenHeightPx = configuration.screenHeightDp.dp
-    val topBarHeight = 36.dp
-    val bottomBarHeight = 56.dp
-    val availableHeight = screenHeightPx - topBarHeight - bottomBarHeight
-    return availableHeight / 15f
 }

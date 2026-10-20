@@ -49,7 +49,7 @@ class QuranSettingsViewModel @Inject constructor(
                 isLoading = false,
                 viewType = viewType,
                 fillPage = fillPage,
-                isTextSizeSliderEnabled = !fillPage,
+                isTextSizeSliderEnabled = viewType == QuranViewType.LIST || !fillPage,
                 isFillPageEnabled = viewType == QuranViewType.PAGE,
                 textSize = domain.getTextSize().first(),
                 keepScreenOn = domain.getKeepScreenOn().first(),
@@ -65,14 +65,14 @@ class QuranSettingsViewModel @Inject constructor(
         _uiState.update { it.copy(
             viewType = viewType,
             isFillPageEnabled = viewType == QuranViewType.PAGE,
-            isTextSizeSliderEnabled = viewType == QuranViewType.LIST
+            isTextSizeSliderEnabled = viewType == QuranViewType.LIST || !it.fillPage
         )}
     }
 
     fun onFillPageChange(fillPage: Boolean) {
         _uiState.update { it.copy(
             fillPage = fillPage,
-            isTextSizeSliderEnabled = !fillPage
+            isTextSizeSliderEnabled = it.viewType == QuranViewType.LIST || !fillPage
         )}
     }
 

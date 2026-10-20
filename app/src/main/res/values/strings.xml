@@ -204,7 +204,7 @@
     <string name="compass_calibration">معايرة الجهاز</string>
     <string name="previous_prayer">الصلاة السابقة</string>
     <string name="next_prayer">الصلاة القادمة</string>
-    <string name="fill_page">ملئ الصفحة</string>
+    <string name="fill_page">عرض المصحف المطبوع</string>
     <string name="sources">المصادر</string>
     <string name="bookmarked_verses">الآيات المحفوظة</string>
     <string name="bookmarks_hint">لحفظ آية، اضغط عليها ضغطة مطولة ثم اختر إحدى العلامات الملونة.</string>

@@ -13,7 +13,7 @@ class QuranPageBuilderTest {
     private var nextId = 1
     private fun verse(suraNum: Int, num: Int, pageNum: Int, line: Int) = Verse(
         id = nextId++, num = num, juzNum = 1, suraNum = suraNum, pageNum = pageNum,
-        decoratedText = "v$suraNum:$num", plainText = "", startLineNum = line, endLineNum = line,
+        decoratedText = "v$suraNum:$num", plainText = "", mushafText = "", startLineNum = line, endLineNum = line,
         translationEn = "t$suraNum:$num", interpretation = ""
     )
 
@@ -97,6 +97,68 @@ class QuranPageBuilderTest {
     @Test
     fun `a page without verses is empty`() {
         assertEquals(emptyList<Section>(), builder().page(99))
+    }
+
+    // Page 1: sura 1. Page 2: sura 2 from line 2, so its header falls at the foot of page 1.
+    // Page 3: sura 9 from line 2, under its header and with no basmalah
+    private fun mushafVerse(id: Int, suraNum: Int, num: Int, pageNum: Int, line: Int, text: String) = Verse(
+        id = id, num = num, juzNum = 1, suraNum = suraNum,
+        pageNum = pageNum, decoratedText = "", plainText = "", mushafText = text,
+        startLineNum = line, endLineNum = line + text.count { it == '\n' },
+        translationEn = "", interpretation = ""
+    )
+    private val mushafBuilder = QuranPageBuilder(
+        listOf(
+            mushafVerse(id = 1, suraNum = 1, num = 1, pageNum = 1, line = 2, text = "a b"),
+            mushafVerse(id = 2, suraNum = 1, num = 2, pageNum = 1, line = 3, text = "c\nd e"),
+            mushafVerse(id = 3, suraNum = 2, num = 1, pageNum = 2, line = 2, text = "f"),
+            mushafVerse(id = 4, suraNum = 9, num = 1, pageNum = 3, line = 2, text = "g")
+        ),
+        suraNames,
+        Language.ARABIC
+    )
+
+    private fun mushafPage(num: Int, selected: Int? = null) =
+        mushafBuilder.buildMushafPage(num, selected, -1, Color.Black, Color.Red, Color.Blue)
+
+    private fun Section?.words() = (this as MushafLineSection).words.map { it.text }
+
+    @Test
+    fun `mushaf lines hold their words, verses split across lines, and a next sura's header can close the page`() {
+        val lines = mushafPage(1)
+
+        assertEquals(15, lines.size)
+        assertEquals(SuraHeaderSection(suraNum = 1, suraName = "Sura 1"), lines[0])
+        assertEquals(listOf("a", "b"), lines[1].words())
+        assertEquals(listOf("c"), lines[2].words())
+        assertEquals(listOf("d", "e"), lines[3].words())
+        assertEquals(List(10) { null }, lines.subList(4, 14))
+        assertEquals(SuraHeaderSection(suraNum = 2, suraName = "Sura 2"), lines[14])
+    }
+
+    @Test
+    fun `a sura opening a mushaf page under a header from the page before starts with its basmalah`() {
+        val lines = mushafPage(2)
+
+        assertEquals(2, lines.size)
+        assertTrue(lines[0] is BasmalahSection)
+        assertEquals(listOf("f"), lines[1].words())
+    }
+
+    @Test
+    fun `at-tawbah's mushaf header sits right above its first verse`() {
+        val lines = mushafPage(3)
+
+        assertEquals(SuraHeaderSection(suraNum = 9, suraName = "Sura 9"), lines[0])
+        assertEquals(listOf("g"), lines[1].words())
+    }
+
+    @Test
+    fun `mushaf words are tagged with their verse and colored by selection`() {
+        val word = (mushafPage(1, selected = 2)[3] as MushafLineSection).words[0]
+
+        assertEquals("2", word.getStringAnnotations(0, word.length).single().tag)
+        assertEquals(Color.Red, word.spanStyles.single().item.color)
     }
 
 }

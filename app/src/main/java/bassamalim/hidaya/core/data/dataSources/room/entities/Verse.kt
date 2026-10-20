@@ -13,6 +13,8 @@ data class Verse(
     @field:ColumnInfo(name = "page_num") val pageNum: Int,
     @field:ColumnInfo(name = "decorated_text") val decoratedText: String,
     @field:ColumnInfo(name = "plain_text") val plainText: String,
+    /** KFGQPC Hafs text, one '\n'-separated segment per mushaf line from [startLineNum] */
+    @field:ColumnInfo(name = "mushaf_text") val mushafText: String,
     @field:ColumnInfo(name = "start_line_num") val startLineNum: Int,
     @field:ColumnInfo(name = "end_line_num") val endLineNum: Int,
     @field:ColumnInfo(name = "translation_en") val translationEn: String,

@@ -100,6 +100,75 @@ class QuranPageBuilder(
         return sections
     }
 
+    /**
+     * Mushaf view: the page's lines as printed, null for a blank one. Trailing blanks are dropped,
+     * so the two opening pages come out shorter.
+     */
+    fun buildMushafPage(
+        pageNumber: Int,
+        selectedVerseId: Int?,
+        trackedVerseId: Int,
+        defaultVerseColor: Color,
+        selectedVerseColor: Color,
+        trackedVerseColor: Color
+    ): List<Section?> {
+        val lines = arrayOfNulls<Section>(MUSHAF_LINES)
+        val lineWords = sortedMapOf<Int, MutableList<AnnotatedString>>()
+        val pageVerses = pageVerseEntities(pageNumber)
+
+        for (verse in pageVerses) {
+            if (verse.num == 1) {
+                for ((line, section) in suraStartLines(verse))
+                    if (line >= 1) lines[line - 1] = section
+            }
+
+            val color = when (verse.id) {
+                selectedVerseId -> selectedVerseColor
+                trackedVerseId -> trackedVerseColor
+                else -> defaultVerseColor
+            }
+            verse.mushafText.split('\n').forEachIndexed { i, segment ->
+                segment.split(' ').mapTo(lineWords.getOrPut(verse.startLineNum + i) { mutableListOf() }) {
+                    buildAnnotatedString {
+                        pushStringAnnotation(tag = verse.id.toString(), annotation = verse.id.toString())
+                        withStyle(SpanStyle(color = color)) { append(it) }
+                        pop()
+                    }
+                }
+            }
+        }
+
+        // A sura opening the next page can have its header at the foot of this one
+        allVerses.firstOrNull { it.pageNum == pageNumber + 1 }
+            ?.takeIf { it.num == 1 }
+            ?.let { next ->
+                for ((line, section) in suraStartLines(next))
+                    if (line < 1) lines[MUSHAF_LINES + line - 1] = section
+            }
+
+        for ((line, words) in lineWords) lines[line - 1] = MushafLineSection(words)
+
+        return lines.toList().dropLastWhile { it == null }
+    }
+
+    /**
+     * The header and basmalah lines just above a sura's first verse, numbered on that verse's page,
+     * so a line below 1 falls at the end of the page before.
+     */
+    private fun suraStartLines(firstVerse: VerseEntity): List<Pair<Int, Section>> {
+        val header = SuraHeaderSection(
+            suraNum = firstVerse.suraNum,
+            suraName = suraNames[firstVerse.suraNum - 1]
+        )
+        // Al-Fatiha's basmalah is its first verse, and At-Tawbah has none
+        return if (firstVerse.suraNum == 1 || firstVerse.suraNum == 9)
+            listOf(firstVerse.startLineNum - 1 to header)
+        else listOf(
+            firstVerse.startLineNum - 2 to header,
+            firstVerse.startLineNum - 1 to BasmalahSection()
+        )
+    }
+
     /** The page's verses, which are contiguous since verses are ordered by page. */
     private fun pageVerseEntities(pageNumber: Int): List<VerseEntity> {
         val start = allVerses.indexOfFirst { it.pageNum == pageNumber }
@@ -165,6 +234,10 @@ class QuranPageBuilder(
                 pop()
             }
         }
+    }
+
+    companion object {
+        const val MUSHAF_LINES = 15
     }
 
 }
