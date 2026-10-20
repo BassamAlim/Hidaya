@@ -235,6 +235,15 @@
     <string name="no_date_placeholder">--</string>
     <string name="expand">Expand</string>
     <string name="continue_listening">Continue listening</string>
+    <string name="listen_to_sura">Listen to sura</string>
+    <string name="all_suras">All suras</string>
+    <string name="delete">Delete</string>
+    <string name="delete_downloads">Delete downloads</string>
+    <string name="delete_downloads_confirmation">Delete all downloaded suras of this reciter?</string>
+    <string name="download_all_confirmation">Download all of this reciter\'s suras? This can use a lot of data and storage.</string>
+    <string name="download_all">Download all</string>
+    <string name="all_reciters">All reciters</string>
+    <string name="last_reciter">Last reciter</string>
     <string name="no_recitations_found">No recitations found</string>
     <string name="back">Back</string>
     <string name="report_wrong_prayer_times">Report wrong prayer times</string>

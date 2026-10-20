@@ -10,11 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.session.MediaController
+import androidx.navigation.toRoute
 import bassamalim.hidaya.core.Globals
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.MenuType
@@ -23,13 +25,17 @@ import bassamalim.hidaya.core.helpers.playbackStatus
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.quran.surasMenu.RecitationInfo
+import bassamalim.hidaya.features.recitations.RecitationMediaId
+import bassamalim.hidaya.features.recitations.SuraDownloads
 import bassamalim.hidaya.features.recitations.player.RecitationPlayerService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,9 +44,14 @@ import javax.inject.Inject
 @OptIn(UnstableApi::class)
 @HiltViewModel
 class RecitationRecitersMenuViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val domain: RecitationRecitersMenuDomain,
+    private val suraDownloads: SuraDownloads,
     private val navigator: Navigator
 ): ViewModel() {
+
+    /** -1 unless the menu is narrowed to one sura's recitations. */
+    private val suraId = savedStateHandle.toRoute<Screen.RecitationsRecitersMenu>().suraId
 
     private lateinit var allRecitations: Flow<Map<Int, Recitation>>
     private lateinit var suraNames: List<String>
@@ -55,12 +66,17 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         viewModelScope.launch {
             val language = domain.getLanguage()
             suraNames = domain.getSuraNames(language)
-            allRecitations = domain.observeRecitersWithNarrations(language)
+            val recitations = domain.observeRecitersWithNarrations(language)
+            allRecitations =
+                if (suraId == -1) recitations
+                else combine(recitations, suraDownloads.changes) { all, _ -> forSura(all) }
+                    .flowOn(Dispatchers.IO)
             narrationSelections = domain.getNarrationSelections(language)
 
             val numeralsLanguage = domain.getNumeralsLanguage()
             _uiState.update { it.copy(
                 isLoading = false,
+                suraName = suraNames.getOrNull(suraId),
                 numeralsLanguage = numeralsLanguage,
                 isFiltered = narrationSelections.first().values.any { bool -> !bool }
             )}
@@ -93,6 +109,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
 
         domain.registerDownloadReceiver()
+        if (suraId != -1) suraDownloads.register()
     }
 
     fun onStop() {
@@ -102,6 +119,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         connection = null
 
         domain.unregisterDownloadReceiver()
+        suraDownloads.unregister()
     }
 
     fun onBackPressed() {
@@ -152,6 +170,18 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         narration: Recitation.Narration,
         suraString: String
     ) {
+        // Narrowed to a sura, downloading is about that sura alone
+        if (suraId != -1) {
+            suraDownloads.toggle(
+                reciterId = reciterId,
+                narrationId = narration.id,
+                suraId = suraId,
+                suraName = suraNames[suraId],
+                server = narration.server
+            )
+            return
+        }
+
         viewModelScope.launch {
             if (allRecitations.first()[reciterId]!!.narrations[narration.id]!!.downloadState
                 == DownloadState.NOT_DOWNLOADED) {
@@ -168,9 +198,37 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 
     fun onNarrationClick(reciterId: Int, narrationId: Int) {
         navigator.navigate(
+            if (suraId == -1)
+                Screen.RecitationSurasMenu(reciterId = reciterId, narrationId = narrationId)
+            else Screen.RecitationPlayer(
+                action = "start",
+                mediaId = RecitationMediaId.encode(reciterId, narrationId, suraId)
+            )
+        )
+    }
+
+    fun onNarrationSurasClick(reciterId: Int, narrationId: Int) {
+        navigator.navigate(
             Screen.RecitationSurasMenu(reciterId = reciterId, narrationId = narrationId)
         )
     }
+
+    /**
+     * Leaves only the narrations that include the menu's sura (reciters without any drop out),
+     * with the download state of that sura rather than of the whole narration.
+     */
+    private fun forSura(recitations: Map<Int, Recitation>) =
+        recitations.mapValues { (reciterId, recitation) ->
+            recitation.copy(
+                narrations = recitation.narrations.filter { (_, narration) ->
+                    (suraId + 1) in narration.availableSuras
+                }.mapValues { (_, narration) ->
+                    narration.copy(
+                        downloadState = suraDownloads.getState(reciterId, narration.id, suraId)
+                    )
+                }
+            )
+        }.filterValues { it.narrations.isNotEmpty() }
 
     // TODO: find a better fix for this
     fun onSearchTextChange(text: String) {

@@ -7,6 +7,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -117,6 +119,8 @@ fun MyFavoriteButton(
     }
 }
 
+private val ButtonFootprint = 48.dp
+
 @Composable
 fun MyDownloadButton(
     state: DownloadState,
@@ -128,8 +132,15 @@ fun MyDownloadButton(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        if (state == DownloadState.DOWNLOADING)
-            MyCircularProgressIndicator()
+        if (state == DownloadState.DOWNLOADING) {
+            // The icon's size inside the button's footprint, so the row doesn't shift
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(ButtonFootprint)
+                    .padding((ButtonFootprint - iconSize) / 2),
+                strokeWidth = 2.dp
+            )
+        }
         else {
             MyIconButton(
                 imageVector =
@@ -166,7 +177,10 @@ fun MyIconPlayerButton(
             }
         ) { state ->
             if (state == PlaybackStatus.CONNECTING || state == PlaybackStatus.BUFFERING)
-                MyCircularProgressIndicator()
+                // Unfilled, the button sits on the caller's own background, which the default
+                // primary can vanish into
+                if (filled) MyCircularProgressIndicator()
+                else MyCircularProgressIndicator(color = tint)
             else {
                 Icon(
                     imageVector =

@@ -68,8 +68,15 @@ class RecitationPlayerService : MediaSessionService() {
         super.attachBaseContext(newBase.withAppLocale())
     }
 
+    companion object {
+        /** Lets screens that only mirror the player avoid starting the service to ask. */
+        var isRunning = false
+            private set
+    }
+
     override fun onCreate() {
         super.onCreate()
+        isRunning = true
 
         setMediaNotificationProvider(
             mediaNotificationProvider(
@@ -116,6 +123,7 @@ class RecitationPlayerService : MediaSessionService() {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = session
 
     override fun onDestroy() {
+        isRunning = false
         periodicSave?.cancel()
         saveForLater()
         listeningTime.flush()

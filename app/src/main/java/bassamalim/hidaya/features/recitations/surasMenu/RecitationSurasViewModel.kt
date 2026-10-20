@@ -97,7 +97,7 @@ class RecitationSurasViewModel @Inject constructor(
         val context = navigator.getContext()
 
         if ((context as Activity).isTaskRoot) {
-            navigator.navigate(Screen.RecitationsRecitersMenu) {
+            navigator.navigate(Screen.RecitationsRecitersMenu()) {
                 popUpTo<Screen.RecitationSurasMenu> {
                     inclusive = true
                 }
@@ -169,6 +169,41 @@ class RecitationSurasViewModel @Inject constructor(
             )}
 
             domain.delete(reciterId = reciterId, narrationId = narrationId, suraId = sura.id)
+        }
+    }
+
+    /** Downloads every sura of the narration that isn't downloaded yet. */
+    fun onDownloadAllClick() {
+        val states = _uiState.value.downloadStates
+        val missing = narration.availableSuras.map { it - 1 }
+            .filter { states[it] == DownloadState.NOT_DOWNLOADED }
+
+        _uiState.update { it.copy(
+            downloadStates = it.downloadStates + missing.associateWith { DownloadState.DOWNLOADING }
+        )}
+
+        missing.forEach { suraId ->
+            domain.download(
+                reciterId = reciterId,
+                narrationId = narrationId,
+                suraId = suraId,
+                suraSearchName = plainSuraNames[suraId],
+                server = narration.server
+            )
+        }
+    }
+
+    fun onDeleteAllClick() {
+        val downloaded = _uiState.value.downloadStates
+            .filterValues { it == DownloadState.DOWNLOADED }.keys
+
+        _uiState.update { it.copy(
+            downloadStates =
+                it.downloadStates + downloaded.associateWith { DownloadState.NOT_DOWNLOADED }
+        )}
+
+        downloaded.forEach { suraId ->
+            domain.delete(reciterId = reciterId, narrationId = narrationId, suraId = suraId)
         }
     }
 

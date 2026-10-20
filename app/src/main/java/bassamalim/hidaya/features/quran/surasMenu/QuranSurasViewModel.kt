@@ -1,23 +1,35 @@
 package bassamalim.hidaya.features.quran.surasMenu
 
+import android.content.Context
+import androidx.annotation.OptIn
 import androidx.compose.ui.graphics.Color
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
+import androidx.media3.session.MediaController
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
+import bassamalim.hidaya.core.enums.PlaybackStatus
+import bassamalim.hidaya.core.helpers.PlayerConnection
+import bassamalim.hidaya.core.helpers.playbackStatus
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.QuranTarget
+import bassamalim.hidaya.features.recitations.RecitationMediaId
+import bassamalim.hidaya.features.recitations.SuraDownloads
+import bassamalim.hidaya.features.recitations.player.RecitationPlayerService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -27,9 +39,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(UnstableApi::class)
 @HiltViewModel
 class QuranSurasViewModel @Inject constructor(
     private val domain: QuranSurasDomain,
+    private val suraDownloads: SuraDownloads,
     private val navigator: Navigator
 ): ViewModel() {
 
@@ -126,8 +140,180 @@ class QuranSurasViewModel @Inject constructor(
         data?.let { domain.trackSuraViewed(it.suraNames[suraId]) }
     }
 
-    fun onRecitationsClick() {
-        navigator.navigate(Screen.RecitationsRecitersMenu)
+    private var connection: PlayerConnection? = null
+
+    /** What the player has loaded, and what was last played and may be continued. */
+    private var loadedRecitation: RecitationInfo? = null
+    private var lastPlayedRecitation: RecitationInfo? = null
+
+    init {
+        viewModelScope.launch {
+            // The position is saved every few seconds while playing; only the recitation matters
+            domain.getLastPlayedRecitation()
+                .map { lastPlayed -> lastPlayed?.takeIf { !it.isDismissed }?.mediaId }
+                .distinctUntilChanged()
+                .collect { mediaId ->
+                    lastPlayedRecitation = mediaId?.let { domain.getRecitationInfo(it) }
+                    updatePlaybackBar()
+                }
+        }
+
+        // Keeps the open picker's download buttons current
+        viewModelScope.launch {
+            suraDownloads.changes.collect {
+                _uiState.update { it.copy(reciterPicker = it.reciterPicker?.withDownloadStates()) }
+            }
+        }
+    }
+
+    fun onStart(context: Context) {
+        // Connecting starts the service, so it waits for a recitation to have been started.
+        // That only happens on the player screen, and coming back from it runs this again
+        if (RecitationPlayerService.isRunning) {
+            connection = PlayerConnection(
+                context = context.applicationContext,
+                service = RecitationPlayerService::class.java,
+                onChange = ::onPlayerChange
+            )
+        }
+        else {
+            loadedRecitation = null
+            _uiState.update { it.copy(playbackState = PlaybackStatus.STOPPED) }
+            updatePlaybackBar()
+        }
+
+        suraDownloads.register()
+    }
+
+    fun onStop() {
+        connection?.release()
+        connection = null
+
+        suraDownloads.unregister()
+    }
+
+    private fun onPlayerChange(controller: MediaController) {
+        val metadata = controller.currentMediaItem?.mediaMetadata
+
+        loadedRecitation = metadata?.let { m ->
+            RecitationInfo(
+                reciterName = m.artist?.toString() ?: "",
+                narrationName = m.albumTitle?.toString() ?: "",
+                suraName = m.title?.toString() ?: ""
+            )
+        }
+        _uiState.update { it.copy(playbackState = controller.playbackStatus()) }
+        updatePlaybackBar()
+    }
+
+    // With nothing loaded (e.g. after the app restarted), the bar offers the last played instead
+    private fun updatePlaybackBar() {
+        _uiState.update { it.copy(
+            playbackRecitationInfo = loadedRecitation ?: lastPlayedRecitation
+        )}
+    }
+
+    fun onPlaybackBarClick() {
+        val mediaId = connection?.controller?.currentMediaItem?.mediaId
+        if (mediaId != null)
+            navigator.navigate(Screen.RecitationPlayer(action = "back", mediaId = mediaId))
+        else continueLastPlayed()
+    }
+
+    fun onPlayPauseClick() {
+        val controller = connection?.controller
+        if (controller?.currentMediaItem == null) continueLastPlayed()
+        else Util.handlePlayPauseButtonAction(controller)
+    }
+
+    private fun continueLastPlayed() {
+        viewModelScope.launch {
+            val lastPlayed = domain.getLastPlayedRecitation().first() ?: return@launch
+            navigator.navigate(
+                Screen.RecitationPlayer(action = "continue", mediaId = lastPlayed.mediaId)
+            )
+        }
+    }
+
+    /** Hides the bar until something is played again, unloading what the player holds. */
+    fun onPlaybackBarDismiss() {
+        connection?.controller?.let { controller ->
+            controller.stop()
+            controller.clearMediaItems()
+        }
+
+        lastPlayedRecitation = null
+        updatePlaybackBar()
+        viewModelScope.launch { domain.dismissLastPlayedRecitation() }
+    }
+
+    fun onSuraPlayClick(suraId: Int) {
+        val data = data ?: return
+
+        viewModelScope.launch {
+            val (lastPlayed, favorites) = domain.getSuraRecitations(suraId)
+            // No quick picks to offer, so go straight to choosing a reciter
+            if (lastPlayed == null && favorites.isEmpty()) return@launch onAllRecitersClick(suraId)
+
+            _uiState.update { it.copy(
+                reciterPicker = ReciterPicker(
+                    suraId = suraId,
+                    suraName = data.suraNames[suraId],
+                    lastPlayed = lastPlayed,
+                    favorites = favorites
+                ).withDownloadStates()
+            )}
+        }
+    }
+
+    private fun ReciterPicker.withDownloadStates(): ReciterPicker {
+        fun SuraRecitation.withDownloadState() = copy(
+            downloadState = suraDownloads.getState(reciterId, narrationId, suraId)
+        )
+
+        return copy(
+            lastPlayed = lastPlayed?.withDownloadState(),
+            favorites = favorites.map { it.withDownloadState() }
+        )
+    }
+
+    fun onSuraDownloadClick(suraId: Int, recitation: SuraRecitation) {
+        val suraName = data?.allSuras?.firstOrNull { it.id == suraId }?.plainName ?: return
+
+        suraDownloads.toggle(
+            reciterId = recitation.reciterId,
+            narrationId = recitation.narrationId,
+            suraId = suraId,
+            suraName = suraName,
+            server = recitation.server
+        )
+    }
+
+    fun onAllRecitersClick(suraId: Int) {
+        onReciterPickerDismiss()
+        navigator.navigate(Screen.RecitationsRecitersMenu(suraId))
+    }
+
+    fun onReciterPickerDismiss() {
+        _uiState.update { it.copy(reciterPicker = null) }
+    }
+
+    fun onSuraRecitationClick(suraId: Int, recitation: SuraRecitation) {
+        onReciterPickerDismiss()
+        playRecitation(recitation.reciterId, recitation.narrationId, suraId)
+    }
+
+    private fun playRecitation(reciterId: Int, narrationId: Int, suraId: Int) {
+        navigator.navigate(
+            Screen.RecitationPlayer(
+                action = "start",
+                mediaId = RecitationMediaId.encode(reciterId, narrationId, suraId)
+            )
+        )
+
+        data?.allSuras?.firstOrNull { it.id == suraId }?.let { sura ->
+            domain.trackRecitationPlayed(reciterId, narrationId, sura.plainName)
+        }
     }
 
     fun onPageClick(pageNum: Int) {

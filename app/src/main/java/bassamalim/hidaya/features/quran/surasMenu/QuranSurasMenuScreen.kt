@@ -12,32 +12,35 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -53,8 +57,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.PlaybackStatus
 import bassamalim.hidaya.core.ui.components.LoadingScreen
+import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
@@ -75,9 +82,8 @@ import bassamalim.hidaya.core.ui.theme.Bookmark4Color
 import bassamalim.hidaya.core.ui.theme.appTypography
 import bassamalim.hidaya.core.ui.theme.dimensions
 import bassamalim.hidaya.core.ui.theme.hafs_smart
+import bassamalim.hidaya.features.recitations.RecitationPlaybackBar
 import kotlinx.coroutines.flow.Flow
-
-private val FabClearance = 88.dp
 
 @Composable
 fun QuranSurasMenuScreen(viewModel: QuranSurasViewModel) {
@@ -106,37 +112,31 @@ fun QuranSurasMenuScreen(viewModel: QuranSurasViewModel) {
 
     // Recitations need Android 8
     val hasRecitations = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-    // Hoisted (one per tab) so the button can shrink to its icon while either list scrolls
-    val listStates = listOf(rememberLazyListState(), rememberLazyListState())
-    val isListScrolling = listStates.any { it.isScrollInProgress }
+    if (hasRecitations) {
+        val context = LocalContext.current
+        DisposableEffect(viewModel) {
+            viewModel.onStart(context)
+            onDispose(viewModel::onStop)
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         MyScaffold(
             title = "",
             topBar = {},  // override the default top bar
-            floatingActionButton = {
-                if (hasRecitations) {
-                    ExtendedFloatingActionButton(
-                        expanded = !isListScrolling,
-                        text = {
-                            Text(
-                                text = stringResource(R.string.recitations),
-                                style = MaterialTheme.appTypography.label
-                            )
-                        },
-                        icon = {
-                            // Collapsed, the icon is all that's left to name the button
-                            Icon(
-                                imageVector = Icons.Default.Headphones,
-                                contentDescription =
-                                    if (isListScrolling) stringResource(R.string.recitations)
-                                    else null
-                            )
-                        },
-                        onClick = viewModel::onRecitationsClick
-                    )
-                }
-            }
+            bottomBar = {
+                RecitationPlaybackBar(
+                    recitationInfo = state.playbackRecitationInfo,
+                    playbackState = state.playbackState,
+                    onClick = viewModel::onPlaybackBarClick,
+                    onPlayPauseClick = viewModel::onPlayPauseClick,
+                    // Not while it's playing, where closing would cut the recitation off
+                    onDismiss = (viewModel::onPlaybackBarDismiss).takeIf {
+                        state.playbackState != PlaybackStatus.PLAYING
+                                && state.playbackState != PlaybackStatus.BUFFERING
+                    }
+                )
+            },
         ) { padding ->
             TabLayout(
                 pageNames = listOf(
@@ -167,12 +167,22 @@ fun QuranSurasMenuScreen(viewModel: QuranSurasViewModel) {
             ) { page ->
                 Tab(
                     surasFlow = viewModel.getItems(page),
-                    listState = listStates[page],
-                    hasFab = hasRecitations,
+                    hasRecitations = hasRecitations,
                     onSuraClick = viewModel::onSuraClick,
+                    onPlayClick = viewModel::onSuraPlayClick,
                     onFavoriteClick = viewModel::onFavoriteClick
                 )
             }
+        }
+
+        state.reciterPicker?.let { picker ->
+            ReciterPickerSheet(
+                picker = picker,
+                onDownloadClick = { viewModel.onSuraDownloadClick(picker.suraId, it) },
+                onAllRecitersClick = { viewModel.onAllRecitersClick(picker.suraId) },
+                onRecitationClick = { viewModel.onSuraRecitationClick(picker.suraId, it) },
+                onDismiss = viewModel::onReciterPickerDismiss
+            )
         }
 
         TutorialOverlay(state = tutorialState)
@@ -222,20 +232,21 @@ private fun BookmarksRow(
 @Composable
 private fun Tab(
     surasFlow: Flow<List<SuraItem>>,
-    listState: LazyListState,
-    hasFab: Boolean,
+    hasRecitations: Boolean,
     onSuraClick: (Int) -> Unit,
+    onPlayClick: (Int) -> Unit,
     onFavoriteClick: (Int, Boolean) -> Unit
 ) {
     val suras by surasFlow.collectAsStateWithLifecycle(emptyList())
 
     MyLazyColumn(
-        state = listState,
         lazyList = {
             items(suras, key = { it.id }) { item ->
                 SuraRow(
                     sura = item,
+                    hasRecitations = hasRecitations,
                     onClick = { onSuraClick(item.id) },
+                    onPlayClick = { onPlayClick(item.id) },
                     onFavoriteClick = { onFavoriteClick(item.id, item.isFavorite) }
                 )
 
@@ -245,15 +256,18 @@ private fun Tab(
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                 )
             }
-
-            // Lets the last sura scroll clear of the recitations button
-            if (hasFab) item { Spacer(Modifier.height(FabClearance)) }
         }
     )
 }
 
 @Composable
-private fun SuraRow(sura: SuraItem, onClick: () -> Unit, onFavoriteClick: () -> Unit) {
+private fun SuraRow(
+    sura: SuraItem,
+    hasRecitations: Boolean,
+    onClick: () -> Unit,
+    onPlayClick: () -> Unit,
+    onFavoriteClick: () -> Unit
+) {
     val dims = MaterialTheme.dimensions
 
     Row(
@@ -317,11 +331,156 @@ private fun SuraRow(sura: SuraItem, onClick: () -> Unit, onFavoriteClick: () -> 
             }
         }
 
+        if (hasRecitations) {
+            MyIconButton(
+                imageVector = Icons.Outlined.PlayCircle,
+                description = stringResource(R.string.listen_to_sura),
+                iconModifier = Modifier.size(dims.iconMd),
+                iconColor = MaterialTheme.colorScheme.primary,
+                onClick = onPlayClick
+            )
+        }
+
         MyFavoriteButton(
             isFavorite = sura.isFavorite,
             onClick = onFavoriteClick,
             size = dims.iconMd
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReciterPickerSheet(
+    picker: ReciterPicker,
+    onRecitationClick: (SuraRecitation) -> Unit,
+    onDownloadClick: (SuraRecitation) -> Unit,
+    onAllRecitersClick: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    val dims = MaterialTheme.dimensions
+
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Text(
+            text = "${stringResource(R.string.sura)} ${picker.suraName}",
+            modifier = Modifier.padding(
+                horizontal = dims.screenPaddingHorizontal,
+                vertical = dims.spaceSm
+            ),
+            style = MaterialTheme.appTypography.headline
+        )
+
+        MyLazyColumn(
+            lazyList = {
+                picker.lastPlayed?.let { lastPlayed ->
+                    item(key = "last") {
+                        RecitationRow(
+                            title = lastPlayed.reciterName,
+                            subtitle = lastPlayed.narrationName,
+                            label = stringResource(R.string.last_reciter),
+                            trailing = {
+                                MyDownloadButton(
+                                    state = lastPlayed.downloadState,
+                                    iconSize = dims.iconMd,
+                                    onClick = { onDownloadClick(lastPlayed) }
+                                )
+                            },
+                            onClick = { onRecitationClick(lastPlayed) }
+                        )
+                    }
+                }
+
+                items(
+                    picker.favorites,
+                    key = { "${it.reciterId}-${it.narrationId}" }
+                ) { recitation ->
+                    RecitationRow(
+                        title = recitation.reciterName,
+                        subtitle = recitation.narrationName,
+                        trailing = {
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = stringResource(R.string.favorites),
+                                modifier = Modifier.size(dims.iconSm),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+
+                            MyDownloadButton(
+                                state = recitation.downloadState,
+                                iconSize = dims.iconMd,
+                                onClick = { onDownloadClick(recitation) }
+                            )
+                        },
+                        onClick = { onRecitationClick(recitation) }
+                    )
+                }
+
+                item(key = "all") {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = dims.screenPaddingHorizontal),
+                        thickness = dims.dividerThickness,
+                        color = MaterialTheme.colorScheme.outlineVariant
+                    )
+
+                    RecitationRow(
+                        title = stringResource(R.string.all_reciters),
+                        trailing = {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                modifier = Modifier.size(dims.iconMd),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        onClick = onAllRecitersClick
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun RecitationRow(
+    title: String,
+    subtitle: String? = null,
+    label: String? = null,
+    trailing: @Composable () -> Unit = {},
+    onClick: () -> Unit
+) {
+    val dims = MaterialTheme.dimensions
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = dims.screenPaddingHorizontal, vertical = dims.spaceMd)
+            // Keeps the rows one height, with or without a download button
+            .heightIn(min = dims.minTouchTarget),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(text = title, style = MaterialTheme.appTypography.title)
+
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.appTypography.caption,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        if (label != null) {
+            Text(
+                text = label,
+                modifier = Modifier.padding(horizontal = dims.spaceSm),
+                style = MaterialTheme.appTypography.caption,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        trailing()
     }
 }
 

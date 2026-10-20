@@ -3,7 +3,7 @@ package bassamalim.hidaya.core.helpers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
-import android.os.Build
+import androidx.core.content.ContextCompat
 
 class ReceiverWrapper(
     private val context: Context,
@@ -13,10 +13,15 @@ class ReceiverWrapper(
 
     fun register() {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                context.registerReceiver(broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
-            else
-                context.registerReceiver(broadcastReceiver, intentFilter)
+            // Exported: the wrapped broadcasts (download completion) come from the system's
+            // download provider, another app as far as Android 13+ is concerned, and a
+            // non-exported receiver never hears them
+            ContextCompat.registerReceiver(
+                context,
+                broadcastReceiver,
+                intentFilter,
+                ContextCompat.RECEIVER_EXPORTED
+            )
         } catch (_: IllegalArgumentException) {}
     }
 

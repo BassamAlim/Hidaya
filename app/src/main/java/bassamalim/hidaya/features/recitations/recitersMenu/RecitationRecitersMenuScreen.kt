@@ -13,14 +13,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,19 +29,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -59,22 +54,21 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.PlaybackStatus
 import bassamalim.hidaya.core.ui.components.CustomSearchBar
 import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
-import bassamalim.hidaya.core.ui.components.MyIconPlayerButton
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.appTypography
 import bassamalim.hidaya.core.ui.theme.dimensions
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quran.surasMenu.RecitationInfo
+import bassamalim.hidaya.features.recitations.RecitationPlaybackBar
+import bassamalim.hidaya.features.recitations.RecitationPlaybackBarHeight
 import kotlinx.coroutines.flow.Flow
 
 private val AvatarSize = 40.dp
-private val PlaybackBarHeight = 68.dp
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -90,7 +84,8 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
     }
 
     MyScaffold(
-        title = stringResource(R.string.recitations),
+        title = state.suraName?.let { "${stringResource(R.string.sura)} $it" }
+            ?: stringResource(R.string.recitations),
         onBack = viewModel::onBackPressed
     ) { padding ->
         Box(
@@ -120,14 +115,18 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                     onReciterExpandToggle = viewModel::onReciterExpandToggle,
                     onFavoriteClick = viewModel::onFavoriteClick,
                     onNarrationClick = viewModel::onNarrationClick,
+                    // Narrowed to a sura, a narration plays it, so its other suras need a way in
+                    onNarrationSurasClick =
+                        (viewModel::onNarrationSurasClick).takeIf { state.suraName != null },
                     onDownloadNarrationClick = viewModel::onDownloadNarrationClick
                 )
             }
 
-            PlaybackBar(
+            RecitationPlaybackBar(
                 recitationInfo = state.playbackRecitationInfo,
                 playbackState = state.playbackState,
-                onContinueListeningClick = viewModel::onContinueListeningClick,
+                modifier = Modifier.align(Alignment.BottomCenter),
+                onClick = viewModel::onContinueListeningClick,
                 onPlayPauseClick = viewModel::onPlayPauseClick
             )
         }
@@ -177,6 +176,7 @@ private fun Tab(
     onReciterExpandToggle: (Int) -> Unit,
     onFavoriteClick: (Int, Boolean) -> Unit,
     onNarrationClick: (Int, Int) -> Unit,
+    onNarrationSurasClick: ((Int, Int) -> Unit)?,
     onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
 ) {
     val items by itemsFlow.collectAsStateWithLifecycle(initialValue = emptyList())
@@ -197,6 +197,7 @@ private fun Tab(
                         onExpandToggle = { onReciterExpandToggle(item.reciterId) },
                         onFavoriteClick = onFavoriteClick,
                         onNarrationClick = onNarrationClick,
+                        onNarrationSurasClick = onNarrationSurasClick,
                         onDownloadNarrationClick = onDownloadNarrationClick
                     )
 
@@ -210,7 +211,11 @@ private fun Tab(
 
             // Room for the playback bar so it never covers the last reciter
             item {
-                Spacer(Modifier.height(PlaybackBarHeight + MaterialTheme.dimensions.spaceXl))
+                Spacer(
+                    Modifier.height(
+                        RecitationPlaybackBarHeight + MaterialTheme.dimensions.spaceXl
+                    )
+                )
             }
         }
     )
@@ -226,7 +231,7 @@ private fun EmptyState() {
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            imageVector = Icons.Default.MusicNote,
+            imageVector = Icons.Default.Headphones,
             contentDescription = null,
             modifier = Modifier.size(dims.iconXl * 1.5f),
             tint = MaterialTheme.colorScheme.outline
@@ -250,6 +255,7 @@ private fun ReciterItem(
     onExpandToggle: () -> Unit,
     onFavoriteClick: (Int, Boolean) -> Unit,
     onNarrationClick: (Int, Int) -> Unit,
+    onNarrationSurasClick: ((Int, Int) -> Unit)?,
     onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
 ) {
     val dims = MaterialTheme.dimensions
@@ -309,6 +315,12 @@ private fun ReciterItem(
             )
 
             if (singleNarration != null) {
+                if (onNarrationSurasClick != null) {
+                    NarrationSurasButton {
+                        onNarrationSurasClick(reciter.reciterId, singleNarration.id)
+                    }
+                }
+
                 DownloadButton(
                     narration = singleNarration,
                     onClick = {
@@ -333,6 +345,9 @@ private fun ReciterItem(
                             narration = narration,
                             numeralsLanguage = numeralsLanguage,
                             onClick = { onNarrationClick(reciter.reciterId, narration.id) },
+                            onSurasClick = onNarrationSurasClick?.let {
+                                { it(reciter.reciterId, narration.id) }
+                            },
                             onDownloadClick = {
                                 onDownloadNarrationClick(reciter.reciterId, narration, suraString)
                             }
@@ -384,6 +399,7 @@ private fun NarrationItem(
     narration: Recitation.Narration,
     numeralsLanguage: Language,
     onClick: () -> Unit,
+    onSurasClick: (() -> Unit)?,
     onDownloadClick: () -> Unit
 ) {
     val dims = MaterialTheme.dimensions
@@ -418,8 +434,22 @@ private fun NarrationItem(
             )
         }
 
+        if (onSurasClick != null) NarrationSurasButton(onClick = onSurasClick)
+
         DownloadButton(narration = narration, onClick = onDownloadClick)
     }
+}
+
+/** Opens the narration's own list of suras. */
+@Composable
+private fun NarrationSurasButton(onClick: () -> Unit) {
+    MyIconButton(
+        imageVector = Icons.AutoMirrored.Filled.FormatListBulleted,
+        description = stringResource(R.string.all_suras),
+        iconModifier = Modifier.size(MaterialTheme.dimensions.iconMd),
+        iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        onClick = onClick
+    )
 }
 
 @Composable
@@ -436,83 +466,5 @@ private fun DownloadButton(narration: Recitation.Narration, onClick: () -> Unit)
             iconSize = MaterialTheme.dimensions.iconMd,
             onClick = onClick
         )
-    }
-}
-
-@Composable
-private fun BoxScope.PlaybackBar(
-    recitationInfo: RecitationInfo?,
-    playbackState: PlaybackStatus,
-    onContinueListeningClick: () -> Unit,
-    onPlayPauseClick: () -> Unit
-) {
-    val dims = MaterialTheme.dimensions
-
-    AnimatedVisibility(
-        visible = recitationInfo != null,
-        modifier = Modifier.align(Alignment.BottomCenter),
-        enter = slideInVertically(tween(300)) { it } + fadeIn(tween(300)),
-        exit = slideOutVertically(tween(300)) { it } + fadeOut(tween(300))
-    ) {
-        if (recitationInfo == null) return@AnimatedVisibility
-
-        Surface(
-            onClick = onContinueListeningClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = dims.spaceMd, end = dims.spaceMd, bottom = dims.spaceMd)
-                .height(PlaybackBarHeight),
-            shape = RoundedCornerShape(dims.radiusLg),
-            color = MaterialTheme.colorScheme.surfaceContainerHighest,
-            shadowElevation = dims.elevationLg
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = dims.spaceSm),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ) {
-                    MyIconPlayerButton(
-                        state = playbackState,
-                        onClick = onPlayPauseClick,
-                        iconSize = dims.iconLg,
-                        filled = false,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-
-                Column(
-                    Modifier
-                        .weight(1f)
-                        .padding(horizontal = dims.spaceMd)
-                ) {
-                    Text(
-                        text = "${stringResource(R.string.sura)} ${recitationInfo.suraName}",
-                        style = MaterialTheme.appTypography.subtitle,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    Text(
-                        text = "${stringResource(R.string.for_reciter)} " +
-                                recitationInfo.reciterName,
-                        style = MaterialTheme.appTypography.caption,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = stringResource(R.string.continue_listening),
-                    modifier = Modifier.size(dims.iconMd),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
     }
 }

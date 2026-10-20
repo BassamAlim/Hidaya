@@ -238,6 +238,15 @@
     <string name="give_permission">السماح بالإذن</string>
     <string name="expand">توسيع</string>
     <string name="continue_listening">متابعة الاستماع</string>
+    <string name="listen_to_sura">الاستماع للسورة</string>
+    <string name="all_suras">كل السور</string>
+    <string name="delete">حذف</string>
+    <string name="delete_downloads">حذف التحميلات</string>
+    <string name="delete_downloads_confirmation">حذف كل السور المحمّلة لهذا القارئ؟</string>
+    <string name="download_all_confirmation">تحميل كل سور هذا القارئ؟ قد يستهلك ذلك قدرًا كبيرًا من البيانات ومساحة التخزين.</string>
+    <string name="download_all">تحميل الكل</string>
+    <string name="all_reciters">كل القراء</string>
+    <string name="last_reciter">آخر قارئ</string>
     <string name="no_recitations_found">لا توجد تلاوات</string>
     <string name="back">رجوع</string>
     <string name="report_wrong_prayer_times">الإبلاغ عن مواقيت صلاة خاطئة</string>

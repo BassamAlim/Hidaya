@@ -94,7 +94,8 @@ sealed interface Screen {
     data object RecitersMenuFilter: Screen
 
     @Serializable @SerialName("recitations_reciters_menu")
-    data object RecitationsRecitersMenu: Screen
+    /** [suraId] (0-based) narrows the menu to that sura's recitations and plays it on a pick. */
+    data class RecitationsRecitersMenu(val suraId: Int = -1): Screen
 
     @Serializable @SerialName("recitation_suras_menu")
     data class RecitationSurasMenu(val reciterId: Int, val narrationId: Int): Screen
